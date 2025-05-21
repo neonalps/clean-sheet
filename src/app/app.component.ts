@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { SeasonService } from './module/season/service';
+import { FetchService } from './module/fetch/service';
 
 @Component({
   selector: 'app-root',
@@ -7,8 +9,14 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'clean-sheet';
+
+  constructor(private readonly seasonService: SeasonService, private readonly fetchService: FetchService) {}
+
+  ngOnInit(): void {
+    this.seasonService.init();
+  }
 
   googleLogin(): void {
     const queryParams = {
