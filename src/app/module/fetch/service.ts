@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from '@src/environments/environment';
 import { CacheableResponse } from "@src/app/model/cacheable-response";
 import { CacheService } from "@src/app/module/cache/service";
-import { getCurrentUnix } from "@src/app/util/date";
+import { getCurrentUnix, getDateFromUnixTimestamp } from "@src/app/util/date";
 import { take } from "rxjs";
 
 export enum FetchStrategy {
@@ -88,6 +88,7 @@ export class FetchService {
         let currentContent: unknown | undefined = undefined;
         if (subscription.strategy === FetchStrategy.CacheAndNetwork) {
             const cacheEntry = await this.cacheService.get<ResponseCacheEntry<unknown>>(FetchService.CACHE_KEY_REQUESTS, subscription.name);
+            console.log('cacheEntry', cacheEntry);
             if (cacheEntry !== undefined) {
                 // cache entry exists, return the stored data immediately and only update it if newer data is available
                 if (subscription.onUpdate !== undefined) {
@@ -99,7 +100,7 @@ export class FetchService {
 
                 const cacheFreshnessExpiration = cacheEntry.retrievedAt + subscription.bestBeforeSeconds;
                 if (currentUnix <= cacheFreshnessExpiration) {
-                    console.info(`cache entry is still fresh, not going to network (current: ${currentUnix}, expiration: ${cacheFreshnessExpiration})`);
+                    console.info(`cache entry is still fresh, not going to network (current: ${getDateFromUnixTimestamp(currentUnix).toISOString()}, expiration: ${getDateFromUnixTimestamp(cacheFreshnessExpiration).toISOString()})`);
                     return;
                 }
             }
@@ -172,10 +173,7 @@ export class FetchService {
 
     private async getRequest<T>(request: HttpRequest, contentHash?: string): Promise<HttpResponse<T>> {
         return new Promise((resolve, reject) => {
-            const headers = new HttpHeaders();
-            if (contentHash !== undefined) {
-                headers.set('x-content-hash', contentHash);
-            }
+            const headers = contentHash !== undefined ? new HttpHeaders({ 'x-content-hash': contentHash }) : new HttpHeaders();
 
             this.http.get<T>(this.getFullRequestUrl(request.url), { headers,  observe: 'response' }).pipe(take(1)).subscribe({
                 next: response => resolve(response),

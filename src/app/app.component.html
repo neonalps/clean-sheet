@@ -1,5 +1,8 @@
 <div class="app-wrapper">
   <h1>hello world</h1>
+  <div>
+    <app-select (onSelected)="onSeasonSelected($event)" [options$]="getSeasonOptions()" [emptyText]="'selectSeason.empty' | $t"></app-select>
+  </div>
   <main>
     <router-outlet></router-outlet>
   </main>

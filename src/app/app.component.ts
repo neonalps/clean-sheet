@@ -2,10 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SeasonService } from './module/season/service';
 import { FetchService } from './module/fetch/service';
+import { SelectComponent } from './components/select/select.component';
+import { OptionId, SelectOption } from './components/select/option';
+import { I18nPipe } from './module/i18n/i18n.pipe';
+import { map, Observable, of, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { convertToSelectOption } from './module/season/util';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [I18nPipe, RouterOutlet, SelectComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -28,5 +34,16 @@ export class AppComponent implements OnInit {
     };
     
     window.location.href = ["https://accounts.google.com/o/oauth2/auth", "?", new URLSearchParams(queryParams).toString()].join("");
+  }
+
+
+  getSeasonOptions(): Observable<SelectOption[]> {
+    return this.seasonService.getSeasonsObservable().pipe(
+      map(seasons => seasons.map(item => convertToSelectOption(item))),
+    );
+  }
+
+  onSeasonSelected(seasonId: OptionId): void {
+    console.log('season selected', seasonId);
   }
 }

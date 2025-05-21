@@ -1,0 +1,9 @@
+<div class="select-container">
+    <div>{{ getEmptyText() }}</div>
+    <ng-container *ngIf="showSearch">
+        <input type="text" (input)="onSearchChange($event)" />
+    </ng-container>
+    <ng-container *ngFor="let option of options$ | async">
+        <div (click)="onSelect(option.id)">{{ option.name }}</div>
+    </ng-container>
+</div>
