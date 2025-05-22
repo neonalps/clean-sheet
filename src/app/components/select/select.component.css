@@ -1,3 +1,17 @@
-.select-container {
-    background-color: #656565;
+.select-outline {
+    border: 1px solid #d8d8d8;
+}
+
+.select-options {
+    position: absolute;
+    background-color: #333;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .15s linear, opacity .15s linear;
+}
+
+.select-options.visible {
+    visibility: visible;
+    opacity: 1;
 }

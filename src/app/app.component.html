@@ -2,6 +2,7 @@
   <h1>hello world</h1>
   <div>
     <app-select (onSelected)="onSeasonSelected($event)" [options$]="getSeasonOptions()" [emptyText]="'selectSeason.empty' | $t"></app-select>
+    <div>after season select</div>
   </div>
   <main>
     <router-outlet></router-outlet>
