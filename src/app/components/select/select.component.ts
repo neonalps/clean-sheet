@@ -4,15 +4,19 @@ import { OptionId, SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
+import { ClickOutsideDirective } from '@src/app/directives/click-outside/click-outside.directive';
+import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
+import { COLOR_LIGHT } from '@src/styles/constants';
 
 @Component({
   selector: 'app-select',
-  imports: [CommonModule],
+  imports: [ChevronDownComponent, CommonModule, ClickOutsideDirective],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
 export class SelectComponent {
 
+  colorLight = COLOR_LIGHT;
   isOpen = signal(false);
 
   private selected: SelectOption | null = null;
@@ -42,12 +46,22 @@ export class SelectComponent {
     this.toggleDropdown();
   }
 
+  hideDropdown() {
+    if (this.isOpen()) {
+      this.isOpen.set(false);
+    }
+  }
+
   toggleDropdown() {
     this.isOpen.set(!this.isOpen());
   }
 
   isSelected(option: SelectOption): boolean {
     return this.selected?.id === option.id;
+  }
+
+  handleOutsideClick() {
+    this.hideDropdown();
   }
 
 }

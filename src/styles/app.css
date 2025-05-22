@@ -17,15 +17,8 @@ body {
     color: var(--light);
 }
 
-.chevron {
-  --s: 16%; /* control the shape (can be percentage) */
-
-  width: .1rem;
-  aspect-ratio: 5/3 ;
-  clip-path: polygon(0 100%,0 calc(100% - var(--s)),50% 0,100% calc(100% - var(--s)),100% 100%,50% var(--s));
-  background: var(--light);
-}
-
-.chevron-down {
-  transform: rotate(180deg);
+.icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
 }
