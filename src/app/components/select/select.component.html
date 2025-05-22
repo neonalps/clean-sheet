@@ -1,9 +1,15 @@
-<div class="select-container">
-    <div>{{ getEmptyText() }}</div>
+<div class="select-container pointer" role="select">
+    <div class="select-outline p-2 flex justify-content-between" (click)="toggleDropdown()">
+        <div class="flex-grow-8">{{ getDisplayText() }}</div>
+        <div class="flex-grow-1 chevron" [ngClass]="{ 'chevron-down': !isOpen() }">
+        </div>
+    </div>
     <ng-container *ngIf="showSearch">
         <input type="text" (input)="onSearchChange($event)" />
     </ng-container>
-    <ng-container *ngFor="let option of options$ | async">
-        <div (click)="onSelect(option.id)">{{ option.name }}</div>
-    </ng-container>
+    <div class="select-options w-full" [ngClass]="{ 'visible': isOpen() }">
+        <ng-container *ngFor="let option of options$ | async">
+            <div class="px-2 pt-1" (click)="onSelect(option)" [ngClass]="{ 'bold': isSelected(option) }">{{ option.name }}</div>
+        </ng-container>
+    </div>
 </div>

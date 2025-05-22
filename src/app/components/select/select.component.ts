@@ -15,7 +15,7 @@ export class SelectComponent {
 
   isOpen = signal(false);
 
-  private selected: OptionId | null = null;
+  private selected: SelectOption | null = null;
 
   @Input() emptyText!: string;
   @Input() optionProvider!: OptionProvider;
@@ -24,25 +24,30 @@ export class SelectComponent {
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<OptionId>();
 
-  getEmptyText(): string {
-    return this.emptyText;
+  getDisplayText(): string {
+    return this.selected === null ? this.emptyText : this.selected.name;
   }
 
   onSearchChange(event: Event): void {
     this.onSearch.next(getHtmlInputElementFromEvent(event).value);
   }
 
-  onSelect(selectedOptionId: OptionId): void {
-    if (this.selected === selectedOptionId) {
+  onSelect(selectedOption: SelectOption): void {
+    if (this.selected?.id === selectedOption.id) {
       return;
     }
 
-    this.selected = selectedOptionId;
-    this.onSelected.next(selectedOptionId);
+    this.selected = selectedOption;
+    this.onSelected.next(this.selected.id);
+    this.toggleDropdown();
   }
 
   toggleDropdown() {
     this.isOpen.set(!this.isOpen());
+  }
+
+  isSelected(option: SelectOption): boolean {
+    return this.selected?.id === option.id;
   }
 
 }
