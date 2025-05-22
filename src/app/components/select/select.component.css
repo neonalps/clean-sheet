@@ -15,3 +15,16 @@
     visibility: visible;
     opacity: 1;
 }
+
+.select-option.selected {
+    background-color: #515151;
+    font-weight: bold;
+}
+
+.select-option:hover {
+    background-color: #474747;
+}
+
+.chevron-container {
+    transition: transform .15s linear;
+}

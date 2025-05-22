@@ -617,6 +617,14 @@
     cursor: pointer;
 }
 
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.user-select-none {
+    user-select: none;
+}
+
 .small {
     font-size: small;
 }
@@ -731,4 +739,8 @@
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 150ms;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
 }

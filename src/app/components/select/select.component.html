@@ -1,7 +1,8 @@
-<div class="select-container pointer" role="select">
+<div class="select-container pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
     <div class="select-outline p-2 flex justify-content-between" (click)="toggleDropdown()">
         <div class="flex-grow-8">{{ getDisplayText() }}</div>
-        <div class="flex-grow-1 chevron" [ngClass]="{ 'chevron-down': !isOpen() }">
+        <div class="flex-grow-1" class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
+            <app-chevron-down [color]="colorLight" />
         </div>
     </div>
     <ng-container *ngIf="showSearch">
@@ -9,7 +10,7 @@
     </ng-container>
     <div class="select-options w-full" [ngClass]="{ 'visible': isOpen() }">
         <ng-container *ngFor="let option of options$ | async">
-            <div class="px-2 pt-1" (click)="onSelect(option)" [ngClass]="{ 'bold': isSelected(option) }">{{ option.name }}</div>
+            <div class="select-option px-3 py-2" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }">{{ option.name }}</div>
         </ng-container>
     </div>
 </div>
