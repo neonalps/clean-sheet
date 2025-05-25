@@ -12,13 +12,26 @@
 }
 
 body {
-    font-family: 'Lato', Arial, Helvetica, sans-serif;
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
     background-color: var(--dark);
     color: var(--light);
+}
+
+textarea:focus, input:focus {
+    outline: none;
 }
 
 .icon {
   display: inline-block;
   width: 20px;
   height: 20px;
+}
+
+.image-container img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.text-light {
+  color: var(--light);
 }

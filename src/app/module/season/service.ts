@@ -23,7 +23,7 @@ export class SeasonService implements OnDestroy {
             name: 'GetSeasons',
             request: {
                 method: 'GET',
-                url: `/api/v1/seasons`,
+                url: `/v1/seasons`,
             },
             bestBeforeSeconds: 12 * 60 * 60,        // 12 hours
             strategy: FetchStrategy.CacheAndNetwork,

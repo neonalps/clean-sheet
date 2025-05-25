@@ -332,6 +332,14 @@
     padding-left: 2rem;
 }
 
+.pl-9 {
+    padding-left: 2.25rem;
+}
+
+.pl-10 {
+    padding-left: 2.5rem;
+}
+
 .pl-12 {
     padding-left: 3rem;
 }
@@ -675,6 +683,10 @@
     text-align: left;
 }
 
+.absolute {
+    position: absolute;
+}
+
 .relative {
     position: relative;
 }
@@ -689,6 +701,14 @@
 
 .top-8 {
     top: 8px;
+}
+
+.top-16 {
+    top: 16px;
+}
+
+.left-16 {
+    left: 16px;
 }
 
 .z-10 {
@@ -743,4 +763,8 @@
 
 .rotate-180 {
     transform: rotate(180deg);
+}
+
+.max-w-2 {
+    max-width: 2rem;
 }
