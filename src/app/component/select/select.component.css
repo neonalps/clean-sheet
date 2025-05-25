@@ -9,6 +9,7 @@
     visibility: hidden;
     opacity: 0;
     transition: visibility .15s linear, opacity .15s linear;
+    z-index: 100;
 }
 
 .select-options.visible {
@@ -27,4 +28,19 @@
 
 .chevron-container {
     transition: transform .15s linear;
+}
+
+.image-container {
+    flex: 0 0 9%;
+}
+
+.select-search {
+    background-color: #777;
+    border-style: none;
+    border-bottom: 2px solid transparent;
+    transition: border .15s linear;
+}
+
+.select-search:focus {
+    border-bottom: 2px solid var(--light);
 }

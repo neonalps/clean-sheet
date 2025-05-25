@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiBaseUrl: "http://localhost:3024",
+    apiBaseUrl: "http://localhost:3024/api",
     oauth: {
         spotify: {
             authorizeUrl: "https://accounts.spotify.com/authorize",
