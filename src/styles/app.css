@@ -35,3 +35,25 @@ textarea:focus, input:focus {
 .text-light {
   color: var(--light);
 }
+
+.page {
+  padding: 1rem;
+}
+
+.page-title {
+  font-weight: bold;
+  font-size: 1.25rem;
+  line-height: 2rem;
+}
+
+.result-tendency-w {
+  background-color: var(--success);
+}
+
+.result-tendency-d {
+  background-color: #aaa;
+}
+
+.result-tendency-l {
+  background-color: var(--danger);
+}

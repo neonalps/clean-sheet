@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SeasonService } from './module/season/service';
-import { SelectComponent } from './component/select/select.component';
 import { OptionId, SelectOption } from './component/select/option';
-import { I18nPipe } from './module/i18n/i18n.pipe';
 import { debounceTime, map, merge, Observable, of, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { convertSeasonToSelectOption } from './module/season/util';
 import { ExternalSearchService } from './module/external-search/service';
@@ -12,7 +10,7 @@ import { convertExternalSearchItemToSelectOption } from './module/external-searc
 
 @Component({
   selector: 'app-root',
-  imports: [I18nPipe, RouterOutlet, SelectComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
