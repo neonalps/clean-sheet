@@ -1,0 +1,8 @@
+<div class="flex align-items-center">
+    <ng-container *ngIf="club.iconSmall">
+        <div [ngClass]="iconPosition === 'left' ? 'order-1 ml-2' : 'order-3 mr-2'">
+            <app-club-icon [iconUrl]="club.iconSmall" [iconClassName]="'width-sm'"  />
+        </div>
+    </ng-container>
+    <div class="order-2 mx-2 text-sm">{{ club.shortName }}</div>
+</div>

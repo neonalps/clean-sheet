@@ -1,0 +1,12 @@
+<section class="page">
+    <ng-container *ngIf="selectedSeason === null; else loadedContent">
+        <app-loading />
+    </ng-container>
+    <ng-template #loadedContent>
+        <div class="page-title">{{ selectedSeason!.name }}</div>
+
+        <ng-container *ngFor="let game of selectedSeasonGames">
+            <app-game-overview [game]="game" [mainClub]="mainClub" />
+        </ng-container>
+    </ng-template>
+</section>

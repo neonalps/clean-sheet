@@ -1,13 +1,5 @@
 <div class="app-wrapper">
-  <h1>hello world</h1>
-  <div>
-    <app-select (onSelected)="onSeasonSelected($event)" [optionsSource]="getSeasonsOptionSource()" [emptyText]="'selectSeason.empty' | $t"></app-select>
-    <div class="mt-3">currently selected season: {{ currentlySelected() }}</div>
-    <div class="mt-10">
-      <app-select (onSelected)="onPlayerSelected($event)" [isLoading]="isSearchingForPlayer" [optionsSource]="getPersonOptionSource()" [emptyText]="'selectPlayer.empty' | $t" [showSearch]="true" (onSearch)="onPlayerSearchChange($event)"></app-select>
-      <div class="mt-3">currently selected player: {{ currentlySelectedPlayer() }}</div>
-    </div>
-  </div>
+  <header></header>
   <main>
     <router-outlet></router-outlet>
   </main>
