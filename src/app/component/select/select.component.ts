@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { OptionId, SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
-import { getHtmlInputElementFromEvent } from '@src/app/util/common';
+import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
@@ -30,6 +30,13 @@ export class SelectComponent implements OnInit, OnDestroy {
   @Input() emptyText!: string;
   @Input() isLoading = false;
   @Input() showSearch: boolean = false;
+  @Input() selectedOptionId?: OptionId;
+  @Input() hideChevron = false;
+  @Input() showOutline = true;
+  @Input() showSelectedTick = true;
+  @Input() minWidth: string | null = null;
+  @Input() centerOptions: boolean = false;
+
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<OptionId>();
 
@@ -45,6 +52,14 @@ export class SelectComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.optionsSource.subscribe(value => {
       this.options = value;
+
+      // handle preselect state
+      if (isDefined(this.selectedOptionId)) {
+        const selected = this.options.find(item => item.id === this.selectedOptionId);
+        if (selected !== undefined) {
+          this.onSelect(selected);
+        }
+      } 
     }));
   }
 
@@ -52,7 +67,7 @@ export class SelectComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(item => item.unsubscribe());
   }
 
-  async onSearchChange(event: Event): Promise<void> {
+  onSearchChange(event: Event): void {
     this.onSearch.next(getHtmlInputElementFromEvent(event).value);
   }
 
@@ -67,6 +82,27 @@ export class SelectComponent implements OnInit, OnDestroy {
     this.displayText = this.selected.name;
     this.onSelected.next(this.selected.id);
     this.hideDropdown();
+  }
+
+  getDynamicStyles() {
+    const dynamicStyles: Record<string, string | number> = {};
+
+    if (isDefined(this.minWidth)) {
+      dynamicStyles['min-width'] = this.minWidth;
+    }
+
+    return dynamicStyles;
+  }
+
+  getDynamicOptionStyles() {
+    const dynamicStyles: Record<string, string | number> = {};
+
+    // use the parent's min width as the options width
+    if (isDefined(this.minWidth)) {
+      dynamicStyles['width'] = this.minWidth;
+    }
+
+    return dynamicStyles;
   }
 
   hideDropdown() {
@@ -94,7 +130,7 @@ export class SelectComponent implements OnInit, OnDestroy {
   }
 
   focusSearch(): void {
-    setTimeout(() => this.searchElement.nativeElement.focus(), 100);
+    setTimeout(() => this.searchElement.nativeElement.focus(), 40);
   }
 
 }

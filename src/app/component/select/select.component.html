@@ -1,18 +1,18 @@
 <div class="select-container pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
-    <div class="select-outline p-2 flex justify-content-between" (click)="toggleDropdown()">
-        <div class="flex-grow-8 flex align-items-center">
+    <div class="select-main p-2 flex justify-content-between" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline, 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
+        <div class="flex-grow-8 flex align-items-center justify-content-center">
             <ng-container *ngIf="displayIcon">
                 <app-player-icon [iconUrl]="displayIcon" />
             </ng-container>
             <div>{{ displayText }}</div>
         </div>
-        <div class="flex align-items-center">
+        <div class="flex align-items-center" *ngIf="hideChevron !== true">
             <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
                 <app-chevron-down [color]="colorLight" />
             </div>
         </div>
     </div>
-    <div class="select-options w-full" [ngClass]="{ 'visible': isOpen() }">
+    <div class="select-options" [ngClass]="{ 'visible': isOpen() }">
         <ng-container *ngIf="showSearch">
             <div class="search-container p-2">
                 <div class="icon absolute left-16 top-16">
@@ -26,12 +26,12 @@
         </ng-container>
         <ng-template #loadedOptions>
             <ng-container *ngFor="let option of options">
-                <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }">
+                <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
                     <ng-container *ngIf="option.icon">
                         <app-player-icon [iconUrl]="option.icon" />
                     </ng-container>
-                    <div class="flex-grow-8">{{ option.name }}</div>
-                    <div *ngIf="isSelected(option)" class="icon">
+                    <div class="flex-grow-8 center">{{ option.name }}</div>
+                    <div *ngIf="showSelectedTick && isSelected(option)" class="icon">
                         <app-check [color]="colorLight" />
                     </div>
                 </div>

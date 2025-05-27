@@ -1,0 +1,5 @@
+@media (hover: hover) {
+    .hover\:bg-color-dark-grey-lighter:hover {
+        background-color: var(--dark-grey-lighter);
+    }
+}

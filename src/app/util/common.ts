@@ -2,6 +2,10 @@ export function isDefined<T>(toCheck: T): toCheck is NonNullable<T> {
     return toCheck !== null && toCheck !== undefined;
 }
 
+export function isNotDefined<T>(toCheck: T) {
+    return !isDefined(toCheck);
+}
+
 export function assertDefined<T>(toCheck: T, errorMessage?: string) {
     if (!isDefined(toCheck)) {
         throw new Error(errorMessage ?? `expected input to be defined but it was not`);

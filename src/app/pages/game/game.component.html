@@ -1,0 +1,14 @@
+<ng-container *ngIf="isLoading; else loadedContent">
+    <div>
+        <app-loading />
+    </div>
+</ng-container>
+<ng-template #loadedContent>
+    <div>{{ game?.competition?.name }}</div>
+    <div>{{ game?.opponent?.shortName }} </div>
+    <div class="mt-4">
+        <pre>
+            {{ getGameEvents() }} 
+        </pre>
+    </div>
+</ng-template>
