@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { Season } from "@src/app/model/season";
 import { FetchHandle, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
-import { Subject, Observable } from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +10,7 @@ export class SeasonService implements OnDestroy {
 
     private seasonsFetchHandle: FetchHandle | undefined;
     private seasons: Season[] = [];
-    private seasonsSubject = new Subject<Season[]>();
+    private seasonsSubject = new BehaviorSubject<Season[]>([]);
 
     constructor(private readonly fetchService: FetchService) {}
 

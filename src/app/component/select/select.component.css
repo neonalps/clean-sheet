@@ -1,3 +1,7 @@
+.select-main {
+    transition: background-color .15s linear;
+}
+
 .select-outline {
     border: 1px solid #d8d8d8;
 }
@@ -5,6 +9,8 @@
 .select-options {
     position: absolute;
     background-color: #333;
+
+    box-shadow: .2rem .1rem .1rem #444;
 
     visibility: hidden;
     opacity: 0;
@@ -20,10 +26,6 @@
 .select-option.selected {
     background-color: #515151;
     font-weight: bold;
-}
-
-.select-option:hover {
-    background-color: #474747;
 }
 
 .chevron-container {
@@ -43,4 +45,10 @@
 
 .select-search:focus {
     border-bottom: 2px solid var(--light);
+}
+
+@media (hover: hover) {
+    .select-option:hover {
+        background-color: #474747;
+    }
 }

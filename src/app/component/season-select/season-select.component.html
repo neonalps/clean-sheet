@@ -1,0 +1,7 @@
+<div class="flex align-items-center w-full">
+    <button class="button">&lt;</button>
+    <div>
+        <app-select [optionsSource]="seasons" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOptionId]="selectedSeasonId" (onSelected)="onSeasonSelected($event)" />
+    </div>
+    <button class="button">&gt;</button>
+</div>

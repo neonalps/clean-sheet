@@ -79,7 +79,7 @@ export class FetchService {
     }
 
     private async processSubscription(subscription: FetchSubscription<unknown>): Promise<void> {
-        console.log(`starting processing subscription ${subscription.name}`);
+        console.log(`[${subscription.name}] starting processing subscription`);
 
         const currentUnix = getCurrentUnix();
 
@@ -88,7 +88,6 @@ export class FetchService {
         let currentContent: unknown | undefined = undefined;
         if (subscription.strategy === FetchStrategy.CacheAndNetwork) {
             const cacheEntry = await this.cacheService.get<ResponseCacheEntry<unknown>>(FetchService.CACHE_KEY_REQUESTS, subscription.name);
-            console.log('cacheEntry', cacheEntry);
             if (cacheEntry !== undefined) {
                 // cache entry exists, return the stored data immediately and only update it if newer data is available
                 if (subscription.onUpdate !== undefined) {
@@ -100,7 +99,7 @@ export class FetchService {
 
                 const cacheFreshnessExpiration = cacheEntry.retrievedAt + subscription.bestBeforeSeconds;
                 if (currentUnix <= cacheFreshnessExpiration) {
-                    console.info(`cache entry is still fresh, not going to network (current: ${getDateFromUnixTimestamp(currentUnix).toISOString()}, expiration: ${getDateFromUnixTimestamp(cacheFreshnessExpiration).toISOString()})`);
+                    console.info(`[${subscription.name}] cache entry is still fresh, not going to network (current: ${getDateFromUnixTimestamp(currentUnix).toISOString()}, expiration: ${getDateFromUnixTimestamp(cacheFreshnessExpiration).toISOString()})`);
                     return;
                 }
             }
@@ -109,12 +108,10 @@ export class FetchService {
         // request data
         try {
             const response = await this.httpRequest<CacheableResponse<unknown>>(subscription.request, currentContentHash);
-            console.log(`received HTTP response`, response);
-
             const responseStatus = response.status;
 
             if (responseStatus === 204 && currentContent !== undefined && currentContentHash !== undefined) {
-                console.log(`received 204, only updating the cache entry freshness`);
+                console.log(`[${subscription.name}] received 204, only updating the cache entry freshness`);
                 // nothing has changed, we only have to update the freshness mark of the old entry
                 const updateEntry: ResponseCacheEntry<unknown> = {
                     name: subscription.name,
@@ -155,7 +152,7 @@ export class FetchService {
         } catch (err) {
             console.error(err);
         }
-        console.log(`finished processing subscription ${subscription.name}`);
+        console.log(`[${subscription.name}] finished processing subscription`);
     }
 
     private getFullRequestUrl(path: string): string {
