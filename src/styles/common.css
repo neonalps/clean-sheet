@@ -8,6 +8,10 @@
     text-align: center;
 }
 
+.text-right {
+    text-align: right;
+}
+
 .flex {
     display: flex;
 }
@@ -22,6 +26,10 @@
 
 .align-items-center {
     align-items: center;
+}
+
+.align-items-baseline {
+    align-items: baseline;
 }
 
 .align-self-start {
@@ -899,6 +907,10 @@
 
 .text-light-grey {
     color: var(--light-grey);
+}
+
+.text-light-grey-darker {
+    color: var(--light-grey-darker);
 }
 
 .bg-color-dark-grey-lighter {
