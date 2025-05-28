@@ -50,12 +50,16 @@ export type GoalScoringBoardMinuteLocalizer = {
 }
 
 function getGoalScoringItem(goalEvent: GoalGameEvent, localizer: GoalScoringBoardMinuteLocalizer): string {
-    return localizer.localize(goalEvent, { ownGoal: 'OG', penalty: 'Pen', minuteSuffix: `.` });
+    return localizer.localize(goalEvent, { ownGoal: 'OG', penalty: 'P', minuteSuffix: `.` });
 }
 
+export type ScoringBoardItem = {
+    gamePlayerId: number;
+    text: string;
+}
 export type GameGoalScoringBoard = {
-    main: string[];
-    opponent: string[];
+    main: ScoringBoardItem[];
+    opponent: ScoringBoardItem[];
 }
 export function getGoalScoringBoard(game: DetailedGame, localizer: GoalScoringBoardMinuteLocalizer): GameGoalScoringBoard {
     const goalGameEvents = game.report.events.filter(item => item.type === GameEventType.Goal);
@@ -97,7 +101,17 @@ export function getGoalScoringBoard(game: DetailedGame, localizer: GoalScoringBo
     }
     
     return {
-        main: tempBoard.main.map(item => [item.playerName, item.goals.join(', ')].join(' ')),
-        opponent: tempBoard.opponent.map(item => [item.playerName, item.goals.join(', ')].join(' ')),
+        main: tempBoard.main.map(item => {
+            return {
+                gamePlayerId: item.gamePlayerId,
+                text: [item.playerName, item.goals.join(', ')].join(' '),
+            };
+        }),
+        opponent: tempBoard.opponent.map(item => {
+            return {
+                gamePlayerId: item.gamePlayerId,
+                text: [item.playerName, item.goals.join(', ')].join(' '),
+            }
+        }),
     };
 }
