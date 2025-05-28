@@ -51,7 +51,7 @@ textarea:focus, input:focus {
 }
 
 .result-tendency-d {
-  background-color: #aaa;
+  background-color: var(--dark-grey-lighter-2);
 }
 
 .result-tendency-l {
