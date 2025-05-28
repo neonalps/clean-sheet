@@ -4,11 +4,24 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
-    <div>{{ game?.competition?.name }}</div>
-    <div>{{ game?.opponent?.shortName }} </div>
-    <div class="mt-4">
-        <pre>
-            {{ getGameEvents() }} 
-        </pre>
+    <div class="game-section p-2 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center justify-content-center py-1">
+            <div class="basis-2/5">
+                <app-large-club [club]="getHomeTeam()" />
+            </div>
+            <div class="basis-1/8 game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getResultTendencyClass()">
+                {{ getResult() }}
+            </div>
+            <div class="basis-2/5">
+                <app-large-club [club]="getAwayTeam()" />
+            </div>
+        </div>
+    </div>
+
+    <div class="game-section p-2 rounded-lg mt-3 mx-3">
+         <app-tab-group>
+            <app-tab-item title="Events">Events</app-tab-item>
+            <app-tab-item title="Lineup">Lineup</app-tab-item>
+        </app-tab-group>
     </div>
 </ng-template>

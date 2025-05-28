@@ -125,3 +125,16 @@ export interface GameReport {
 export interface DetailedGame extends BasicGame {
     report: GameReport,
 }
+
+export type GoalType = 'left' | 'right' | 'head' | 'other' | 'unknown';
+
+export interface GoalGameEvent extends GameEvent {
+    scoredBy: number;
+    assistBy?: number;
+    score: ScoreTuple;
+    goalType: GoalType;
+    penalty: boolean;
+    ownGoal: boolean;
+    directFreeKick: boolean;
+    bicycleKick: boolean;
+}

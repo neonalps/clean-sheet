@@ -2,23 +2,21 @@ import { Injectable } from '@angular/core';
 import de from "./locales/de.json";
 import en from "./locales/en.json";
 import { isDefined } from '@src/app/util/common';
+import { Locale } from './locales/locale';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TranslationService {
 
-  private static readonly LOCALE_DE = "de";
-  private static readonly LOCALE_EN = "en";
-
   private static readonly LOCALES = new Map<string, Record<string, string>>([
-    [TranslationService.LOCALE_EN, en],
-    [TranslationService.LOCALE_DE, de],
+    [Locale.English, en],
+    [Locale.German, de],
   ]);
 
-  private static readonly DEFAULT_LOCALE = TranslationService.LOCALE_EN;
+  private static readonly DEFAULT_LOCALE = Locale.English;
 
-  private selectedLocale: string | null = null;
+  private selectedLocale: Locale | null = null;
 
   constructor() { }
 
