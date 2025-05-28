@@ -108,6 +108,14 @@
     flex-basis: 25%;
 }
 
+.basis-1\/5 {
+    flex-basis: 20%;
+}
+
+.basis-2\/5 {
+    flex-basis: 40%;
+}
+
 .basis-1\/8 {
     flex-basis: 12.5%;
 }
@@ -681,6 +689,10 @@
     width: 1.5rem;
 }
 
+.width-lg {
+    width: 4rem;
+}
+
 .w-1\/2 {
     width: 50%;
 }
@@ -867,6 +879,18 @@
 
 .max-w-2 {
     max-width: 2rem;
+}
+
+.bg-color-light {
+    background-color: var(--light);
+}
+
+.bg-color-light-grey-darker {
+    background-color: var(--light-grey-darker);
+}
+
+.text-dark {
+    color: var(--dark);
 }
 
 .text-dark-grey {

@@ -1,0 +1,8 @@
+<div class="tab-header flex align-items-center p-1">
+    <ng-container *ngFor="let tab of tabs; let i = index">
+        <div class="tab-selector flex-grow-1 bg-color-dark-grey-lighter center rounded-md py-1 pointer" (click)="selectTab(i)" [class.bold]="tab.active">{{ tab.title }}</div>
+    </ng-container>
+</div>
+<div class="tab-body mt-4">
+    <ng-content></ng-content>
+</div>
