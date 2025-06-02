@@ -1,4 +1,4 @@
-import { BasicGame, DetailedGame, GameEventType, GoalGameEvent, ScoreTuple } from "@src/app/model/game";
+import { BasicGame, DetailedGame, GameEvent, GameEventType, GameManager, GamePlayer, GoalGameEvent, ScoreTuple, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiScoreBoard, UiScoreBoardItem } from "@src/app/model/game";
 import { isDefined } from "@src/app/util/common";
 
 export function getGameResult(game: BasicGame): ScoreTuple | null {
@@ -17,31 +17,17 @@ export function getGameResult(game: BasicGame): ScoreTuple | null {
     return null;
 }
 
-export function transformGoalMinute(event: GoalGameEvent, options: GoalMinuteLocalizationOptions): string {
+export function transformGoalMinute(minute: string, suffix: string): string {
     const result: string[] = [];
 
-    const minute = event.minute;
     if (minute.indexOf("+") < 0) {
-        result.push(`${minute}${options.minuteSuffix}`);
+        result.push(`${minute}${suffix}`);
     } else {
         const parts = minute.split("+");
-        result.push(...[`${parts[0]}${options.minuteSuffix}`, '+', parts[1]]);
-    }
-
-    if (event.penalty === true) {
-        result.push(` (${options.penalty})`);
-    }
-
-    if (event.ownGoal === true) {
-        result.push(` (${options.ownGoal})`);
+        result.push(...[`${parts[0]}${suffix}`, '+', parts[1]]);
     }
 
     return result.join('');
-}
-
-type TemporaryGoalScoringBoard = {
-    main: { gamePlayerId: number, playerName: string, goals: string[] }[],
-    opponent: { gamePlayerId: number, playerName: string, goals: string[] }[],
 }
 
 export type GoalMinuteLocalizationOptions = { ownGoal: string, penalty: string, minuteSuffix: string };
@@ -49,69 +35,146 @@ export type GoalScoringBoardMinuteLocalizer = {
     localize: (goalGameEvent: GoalGameEvent, localizationOptions: GoalMinuteLocalizationOptions ) => string;
 }
 
+export type ScoreLocalizer = (score: ScoreTuple) => string;
+export type MinuteLocalizer = (minute: string) => string;
+export type OwnGoalLocalizer = () => string;
+export type PenaltyLocalizer = () => string;
+
 function getGoalScoringItem(goalEvent: GoalGameEvent, localizer: GoalScoringBoardMinuteLocalizer): string {
     return localizer.localize(goalEvent, { ownGoal: 'OG', penalty: 'P', minuteSuffix: `.` });
 }
 
-export type ScoringBoardItem = {
-    gamePlayerId: number;
-    text: string;
-}
-export type GameGoalScoringBoard = {
-    main: ScoringBoardItem[];
-    opponent: ScoringBoardItem[];
-}
-export function getGoalScoringBoard(game: DetailedGame, localizer: GoalScoringBoardMinuteLocalizer): GameGoalScoringBoard {
-    const goalGameEvents = game.report.events.filter(item => item.type === GameEventType.Goal);
-    if (goalGameEvents.length === 0) {
-        return { main: [], opponent: [] };
-    }
-
-    const lineup = [...game.report.main.lineup, ...game.report.opponent.lineup];
-
-    const tempBoard: TemporaryGoalScoringBoard = { main: [], opponent: [] };
-
-    let scoreMain = 0;
-    for (const goal of goalGameEvents) {
-        const goalEvent = goal as GoalGameEvent;
-        const scorer = lineup.find(item => item.id === goalEvent.scoredBy);
-        if (scorer === undefined) {
-            continue;
-        }
-
-        const goalScoringItem = getGoalScoringItem(goalEvent, localizer);
-        const wasForMain = scoreMain !== goalEvent.score[0];
-        if (wasForMain) {    
-            const existing = tempBoard.main.find(item => item.gamePlayerId === goalEvent.scoredBy);
-            if (existing) {
-                existing.goals.push(goalScoringItem);
-            } else {
-                tempBoard.main.push({ gamePlayerId: goalEvent.scoredBy, playerName: scorer.player.lastName, goals: [goalScoringItem] });
-            }
-        } else {
-            const existing = tempBoard.opponent.find(item => item.gamePlayerId === goalEvent.scoredBy);
-            if (existing) {
-                existing.goals.push(goalScoringItem);
-            } else {
-                tempBoard.opponent.push({ gamePlayerId: goalEvent.scoredBy, playerName: scorer.player.lastName, goals: [goalScoringItem] });
-            }
-        }
-        
-        scoreMain = goalEvent.score[0];
-    }
-    
+function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer {
     return {
-        main: tempBoard.main.map(item => {
-            return {
-                gamePlayerId: item.gamePlayerId,
-                text: [item.playerName, item.goals.join(', ')].join(' '),
-            };
-        }),
-        opponent: tempBoard.opponent.map(item => {
-            return {
-                gamePlayerId: item.gamePlayerId,
-                text: [item.playerName, item.goals.join(', ')].join(' '),
-            }
-        }),
+        gamePlayerId: item.id,
+        forMain,
+        personId: item.player.id,
+        firstName: item.player.firstName,
+        lastName: item.player.lastName,
+        avatar: item.player.avatar,
     };
+}
+
+type GamePlayerGoals = { gamePlayerId: number, goals: string[] };
+
+function convertToUiGameManager(item: GameManager, forMain: boolean): UiGameManager {
+    return {
+        gameManagerId: item.id,
+        forMain,
+        role: item.role,
+        personId: item.person.id,
+        firstName: item.person.firstName,
+        lastName: item.person.lastName,
+        avatar: item.person.avatar,
+    }
+}
+
+export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLocalizer, minute: MinuteLocalizer, ownGoal: OwnGoalLocalizer, penalty: PenaltyLocalizer }): UiGame {
+    const mainPlayers = game.report.main.lineup.map(item => convertToUiGamePlayer(item, true));
+    const opponentPlayers = game.report.opponent.lineup.map(item => convertToUiGamePlayer(item, false));
+    const mainManagers = game.report.main.managers.map(item => convertToUiGameManager(item, true));
+    const opponentManagers = game.report.opponent.managers.map(item => convertToUiGameManager(item, false));
+
+    const allPlayersMap: Map<number, UiGamePlayer> = new Map();
+    [...mainPlayers, ...opponentPlayers].forEach(player => {
+        allPlayersMap.set(player.gamePlayerId, player);
+    });
+
+    const isHomeGame = game.isHomeGame;
+
+    const mainGoalScorers: GamePlayerGoals[] = [];
+    const opponentGoalScorers: GamePlayerGoals[] = [];
+
+    const events: UiGameEvent[] = game.report.events.map(event => {
+        const minute = splitGameMinute(event.minute);
+
+        const baseEvent: UiGameEvent = {
+            id: event.id,
+            type: event.type,
+            sortOrder: event.sortOrder,
+            baseMinute: minute[0],
+            additionalMinute: minute[1],
+        };
+
+        switch (event.type) {
+            case GameEventType.Goal:
+                const goalGameEvent = event as GoalGameEvent;
+                const scoredBy = allPlayersMap.get(goalGameEvent.scoredBy) as UiGamePlayer;
+                const forMain = goalGameEvent.ownGoal === true ? !scoredBy.forMain : scoredBy.forMain;
+
+                const scoreBoardItem = [
+                    localizers.minute(event.minute),
+                    goalGameEvent.penalty === true ? localizers.penalty() : undefined,
+                    goalGameEvent.ownGoal === true ? localizers.ownGoal() : undefined,
+                ].filter(item => isDefined(item)).join(" ");
+
+                if (forMain) {
+                    const existing = mainGoalScorers.find(item => item.gamePlayerId === scoredBy.gamePlayerId);
+                    if (existing) {
+                        existing.goals.push(scoreBoardItem);
+                    } else {
+                        mainGoalScorers.push({ gamePlayerId: scoredBy.gamePlayerId, goals: [scoreBoardItem] });
+                    }
+                } else {
+                    const existing = opponentGoalScorers.find(item => item.gamePlayerId === scoredBy.gamePlayerId);
+                    if (existing) {
+                        existing.goals.push(scoreBoardItem);
+                    } else {
+                        opponentGoalScorers.push({ gamePlayerId: scoredBy.gamePlayerId, goals: [scoreBoardItem] });
+                    }
+                }
+
+                return {
+                    ...baseEvent,
+                    score: localizers.score(isHomeGame ? goalGameEvent.score : [goalGameEvent.score[1], goalGameEvent.score[0]]),
+                    scoredBy,
+                    assistBy: goalGameEvent.assistBy ? allPlayersMap.get(goalGameEvent.assistBy) as UiGamePlayer : undefined,
+                    goalType: goalGameEvent.goalType,
+                    penalty: goalGameEvent.penalty,
+                    ownGoal: goalGameEvent.ownGoal,
+                    directFreeKick: goalGameEvent.directFreeKick,
+                    bicycleKick: goalGameEvent.bicycleKick,
+                    forMain,
+                } satisfies UiGoalGameEvent;
+            default:
+                return baseEvent;
+        }
+    });
+
+    return {
+        lineup: {
+            main: {
+                players: mainPlayers,
+                managers: mainManagers,
+            },
+            opponent: {
+                players: opponentPlayers,
+                managers: opponentManagers,
+            },
+        },
+        scoreBoard: {
+            main: mainGoalScorers.map(item => {
+                return {
+                    player: allPlayersMap.get(item.gamePlayerId) as UiGamePlayer,
+                    goalText: item.goals.join(", "),
+                };
+            }),
+            opponent: opponentGoalScorers.map(item => {
+                return {
+                    player: allPlayersMap.get(item.gamePlayerId) as UiGamePlayer,
+                    goalText: item.goals.join(", "),
+                };
+            }),
+        },
+        events,
+    }
+}
+
+export function splitGameMinute(minute: string): [string, string | undefined] {
+    const stoppageTimeIndicatorPosition = minute.indexOf("+");
+    if (stoppageTimeIndicatorPosition === -1) {
+        return [minute, undefined];
+    }
+
+    return [minute.substring(0, stoppageTimeIndicatorPosition), minute.substring(stoppageTimeIndicatorPosition)];
 }

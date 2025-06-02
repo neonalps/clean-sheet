@@ -138,3 +138,69 @@ export interface GoalGameEvent extends GameEvent {
     directFreeKick: boolean;
     bicycleKick: boolean;
 }
+
+export interface UiPerson {
+    personId: number;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+}
+
+export interface UiGamePlayer extends UiPerson {
+    gamePlayerId: number;
+    forMain: boolean;
+    // TODO add other fields
+}
+
+export interface UiGameManager extends UiPerson {
+    gameManagerId: number;
+    forMain: boolean;
+    role: ManagingRole;
+}
+
+export type UiScoreBoardItem = {
+    player: UiPerson;
+    goalText: string;
+}
+
+export type UiScoreBoard = {
+    main: UiScoreBoardItem[];
+    opponent: UiScoreBoardItem[];
+}
+
+export type UiLineup = {
+    main: {
+        players: UiGamePlayer[];
+        managers: UiGameManager[];
+    },
+    opponent: {
+        players: UiGamePlayer[];
+        managers: UiGameManager[];
+    }
+}
+
+export type UiGame = {
+    scoreBoard: UiScoreBoard;
+    events: UiGameEvent[];
+    lineup: UiLineup;
+}
+
+export interface UiGameEvent {
+    id: number;
+    baseMinute: string;
+    additionalMinute: string | undefined;
+    sortOrder: number;
+    type: GameEventType;
+}
+
+export interface UiGoalGameEvent extends UiGameEvent {
+    score: string;
+    forMain: boolean;
+    scoredBy: UiGamePlayer,
+    assistBy?: UiGamePlayer,
+    goalType: GoalType;
+    penalty: boolean;
+    ownGoal: boolean;
+    directFreeKick: boolean;
+    bicycleKick: boolean;
+}

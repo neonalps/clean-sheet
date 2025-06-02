@@ -3,15 +3,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame } from '@src/app/model/game';
+import { DetailedGame, UiGame, UiGameEvent, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
-import { GameGoalScoringBoard, getGameResult, getGoalScoringBoard, ScoringBoardItem, transformGoalMinute } from '@src/app/module/game/util';
+import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
 import { isDefined } from '@src/app/util/common';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { Subscription, take } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
+import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -19,14 +20,14 @@ export type GameRouteState = {
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent],
+  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
 export class GameComponent implements OnInit, OnDestroy {
 
   game: DetailedGame | null = null;
-  scoringBoard: GameGoalScoringBoard | null = null;
+  uiGame!: UiGame;
   isLoading = true;
 
   mainClub: SmallClub = {
@@ -69,7 +70,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   onGameResolved(game: DetailedGame): void {
     this.game = game;
-    this.scoringBoard = getGoalScoringBoard(game, { localize: transformGoalMinute });
+    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGoalMinute(minute, '.') });
     this.isLoading = false;
   }
 
@@ -81,12 +82,12 @@ export class GameComponent implements OnInit, OnDestroy {
     return this.game!.isHomeGame ? this.game!.opponent : this.mainClub;
   }
 
-  getHomeScoringBoard(): ScoringBoardItem[] {
-    return this.game!.isHomeGame ? this.scoringBoard!.main : this.scoringBoard!.opponent;
+  getHomeScoringBoard(): UiScoreBoardItem[] {
+    return this.game!.isHomeGame ? this.uiGame!.scoreBoard.main : this.uiGame!.scoreBoard.opponent;
   }
 
-  getAwayScoringBoard(): ScoringBoardItem[] {
-    return this.game!.isHomeGame ? this.scoringBoard!.opponent : this.scoringBoard!.main;
+  getAwayScoringBoard(): UiScoreBoardItem[] {
+    return this.game!.isHomeGame ? this.uiGame!.scoreBoard.opponent : this.uiGame!.scoreBoard.main;
   }
 
   getCompetitionName(): string {
