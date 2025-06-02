@@ -125,6 +125,11 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     navigateToGame(this.router, game);
   }
 
+  hasSeasonAfter(): boolean {
+    const selectedSeasonIndex = this.getSelectedSeasonIndex();
+    return selectedSeasonIndex >= 0 && selectedSeasonIndex < (this.seasons.length - 1)
+  }
+
   hasSeasonBefore(): boolean {
     return this.getSelectedSeasonIndex() > 0;
   }

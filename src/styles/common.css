@@ -132,6 +132,10 @@
     flex-basis: 10%;
 }
 
+.basis-1\/20 {
+    flex-basis: 5%;
+}
+
 .inline-block {
     display: inline-block;
 }

@@ -1,0 +1,9 @@
+<div>
+    <ng-container *ngFor="let event of events">
+        <ng-container [ngSwitch]="event.type">
+            <ng-container *ngSwitchCase="'goal'">
+                <app-game-event-goal [event]="getGoalGameEvent(event)" />
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</div>

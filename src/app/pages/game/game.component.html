@@ -4,8 +4,8 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
-    <div class="game-section p-2 rounded-lg mt-3 mx-3">
-        <div class="center text-sm text-light-grey">
+    <div class="game-section py-3 rounded-lg mt-3 mx-3">
+        <div class="center text-sm">
             <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
             <div class="mb-3">{{ getCompetitionName() }}</div>
         </div>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="scoring-board mt-5 text-light-grey-darker text-xs text-right pr-3">
                     <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.text }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                 </div>
                 <div class="scoring-board mt-5 text-light-grey-darker text-xs pl-3">
                     <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.text }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>
@@ -38,7 +38,9 @@
 
     <div class="game-section p-2 rounded-lg mt-3 mx-3">
          <app-tab-group>
-            <app-tab-item title="Events">Events</app-tab-item>
+            <app-tab-item title="Events">
+                <app-game-events [events]="uiGame!.events" />
+            </app-tab-item>
             <app-tab-item title="Lineup">Lineup</app-tab-item>
         </app-tab-group>
     </div>
