@@ -14,7 +14,7 @@ export class TranslationService {
     [Locale.German, de],
   ]);
 
-  private static readonly DEFAULT_LOCALE = Locale.English;
+  private static readonly DEFAULT_LOCALE = Locale.German;
 
   private selectedLocale: Locale | null = null;
 
@@ -23,7 +23,7 @@ export class TranslationService {
   translate(key: string): string {
     const localeMap: Record<string, string> | undefined = TranslationService.LOCALES.get(this.getLocale());
     if (localeMap === undefined) {
-      throw new Error(`Selected locale ${this.getLocale()} does not seem to be properly registered`);
+      throw new Error(`Selected locale ${this.getLocale()} does not seem to be registered`);
     }
 
     const value: string | null | undefined = localeMap[key];

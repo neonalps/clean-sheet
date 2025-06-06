@@ -1,0 +1,39 @@
+import { Component, Input } from '@angular/core';
+import { DividerComponent } from "../divider/divider.component";
+import { UiGameEvent } from '@src/app/model/game';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { isNotDefined } from '@src/app/util/common';
+
+@Component({
+  selector: 'app-game-event-period',
+  imports: [DividerComponent],
+  templateUrl: './game-event-period.component.html',
+  styleUrl: './game-event-period.component.css'
+})
+export class GameEventPeriodComponent {
+
+  private static PERIOD_MAP = new Map([
+    ['HT', 'halfTime'],
+    ['FT', 'fullTime'],
+    ['AET', 'extraTime'],
+    ['PSO', 'pso'],
+  ]);
+
+  @Input() event!: UiGameEvent;
+
+  constructor(private readonly translationService: TranslationService) {}
+
+  getPeriodText(): string {
+    const translationKey = this.getTranslationKey(this.event.baseMinute);
+    return this.translationService.translate(translationKey);
+  }
+
+  private getTranslationKey(period: string): string {
+    const key = GameEventPeriodComponent.PERIOD_MAP.get(period);
+    if (isNotDefined(key)) {
+      return `could not find period map key for key '${period}'`;
+    }
+    return `period.${(key as string)}`;
+  }
+
+}

@@ -1,0 +1,18 @@
+<app-game-event [event]="event">
+    <div info>
+        <div class="card-container flex align-items-center justify-content-center">
+            <div *ngIf="event.cardType === 'yellow'" class="card-yellow mr-3"></div>
+            <div *ngIf="event.cardType === 'red'" class="card-red mr-3"></div>
+            <div *ngIf="event.cardType === 'yellowRed'">
+                <div class="card-yellow-red-yellow card-yellow"></div>
+                <div class="card-yellow-red-red card-red"></div>
+            </div>
+        </div>
+    </div>
+    <div person>
+        <div class="game-event-scored-by text-sm">{{ getPersonName() }}</div>
+        <div *ngIf="event.reason" class="text-xs text-light-grey">
+            {{ getReason() }}
+        </div>
+    </div>
+</app-game-event>

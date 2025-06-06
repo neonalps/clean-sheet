@@ -1,0 +1,18 @@
+<app-game-event [event]="event">
+    <div info>
+        <div class="arrow-container pl-2">
+            <div class="arrow-right-container">
+                <app-arrow-right [color]="'green'" />
+            </div>
+            <div class="arrow-left-container">
+                <app-arrow-left [color]="'red'" />
+            </div>
+        </div>
+    </div>
+    <div person>
+        <div class="game-event-scored-by text-sm">{{ getPlayerOn() }}</div>
+        <div class="text-sm text-light-grey">
+            {{ getPlayerOff() }}
+        </div>
+    </div>
+</app-game-event>

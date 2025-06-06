@@ -1,0 +1,15 @@
+.arrow-container {
+    width: 3rem;
+}
+
+.arrow-left-container {
+    width: 22px;
+    position: relative;
+    top: -1px;
+}
+
+.arrow-right-container {
+    width: 22px;
+    position: relative;
+    top: 5px;
+}

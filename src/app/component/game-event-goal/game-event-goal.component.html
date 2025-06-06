@@ -1,27 +1,23 @@
-<div class="game-event mb-1">
-    <div class="game-event-minute text-sm bold mr-2 flex flex-col align-items-center justify-content-center basis-1/20">
-        <div>{{ event.baseMinute }}</div>
-        <div *ngIf="event.additionalMinute">{{ event.additionalMinute }}</div>
+<app-game-event [event]="event">
+    <div info>
+        <div class="game-event-score width-md px-2 py-1 rounded-md center bg-color-dark-grey-lighter mr-3">{{ event.score }}</div>
     </div>
-    <div class="flex align-items-center justify-content-center">
-        <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter mr-3">{{ event.score }}</div>
-    </div>
-    <div class="flex flex-col justify-content-center">
+    <div person>
         <div class="game-event-scored-by text-sm bold">{{ event.scoredBy.firstName }} {{ event.scoredBy.lastName }}</div>
-        <div *ngIf="event.assistBy" class="text-sm text-light-grey">
-            Assist by {{ event.assistBy.firstName }} {{ event.assistBy.lastName }}
+        <div *ngIf="event.assistBy" class="text-xs text-light-grey">
+            {{ 'game.assistBy' | $t }} {{ event.assistBy.firstName }} {{ event.assistBy.lastName }}
         </div>
-        <div *ngIf="event.penalty" class="text-sm text-light-grey">
-            Penalty
+        <div *ngIf="event.penalty" class="text-xs text-light-grey">
+            {{ 'game.penalty' | $t }}
         </div>
-        <div *ngIf="event.directFreeKick" class="text-sm text-light-grey">
-            Direct free kick
+        <div *ngIf="event.directFreeKick" class="text-xs text-light-grey">
+            {{ 'game.directFreeKick' | $t }}
         </div>
-        <div *ngIf="event.bicycleKick" class="text-sm text-light-grey">
-            Bicylce kick
+        <div *ngIf="event.bicycleKick" class="text-xs text-light-grey">
+            {{ 'game.bicycleKick' | $t }}
         </div>
-        <div *ngIf="event.ownGoal" class="text-sm text-light-grey">
-            Own goal
+        <div *ngIf="event.ownGoal" class="text-xs text-light-grey">
+            {{ 'game.ownGoal' | $t }}
         </div>
     </div>
-</div>
+</app-game-event>

@@ -1,4 +1,4 @@
-import { BasicGame, DetailedGame, GameEvent, GameEventType, GameManager, GamePlayer, GoalGameEvent, ScoreTuple, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiScoreBoard, UiScoreBoardItem } from "@src/app/model/game";
+import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiPenaltyMissedGameEvent, UiScoreBoard, UiScoreBoardItem, UiSubstitutionGameEvent, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
 import { isDefined } from "@src/app/util/common";
 
 export function getGameResult(game: BasicGame): ScoreTuple | null {
@@ -40,10 +40,6 @@ export type MinuteLocalizer = (minute: string) => string;
 export type OwnGoalLocalizer = () => string;
 export type PenaltyLocalizer = () => string;
 
-function getGoalScoringItem(goalEvent: GoalGameEvent, localizer: GoalScoringBoardMinuteLocalizer): string {
-    return localizer.localize(goalEvent, { ownGoal: 'OG', penalty: 'P', minuteSuffix: `.` });
-}
-
 function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer {
     return {
         gamePlayerId: item.id,
@@ -80,6 +76,11 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         allPlayersMap.set(player.gamePlayerId, player);
     });
 
+    const allManagersMap: Map<number, UiGameManager> = new Map();
+    [...mainManagers, ...opponentManagers].forEach(manager => {
+        allManagersMap.set(manager.gameManagerId, manager);
+    })
+
     const isHomeGame = game.isHomeGame;
 
     const mainGoalScorers: GamePlayerGoals[] = [];
@@ -92,15 +93,16 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
             id: event.id,
             type: event.type,
             sortOrder: event.sortOrder,
-            baseMinute: minute[0],
+            baseMinute: localizers.minute(minute[0]),
             additionalMinute: minute[1],
+            forMain: true,          // will be overwritten by each event type
         };
 
         switch (event.type) {
             case GameEventType.Goal:
                 const goalGameEvent = event as GoalGameEvent;
                 const scoredBy = allPlayersMap.get(goalGameEvent.scoredBy) as UiGamePlayer;
-                const forMain = goalGameEvent.ownGoal === true ? !scoredBy.forMain : scoredBy.forMain;
+                const goalForMain = goalGameEvent.ownGoal === true ? !scoredBy.forMain : scoredBy.forMain;
 
                 const scoreBoardItem = [
                     localizers.minute(event.minute),
@@ -108,7 +110,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     goalGameEvent.ownGoal === true ? localizers.ownGoal() : undefined,
                 ].filter(item => isDefined(item)).join(" ");
 
-                if (forMain) {
+                if (goalForMain) {
                     const existing = mainGoalScorers.find(item => item.gamePlayerId === scoredBy.gamePlayerId);
                     if (existing) {
                         existing.goals.push(scoreBoardItem);
@@ -134,12 +136,80 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     ownGoal: goalGameEvent.ownGoal,
                     directFreeKick: goalGameEvent.directFreeKick,
                     bicycleKick: goalGameEvent.bicycleKick,
-                    forMain,
+                    forMain: goalForMain,
                 } satisfies UiGoalGameEvent;
+            case GameEventType.YellowCard:
+            case GameEventType.YellowRedCard:
+            case GameEventType.RedCard:
+                const cardGameEvent = event as CardGameEvent;
+                const cardAffectedPlayer = cardGameEvent.affectedPlayer ? allPlayersMap.get(cardGameEvent.affectedPlayer) as UiGamePlayer : undefined;
+                const cardAffectedManager = cardGameEvent.affectedManager ? allManagersMap.get(cardGameEvent.affectedManager) as UiGameManager : undefined;
+                return {
+                    ...baseEvent,
+                    cardType: event.type === GameEventType.YellowCard ? 'yellow' : event.type === GameEventType.YellowRedCard ? 'yellowRed' : 'red',
+                    affectedPlayer: cardAffectedPlayer,
+                    affectedManager: cardAffectedManager, 
+                    reason: cardGameEvent.reason,
+                    forMain: cardAffectedPlayer !== undefined ? cardAffectedPlayer.forMain : (cardAffectedManager as UiGameManager).forMain,
+                    notOnPitch: cardGameEvent.notOnPitch === true,
+                } satisfies UiCardGameEvent;
+            case GameEventType.Substitution:
+                const substitutionGameEvent = event as SubstitutionGameEvent;
+                const playerOn = allPlayersMap.get(substitutionGameEvent.playerOn) as UiGamePlayer;
+                const playerOff = allPlayersMap.get(substitutionGameEvent.playerOff) as UiGamePlayer;
+                return {
+                    ...baseEvent,
+                    playerOn,
+                    playerOff,
+                    forMain: playerOn.forMain,
+                    injured: substitutionGameEvent.injured === true,
+                } satisfies UiSubstitutionGameEvent;
+            case GameEventType.VarDecision:
+                const varDecisionGameEvent = event as VarDecisionGameEvent;
+                const varDecisionAffectedPlayer = allPlayersMap.get(varDecisionGameEvent.affectedPlayer) as UiGamePlayer;
+                return {
+                    ...baseEvent,
+                    affectedPlayer: varDecisionAffectedPlayer,
+                    decision: varDecisionGameEvent.decision,
+                    forMain: varDecisionAffectedPlayer.forMain,
+                } satisfies UiVarDecisionGameEvent;
+            case GameEventType.PenaltyMissed:
+                const penaltyMissedGameEvent = event as PenaltyMissedGameEvent;
+                const takenByPlayer = allPlayersMap.get(penaltyMissedGameEvent.takenBy) as UiGamePlayer;
+                const goalkeeperPlayer = allPlayersMap.get(penaltyMissedGameEvent.goalkeeper) as UiGamePlayer;
+                return {
+                    ...baseEvent,
+                    takenBy: takenByPlayer,
+                    goalkeeper: goalkeeperPlayer,
+                    reason: penaltyMissedGameEvent.reason,
+                    forMain: takenByPlayer.forMain,
+                } satisfies UiPenaltyMissedGameEvent;
             default:
                 return baseEvent;
         }
     });
+
+    // add half time period event
+    // count how many events occurred before half time
+    const eventsBeforeHalfTime = events.filter(event => Number(event.baseMinute) < 46).length;
+    events.splice(eventsBeforeHalfTime, 0, {
+        type: GameEventType.Period,
+        id: 0,
+        baseMinute: 'HT',
+        additionalMinute: '',
+        forMain: false,
+        sortOrder: -1,
+    })
+
+    // add full time period event
+    events.push({
+        type: GameEventType.Period,
+        id: 0,
+        baseMinute: 'FT',
+        additionalMinute: '',
+        forMain: false,
+        sortOrder: -1,
+    })
 
     return {
         lineup: {

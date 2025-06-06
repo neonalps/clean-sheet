@@ -4,6 +4,27 @@
             <ng-container *ngSwitchCase="'goal'">
                 <app-game-event-goal [event]="getGoalGameEvent(event)" />
             </ng-container>
+            <ng-container *ngSwitchCase="'yellowCard'">
+                <app-game-event-card [event]="getCardGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'yellowRedCard'">
+                <app-game-event-card [event]="getCardGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'redCard'">
+                <app-game-event-card [event]="getCardGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'substitution'">
+                <app-game-event-substitution [event]="getSubstitutionGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'penaltyMissed'">
+                <app-game-event-penalty-missed [event]="getPenaltyMissedGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'varDecision'">
+                <app-game-event-var-decision [event]="getVarDecisionGameEvent(event)" />
+            </ng-container>
+            <ng-container *ngSwitchCase="'period'">
+                <app-game-event-period [event]="event" />
+            </ng-container>
         </ng-container>
     </ng-container>
 </div>

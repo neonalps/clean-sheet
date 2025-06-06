@@ -12,6 +12,8 @@ export enum GameStatus {
     Postponed = "Postponed",
 }
 
+export type CardType = 'yellow' | 'red' | 'yellowRed';
+
 export type Tendency = 'w' | 'd' | 'l';
 
 export type ScoreTuple = [number, number];
@@ -23,6 +25,7 @@ export interface BasicGame {
     season: Season;
     competition: SmallCompetition;
     round: string;
+    stage?: string;
     isHomeGame: boolean;
     status: GameStatus;
     resultTendency: Tendency;
@@ -106,6 +109,7 @@ export enum GameEventType {
     VarDecision = "varDecision",
     YellowCard = "yellowCard",
     YellowRedCard = "yellowRedCard",
+    Period = "period",
 }
 
 export interface GameEvent {
@@ -137,6 +141,30 @@ export interface GoalGameEvent extends GameEvent {
     ownGoal: boolean;
     directFreeKick: boolean;
     bicycleKick: boolean;
+}
+
+export interface CardGameEvent extends GameEvent {
+    affectedPlayer?: number;
+    affectedManager?: number;
+    notOnPitch?: boolean;
+    reason: string;
+}
+
+export interface SubstitutionGameEvent extends GameEvent {
+    playerOn: number;
+    playerOff: number;
+    injured?: boolean;
+}
+
+export interface VarDecisionGameEvent extends GameEvent {
+    affectedPlayer: number;
+    decision: string;
+}
+
+export interface PenaltyMissedGameEvent extends GameEvent {
+    takenBy: number;
+    goalkeeper: number;
+    reason: string;
 }
 
 export interface UiPerson {
@@ -191,11 +219,11 @@ export interface UiGameEvent {
     additionalMinute: string | undefined;
     sortOrder: number;
     type: GameEventType;
+    forMain: boolean;
 }
 
 export interface UiGoalGameEvent extends UiGameEvent {
     score: string;
-    forMain: boolean;
     scoredBy: UiGamePlayer,
     assistBy?: UiGamePlayer,
     goalType: GoalType;
@@ -203,4 +231,29 @@ export interface UiGoalGameEvent extends UiGameEvent {
     ownGoal: boolean;
     directFreeKick: boolean;
     bicycleKick: boolean;
+}
+
+export interface UiCardGameEvent extends UiGameEvent {
+    cardType: CardType;
+    affectedPlayer?: UiGamePlayer;
+    affectedManager?: UiGameManager;
+    notOnPitch: boolean;
+    reason: string;
+}
+
+export interface UiSubstitutionGameEvent extends UiGameEvent {
+    playerOn: UiGamePlayer;
+    playerOff: UiGamePlayer;
+    injured: boolean;
+}
+
+export interface UiVarDecisionGameEvent extends UiGameEvent {
+    affectedPlayer: UiGamePlayer;
+    decision: string;
+}
+
+export interface UiPenaltyMissedGameEvent extends UiGameEvent {
+    takenBy: UiGamePlayer;
+    goalkeeper: UiGamePlayer;
+    reason: string;
 }
