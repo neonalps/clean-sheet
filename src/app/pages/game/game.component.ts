@@ -3,16 +3,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame, UiGame, UiGameEvent, UiScoreBoardItem } from '@src/app/model/game';
+import { DetailedGame, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
-import { isDefined } from '@src/app/util/common';
+import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { Subscription, take } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
 import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -20,7 +21,8 @@ export type GameRouteState = {
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent],
+  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent
+  ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
@@ -43,6 +45,7 @@ export class GameComponent implements OnInit, OnDestroy {
     private gameResolver: GameResolver,
     private route: ActivatedRoute,
     private router: Router,
+    private translationService: TranslationService,
   ) {
     const game = this.router.getCurrentNavigation()?.extras?.state?.['game'];
     if (isDefined(game)) {
@@ -98,9 +101,13 @@ export class GameComponent implements OnInit, OnDestroy {
 
     parts.push(this.game!.competition.shortName);
 
-    // TODO i18n
-    const round = this.game!.round;
-    parts.push(`${isNaN(Number(round)) ? '' : 'Round '}${round}`);
+    let stage = this.game!.stage;
+    if (isDefined(stage)) {
+      parts.push(processTranslationPlaceholders(stage, this.translationService));
+    }
+
+    const round = processTranslationPlaceholders(this.game!.round, this.translationService);
+    parts.push(`${isNaN(Number(round)) ? '' : this.translationService.translate('competitionRound.round')} ${round}`);
 
     return parts.join(' · ');
   }

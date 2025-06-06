@@ -701,6 +701,10 @@
     width: 1.5rem;
 }
 
+.width-md {
+    width: 2.5rem;
+}
+
 .width-lg {
     width: 4rem;
 }
@@ -901,6 +905,10 @@
     background-color: var(--light-grey-darker);
 }
 
+.text-danger {
+    color: var(--danger);
+}
+
 .text-dark {
     color: var(--dark);
 }
@@ -923,4 +931,12 @@
 
 .scrollbar-stable {
     scrollbar-gutter: stable;
+}
+
+.border-b-solid {
+    border-bottom-style: solid;
+}
+
+.border-b-light {
+    border-bottom-color: var(--light);
 }

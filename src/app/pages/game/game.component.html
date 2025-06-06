@@ -14,7 +14,7 @@
                 <div>
                     <app-large-club [club]="getHomeTeam()" />
                 </div>
-                <div class="scoring-board mt-5 text-light-grey-darker text-xs text-right pr-3">
+                <div class="scoring-board mt-5 text-light-grey-darker text-sm text-right pr-3">
                     <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
                         <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
@@ -27,7 +27,7 @@
                 <div>
                     <app-large-club [club]="getAwayTeam()" />
                 </div>
-                <div class="scoring-board mt-5 text-light-grey-darker text-xs pl-3">
+                <div class="scoring-board mt-5 text-light-grey-darker text-sm pl-3">
                     <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
                         <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
