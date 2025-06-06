@@ -1,0 +1,11 @@
+<app-game-event [event]="event">
+    <div info>
+        <div class="game-event-score width-md px-2 py-1 rounded-md center bg-color-dark-grey-lighter mr-3 text-sm">VAR</div>
+    </div>
+    <div person>
+        <div class="game-event-scored-by text-sm">{{ 'varDecision.decision' | $t }}: {{ getDecision() }}</div>
+        <div class="text-xs text-light-grey">
+            {{ getPersonName() }}
+        </div>
+    </div>
+</app-game-event>

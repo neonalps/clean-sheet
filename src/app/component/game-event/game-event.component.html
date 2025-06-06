@@ -1,0 +1,12 @@
+<div class="game-event mb-3">
+    <div class="game-event-minute text-sm bold mr-2 flex flex-col align-items-center justify-content-center basis-1/20">
+        <div>{{ event.baseMinute }}</div>
+        <div *ngIf="event.additionalMinute">{{ event.additionalMinute }}</div>
+    </div>
+    <div class="flex align-items-center justify-content-center">
+        <ng-content select="[info]"></ng-content>
+    </div>
+    <div class="flex flex-col justify-content-center">
+        <ng-content select="[person]"></ng-content>
+    </div>
+</div>

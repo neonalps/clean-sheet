@@ -27,7 +27,9 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles/app.css",
+              "src/styles/common.css",
+              "src/styles/hover.css"
             ],
             "scripts": []
           },
@@ -85,12 +87,17 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles/app.css",
+              "src/styles/common.css",
+              "src/styles/hover.css"
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

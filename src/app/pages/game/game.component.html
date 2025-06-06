@@ -1,0 +1,47 @@
+<ng-container *ngIf="isLoading; else loadedContent">
+    <div>
+        <app-loading />
+    </div>
+</ng-container>
+<ng-template #loadedContent>
+    <div class="game-section py-3 rounded-lg mt-3 mx-3">
+        <div class="center text-sm">
+            <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
+            <div class="mb-3">{{ getCompetitionName() }}</div>
+        </div>
+        <div class="flex justify-content-center py-1">
+            <div class="basis-2/5">
+                <div>
+                    <app-large-club [club]="getHomeTeam()" />
+                </div>
+                <div class="scoring-board mt-5 text-light-grey-darker text-sm text-right pr-3">
+                    <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
+                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="basis-1/8 pt-8">
+                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getResultTendencyClass()">{{ getResult() }}</div>
+            </div>
+            <div class="basis-2/5">
+                <div>
+                    <app-large-club [club]="getAwayTeam()" />
+                </div>
+                <div class="scoring-board mt-5 text-light-grey-darker text-sm pl-3">
+                    <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
+                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-section p-2 rounded-lg mt-3 mx-3">
+         <app-tab-group>
+            <app-tab-item title="Events">
+                <app-game-events [events]="uiGame!.events" />
+            </app-tab-item>
+            <app-tab-item title="Lineup">Lineup</app-tab-item>
+        </app-tab-group>
+    </div>
+</ng-template>

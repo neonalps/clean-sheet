@@ -1,0 +1,23 @@
+<app-game-event [event]="event">
+    <div info>
+        <div class="game-event-score width-md px-2 py-1 rounded-md center bg-color-dark-grey-lighter mr-3">{{ event.score }}</div>
+    </div>
+    <div person>
+        <div class="game-event-scored-by text-sm bold">{{ event.scoredBy.firstName }} {{ event.scoredBy.lastName }}</div>
+        <div *ngIf="event.assistBy" class="text-xs text-light-grey">
+            {{ 'game.assistBy' | $t }} {{ event.assistBy.firstName }} {{ event.assistBy.lastName }}
+        </div>
+        <div *ngIf="event.penalty" class="text-xs text-light-grey">
+            {{ 'game.penalty' | $t }}
+        </div>
+        <div *ngIf="event.directFreeKick" class="text-xs text-light-grey">
+            {{ 'game.directFreeKick' | $t }}
+        </div>
+        <div *ngIf="event.bicycleKick" class="text-xs text-light-grey">
+            {{ 'game.bicycleKick' | $t }}
+        </div>
+        <div *ngIf="event.ownGoal" class="text-xs text-light-grey">
+            {{ 'game.ownGoal' | $t }}
+        </div>
+    </div>
+</app-game-event>

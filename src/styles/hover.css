@@ -1,0 +1,13 @@
+@media (hover: hover) {
+    .hover\:bg-color-dark-grey-lighter:hover {
+        background-color: var(--dark-grey-lighter);
+    }
+
+    .hover\:bg-color-light-grey-darker:hover {
+        background-color: var(--light-grey-darker);
+    }
+
+    .hover\:text-light-grey:hover {
+        color: var(--light-grey);
+    }
+}

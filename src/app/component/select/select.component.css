@@ -1,0 +1,54 @@
+.select-main {
+    transition: background-color .15s linear;
+}
+
+.select-outline {
+    border: 1px solid #d8d8d8;
+}
+
+.select-options {
+    position: absolute;
+    background-color: #333;
+
+    box-shadow: .2rem .1rem .1rem #444;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .15s linear, opacity .15s linear;
+    z-index: 100;
+}
+
+.select-options.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.select-option.selected {
+    background-color: #515151;
+    font-weight: bold;
+}
+
+.chevron-container {
+    transition: transform .15s linear;
+}
+
+.image-container {
+    flex: 0 0 9%;
+}
+
+.select-search {
+    background-color: #777;
+    border-style: none;
+    border-bottom: 2px solid transparent;
+    transition: border .15s linear;
+}
+
+.select-search:focus {
+    border-bottom: 2px solid var(--light);
+}
+
+@media (hover: hover) {
+    .select-option:hover {
+        background-color: #474747;
+    }
+}

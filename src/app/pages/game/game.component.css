@@ -1,0 +1,7 @@
+.game-section {
+    background-color: #2d2d2d;   
+}
+
+.score-board-item {
+    transition: color .15s linear;
+}
