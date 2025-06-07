@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { DividerComponent } from "../divider/divider.component";
 import { UiGameEvent } from '@src/app/model/game';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { isNotDefined } from '@src/app/util/common';
+import { isDefined, isNotDefined } from '@src/app/util/common';
 
 @Component({
   selector: 'app-game-event-period',
@@ -20,10 +20,19 @@ export class GameEventPeriodComponent {
   ]);
 
   @Input() event!: UiGameEvent;
+  @Input() periodText: string | undefined;
+  @Input() isTransparent: boolean = false;
+  @Input() textSize: string | undefined;
+  @Input() bgColor: string | undefined;
+  @Input() additionalClasses: string | undefined;
 
   constructor(private readonly translationService: TranslationService) {}
 
   getPeriodText(): string {
+    if (isDefined(this.periodText)) {
+      return this.periodText;
+    }
+
     const translationKey = this.getTranslationKey(this.event.baseMinute);
     return this.translationService.translate(translationKey);
   }

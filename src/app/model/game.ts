@@ -167,6 +167,10 @@ export interface PenaltyMissedGameEvent extends GameEvent {
     reason: string;
 }
 
+export interface InjuryTimeGameEvent extends GameEvent {
+    additionalMinutes: number;
+}
+
 export interface UiPerson {
     personId: number;
     firstName: string;
@@ -256,4 +260,8 @@ export interface UiPenaltyMissedGameEvent extends UiGameEvent {
     takenBy: UiGamePlayer;
     goalkeeper: UiGamePlayer;
     reason: string;
+}
+
+export interface UiInjuryTimeGameEvent extends UiGameEvent {
+    additionalMinutes: number;
 }

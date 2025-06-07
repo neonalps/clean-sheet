@@ -1,4 +1,4 @@
-import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiPenaltyMissedGameEvent, UiScoreBoard, UiScoreBoardItem, UiSubstitutionGameEvent, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
+import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiScoreBoard, UiScoreBoardItem, UiSubstitutionGameEvent, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
 import { isDefined } from "@src/app/util/common";
 
 export function getGameResult(game: BasicGame): ScoreTuple | null {
@@ -184,6 +184,12 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     reason: penaltyMissedGameEvent.reason,
                     forMain: takenByPlayer.forMain,
                 } satisfies UiPenaltyMissedGameEvent;
+            case GameEventType.InjuryTime:
+                const injuryTimeGameEvent = event as InjuryTimeGameEvent;
+                return {
+                    ...baseEvent,
+                    additionalMinutes: injuryTimeGameEvent.additionalMinutes,
+                } satisfies UiInjuryTimeGameEvent;
             default:
                 return baseEvent;
         }

@@ -5,10 +5,11 @@ import { GameEventComponent } from '../game-event/game-event.component';
 import { isDefined } from '@src/app/util/common';
 import { ArrowLeftComponent } from "../../icon/arrow-left/arrow-left.component";
 import { ArrowRightComponent } from '@src/app/icon/arrow-right/arrow-right.component';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-game-event-substitution',
-  imports: [CommonModule, GameEventComponent, ArrowLeftComponent, ArrowRightComponent],
+  imports: [CommonModule, GameEventComponent, ArrowLeftComponent, ArrowRightComponent, I18nPipe],
   templateUrl: './game-event-substitution.component.html',
   styleUrl: './game-event-substitution.component.css'
 })
