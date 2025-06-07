@@ -22,6 +22,9 @@
             <ng-container *ngSwitchCase="'varDecision'">
                 <app-game-event-var-decision [event]="getVarDecisionGameEvent(event)" />
             </ng-container>
+            <ng-container *ngSwitchCase="'injuryTime'">
+                <app-game-event-period [event]="event" [periodText]="getInjuryTimePeriodText(event)" [isTransparent]="true" [bgColor]="'bg-color-dark-grey-lighter'" [textSize]="'text-xs'" [additionalClasses]="'rounded px-2 py-1'"  />
+            </ng-container>
             <ng-container *ngSwitchCase="'period'">
                 <app-game-event-period [event]="event" />
             </ng-container>

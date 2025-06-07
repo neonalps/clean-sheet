@@ -1,6 +1,6 @@
 <app-game-event [event]="event">
     <div info>
-        <div class="arrow-container pl-2">
+        <div class="arrow-container w-full flex flex-col align-items-center justify-content-center">
             <div class="arrow-right-container">
                 <app-arrow-right [color]="'green'" />
             </div>
@@ -13,6 +13,7 @@
         <div class="game-event-scored-by text-sm">{{ getPlayerOn() }}</div>
         <div class="text-sm text-light-grey">
             {{ getPlayerOff() }}
+            <span *ngIf="event.injured" class="inline-block ml-1 px-1 bg-color-danger-lighter-30 rounded text-light" [attr.title]="'injured' | $t">+</span>
         </div>
     </div>
 </app-game-event>

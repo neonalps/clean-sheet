@@ -120,8 +120,16 @@
     flex-basis: 20%;
 }
 
+.basis-1\/6 {
+    flex-basis: 16.66667%;
+}
+
 .basis-2\/5 {
     flex-basis: 40%;
+}
+
+.basis-3\/7 {
+    flex-basis: 42.857%;
 }
 
 .basis-1\/8 {
@@ -901,8 +909,36 @@
     background-color: var(--light);
 }
 
+.bg-color-light-grey {
+    background-color: var(--light-grey);
+}
+
 .bg-color-light-grey-darker {
     background-color: var(--light-grey-darker);
+}
+
+.bg-color-danger {
+    background-color: var(--danger);
+}
+
+.bg-color-danger-lighter-20 {
+    background-color: var(--danger-lighter-20);
+}
+
+.bg-color-danger-lighter-30 {
+    background-color: var(--danger-lighter-30);
+}
+
+.bg-color-danger-lighter-40 {
+    background-color: var(--danger-lighter-40);
+}
+
+.bg-color-dark-grey-darker {
+    background-color: var(--dark-grey-darker);
+}
+
+.bg-color-dark-grey-lighter {
+    background-color: var(--dark-grey-lighter);
 }
 
 .text-danger {
@@ -925,18 +961,38 @@
     color: var(--light-grey-darker);
 }
 
-.bg-color-dark-grey-lighter {
-    background-color: var(--dark-grey-lighter);
-}
-
 .scrollbar-stable {
     scrollbar-gutter: stable;
+}
+
+.border-b-1 {
+    border-bottom-width: 1px;
 }
 
 .border-b-solid {
     border-bottom-style: solid;
 }
 
+.border-b-transparent {
+    border-bottom-color: transparent;
+}
+
 .border-b-light {
     border-bottom-color: var(--light);
+}
+
+.min-h-24 {
+    min-height: 24px;
+}
+
+.min-h-32 {
+    min-height: 32px;
+}
+
+.min-h-40 {
+    min-height: 40px;
+}
+
+.min-h-48 {
+    min-height: 48px;
 }

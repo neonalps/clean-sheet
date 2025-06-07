@@ -4,11 +4,11 @@
         <div>{{ getCompetitionName() }}</div>
     </div>
     <div class="flex align-items-center justify-content-center">
-        <div class="basis-1/3 flex justify-content-end">
+        <div class="basis-3/7 flex justify-content-end">
             <app-small-club [club]="getHomeTeam()" [iconPosition]="'right'" />
         </div>
         <div class="basis-1/10 game-result-tendency px-2 py-1 mx-2 rounded-md center bold" [ngClass]="getResultTendencyClass()">{{ getResult() }}</div>
-        <div class="basis-1/3">
+        <div class="basis-3/7">
             <app-small-club [club]="getAwayTeam()" />
         </div>
     </div>
