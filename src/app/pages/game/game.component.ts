@@ -14,6 +14,7 @@ import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
 import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { environment } from '@src/environments/environment';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -32,12 +33,7 @@ export class GameComponent implements OnInit, OnDestroy {
   uiGame!: UiGame;
   isLoading = true;
 
-  mainClub: SmallClub = {
-    id: 1,
-    name: "SK Sturm Graz",
-    shortName: "Sturm Graz",
-    iconSmall: "http://localhost:8020/c/1.png",
-  }
+  mainClub: SmallClub = environment.mainClub;
 
   private subscriptions: Subscription[] = [];
 
