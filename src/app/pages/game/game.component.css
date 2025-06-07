@@ -1,5 +1,5 @@
 .game-section {
-    background-color: #2d2d2d;   
+    background-color: var(--dark-grey-darker);
 }
 
 .score-board-item {
