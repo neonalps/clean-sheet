@@ -18,6 +18,7 @@ import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@sr
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
+import { environment } from '@src/environments/environment';
 
 @Component({
   selector: 'app-season-games',
@@ -33,12 +34,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   private seasonGames: Map<number, DetailedGame[]> = new Map();
   private subscriptions: Subscription[] = [];
 
-  mainClub: SmallClub = {
-    id: 1,
-    name: "SK Sturm Graz",
-    shortName: "Sturm Graz",
-    iconSmall: "http://localhost:8020/c/1.png",
-  }
+  mainClub: SmallClub = environment.mainClub;
 
   colorDarkGreyLighter = COLOR_DARK_GREY_LIGHTER;
   isLoading = false;

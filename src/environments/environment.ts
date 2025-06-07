@@ -1,6 +1,12 @@
 export const environment = {
     production: true,
     apiBaseUrl: "https://liebenau.neonalps.at/api",
+    mainClub: {
+        id: 1,
+        name: "SK Sturm Graz",
+        shortName: "Sturm Graz",
+        iconSmall: "https://neonalps.b-cdn.net/c/1.png",
+    },
     oauth: {
         google: {
             authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
