@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiBaseUrl: "https://liebenau.neonalps.at",
+    apiBaseUrl: "https://liebenau.neonalps.at/api",
     oauth: {
         google: {
             authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
