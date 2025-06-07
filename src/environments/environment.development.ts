@@ -1,6 +1,12 @@
 export const environment = {
     production: false,
-    apiBaseUrl: "http://localhost:3024",
+    apiBaseUrl: "http://localhost:3024/api",
+    mainClub: {
+        id: 1,
+        name: "SK Sturm Graz",
+        shortName: "Sturm Graz",
+        iconSmall: "http://localhost:8020/c/1.png",
+    },
     oauth: {
         google: {
             authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
