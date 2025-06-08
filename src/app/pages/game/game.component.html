@@ -44,4 +44,46 @@
             <app-tab-item title="Lineup">Lineup</app-tab-item>
         </app-tab-group>
     </div>
+
+    <div class="game-section p-2 rounded-lg m-3">
+        <div class="pt-2">
+            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+                <div class="mr-2">
+                    <div class="width-xs relative top-2">
+                        <app-icon-stadium [color]="colorLightGrey" />
+                    </div>
+                </div>
+                <div class="text-light-grey">Venue</div>
+            </div>
+            <div>
+                <div class="text-base pl-2">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
+            </div>
+        </div>
+        <div class="mt-5" *ngIf="this.game!.attendance">
+            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+                <div class="mr-2">
+                    <div class="width-xs relative top-2">
+                        <app-icon-attendance [color]="colorLightGrey" />
+                    </div>
+                </div>
+                <div class="text-light-grey">Attendance</div>
+            </div>
+            <div>
+                <div class="text-base pl-2">{{ this.game!.attendance | formatNumber }}</div>
+            </div>
+        </div>
+        <div class="mt-5" *ngIf="getRefereeName() !== null">
+            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+                <div class="mr-2">
+                    <div class="width-xs relative top-2">
+                        <app-icon-referee [color]="colorLightGrey" />
+                    </div>
+                </div>
+                <div class="text-light-grey">Referee</div>
+            </div>
+            <div>
+                <div class="text-base pl-2">{{ getRefereeName() }}</div>
+            </div>
+        </div>
+    </div>
 </ng-template>

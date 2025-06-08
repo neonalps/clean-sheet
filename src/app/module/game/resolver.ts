@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameService } from './service';
 import { DetailedGame } from '@src/app/model/game';
-import { Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

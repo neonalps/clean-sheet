@@ -3,10 +3,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { DetailedGame, RefereeRole, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
-import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { Subscription, take } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
@@ -15,6 +15,11 @@ import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.compon
 import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
+import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
+import { COLOR_LIGHT_GREY } from '@src/styles/constants';
+import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
+import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
+import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -22,8 +27,7 @@ export type GameRouteState = {
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent
-  ],
+  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent, RefereeIconComponent, StadiumIconComponent, AttendanceIconComponent, FormatNumberPipe],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
@@ -32,6 +36,8 @@ export class GameComponent implements OnInit, OnDestroy {
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
+
+  readonly colorLightGrey = COLOR_LIGHT_GREY;
 
   mainClub: SmallClub = environment.mainClub;
 
@@ -116,6 +122,15 @@ export class GameComponent implements OnInit, OnDestroy {
 
   getResultTendencyClass(): string {
     return `result-tendency-${this.game!.resultTendency}`;
+  }
+
+  getRefereeName(): string | null {
+    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
+    if (isNotDefined(referee)) {
+      return null;
+    }
+
+    return [referee?.person.firstName, referee?.person.lastName].filter(item => isDefined(item)).join(' ');
   }
 
   private resolveGame(gameId: number) {
