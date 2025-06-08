@@ -35,5 +35,6 @@
     "varDecision.decision": "Entscheidung",
     "varDecision.noGoal": "Kein Tor",
     "varDecision.penalty": "Strafstoß",
-    "varDecision.penaltyCancelled": "Kein Strafstoß"
+    "varDecision.penaltyCancelled": "Kein Strafstoß",
+    "varDecision.yellowCardOverturned": "Gelbe Karte zurückgenommen"
 }

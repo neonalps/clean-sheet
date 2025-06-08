@@ -35,5 +35,6 @@
     "varDecision.decision": "Decision",
     "varDecision.noGoal": "No goal",
     "varDecision.penalty": "Penalty",
-    "varDecision.penaltyCancelled": "Penalty cancelled"
+    "varDecision.penaltyCancelled": "Penalty cancelled",
+    "varDecision.yellowCardOverturned": "Yellow card overturned"
 }
