@@ -37,6 +37,7 @@ export interface BasicGame {
     venue: GameVenue;
     leg?: number;
     previousLeg?: BasicGame;
+    isSoldOut?: boolean;
     isNeutralGround?: boolean;
     scheduled?: Date;
 }
@@ -181,6 +182,7 @@ export interface UiPerson {
 export interface UiGamePlayer extends UiPerson {
     gamePlayerId: number;
     forMain: boolean;
+    shirt: number;
     // TODO add other fields
 }
 
@@ -200,15 +202,13 @@ export type UiScoreBoard = {
     opponent: UiScoreBoardItem[];
 }
 
+export type UiTeamLineup = {
+    players: UiGamePlayer[];
+    managers: UiGameManager[];
+}
 export type UiLineup = {
-    main: {
-        players: UiGamePlayer[];
-        managers: UiGameManager[];
-    },
-    opponent: {
-        players: UiGamePlayer[];
-        managers: UiGameManager[];
-    }
+    main: UiTeamLineup,
+    opponent: UiTeamLineup,
 }
 
 export type UiGame = {

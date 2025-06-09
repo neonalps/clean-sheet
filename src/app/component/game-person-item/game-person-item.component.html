@@ -1,0 +1,9 @@
+<div class="flex align-items-center">
+    <div>
+        <app-player-icon [iconUrl]="person.avatar" [iconBgColorClass]="'bg-color-light-grey-darker'" />
+    </div>
+    <div class="flex text-base pointer transition-text hover:text-light-darker-10">
+        <div class="pl-3 pl-2 text-light-grey-darker" *ngIf="person!.shirt">{{ person!.shirt }}</div>
+        <div class="pl-3">{{ getPersonName() }} </div>
+    </div>
+</div>

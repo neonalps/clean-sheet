@@ -20,6 +20,10 @@
     flex-direction: column;
 }
 
+.align-content-between {
+    align-content: space-between;
+}
+
 .align-items-start {
     align-items: flex-start;
 }
@@ -54,6 +58,10 @@
 
 .justify-content-end {
     justify-content: flex-end;
+}
+
+.justify-content-evenly {
+    justify-content: space-evenly;
 }
 
 .flex-auto {
@@ -342,6 +350,10 @@
 
 .mt-12 {
     margin-top: 3rem;
+}
+
+.mt-14 {
+    margin-top: 3.5rem;
 }
 
 .mt-16 {
@@ -761,10 +773,6 @@
     width: 100%;
 }
 
-.pointer {
-    cursor: pointer;
-}
-
 .pointer-events-none {
     pointer-events: none;
 }
@@ -947,6 +955,10 @@
 
 .bg-color-danger-lighter-40 {
     background-color: var(--danger-lighter-40);
+}
+
+.bg-color-dark-grey {
+    background-color: var(--dark-grey);
 }
 
 .bg-color-dark-grey-darker {

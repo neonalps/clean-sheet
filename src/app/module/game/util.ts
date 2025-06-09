@@ -48,6 +48,7 @@ function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer
         firstName: item.player.firstName,
         lastName: item.player.lastName,
         avatar: item.player.avatar,
+        shirt: item.shirt,
     };
 }
 

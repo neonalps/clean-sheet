@@ -9,3 +9,11 @@ export function getUnixTimestampFromDate(input: Date): number {
 export function getCurrentUnix(): number {
     return getUnixTimestampFromDate(new Date());
 }
+
+export function isToday(input: Date): boolean {
+    const today = new Date();
+
+    return input.getFullYear() === today.getFullYear() &&
+        input.getMonth() === today.getMonth() &&
+        input.getDate() === today.getDate();
+}
