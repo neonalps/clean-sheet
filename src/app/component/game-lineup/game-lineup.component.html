@@ -1,0 +1,69 @@
+<div class="lineup-container">
+    <div class="lineup-pitch flex flex-col">
+        <div class="lineup-row flex justify-content-evenly mt-4">
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[10]" />
+            </div>
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[9]" />
+            </div>
+        </div>
+
+        <div class="lineup-row flex justify-content-evenly mt-6">
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[8]" />
+            </div>
+        </div>
+
+        <div class="lineup-row flex justify-content-evenly mt-14">
+            <div class="lineup-item flex-grow position-modifier-diamond-midfield">
+                <app-game-lineup-item [player]="lineup.players[7]" />
+            </div>
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[6]" />
+            </div>
+            <div class="lineup-item flex-grow position-modifier-diamond-midfield">
+                <app-game-lineup-item [player]="lineup.players[5]" />
+            </div>
+        </div>
+
+        <div class="lineup-row flex justify-content-evenly mt-8">
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[4]" />
+            </div>
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[3]" />
+            </div>
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[2]" />
+            </div>
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[1]" />
+            </div>
+        </div>
+
+        <div class="lineup-row flex justify-content-evenly mt-8">
+            <div class="lineup-item flex-grow">
+                <app-game-lineup-item [player]="lineup.players[0]" />
+            </div>
+        </div>
+    </div>
+
+    <div class="lineup-manager mt-4 text-sm">
+        <div class="uppercase text-sm bold text-light-grey-darker mb-4">{{ 'game.manager' | $t }}</div>
+        <ng-container *ngFor="let manager of getManagers()">
+            <div class="mt-3 pl-1">
+                <app-game-person-item [person]="manager" />
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="lineup-substitutes mt-8 text-sm">
+        <div class="uppercase text-sm bold text-light-grey-darker mb-4">{{ 'game.substitutes' | $t }}</div>
+        <ng-container *ngFor="let substitute of getSubstitutes()">
+            <div class="mt-3 pl-1">
+                <app-game-person-item [person]="substitute" />
+            </div>
+        </ng-container>
+    </div>
+</div>

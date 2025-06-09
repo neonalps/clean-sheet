@@ -1,4 +1,12 @@
 @media (hover: hover) {
+    .pointer {
+        cursor: pointer;
+    }
+
+    .transition-text {
+        transition: color .15s linear;
+    }
+
     .hover\:bg-color-dark-grey-lighter:hover {
         background-color: var(--dark-grey-lighter);
     }
@@ -7,7 +15,15 @@
         background-color: var(--light-grey-darker);
     }
 
+    .hover\:text-light-darker-10:hover {
+        color: var(--light-darker-10);
+    }
+
     .hover\:text-light-grey:hover {
         color: var(--light-grey);
+    }
+
+    .hover\:text-light-grey-darker:hover {
+        color: var(--light-grey-darker);
     }
 }

@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame, RefereeRole, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { DetailedGame, GameStatus, RefereeRole, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -20,6 +20,9 @@ import { COLOR_LIGHT_GREY } from '@src/styles/constants';
 import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
+import { isToday } from '@src/app/util/date';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -27,7 +30,20 @@ export type GameRouteState = {
 
 @Component({
   selector: 'app-game',
-  imports: [CommonModule, LoadingComponent, LargeClubComponent, TabGroupComponent, TabItemComponent, GameEventsComponent, RefereeIconComponent, StadiumIconComponent, AttendanceIconComponent, FormatNumberPipe],
+  imports: [
+    CommonModule,
+    I18nPipe, 
+    LoadingComponent,
+    LargeClubComponent,
+    TabGroupComponent,
+    TabItemComponent,
+    GameEventsComponent,
+    RefereeIconComponent,
+    StadiumIconComponent,
+    AttendanceIconComponent,
+    FormatNumberPipe,
+    GameLineupComponent
+  ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
@@ -85,6 +101,14 @@ export class GameComponent implements OnInit, OnDestroy {
 
   getAwayTeam(): SmallClub {
     return this.game!.isHomeGame ? this.game!.opponent : this.mainClub;
+  }
+
+  getGameStatus(): string {
+    return this.translationService.translate(`gameStatus.${this.game!.status.toLocaleLowerCase()}`);
+  }
+
+  showGameStatus(): boolean {
+    return this.game!.status !== GameStatus.Finished || isToday(new Date(this.game!.kickoff));
   }
 
   getHomeScoringBoard(): UiScoreBoardItem[] {
