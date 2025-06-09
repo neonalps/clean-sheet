@@ -9,7 +9,8 @@ import { Component, Input } from '@angular/core';
 })
 export class TabItemComponent {
 
-  @Input() title = '';
+  @Input() tabTitle = '';
+
   active = false;
 
 }

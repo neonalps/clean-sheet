@@ -20,7 +20,10 @@
                     </ng-container>
                 </div>
             </div>
-            <div class="basis-1/8 pt-8">
+            <div class="basis-1/8 pt-1">
+                <div class="text-sm mb-5">
+                    <div *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
+                </div>
                 <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getResultTendencyClass()">{{ getResult() }}</div>
             </div>
             <div class="basis-3/7">
@@ -38,10 +41,12 @@
 
     <div class="game-section p-2 rounded-lg mt-3 mx-3">
          <app-tab-group>
-            <app-tab-item title="Events">
+            <app-tab-item [tabTitle]="'game.events' | $t">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
-            <app-tab-item title="Lineup">Lineup</app-tab-item>
+            <app-tab-item [tabTitle]="'game.lineup' | $t">
+                <app-game-lineup [lineup]="uiGame!.lineup.main" />
+            </app-tab-item>
         </app-tab-group>
     </div>
 
@@ -53,10 +58,10 @@
                         <app-icon-stadium [color]="colorLightGrey" />
                     </div>
                 </div>
-                <div class="text-light-grey">Venue</div>
+                <div class="text-light-grey">{{ 'game.venue' | $t }}</div>
             </div>
             <div>
-                <div class="text-base pl-2">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
+                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
             </div>
         </div>
         <div class="mt-5" *ngIf="this.game!.attendance">
@@ -66,10 +71,10 @@
                         <app-icon-attendance [color]="colorLightGrey" />
                     </div>
                 </div>
-                <div class="text-light-grey">Attendance</div>
+                <div class="text-light-grey">{{ 'game.attendance' | $t }}</div>
             </div>
             <div>
-                <div class="text-base pl-2">{{ this.game!.attendance | formatNumber }}</div>
+                <div class="text-base pl-2">{{ this.game!.attendance | formatNumber }}<span *ngIf="game?.isSoldOut"> ({{ 'game.soldOut' | $t }})</span></div>
             </div>
         </div>
         <div class="mt-5" *ngIf="getRefereeName() !== null">
@@ -79,10 +84,10 @@
                         <app-icon-referee [color]="colorLightGrey" />
                     </div>
                 </div>
-                <div class="text-light-grey">Referee</div>
+                <div class="text-light-grey">{{ 'game.referee' | $t }}</div>
             </div>
             <div>
-                <div class="text-base pl-2">{{ getRefereeName() }}</div>
+                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">{{ getRefereeName() }}</div>
             </div>
         </div>
     </div>
