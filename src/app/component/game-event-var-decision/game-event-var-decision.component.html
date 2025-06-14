@@ -1,3 +1,4 @@
+@let decisionReason = getDecisionReason();
 <app-game-event [event]="event">
     <div info>
         <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm">VAR</div>
@@ -5,7 +6,7 @@
     <div person>
         <div class="game-event-scored-by text-sm">{{ 'varDecision.decision' | $t }}: {{ getDecision() }}</div>
         <div class="text-xs text-light-grey">
-            {{ getPersonName() }}
+            {{ getPersonName() }} <span *ngIf="decisionReason">- {{ getDecisionReason() }}</span>
         </div>
     </div>
 </app-game-event>

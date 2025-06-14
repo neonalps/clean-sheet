@@ -1,10 +1,10 @@
-import { TranslationService } from "../module/i18n/translation.service";
+import { TranslationService } from "@src/app/module/i18n/translation.service";
 
-export function isDefined<T>(toCheck: T): toCheck is NonNullable<T> {
+export function isDefined<T>(toCheck: T | undefined | null): toCheck is NonNullable<T> {
     return toCheck !== null && toCheck !== undefined;
 }
 
-export function isNotDefined<T>(toCheck: T) {
+export function isNotDefined<T>(toCheck: T | undefined | null): toCheck is undefined | null  {
     return !isDefined(toCheck);
 }
 
@@ -50,4 +50,9 @@ export function processTranslationPlaceholders(input: string, translationService
         result = result.replaceAll(placeholder, translationService.translate(translationKey));
     }
     return result;
+}
+
+export function assertUnreachable(x: never, errorMessage?: string): never {
+  errorMessage ||= `This should be unreachable. Unexpected value ${JSON.stringify(x)}`;
+  throw new Error(errorMessage);
 }

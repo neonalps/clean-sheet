@@ -3,11 +3,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame, GameStatus, RefereeRole, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
+import { navigateToClub, navigateToPerson, PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { Subscription, take } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
@@ -52,6 +52,7 @@ export class GameComponent implements OnInit, OnDestroy {
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
+  private previousLeg: DetailedGame | null = null;
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
 
@@ -93,6 +94,19 @@ export class GameComponent implements OnInit, OnDestroy {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGoalMinute(minute, '.') });
     this.isLoading = false;
+
+    // asynchronously fetch previous leg information
+    if (isDefined(this.game.previousLeg)) {
+      this.resolvePreviousLeg(this.game.previousLeg);
+    }
+  }
+
+  onClubSelected(clubId: number): void {
+    navigateToClub(this.router, clubId);
+  }
+
+  onPersonSelected(personId: number): void {
+    navigateToPerson(this.router, personId);
   }
 
   getHomeTeam(): SmallClub {
@@ -121,31 +135,95 @@ export class GameComponent implements OnInit, OnDestroy {
 
   getCompetitionName(): string {
     const parts: string[] = [];
+
+    // competition name
     if (isDefined(this.game!.competition.parent)) {
       parts.push(this.game!.competition.parent.shortName);
     }
 
     parts.push(this.game!.competition.shortName);
 
+    // competition stage
     let stage = this.game!.stage;
     if (isDefined(stage)) {
       parts.push(processTranslationPlaceholders(stage, this.translationService));
     }
 
+    // competition round
     const round = processTranslationPlaceholders(this.game!.round, this.translationService);
     parts.push(`${isNaN(Number(round)) ? '' : this.translationService.translate('competitionRound.round')} ${round}`);
 
     return parts.join(' · ');
   }
 
-  getResult(): string {
-    const tuple = getGameResult(this.game!);
-    
-    return tuple !== null ? tuple.join(":") : "-";
+  getLegInformation(): string | null {
+    const leg = this.game!.leg;
+    if (isNotDefined(leg)) {
+      return null;
+    }
+
+    const parts: string[] = [];
+
+    parts.push(this.translationService.translate(`game.leg.${this.game!.leg}`));
+
+    if (isDefined(this.previousLeg)) {
+      parts.push(this.translationService.translate(`game.aggregate`));
+    }
+
+    return parts.join(' · ');
   }
 
-  getResultTendencyClass(): string {
-    return `result-tendency-${this.game!.resultTendency}`;
+  getGameScore(): string {
+    return this.getResult(getGameResult(this.game!));
+  }
+
+  getAggregateScoreTuple(): ScoreTuple | null {
+    if (isNotDefined(this.previousLeg)) {
+      return null;
+    }
+
+    const gameScore = getGameResult(this.game!);
+    const previousLegScore = getGameResult(this.previousLeg);
+
+    if (gameScore === null || previousLegScore === null) {
+      return null;
+    }
+
+    const aggregateMain = this.game!.isHomeGame ? gameScore[0] + previousLegScore[1] : gameScore[1] + previousLegScore[0];
+    const aggregateOpponent = this.game!.isHomeGame ? gameScore[1] + previousLegScore[0] : gameScore[0] + previousLegScore[1];
+
+    return [aggregateMain, aggregateOpponent];
+  }
+
+  getAggregateScore(): string | null {
+    const aggregateScore = this.getAggregateScoreTuple();
+    if (aggregateScore === null) {
+      return null;
+    }
+
+    return this.game!.isHomeGame ? [aggregateScore[0], aggregateScore[1]].join(":") : [aggregateScore[1], aggregateScore[0]].join(":");
+  }
+
+  private getResult(score: ScoreTuple | null): string {    
+    return score !== null ? score.join(":") : "-";
+  }
+
+  getGameResultTendencyClass(): string {
+    return this.getResultTendencyClass(this.game!.resultTendency);
+  }
+
+  getAggregateResultTendencyClass(): string | null {
+    const aggregateScore = this.getAggregateScoreTuple();
+    if (aggregateScore === null) {
+      return null;
+    }
+
+    const aggregateTendency: Tendency = aggregateScore[0] > aggregateScore[1] ? 'w' : aggregateScore[1] > aggregateScore[0] ? 'l' : 'd';
+    return this.getResultTendencyClass(aggregateTendency);
+  }
+
+  private getResultTendencyClass(tendency: Tendency): string {
+    return `result-tendency-${tendency}`;
   }
 
   getRefereeName(): string | null {
@@ -168,6 +246,17 @@ export class GameComponent implements OnInit, OnDestroy {
         console.error(`Could not resolve game`, err);
       }
     });
+  }
+
+  private resolvePreviousLeg(previousLeg: number) {
+    this.gameResolver.getById(previousLeg).pipe(take(1)).subscribe({
+          next: game => {
+            this.previousLeg = game;
+          },
+          error: err => {
+            console.error(`Could not resolve previous leg`, err);
+          }
+        });
   }
 
 }

@@ -4,7 +4,7 @@ import { GameEventComponent } from '@src/app/component/game-event/game-event.com
 import { UiVarDecisionGameEvent } from '@src/app/model/game';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { isDefined } from '@src/app/util/common';
+import { isDefined, isNotDefined } from '@src/app/util/common';
 
 @Component({
   selector: 'app-game-event-var-decision',
@@ -20,6 +20,14 @@ export class GameEventVarDecisionComponent {
 
   getDecision(): string {
     return this.translationService.translate(`varDecision.${this.event.decision}`);
+  }
+
+  getDecisionReason(): string | null {
+    if (isNotDefined(this.event.reason)) {
+      return null;
+    }
+
+    return this.translationService.translate(`varDecisionReason.${this.event.reason}`);
   }
 
   getPersonName(): string {
