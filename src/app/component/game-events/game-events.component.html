@@ -19,6 +19,9 @@
             <ng-container *ngSwitchCase="'penaltyMissed'">
                 <app-game-event-penalty-missed [event]="getPenaltyMissedGameEvent(event)" />
             </ng-container>
+            <ng-container *ngSwitchCase="'pso'">
+                <app-game-event-pso [event]="getPenaltyShootOutGameEvent(event)" />
+            </ng-container>
             <ng-container *ngSwitchCase="'varDecision'">
                 <app-game-event-var-decision [event]="getVarDecisionGameEvent(event)" />
             </ng-container>

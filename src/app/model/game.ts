@@ -69,6 +69,15 @@ export interface GamePlayer {
     on?: string;
 }
 
+export enum PsoResult {
+    Goal = "goal",
+    Saved = "saved",
+    Post = "post",
+    Crossbar = "crossbar",
+    Wide = "wide",
+    High = "high",
+}
+
 export enum ManagingRole {
     HeadCoach = "headCoach",
     AssistantCoach = "assistantCoach",
@@ -170,6 +179,13 @@ export interface PenaltyMissedGameEvent extends GameEvent {
     takenBy: number;
     goalkeeper: number;
     reason: string;
+}
+
+export interface PenaltyShootOutGameEvent extends GameEvent {
+    score: ScoreTuple;
+    takenBy: number;
+    goalkeeper: number;
+    result: PsoResult;
 }
 
 export interface InjuryTimeGameEvent extends GameEvent {
@@ -274,6 +290,13 @@ export interface UiPenaltyMissedGameEvent extends UiGameEvent {
     takenBy: UiGamePlayer;
     goalkeeper: UiGamePlayer;
     reason: string;
+}
+
+export interface UiPenaltyShootOutGameEvent extends UiGameEvent {
+    score: string;
+    takenBy: UiGamePlayer;
+    goalkeeper: UiGamePlayer;
+    result: PsoResult;
 }
 
 export interface UiInjuryTimeGameEvent extends UiGameEvent {
