@@ -4,19 +4,24 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
+    @let homeTeam = getHomeTeam();
+    @let awayTeam = getAwayTeam();
+    @let legInformation = getLegInformation();
+    @let aggregateScore = getAggregateScore();
     <div class="game-section py-3 rounded-lg mt-3 mx-3">
         <div class="center text-sm">
             <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
             <div class="mb-3">{{ getCompetitionName() }}</div>
+            <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span></div>
         </div>
         <div class="flex justify-content-center py-1">
             <div class="basis-3/7">
                 <div>
-                    <app-large-club [club]="getHomeTeam()" />
+                    <app-large-club [club]="homeTeam" (click)="onClubSelected(homeTeam.id)"/>
                 </div>
                 <div class="scoring-board mt-5 text-light-grey-darker text-sm text-right pr-1">
                     <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>
@@ -24,15 +29,15 @@
                 <div class="text-sm mb-5">
                     <div *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
                 </div>
-                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getResultTendencyClass()">{{ getResult() }}</div>
+                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScore() }}</div>
             </div>
             <div class="basis-3/7">
                 <div>
-                    <app-large-club [club]="getAwayTeam()" />
+                    <app-large-club [club]="awayTeam" (click)="onClubSelected(awayTeam.id)" />
                 </div>
                 <div class="scoring-board mt-5 text-light-grey-darker text-sm pl-1">
                     <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>

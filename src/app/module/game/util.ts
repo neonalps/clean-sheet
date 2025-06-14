@@ -1,4 +1,4 @@
-import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiScoreBoard, UiScoreBoardItem, UiSubstitutionGameEvent, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
+import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
 import { isDefined } from "@src/app/util/common";
 
 export function getGameResult(game: BasicGame): ScoreTuple | null {
@@ -49,6 +49,7 @@ function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer
         lastName: item.player.lastName,
         avatar: item.player.avatar,
         shirt: item.shirt,
+        positionGrid: item.positionGrid,
     };
 }
 
@@ -86,6 +87,10 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
 
     const mainGoalScorers: GamePlayerGoals[] = [];
     const opponentGoalScorers: GamePlayerGoals[] = [];
+
+    const eventsBeforeHalfTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 46).length;
+    // we must add one to eventsBeforeFullTime because the half time event will be added as well
+    const eventsBeforeFullTime = game.report.events.filter(event => event.minute !== "FT").length + 1;
 
     const events: UiGameEvent[] = game.report.events.map(event => {
         const minute = splitGameMinute(event.minute);
@@ -172,6 +177,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     ...baseEvent,
                     affectedPlayer: varDecisionAffectedPlayer,
                     decision: varDecisionGameEvent.decision,
+                    reason: varDecisionGameEvent.reason,
                     forMain: varDecisionAffectedPlayer.forMain,
                 } satisfies UiVarDecisionGameEvent;
             case GameEventType.PenaltyMissed:
@@ -197,8 +203,6 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
     });
 
     // add half time period event
-    // count how many events occurred before half time
-    const eventsBeforeHalfTime = events.filter(event => Number(event.baseMinute) < 46).length;
     events.splice(eventsBeforeHalfTime, 0, {
         type: GameEventType.Period,
         id: 0,
@@ -206,28 +210,40 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         additionalMinute: '',
         forMain: false,
         sortOrder: -1,
-    })
+    });
 
     // add full time period event
-    events.push({
+    events.splice(eventsBeforeFullTime, 0, {
         type: GameEventType.Period,
         id: 0,
         baseMinute: 'FT',
         additionalMinute: '',
         forMain: false,
         sortOrder: -1,
-    })
+    });
+
+    const lineupMain: UiTeamLineup = {
+        players: mainPlayers,
+        managers: mainManagers,
+    };
+
+    if (isDefined(game.report.main.tacticalFormation)) {
+        lineupMain.tacticalFormation = game.report.main.tacticalFormation;
+    }
+
+    const lineupOpponent: UiTeamLineup = {
+        players: opponentPlayers,
+        managers: opponentManagers,
+    };
+
+    if (isDefined(game.report.opponent.tacticalFormation)) {
+        lineupOpponent.tacticalFormation = game.report.opponent.tacticalFormation;
+    }
 
     return {
         lineup: {
-            main: {
-                players: mainPlayers,
-                managers: mainManagers,
-            },
-            opponent: {
-                players: opponentPlayers,
-                managers: opponentManagers,
-            },
+            main: lineupMain,
+            opponent: lineupOpponent,
         },
         scoreBoard: {
             main: mainGoalScorers.map(item => {
