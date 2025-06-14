@@ -93,11 +93,13 @@ export class GameComponent implements OnInit, OnDestroy {
   onGameResolved(game: DetailedGame): void {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGoalMinute(minute, '.') });
-    this.isLoading = false;
 
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
       this.resolvePreviousLeg(this.game.previousLeg);
+    } else {
+      // if there is no previous leg to resolvem we can finish loading now
+      this.isLoading = false;
     }
   }
 
@@ -173,8 +175,24 @@ export class GameComponent implements OnInit, OnDestroy {
     return parts.join(' · ');
   }
 
-  getGameScore(): string {
-    return this.getResult(getGameResult(this.game!));
+  hasExtendedPlay(): boolean {
+    return isDefined(this.game!.afterExtraTime) || isDefined(this.game!.penaltyShootOut);
+  }
+
+  getGameScoreBeforePso(): string {
+    return this.getResult(getGameResult(this.game!, false));
+  }
+
+  getGameScoreAfterPso(): string {
+    return this.getResult(getGameResult(this.game!, true));
+  }
+
+  getExtendedPlayText(): string {
+    if (isDefined(this.game!.penaltyShootOut)) {
+      return this.translationService.translate(`gameResult.pso`, { 'score': this.getGameScoreAfterPso() });
+    }
+
+    return this.translationService.translate('gameResult.aet');
   }
 
   getAggregateScoreTuple(): ScoreTuple | null {
@@ -252,9 +270,11 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameResolver.getById(previousLeg).pipe(take(1)).subscribe({
           next: game => {
             this.previousLeg = game;
+            this.isLoading = false;
           },
           error: err => {
             console.error(`Could not resolve previous leg`, err);
+            this.isLoading = false;
           }
         });
   }

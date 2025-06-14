@@ -7,7 +7,10 @@
         <div class="basis-3/7 flex justify-content-end">
             <app-small-club [club]="getHomeTeam()" [iconPosition]="'right'" />
         </div>
-        <div class="basis-1/10 game-result-tendency px-2 py-1 mx-2 rounded-md center bold" [ngClass]="getResultTendencyClass()">{{ getResult() }}</div>
+        <div class="basis-1/8 mx-2">
+            <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="getResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
+            <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
+        </div>
         <div class="basis-3/7">
             <app-small-club [club]="getAwayTeam()" />
         </div>

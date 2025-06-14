@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { InjuryTimeGameEvent, UiCardGameEvent, UiGameEvent, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiSubstitutionGameEvent, UiVarDecisionGameEvent } from '@src/app/model/game';
-import { GameEventGoalComponent } from "../game-event-goal/game-event-goal.component";
-import { GameEventCardComponent } from "../game-event-card/game-event-card.component";
-import { GameEventVarDecisionComponent } from "../game-event-var-decision/game-event-var-decision.component";
-import { GameEventPenaltyMissedComponent } from "../game-event-penalty-missed/game-event-penalty-missed.component";
-import { GameEventSubstitutionComponent } from "../game-event-substitution/game-event-substitution.component";
-import { GameEventPeriodComponent } from "../game-event-period/game-event-period.component";
+import { UiCardGameEvent, UiGameEvent, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiVarDecisionGameEvent } from '@src/app/model/game';
+import { GameEventGoalComponent } from "@src/app/component/game-event-goal/game-event-goal.component";
+import { GameEventCardComponent } from "@src/app/component/game-event-card/game-event-card.component";
+import { GameEventVarDecisionComponent } from "@src/app/component/game-event-var-decision/game-event-var-decision.component";
+import { GameEventPenaltyMissedComponent } from "@src/app/component/game-event-penalty-missed/game-event-penalty-missed.component";
+import { GameEventSubstitutionComponent } from "@src/app/component/game-event-substitution/game-event-substitution.component";
+import { GameEventPeriodComponent } from "@src/app/component/game-event-period/game-event-period.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { min } from 'rxjs';
+import { GameEventPsoComponent } from "@src/app/component/game-event-pso/game-event-pso.component";
 
 @Component({
   selector: 'app-game-events',
-  imports: [CommonModule, GameEventGoalComponent, GameEventCardComponent, GameEventPenaltyMissedComponent, GameEventVarDecisionComponent, GameEventSubstitutionComponent, GameEventPeriodComponent],
+  imports: [CommonModule, GameEventGoalComponent, GameEventCardComponent, GameEventPenaltyMissedComponent, GameEventVarDecisionComponent, GameEventSubstitutionComponent, GameEventPeriodComponent, GameEventPsoComponent],
   templateUrl: './game-events.component.html',
   styleUrl: './game-events.component.css'
 })
@@ -32,6 +32,10 @@ export class GameEventsComponent {
 
   getPenaltyMissedGameEvent(event: UiGameEvent): UiPenaltyMissedGameEvent {
     return event as UiPenaltyMissedGameEvent;
+  }
+
+  getPenaltyShootOutGameEvent(event: UiGameEvent): UiPenaltyShootOutGameEvent {
+    return event as UiPenaltyShootOutGameEvent;
   }
 
   getSubstitutionGameEvent(event: UiGameEvent): UiSubstitutionGameEvent {

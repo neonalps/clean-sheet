@@ -29,7 +29,8 @@
                 <div class="text-sm mb-5">
                     <div *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
                 </div>
-                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScore() }}</div>
+                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
+                <div class="text-sm mt-3 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
             </div>
             <div class="basis-3/7">
                 <div>
