@@ -3,11 +3,13 @@
         <app-loading />
     </ng-container>
     <ng-template #loadedContent>
-        <div class="flex justify-content-center">
-            <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
-                <app-season-select [seasons]="seasons$" [selectedSeasonId]="this.selectedSeason?.id" (onSelected)="onSeasonSelected($event)" />
-            </ng-container>
-        </div>
+        <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
+            <div class="sticky top-0 z-10 bg-color-dark py-1">
+                <div class="flex justify-content-center">
+                    <app-season-select [seasons]="seasons$" [selectedSeasonId]="this.selectedSeason?.id" (onSelected)="onSeasonSelected($event)" />
+                </div>
+            </div>
+        </ng-container>
 
         <ng-container *ngIf="selectedSeasonGames.length > 0; else emptySeasonGames">
             <div #scrolling>

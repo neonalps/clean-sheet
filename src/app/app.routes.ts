@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { SeasonGamesComponent } from './pages/season-games/season-games.component';
 import { GameComponent } from './pages/game/game.component';
-import { PATH_PARAM_GAME_ID, PATH_PARAM_SEASON_ID } from './util/router';
+import { PATH_PARAM_CLUB_ID, PATH_PARAM_GAME_ID, PATH_PARAM_PERSON_ID, PATH_PARAM_SEASON_ID } from './util/router';
+import { PersonComponent } from './pages/person/person.component';
+import { ClubComponent } from './pages/club/club.component';
 
 export const routes: Routes = [
     { 
@@ -10,8 +12,18 @@ export const routes: Routes = [
         canActivate: [],
     },
     { 
+        path: `club/:${PATH_PARAM_CLUB_ID}`, 
+        component: ClubComponent,
+        canActivate: [],
+    },
+    { 
         path: `game/:${PATH_PARAM_GAME_ID}`, 
         component: GameComponent,
+        canActivate: [],
+    },
+    { 
+        path: `person/:${PATH_PARAM_PERSON_ID}`, 
+        component: PersonComponent,
         canActivate: [],
     },
 ];

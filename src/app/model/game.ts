@@ -36,7 +36,7 @@ export interface BasicGame {
     attendance?: number;
     venue: GameVenue;
     leg?: number;
-    previousLeg?: BasicGame;
+    previousLeg?: number;
     isSoldOut?: boolean;
     isNeutralGround?: boolean;
     scheduled?: Date;
@@ -47,7 +47,7 @@ export interface GamePlayer {
     player: Person;
     shirt: number;
     positionKey?: string;
-    positionGrid?: number;
+    positionGrid?: string;
     goalsConceded?: number;
     goalsScored?: number;
     assists?: number;
@@ -83,6 +83,7 @@ export interface GameManager {
 export interface TeamGameReport {
     lineup: GamePlayer[];
     managers: GameManager[];
+    tacticalFormation?: TacticalFormation;
 }
 
 export enum RefereeRole {
@@ -133,6 +134,8 @@ export interface DetailedGame extends BasicGame {
 
 export type GoalType = 'left' | 'right' | 'head' | 'other' | 'unknown';
 
+export type TacticalFormation = '442-diamond' | '4231';
+
 export interface GoalGameEvent extends GameEvent {
     scoredBy: number;
     assistBy?: number;
@@ -160,6 +163,7 @@ export interface SubstitutionGameEvent extends GameEvent {
 export interface VarDecisionGameEvent extends GameEvent {
     affectedPlayer: number;
     decision: string;
+    reason: string;
 }
 
 export interface PenaltyMissedGameEvent extends GameEvent {
@@ -183,6 +187,7 @@ export interface UiGamePlayer extends UiPerson {
     gamePlayerId: number;
     forMain: boolean;
     shirt: number;
+    positionGrid?: string;
     // TODO add other fields
 }
 
@@ -193,7 +198,7 @@ export interface UiGameManager extends UiPerson {
 }
 
 export type UiScoreBoardItem = {
-    player: UiPerson;
+    player: UiGamePlayer;
     goalText: string;
 }
 
@@ -202,9 +207,17 @@ export type UiScoreBoard = {
     opponent: UiScoreBoardItem[];
 }
 
+export type UiPersonItem = {
+  firstName?: string;
+  lastName: string;
+  avatar?: string;
+  shirt?: number;
+}
+
 export type UiTeamLineup = {
     players: UiGamePlayer[];
     managers: UiGameManager[];
+    tacticalFormation?: TacticalFormation;
 }
 export type UiLineup = {
     main: UiTeamLineup,
@@ -254,6 +267,7 @@ export interface UiSubstitutionGameEvent extends UiGameEvent {
 export interface UiVarDecisionGameEvent extends UiGameEvent {
     affectedPlayer: UiGamePlayer;
     decision: string;
+    reason: string;
 }
 
 export interface UiPenaltyMissedGameEvent extends UiGameEvent {

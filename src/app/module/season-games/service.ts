@@ -47,7 +47,7 @@ export class SeasonGamesService implements OnDestroy {
             name: `GetSeasonGames/${seasonId}`,
             request: {
                 method: 'GET',
-                url: `/v1/seasons/${seasonId}/games`,
+                url: `/v1/seasons/${seasonId}/games?order=asc`,
             },
             bestBeforeSeconds: 60,
             strategy: FetchStrategy.CacheAndNetwork,
