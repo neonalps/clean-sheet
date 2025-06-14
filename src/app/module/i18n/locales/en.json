@@ -26,6 +26,8 @@
     "game.soldOut": "sold out",
     "game.substitutes": "Substitutes",
     "game.venue": "Venue",
+    "gameResult.aet": "AET",
+    "gameResult.pso": "Pen {score}",
     "gameStatus.abandoned": "Abandoned",
     "gameStatus.finished": "Finished",
     "gameStatus.ongoing": "Ongoing",

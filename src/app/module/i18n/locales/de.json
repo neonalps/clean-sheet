@@ -26,6 +26,8 @@
     "game.soldOut": "ausverkauft",
     "game.substitutes": "Ersatzspieler",
     "game.venue": "Spielort",
+    "gameResult.aet": "n.V.",
+    "gameResult.pso": "{score} n.E.",
     "gameStatus.abandoned": "Abgebrochen",
     "gameStatus.finished": "Beendet",
     "gameStatus.ongoing": "Live",

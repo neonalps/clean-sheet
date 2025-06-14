@@ -1,8 +1,8 @@
-import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
+import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, PenaltyShootOutGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
 import { isDefined } from "@src/app/util/common";
 
-export function getGameResult(game: BasicGame): ScoreTuple | null {
-    if (isDefined(game.penaltyShootOut)) {
+export function getGameResult(game: BasicGame, includePso = true): ScoreTuple | null {
+    if (isDefined(game.penaltyShootOut) && includePso === true) {
         return game.isHomeGame ? game.penaltyShootOut : [game.penaltyShootOut[1], game.penaltyShootOut[0]];
     }
 
@@ -16,6 +16,7 @@ export function getGameResult(game: BasicGame): ScoreTuple | null {
 
     return null;
 }
+
 
 export function transformGoalMinute(minute: string, suffix: string): string {
     const result: string[] = [];
@@ -191,6 +192,18 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     reason: penaltyMissedGameEvent.reason,
                     forMain: takenByPlayer.forMain,
                 } satisfies UiPenaltyMissedGameEvent;
+            case GameEventType.PenaltyShootOut:
+                const penaltyShootOutGameEvent = event as PenaltyShootOutGameEvent;
+                const psoTakenByPlayer = allPlayersMap.get(penaltyShootOutGameEvent.takenBy) as UiGamePlayer;
+                const psoGoalkeeperPlayer = allPlayersMap.get(penaltyShootOutGameEvent.goalkeeper) as UiGamePlayer;
+                return {
+                    ...baseEvent,
+                    score: localizers.score(isHomeGame ? penaltyShootOutGameEvent.score : [penaltyShootOutGameEvent.score[1], penaltyShootOutGameEvent.score[0]]),
+                    takenBy: psoTakenByPlayer,
+                    goalkeeper: psoGoalkeeperPlayer,
+                    result: penaltyShootOutGameEvent.result,
+                    forMain: psoTakenByPlayer.forMain,
+                } satisfies UiPenaltyShootOutGameEvent;
             case GameEventType.InjuryTime:
                 const injuryTimeGameEvent = event as InjuryTimeGameEvent;
                 return {
