@@ -7,7 +7,7 @@ import { del, get, set } from 'idb-keyval';
 })
 export class IndexedDbStorageProvider implements AsyncStorageProvider {
 
-    async  set<T>(key: string, value: T): Promise<void> {
+    async set<T>(key: string, value: T): Promise<void> {
         await set(key, value);
     }
 
