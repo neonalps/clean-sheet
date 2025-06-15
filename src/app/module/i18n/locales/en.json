@@ -54,11 +54,16 @@
     "selectSeason.empty": "Please select a season",
     "varDecision.decision": "Decision",
     "varDecision.noGoal": "No goal",
+    "varDecision.noPenaltyConfirmed": "No penalty confirmed",
     "varDecision.penalty": "Penalty",
     "varDecision.penaltyCancelled": "Penalty cancelled",
     "varDecision.yellowCardOverturned": "Yellow card overturned",
+    "varDecisionReason.denialOfGoalScoringOpportunity": "Denial of goal scoring opportunity",
     "varDecisionReason.encroachment": "Encroachment",
     "varDecisionReason.foul": "Foul",
+    "varDecisionReason.noFoul": "No foul",
     "varDecisionReason.handball": "Handball",
-    "varDecisionReason.offside": "Offside"
+    "varDecisionReason.noHandball": "No handball",
+    "varDecisionReason.offside": "Offside",
+    "varDecisionReason.seriousFoulPlay": "Serious foul play"
 }

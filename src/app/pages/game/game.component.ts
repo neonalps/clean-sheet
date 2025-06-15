@@ -96,7 +96,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
-      this.resolvePreviousLeg(this.game.previousLeg);
+      this.resolvePreviousLeg(this.game.previousLeg, this.game.season.id);
     } else {
       // if there is no previous leg to resolvem we can finish loading now
       this.isLoading = false;
@@ -266,8 +266,8 @@ export class GameComponent implements OnInit, OnDestroy {
     });
   }
 
-  private resolvePreviousLeg(previousLeg: number) {
-    this.gameResolver.getById(previousLeg).pipe(take(1)).subscribe({
+  private resolvePreviousLeg(previousLeg: number, seasonId: number) {
+    this.gameResolver.getById(previousLeg, seasonId).pipe(take(1)).subscribe({
           next: game => {
             this.previousLeg = game;
             this.isLoading = false;
