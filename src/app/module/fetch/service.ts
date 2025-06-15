@@ -5,6 +5,7 @@ import { CacheableResponse } from "@src/app/model/cacheable-response";
 import { CacheService } from "@src/app/module/cache/service";
 import { getCurrentUnix, getDateFromUnixTimestamp } from "@src/app/util/date";
 import { take } from "rxjs";
+import { isNotDefined } from "@src/app/util/common";
 
 export enum FetchStrategy {
     CacheAndNetwork = "cacheAndNetwork",
@@ -56,6 +57,14 @@ export class FetchService {
         this.subscriptions.set(subscriptionSymbol, subscription);
         console.log(`registered fetch subscription ${subscription.name}`);
         return this.createFetchHandle(subscriptionSymbol);
+    }
+
+    async getFromCache<T>(requestName: string): Promise<T | undefined> {
+        const cacheEntry = await this.cacheService.get<ResponseCacheEntry<T>>(FetchService.CACHE_KEY_REQUESTS, requestName);
+        if (isNotDefined(cacheEntry)) {
+            return;
+        }
+        return cacheEntry.content;
     }
 
     private getSubscriptionOrThrow(subscriptionSymbol: Symbol): FetchSubscription<unknown> {
