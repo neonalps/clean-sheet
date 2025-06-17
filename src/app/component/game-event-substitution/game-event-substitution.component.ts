@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { UiPerson, UiSubstitutionGameEvent } from '@src/app/model/game';
-import { GameEventComponent } from '../game-event/game-event.component';
-import { isDefined } from '@src/app/util/common';
-import { ArrowLeftComponent } from "../../icon/arrow-left/arrow-left.component";
+import { UiSubstitutionGameEvent } from '@src/app/model/game';
+import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
+import { ArrowLeftComponent } from "@src/app/icon/arrow-left/arrow-left.component";
 import { ArrowRightComponent } from '@src/app/icon/arrow-right/arrow-right.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { getPersonName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-game-event-substitution',
@@ -18,15 +18,11 @@ export class GameEventSubstitutionComponent {
   @Input() event!: UiSubstitutionGameEvent;
 
   getPlayerOff(): string {
-    return this.getPersonName(this.event.playerOff);
+    return getPersonName(this.event.playerOff);
   }
 
   getPlayerOn(): string {
-    return this.getPersonName(this.event.playerOn);
-  }
-
-  private getPersonName(person: UiPerson): string {
-    return [person.firstName, person.lastName].filter(item => isDefined(item)).join(' ');
+    return getPersonName(this.event.playerOn);
   }
 
 }

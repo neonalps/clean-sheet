@@ -91,7 +91,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
 
     const eventsBeforeHalfTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 46).length;
     // we must add one to eventsBeforeFullTime because the half time event will be added as well
-    const eventsBeforeFullTime = game.report.events.filter(event => event.minute !== "FT").length + 1;
+    const eventsBeforeFullTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 91).length + 1;
 
     const events: UiGameEvent[] = game.report.events.map(event => {
         const minute = splitGameMinute(event.minute);
@@ -215,6 +215,13 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         }
     });
 
+    // remove all PSO events (they must be all at the end) and move them to their own collection
+    const psoGameEvents: UiGameEvent[] = [];
+    const firstPsoGameEventIndex = events.findIndex(item => item.type === GameEventType.PenaltyShootOut);
+    if (firstPsoGameEventIndex >= 0) {
+        psoGameEvents.push(...(events.splice(firstPsoGameEventIndex) as UiPenaltyShootOutGameEvent[]));
+    }
+
     // add half time period event
     events.splice(eventsBeforeHalfTime, 0, {
         type: GameEventType.Period,
@@ -226,6 +233,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
     });
 
     // add full time period event
+    // TODO end of regulation for games with extra time
     events.splice(eventsBeforeFullTime, 0, {
         type: GameEventType.Period,
         id: 0,
@@ -234,6 +242,30 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         forMain: false,
         sortOrder: -1,
     });
+
+    // add after extra time period event if necessary
+    if (isDefined(game.afterExtraTime)) {
+        events.push({
+            type: GameEventType.Period,
+            id: 0,
+            baseMinute: 'AET',
+            additionalMinute: '',
+            forMain: false,
+            sortOrder: -1,
+        });
+    }
+
+    // add after pso period event if necessary
+    if (isDefined(game.penaltyShootOut)) {
+        psoGameEvents.push({
+            type: GameEventType.Period,
+            id: 0,
+            baseMinute: 'PSO',
+            additionalMinute: '',
+            forMain: false,
+            sortOrder: -1,
+        });
+    }
 
     const lineupMain: UiTeamLineup = {
         players: mainPlayers,
@@ -253,7 +285,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         lineupOpponent.tacticalFormation = game.report.opponent.tacticalFormation;
     }
 
-    return {
+    const uiGameResult: UiGame = {
         lineup: {
             main: lineupMain,
             opponent: lineupOpponent,
@@ -272,8 +304,13 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                 };
             }),
         },
-        events,
+        events: [
+            ...events,
+            ...psoGameEvents,
+        ]
     }
+
+    return uiGameResult;
 }
 
 export function splitGameMinute(minute: string): [string, string | undefined] {

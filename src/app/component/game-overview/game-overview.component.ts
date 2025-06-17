@@ -4,7 +4,7 @@ import { BasicGame, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
 import { SmallClub } from '@src/app/model/club';
-import { isDefined } from '@src/app/util/common';
+import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 @Component({
@@ -36,7 +36,7 @@ export class GameOverviewComponent {
 
     parts.push(this.game.competition.shortName);
 
-    return parts.join(' · ');
+    return parts.map(item => processTranslationPlaceholders(item, this.translationService)).join(' · ');
   }
 
   getResultTendencyClass(): string {

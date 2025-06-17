@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { UiPenaltyMissedGameEvent, UiPerson } from '@src/app/model/game';
-import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { isDefined } from '@src/app/util/common';
+import { getPersonName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-game-event-penalty-missed',
@@ -23,15 +22,11 @@ export class GameEventPenaltyMissedComponent {
   }
   
   getTakenByName(): string {
-    return this.getPersonName(this.event.takenBy);
+    return getPersonName(this.event.takenBy);
   }
 
   private getGoalkeeperName(): string {
-    return this.getPersonName(this.event.goalkeeper);
-  }
-
-  private getPersonName(person: UiPerson): string {
-    return [person.firstName, person.lastName].filter(item => isDefined(item)).join(' ');
+    return getPersonName(this.event.goalkeeper);
   }
 
 }
