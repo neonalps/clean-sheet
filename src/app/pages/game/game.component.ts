@@ -61,10 +61,10 @@ export class GameComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private gameResolver: GameResolver,
-    private route: ActivatedRoute,
-    private router: Router,
-    private translationService: TranslationService,
+    private readonly gameResolver: GameResolver,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly translationService: TranslationService,
   ) {
     const game = this.router.getCurrentNavigation()?.extras?.state?.['game'];
     if (isDefined(game)) {
@@ -143,7 +143,8 @@ export class GameComponent implements OnInit, OnDestroy {
       parts.push(this.game!.competition.parent.shortName);
     }
 
-    parts.push(this.game!.competition.shortName);
+    const competitionShortName = processTranslationPlaceholders(this.game!.competition.shortName, this.translationService);
+    parts.push(competitionShortName);
 
     // competition stage
     let stage = this.game!.stage;

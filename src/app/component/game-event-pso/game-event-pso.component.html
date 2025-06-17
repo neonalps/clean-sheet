@@ -4,7 +4,7 @@
     </div>
     <div person>
         @let missReason = getMissText();
-        <div class="game-event-scored-by text-sm">{{ event.takenBy.firstName }} {{ event.takenBy.lastName }}</div>
+        <div class="game-event-scored-by text-sm">{{ getTakenByName() }}</div>
         <div *ngIf="missReason" class="text-xs text-light-grey">
             {{ missReason }}
         </div>

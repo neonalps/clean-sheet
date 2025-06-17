@@ -1,7 +1,14 @@
 <div class="game-event flex">
     <div class="basis-1/10 game-event-minute text-sm flex flex-col align-items-center justify-content-center">
-        <div>{{ event.baseMinute }}</div>
-        <div *ngIf="event.additionalMinute" class="text-light-grey">{{ event.additionalMinute }}</div>
+        <ng-container *ngIf="!isPsoEvent(); else pso">
+            <div>{{ event.baseMinute }}</div>
+            <div *ngIf="event.additionalMinute" class="text-light-grey">{{ event.additionalMinute }}</div>
+        </ng-container>
+        <ng-template #pso>
+            <div class="width-xs football-container">
+                <app-football [color]="getOutcomeColor()" />
+            </div>
+        </ng-template>
     </div>
     <div class="basis-1/8 flex align-items-center justify-content-center">
         <ng-content select="[info]"></ng-content>
