@@ -1,13 +1,13 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, effect, inject, OnDestroy, OnInit, Signal, viewChild } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, Signal, viewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
-import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
-import { filter, map, Observable, of, Subscription, take, tap } from 'rxjs';
+import { assertDefined, isNotDefined } from '@src/app/util/common';
+import { filter, map, Observable, of, Subscription } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
-import { DetailedGame } from '@src/app/model/game';
+import { DetailedGame, GameStatus } from '@src/app/model/game';
 import { GameOverviewComponent } from '@src/app/component/game-overview/game-overview.component';
 import { SmallClub } from '@src/app/model/club';
 import { SeasonSelectComponent } from '@src/app/component/season-select/season-select.component';
@@ -34,12 +34,18 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   private seasonGames: Map<number, DetailedGame[]> = new Map();
   private subscriptions: Subscription[] = [];
 
+  hasSeasonGames = false;
+  hasPastGames = false;
+  hasUpcomingGames = false;
+
   mainClub: SmallClub = environment.mainClub;
 
   colorDarkGreyLighter = COLOR_DARK_GREY_LIGHTER;
   isLoading = false;
   selectedSeason: Season | null = null;
-  selectedSeasonGames: DetailedGame[] = [];
+  
+  pastSeasonGames: DetailedGame[] = [];
+  upcomingSeasonGames: DetailedGame[] = [];
 
   scrollingRef = viewChild<HTMLElement>('scrolling');
 
@@ -91,7 +97,12 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
       if (payload.seasonId === this.selectedSeason?.id) {
         this.isLoading = false;
-        this.selectedSeasonGames = payload.games;
+        this.pastSeasonGames = payload.games.filter(game => !this.isUpcomingGame(game));
+        this.upcomingSeasonGames = payload.games.filter(game => this.isUpcomingGame(game));
+
+        this.hasPastGames = this.pastSeasonGames.length > 0;
+        this.hasUpcomingGames = this.upcomingSeasonGames.length > 0;
+        this.hasSeasonGames = this.hasPastGames || this.hasUpcomingGames;
       }
     }));
   }
@@ -141,6 +152,10 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private getSeasonIdRouteParam() {
     return this.route.snapshot.paramMap.get(PATH_PARAM_SEASON_ID) as string;
+  }
+
+  private isUpcomingGame(game: DetailedGame): boolean {
+    return game.status === GameStatus.Scheduled;
   }
 
 }

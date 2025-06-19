@@ -1,7 +1,7 @@
 <div class="flex align-items-center w-full">
-    <button class="button">&lt;</button>
+    <button class="button" (click)="onBeforeClicked()" [ngClass]="{ 'invisible': !hasBefore }">&lt;</button>
     <div>
-        <app-select [optionsSource]="seasons" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOptionId]="selectedSeasonId" (onSelected)="onSeasonSelected($event)" />
+        <app-select [optionsSource]="seasons" [onBefore]="beforeSubject" [onNext]="nextSubject" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOptionId]="selectedSeasonId" (onSelected)="onSeasonSelected($event)" (onHasBefore)="onHasBefore($event)" (onHasNext)="onHasNext($event)" />
     </div>
-    <button class="button">&gt;</button>
+    <button class="button" (click)="onNextClicked()" [ngClass]="{ 'invisible': !hasNext }">&gt;</button>
 </div>

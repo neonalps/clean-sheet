@@ -13,18 +13,19 @@ export class GameResolver {
   constructor(private readonly gameService: GameService, private readonly seasonGamesService: SeasonGamesService) {}
 
   /**
-   * 
-   * @param gameId 
-   * @param seasonId optional seasonId, can be passed to 
+   * Resolves a game by ID.
+   * @param gameId the ID of the game that should be fetched
+   * @param seasonId optional seasonId, can be passed as an indicator to fetch the game from the cache
    * @returns 
    */
   getById(gameId: number, seasonId?: number): Observable<DetailedGame> {
     if (isDefined(seasonId)) {
+      // try to get the game from the cache first
       return this.getGameFromCache(seasonId, gameId).pipe(
         take(1),
         switchMap(gameOptional => {
           if (isDefined(gameOptional)) {
-            return of(gameOptional)
+            return of(gameOptional);
           }
           
           return this.gameService.getById(gameId);

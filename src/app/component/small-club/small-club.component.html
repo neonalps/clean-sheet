@@ -4,5 +4,5 @@
             <app-club-icon [iconUrl]="club.iconSmall" [iconClassName]="'width-sm'"  />
         </div>
     </ng-container>
-    <div class="order-2 mx-2 text-sm">{{ club.shortName }}</div>
+    <div class="order-2 mx-2 text-sm" [ngClass]="{ 'text-right': iconPosition === 'right' }">{{ club.shortName }}</div>
 </div>

@@ -7,6 +7,14 @@
         transition: color .15s linear;
     }
 
+    .transition-bg-color {
+        transition: background-color .15s linear;
+    }
+
+    .hover\:bg-color-dark-grey:hover {
+        background-color: var(--dark-grey);
+    }
+
     .hover\:bg-color-dark-grey-lighter:hover {
         background-color: var(--dark-grey-lighter);
     }

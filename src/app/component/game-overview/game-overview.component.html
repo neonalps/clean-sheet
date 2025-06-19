@@ -1,4 +1,4 @@
-<div class="game-overview-container p-2 rounded-lg mt-3 pointer">
+<div class="game-overview-container p-2 rounded-lg mt-3 pointer" [ngClass]="getDynamicContainerClasses()">
     <div class="flex justify-content-between text-xs text-light-grey mb-4">
         <div>{{ game.kickoff | date:'EEE, MMM d - HH:mm' }}</div>
         <div>{{ getCompetitionName() }}</div>
