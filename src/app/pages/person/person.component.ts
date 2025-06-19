@@ -2,16 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
+import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { isDefined } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
 import { take } from 'rxjs';
+import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
+import { getAge } from '@src/app/util/date';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, LoadingComponent],
+  imports: [CommonModule, I18nPipe, LoadingComponent, PlayerIconComponent, BirthdayCakeComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -22,6 +27,7 @@ export class PersonComponent {
   isLoading = true;
 
   constructor(
+    private readonly countryFlagService: CountryFlagService,
     private readonly personResolver: PersonResolver,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -40,7 +46,31 @@ export class PersonComponent {
   onPersonResolved(person: GetPersonByIdResponse): void {
     this.person = person;
     this.isLoading = false;
-    console.log('got person', person);
+  }
+
+  getFirstName() {
+    return this.person.person.firstName;
+  }
+
+  getLastName() {
+    return this.person.person.lastName;
+  }
+
+  getIconUrl() {
+    return this.person.person.avatar;
+  }
+
+  getBirthday() {
+    return this.person.person.birthday;
+  }
+
+  getPersonAge() {
+    return getAge(new Date(this.getBirthday()));
+  }
+
+  getNationalities(): CountryFlag[] {
+    const nationalities = this.person.person.nationalities;
+    return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
   }
 
   private resolvePerson(personId: number) {

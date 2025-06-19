@@ -22,3 +22,13 @@ const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 export function getNumberOfDaysBetween(first: Date, second: Date): number {
     return Math.round(Math.abs((first.getTime() - second.getTime()) / ONE_DAY_IN_MILLISECONDS));
 }
+
+export function getAge(birthday: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthday.getFullYear();
+    var m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+        age--;
+    }
+    return age;
+}
