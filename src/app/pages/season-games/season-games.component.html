@@ -11,11 +11,19 @@
             </div>
         </ng-container>
 
-        <ng-container *ngIf="selectedSeasonGames.length > 0; else emptySeasonGames">
+        <ng-container *ngIf="hasSeasonGames; else emptySeasonGames">
             <div #scrolling>
-                <ng-container *ngFor="let game of selectedSeasonGames">
-                    <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
-                </ng-container>
+                <div *ngIf="hasPastGames">
+                    <ng-container *ngFor="let game of pastSeasonGames">
+                        <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
+                    </ng-container>
+                </div>
+                <div *ngIf="hasUpcomingGames">
+                    <div class="text-sm text-light-grey">{{ 'games.upcoming' | $t }}</div>
+                    <ng-container *ngFor="let game of upcomingSeasonGames">
+                        <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
+                    </ng-container>
+                </div>
             </div>
         </ng-container>
         <ng-template #emptySeasonGames>

@@ -4,8 +4,37 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
+    @let nationalities = getNationalities();
+    @let birthday = getBirthday();
+    @let avatar = getIconUrl();
     <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
-        <div class="flex align-items-center justify-content-center">
+        <div class="flex align-items-center px-3">
+            <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
+                <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" />
+            </div>
+            <div>
+                <div>
+                    <span class="mr-2 text-xl">
+                        <span>{{ getFirstName() }}</span>
+                        <span class="bold"> {{ getLastName() }}</span>
+                    </span>
+                    <ng-container *ngIf="nationalities.length > 0">
+                        <ng-container *ngFor="let country of nationalities">
+                            <span [title]="country.title">{{ country.flag }}</span>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div class="mt-2 flex align-items-center justify-content-center" *ngIf="birthday">
+                    <div class="birthday-icon-container mr-2">
+                        <div class="relative top-1">
+                            <app-birthday-cake />
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </ng-template>

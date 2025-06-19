@@ -11,5 +11,6 @@ export class PlayerIconComponent {
 
   @Input() iconUrl?: string;
   @Input() iconBgColorClass = "bg-color-light-grey";
+  @Input() containerClass?: string;
 
 }
