@@ -17,3 +17,8 @@ export function isToday(input: Date): boolean {
         input.getMonth() === today.getMonth() &&
         input.getDate() === today.getDate();
 }
+
+const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+export function getNumberOfDaysBetween(first: Date, second: Date): number {
+    return Math.round(Math.abs((first.getTime() - second.getTime()) / ONE_DAY_IN_MILLISECONDS));
+}

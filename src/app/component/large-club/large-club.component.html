@@ -1,8 +1,10 @@
-<div class="flex flex-col align-items-center justify-content-center transition-text pointer hover:text-light-darker-10">
-    <ng-container *ngIf="club.iconSmall">
-        <div class="mb-3">
-            <app-club-icon [iconUrl]="club.iconSmall" [iconClassName]="'width-lg'"  />
-        </div>
-    </ng-container>
-    <div class="order-2 mx-2 text-base">{{ club.name }}</div>
+<div class="p-2 flex align-items-center justify-content-center">
+    <div class="flex flex-col align-items-center justify-content-center transition-bg-color pointer hover:bg-color-dark-grey rounded-lg p-1 min-w-140">
+        <ng-container *ngIf="club.iconSmall">
+            <div class="my-2">
+                <app-club-icon [iconUrl]="club.iconSmall" [iconClassName]="'width-lg'"  />
+            </div>
+        </ng-container>
+        <div class="order-2 min-h-48 mx-2 text-base flex align-items-center justify-content-center center">{{ club.name }}</div>
+    </div>
 </div>
