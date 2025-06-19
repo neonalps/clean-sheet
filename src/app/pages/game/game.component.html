@@ -8,7 +8,8 @@
     @let awayTeam = getAwayTeam();
     @let legInformation = getLegInformation();
     @let aggregateScore = getAggregateScore();
-    <div class="game-section py-3 rounded-lg mt-3 mx-3">
+    @let detailsVisible = showGameDetails();
+    <div class="game-section py-3 rounded-lg mt-3 mx-3" [ngClass]="getDynamicContainerClasses()">
         <div class="center text-sm">
             <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
             <div class="mb-3">{{ getCompetitionName() }}</div>
@@ -19,7 +20,7 @@
                 <div>
                     <app-large-club [club]="homeTeam" (click)="onClubSelected(homeTeam.id)"/>
                 </div>
-                <div class="scoring-board mt-5 text-light-grey-darker text-sm text-right pr-1">
+                <div class="scoring-board mt-3 text-light-grey-darker text-sm text-right pr-1">
                     <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
                         <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
@@ -29,14 +30,19 @@
                 <div class="text-sm mb-5">
                     <div *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
                 </div>
-                <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
+                <ng-container *ngIf="detailsVisible; else upcoming">
+                    <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
+                </ng-container>
+                <ng-template #upcoming>
+                    <div class="pt-3 text-sm center">{{ getUpcomingText() }}</div>
+                </ng-template>
                 <div class="text-sm mt-3 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
             </div>
             <div class="basis-3/7">
                 <div>
                     <app-large-club [club]="awayTeam" (click)="onClubSelected(awayTeam.id)" />
                 </div>
-                <div class="scoring-board mt-5 text-light-grey-darker text-sm pl-1">
+                <div class="scoring-board mt-3 text-light-grey-darker text-sm pl-1">
                     <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
                         <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
@@ -45,7 +51,7 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3">
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible">
          <app-tab-group>
             <app-tab-item [tabTitle]="'game.events' | $t">
                 <app-game-events [events]="uiGame!.events" />

@@ -137,27 +137,35 @@ export class FetchService {
                 throw new Error(`Response has no body`);
             }
 
-            const { contentHash, ...rest } = responseBody;
+            if (subscription.strategy === FetchStrategy.Network) {
+                // call on update with new data and return
+                if (subscription.onUpdate !== undefined) {
+                    subscription.onUpdate(responseBody);
+                }
+            } else {
+                const { contentHash, ...rest } = responseBody;
 
-            // if it was a paginated response, get the items directly
-            let cacheableResponse: any = rest;
-            if ('items' in rest) {
-                cacheableResponse = rest.items;
-            }
-    
-            // call on update with new data
-            if (subscription.onUpdate !== undefined) {
-                subscription.onUpdate(cacheableResponse);
-            }
+                // if it was a paginated response, get the items directly
+                let cacheableResponse: any = rest;
+                if ('items' in rest) {
+                    cacheableResponse = rest.items;
+                }
+        
+                // call on update with new data
+                if (subscription.onUpdate !== undefined) {
+                    subscription.onUpdate(cacheableResponse);
+                }
 
-            // update cache entry
-            const cacheEntry: ResponseCacheEntry<unknown> = {
-                name: subscription.name,
-                content: cacheableResponse,
-                hash: contentHash,
-                retrievedAt: currentUnix,
+                // update cache entry
+                const cacheEntry: ResponseCacheEntry<unknown> = {
+                    name: subscription.name,
+                    content: cacheableResponse,
+                    hash: contentHash,
+                    retrievedAt: currentUnix,
+                }
+                
+                await this.cacheService.set(FetchService.CACHE_KEY_REQUESTS, subscription.name, cacheEntry);
             }
-            await this.cacheService.set(FetchService.CACHE_KEY_REQUESTS, subscription.name, cacheEntry);
         } catch (err) {
             console.error(err);
         }

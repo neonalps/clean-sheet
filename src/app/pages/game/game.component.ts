@@ -20,7 +20,7 @@ import { COLOR_LIGHT_GREY } from '@src/styles/constants';
 import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
-import { isToday } from '@src/app/util/date';
+import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.component";
 
@@ -176,6 +176,10 @@ export class GameComponent implements OnInit, OnDestroy {
     return parts.join(' · ');
   }
 
+  showGameDetails(): boolean {
+    return this.game?.status === GameStatus.Finished;
+  }
+
   hasExtendedPlay(): boolean {
     return isDefined(this.game!.afterExtraTime) || isDefined(this.game!.penaltyShootOut);
   }
@@ -229,6 +233,26 @@ export class GameComponent implements OnInit, OnDestroy {
 
   getGameResultTendencyClass(): string {
     return this.getResultTendencyClass(this.game!.resultTendency);
+  }
+
+  getDynamicContainerClasses(): string[] {
+    const classes = [];
+
+    if (this.game!.titleWinningGame === true) {
+      classes.push('border-1 border-gold border-solid');
+    }
+
+    return classes;
+  }
+
+  getUpcomingText(): string {
+    const daysUntil = getNumberOfDaysBetween(new Date(this.game!.kickoff), new Date());
+    
+    if (daysUntil === 1) {
+      return this.translationService.translate(`date.tomorrow`);
+    } else {
+      return this.translationService.translate(`date.inDays`, { days: daysUntil });
+    }
   }
 
   getAggregateResultTendencyClass(): string | null {

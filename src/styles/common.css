@@ -871,6 +871,10 @@
     display: none;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 .hide-transition {
     visibility: hidden;
     opacity: 0;
@@ -1013,12 +1017,32 @@
     border-bottom-color: transparent;
 }
 
+.border-gold {
+    border-color: var(--gold);
+}
+
 .border-b-light {
     border-bottom-color: var(--light);
 }
 
+.border-1 {
+    border-width: 1px;
+}
+
+.border-2 {
+    border-width: 2px;
+}
+
+.border-3 {
+    border-width: 3px;
+}
+
 .border-l-3 {
     border-left-width: 3px;
+}
+
+.border-solid {
+    border-style: solid;
 }
 
 .border-l-solid {
@@ -1043,4 +1067,8 @@
 
 .min-h-48 {
     min-height: 48px;
+}
+
+.min-w-140 {
+    min-width: 140px;
 }

@@ -1,7 +1,6 @@
 .button {
     display: inline-block;
     outline: none;
-    cursor: pointer;
     padding: 0 16px;
     background-color: transparent;
     border-radius: 0.25rem;
@@ -14,6 +13,13 @@
     transition: background-color .15s linear; 
 }
 
-.button:hover {
-    background-color: var(--dark-grey-lighter);
+.button.disabled {
+    color: var(--light-grey-darker);
+}
+
+@media (hover: hover) {
+    .button:not(.disabled):hover {
+        cursor: pointer;
+        background-color: var(--dark-grey-lighter);
+    }
 }

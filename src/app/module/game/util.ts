@@ -91,7 +91,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
 
     const eventsBeforeHalfTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 46).length;
     // we must add one to eventsBeforeFullTime because the half time event will be added as well
-    const eventsBeforeFullTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 91).length + 1;
+    const eventsBeforeExtraTime = game.report.events.filter(event => Number(splitGameMinute(event.minute)[0]) < 91).length + 1;
 
     const events: UiGameEvent[] = game.report.events.map(event => {
         const minute = splitGameMinute(event.minute);
@@ -232,32 +232,21 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         sortOrder: -1,
     });
 
-    // add full time period event
-    // TODO end of regulation for games with extra time
-    events.splice(eventsBeforeFullTime, 0, {
-        type: GameEventType.Period,
-        id: 0,
-        baseMinute: 'FT',
-        additionalMinute: '',
-        forMain: false,
-        sortOrder: -1,
-    });
-
-    // add after extra time period event if necessary
+    // add extra time period event if necessary
     if (isDefined(game.afterExtraTime)) {
-        events.push({
+        events.splice(eventsBeforeExtraTime, 0, {
             type: GameEventType.Period,
             id: 0,
-            baseMinute: 'AET',
+            baseMinute: 'ET',
             additionalMinute: '',
             forMain: false,
             sortOrder: -1,
         });
     }
 
-    // add after pso period event if necessary
+    // add penalty shoot out period event if necessary
     if (isDefined(game.penaltyShootOut)) {
-        psoGameEvents.push({
+        events.push({
             type: GameEventType.Period,
             id: 0,
             baseMinute: 'PSO',
@@ -266,6 +255,15 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
             sortOrder: -1,
         });
     }
+
+    const fullTimeEvent = {
+        type: GameEventType.Period,
+        id: 0,
+        baseMinute: 'FT',
+        additionalMinute: '',
+        forMain: false,
+        sortOrder: -1,
+    };
 
     const lineupMain: UiTeamLineup = {
         players: mainPlayers,
@@ -307,6 +305,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         events: [
             ...events,
             ...psoGameEvents,
+            fullTimeEvent,
         ]
     }
 

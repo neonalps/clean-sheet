@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { BasicGame, ScoreTuple } from '@src/app/model/game';
+import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
 import { SmallClub } from '@src/app/model/club';
@@ -52,6 +52,10 @@ export class GameOverviewComponent {
   }
 
   getGameScoreBeforePso() {
+    if (this.game.status === GameStatus.Scheduled) {
+      return "-";
+    }
+
     return this.getResult(getGameResult(this.game, false));
   }
 
@@ -65,6 +69,16 @@ export class GameOverviewComponent {
     }
 
     return this.translationService.translate('gameResult.aet');
+  }
+
+  getDynamicContainerClasses(): string[] {
+    const classes = [];
+
+    if (this.game.titleWinningGame === true) {
+      classes.push('border-1 border-gold border-solid');
+    }
+
+    return classes;
   }
 
 }

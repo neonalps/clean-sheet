@@ -1,1 +1,11 @@
-<p>person works!</p>
+<ng-container *ngIf="isLoading; else loadedContent">
+    <div>
+        <app-loading />
+    </div>
+</ng-container>
+<ng-template #loadedContent>
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center justify-content-center">
+        </div>
+    </div>
+</ng-template>
