@@ -15,8 +15,8 @@ export class GameEventPeriodComponent {
   private static PERIOD_MAP = new Map([
     ['HT', 'halfTime'],
     ['FT', 'fullTime'],
-    ['AET', 'afterExtraTime'],
-    ['PSO', 'afterPenaltyShootOut'],
+    ['ET', 'extraTime'],
+    ['PSO', 'penaltyShootOut'],
   ]);
 
   @Input() event!: UiGameEvent;

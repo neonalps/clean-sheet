@@ -1,11 +1,59 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingComponent } from '@src/app/component/loading/loading.component';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { PersonResolver } from '@src/app/module/person/resolver';
+import { GetPersonByIdResponse } from '@src/app/module/person/service';
+import { isDefined } from '@src/app/util/common';
+import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-person',
-  imports: [],
+  imports: [CommonModule, LoadingComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
 export class PersonComponent {
+
+  person!: GetPersonByIdResponse;
+
+  isLoading = true;
+
+  constructor(
+    private readonly personResolver: PersonResolver,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly translationService: TranslationService,
+  ) {
+    const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
+    if (isDefined(personId)) {
+      this.resolvePerson(Number(personId));
+    } else {
+      // TODO show error content
+      this.isLoading = false;
+      console.error(`Could not resolve game ID`);
+    }
+  }
+
+  onPersonResolved(person: GetPersonByIdResponse): void {
+    this.person = person;
+    this.isLoading = false;
+    console.log('got person', person);
+  }
+
+  private resolvePerson(personId: number) {
+    this.personResolver.getById(personId, true).pipe(take(1)).subscribe({
+      next: person => {
+        this.onPersonResolved(person);
+      },
+      error: err => {
+        // TODO show error
+        this.isLoading = false;
+        console.error(`Could not resolve person`, err);
+      }
+    });
+  }
 
 }

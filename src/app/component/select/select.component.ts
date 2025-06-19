@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { OptionId, SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
-import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
+import { getHtmlInputElementFromEvent, isDefined, isNotDefined } from '@src/app/util/common';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
@@ -27,6 +27,8 @@ export class SelectComponent implements OnInit, OnDestroy {
   @ViewChild('search', { static: false }) searchElement!: ElementRef;
 
   @Input() optionsSource!: Observable<SelectOption[]>;
+  @Input() onBefore?: Observable<boolean>;
+  @Input() onNext?: Observable<boolean>;
   @Input() emptyText!: string;
   @Input() isLoading = false;
   @Input() showSearch: boolean = false;
@@ -39,6 +41,8 @@ export class SelectComponent implements OnInit, OnDestroy {
 
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<OptionId>();
+  @Output() onHasNext = new EventEmitter<boolean>();
+  @Output() onHasBefore = new EventEmitter<boolean>();
 
   options: SelectOption[] | null = null;
 
@@ -46,6 +50,10 @@ export class SelectComponent implements OnInit, OnDestroy {
   displayText: string | null = null;
 
   private subscriptions: Subscription[] = [];
+
+  private selectedIdx: number | null = null;
+  private hasBefore = false;
+  private hasNext = false;
 
   ngOnInit(): void {
     this.displayText = this.emptyText;
@@ -61,6 +69,26 @@ export class SelectComponent implements OnInit, OnDestroy {
         }
       } 
     }));
+
+    if (this.onBefore) {
+      this.subscriptions.push(this.onBefore.subscribe(_ => {
+        if (!this.hasBefore) {
+          return;
+        }
+
+        this.onSelect((this.options as SelectOption[])[(this.selectedIdx as number) + 1]);
+      }));
+    }
+
+    if (this.onNext) {
+      this.subscriptions.push(this.onNext.subscribe(_ => {
+        if (!this.hasNext) {
+          return;
+        }
+
+        this.onSelect((this.options as SelectOption[])[(this.selectedIdx as number) - 1]);
+      }));
+    }
   }
 
   ngOnDestroy(): void {
@@ -82,6 +110,22 @@ export class SelectComponent implements OnInit, OnDestroy {
     this.displayText = this.selected.name;
     this.onSelected.next(this.selected.id);
     this.hideDropdown();
+
+    if (isDefined(this.selected)) {
+      this.selectedIdx = (this.options as SelectOption[]).findIndex(item => item.id === this.selected?.id);
+      if (isNotDefined(this.selectedIdx)) {
+        this.hasBefore = false;
+        this.hasNext = false;
+        this.onHasBefore.next(false);
+        this.onHasNext.next(false);
+        return;
+      }
+      
+      this.hasBefore = this.selectedIdx < ((this.options as SelectOption[]).length - 1);
+      this.hasNext = this.selectedIdx > 0;
+      this.onHasBefore.next(this.hasBefore);
+      this.onHasNext.next(this.hasNext);
+    }
   }
 
   getDynamicStyles() {

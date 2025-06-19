@@ -20,7 +20,7 @@ export type ScoreTuple = [number, number];
 
 export interface BasicGame {
     id: number;
-    kickoff: Date;
+    kickoff: string;
     opponent: SmallClub;
     season: Season;
     competition: SmallCompetition;
@@ -40,6 +40,7 @@ export interface BasicGame {
     isSoldOut?: boolean;
     isNeutralGround?: boolean;
     scheduled?: Date;
+    titleWinningGame?: boolean;
 }
 
 export interface GamePlayer {
