@@ -41,6 +41,8 @@ export interface BasicGame {
     isNeutralGround?: boolean;
     scheduled?: Date;
     titleWinningGame?: boolean;
+    titleCount?: number;
+    victoryGameText?: string;
 }
 
 export interface GamePlayer {
@@ -225,6 +227,7 @@ export type UiScoreBoard = {
 }
 
 export type UiPersonItem = {
+  personId: number;
   firstName?: string;
   lastName: string;
   avatar?: string;

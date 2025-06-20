@@ -11,17 +11,15 @@ import { CommonModule } from '@angular/common';
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })
-export class SeasonSelectComponent implements OnInit, OnDestroy {
+export class SeasonSelectComponent implements OnDestroy {
 
   @Input() seasons!: Observable<Season[]>;
-  @Input() selectedSeasonId?: number;
+  @Input() selectedSeasonId!: Observable<number>;
   @Output() onSelected = new EventEmitter<OptionId>();
 
   hasBefore = false;
   hasNext = false;
 
-  private selectedSeasonIdx: number | undefined;
-  private seasonsCopy: Array<Season> = [];
   private subscriptions: Array<Subscription> = [];
 
   beforeSubject = new Subject<boolean>();
@@ -29,17 +27,11 @@ export class SeasonSelectComponent implements OnInit, OnDestroy {
 
   constructor(private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
-    const seasonsCopySubscription = this.seasons.subscribe(seasons => this.seasonsCopy = seasons);
-    this.subscriptions.push(seasonsCopySubscription);
-  }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   onSeasonSelected(selectedSeasonId: OptionId): void {
-    this.selectedSeasonIdx = this.seasonsCopy.findIndex(item => item.id === selectedSeasonId);
     this.onSelected.emit(selectedSeasonId);
   }
 

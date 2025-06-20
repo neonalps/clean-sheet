@@ -8,11 +8,11 @@
     @let birthday = getBirthday();
     @let avatar = getIconUrl();
     <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
-        <div class="flex align-items-center px-3">
+        <div class="flex align-items-center">
             <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
                 <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" />
             </div>
-            <div>
+            <div [ngClass]="{ 'pl-4': !avatar }">
                 <div>
                     <span class="mr-2 text-xl">
                         <span>{{ getFirstName() }}</span>
@@ -35,6 +35,20 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+        <div class="uppercase pl-2 flex align-items-center mb-1">
+            <div class="mr-2">
+                <div class="width-2rem relative top-2">
+                    <app-icon-graph [color]="colorLight" />
+                </div>
+            </div>
+            <div class="text-light text-base">{{ 'player.stats' | $t }}</div>
+        </div>
+        <div>
+            
         </div>
     </div>
 </ng-template>

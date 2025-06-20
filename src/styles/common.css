@@ -733,6 +733,10 @@
     width: 1.5rem;
 }
 
+.width-2rem {
+    width: 2rem;
+}
+
 .width-md {
     width: 2.5rem;
 }

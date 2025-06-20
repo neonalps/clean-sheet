@@ -32,7 +32,7 @@ export class SelectComponent implements OnInit, OnDestroy {
   @Input() emptyText!: string;
   @Input() isLoading = false;
   @Input() showSearch: boolean = false;
-  @Input() selectedOptionId?: OptionId;
+  @Input() selectedOptionId?: Observable<OptionId>;
   @Input() hideChevron = false;
   @Input() showOutline = true;
   @Input() showSelectedTick = true;
@@ -63,10 +63,16 @@ export class SelectComponent implements OnInit, OnDestroy {
 
       // handle preselect state
       if (isDefined(this.selectedOptionId)) {
-        const selected = this.options.find(item => item.id === this.selectedOptionId);
-        if (selected !== undefined) {
-          this.onSelect(selected);
-        }
+        this.subscriptions.push(this.selectedOptionId.subscribe(selectedValue => {
+          if (selectedValue === 0) {
+            return;
+          }
+          
+          const selected = this.options!.find(item => item.id === selectedValue);
+          if (selected !== undefined) {
+            this.onSelect(selected);
+          }
+        }));
       } 
     }));
 
