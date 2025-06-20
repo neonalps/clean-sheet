@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined, isNotDefined } from '@src/app/util/common';
-import { filter, map, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, Subject, Subscription } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
@@ -29,6 +29,7 @@ import { environment } from '@src/environments/environment';
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
+  selectedSeasonId$ = new BehaviorSubject<number>(0);
 
   private seasons: Season[] = [];
   private seasonGames: Map<number, DetailedGame[]> = new Map();
@@ -112,6 +113,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     assertDefined(season, `failed to find season for param ${seasonParam}`);
 
     this.selectedSeason = season as Season;
+    this.selectedSeasonId$.next(this.selectedSeason.id);
     
     await this.seasonGamesService.getSeasonGames(this.selectedSeason.id);
   }

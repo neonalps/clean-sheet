@@ -5,7 +5,7 @@
                 <div class="lineup-row flex justify-content-evenly" [ngClass]="row.additionalClasses">
                     <ng-container *ngFor="let item of row.items">
                         <div class="lineup-item flex-grow" [ngClass]="item.additionalClasses">
-                            <app-game-lineup-item [player]="item.person" />
+                            <app-game-lineup-item [player]="item.person" (click)="personSelected(item.person.personId)" />
                         </div>
                     </ng-container>
                 </div>
@@ -16,7 +16,7 @@
     <ng-template #lineupList>
         <ng-container *ngFor="let starter of getStarters()">
             <div class="mt-3 pl-1">
-                <app-game-person-item [person]="starter" />
+                <app-game-person-item [person]="starter" (click)="personSelected(starter.personId)" />
             </div>
         </ng-container>
     </ng-template>
@@ -25,7 +25,7 @@
         <div class="uppercase text-sm bold text-light-grey-darker mb-4">{{ 'game.manager' | $t }}</div>
         <ng-container *ngFor="let manager of getManagers()">
             <div class="mt-3 pl-1">
-                <app-game-person-item [person]="manager" />
+                <app-game-person-item [person]="manager" (click)="personSelected(manager.personId)" />
             </div>
         </ng-container>
     </div>
@@ -34,7 +34,7 @@
         <div class="uppercase text-sm bold text-light-grey-darker mb-4">{{ 'game.substitutes' | $t }}</div>
         <ng-container *ngFor="let substitute of getSubstitutes()">
             <div class="mt-3 pl-1">
-                <app-game-person-item [person]="substitute" />
+                <app-game-person-item [person]="substitute" (click)="personSelected(substitute.personId)" />
             </div>
         </ng-container>
     </div>

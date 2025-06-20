@@ -1,4 +1,4 @@
-import { PlayerBaseStats, PlayerStatsItemDto } from "@src/app/model/stats";
+import { PlayerBaseStats, PlayerSeasonStatsItemDto, PlayerStatsItemDto, UiPlayerStats } from "@src/app/model/stats";
 
 export function getEmptyPlayerBaseStats(): PlayerBaseStats {
     return {
@@ -70,4 +70,10 @@ export function combinePlayerBaseStats(first: PlayerBaseStats, second: PlayerBas
         psoPenaltiesFaced: first.psoPenaltiesFaced + second.psoPenaltiesFaced,
         psoPenaltiesSaved: first.psoPenaltiesSaved + second.psoPenaltiesSaved,
     };
+}
+
+export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): UiPlayerStats {
+    const overallStats = seasonStats.reduce((acc, current) => {
+        return combinePlayerBaseStats(acc, fromOptionalStatsDto(current))
+    }, getEmptyPlayerBaseStats());
 }

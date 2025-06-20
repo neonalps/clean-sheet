@@ -1,11 +1,14 @@
 import { Component, Input } from '@angular/core';
-import { TacticalFormation, UiGamePlayer, UiPersonItem, UiTeamLineup } from '@src/app/model/game';
+import { UiGamePlayer, UiPersonItem, UiTeamLineup } from '@src/app/model/game';
 import { GameLineupItemComponent } from "@src/app/component/game-lineup-item/game-lineup-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
 import { GamePersonItemComponent } from "@src/app/component/game-person-item/game-person-item.component";
 import { assertUnreachable, isDefined, isNotDefined } from '@src/app/util/common';
 import { findOrThrow } from '@src/app/util/array';
+import { Router } from '@angular/router';
+import { navigateToPerson } from '@src/app/util/router';
+import { PersonId } from '@src/app/util/domain-types';
 
 export type UiLineupItem = {
   person: UiPersonItem;
@@ -26,6 +29,8 @@ export type UiLineupRow = {
 export class GameLineupComponent {
 
   @Input() lineup!: UiTeamLineup;
+
+  constructor(private readonly router: Router) {}
 
   getLineup(): UiLineupRow[] {
     const tacticalFormation = this.lineup.tacticalFormation;
@@ -57,6 +62,10 @@ export class GameLineupComponent {
   getManagers(): UiPersonItem[] {
     return this.lineup.managers;
   }
+
+  personSelected(personId: PersonId): void {
+    navigateToPerson(this.router, personId);
+  }  
 
   getLineup442Diamond(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
     return [

@@ -9,6 +9,8 @@
     @let legInformation = getLegInformation();
     @let aggregateScore = getAggregateScore();
     @let detailsVisible = showGameDetails();
+    @let victoryGameText = getVictoryGameText();
+    
     <div class="game-section py-3 rounded-lg mt-3 mx-3" [ngClass]="getDynamicContainerClasses()">
         <div class="center text-sm">
             <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
@@ -51,8 +53,19 @@
         </div>
     </div>
 
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="victoryGameText">
+        <div class="flex align-items-center justify-content-center py-1">
+            <div class="basis-1/5 mr-3">
+                <div class="px-2 py-1 relative top-2">
+                    <app-icon-trophy [color]="colorGold" />
+                </div>
+            </div>
+            <div class="text-sm">{{ victoryGameText }}</div>
+        </div>
+    </div>
+
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible">
-         <app-tab-group>
+        <app-tab-group>
             <app-tab-item [tabTitle]="'game.events' | $t">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>

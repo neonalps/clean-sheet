@@ -47,6 +47,7 @@
     "period.extraTime": "Extra time",
     "period.afterPenaltyShootOut": "After penalty shoot out",
     "period.penaltyShootOut": "Penalty shoot out",
+    "player.stats": "Player stats",
     "reason.dangerousPlay": "Dangerous play",
     "reason.denialOfGoalScoringOpportunity": "Denial of goal scoring opportunity",
     "reason.dissent": "Dissent",
@@ -79,5 +80,10 @@
     "varDecisionReason.noHandball": "No handball",
     "varDecisionReason.offside": "Offside",
     "varDecisionReason.noOffside": "No offside",
-    "varDecisionReason.seriousFoulPlay": "Serious foul play"
+    "varDecisionReason.seriousFoulPlay": "Serious foul play",
+    "victoryGame.austrianBundesliga": "In this game {main} won the Austrian Bundesliga for the {titleCount} time",
+    "victoryGame.austrianCup": "In this game {main} won the Austrian Cup for the {titleCount} time",
+    "victoryGame.championsLeague": "In this game {main} won the Champions League for the {titleCount} time",
+    "victoryGame.europaLeague": "In this game {main} won the Europa League for the {titleCount} time",
+    "victoryGame.conferenceLeague": "In this game {main} won the Conference League for the {titleCount} time"
 }
