@@ -16,13 +16,14 @@ import { GameEventsComponent } from "@src/app/component/game-events/game-events.
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
 import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
-import { COLOR_LIGHT_GREY } from '@src/styles/constants';
+import { COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
 import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
 import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.component";
+import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -32,7 +33,7 @@ export type GameRouteState = {
   selector: 'app-game',
   imports: [
     CommonModule,
-    I18nPipe, 
+    I18nPipe,
     LoadingComponent,
     LargeClubComponent,
     TabGroupComponent,
@@ -42,8 +43,9 @@ export type GameRouteState = {
     StadiumIconComponent,
     AttendanceIconComponent,
     FormatNumberPipe,
-    GameLineupComponent
-  ],
+    GameLineupComponent,
+    TrophyIconComponent
+],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
@@ -55,6 +57,7 @@ export class GameComponent implements OnInit, OnDestroy {
   private previousLeg: DetailedGame | null = null;
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
+  readonly colorGold = COLOR_GOLD;
 
   mainClub: SmallClub = environment.mainClub;
 
@@ -174,6 +177,14 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     return parts.join(' · ');
+  }
+
+  getVictoryGameText(): string | null {
+    if (isNotDefined(this.game?.victoryGameText)) {
+      return null;
+    }
+
+    return this.translationService.translate(this.game.victoryGameText, { main: this.mainClub.shortName, titleCount: { ordinalValue: this.game.titleCount as number } });
   }
 
   showGameDetails(): boolean {

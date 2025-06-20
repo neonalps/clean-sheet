@@ -9,3 +9,5 @@ export const COLOR_DANGER = "#cf000f";
 export const COLOR_DANGER_LIGHTER_20 = "#ff0d1e";
 export const COLOR_DANGER_LIGHTER_30 = "#ff2b3a";
 export const COLOR_DANGER_LIGHTER_40 = "#ff4956";
+
+export const COLOR_GOLD = "#f3e16b";

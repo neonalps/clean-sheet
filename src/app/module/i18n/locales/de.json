@@ -49,6 +49,7 @@
     "period.injuryTime": "Nachspielzeit",
     "period.extraTime": "Verlängerung",
     "period.penaltyShootOut": "Elfmeterschießen",
+    "player.stats": "Spieler-Statistiken",
     "reason.dangerousPlay": "Gefährliches Spiel",
     "reason.denialOfGoalScoringOpportunity": "Verhinderung einer klaren Torchance",
     "reason.dissent": "Kritik",
@@ -81,5 +82,10 @@
     "varDecisionReason.noHandball": "Kein Handspiel",
     "varDecisionReason.offside": "Abseits",
     "varDecisionReason.noOffside": "Kein Abseits",
-    "varDecisionReason.seriousFoulPlay": "Schweres Foulspiel"
+    "varDecisionReason.seriousFoulPlay": "Schweres Foulspiel",
+    "victoryGame.austrianBundesliga": "In diesem Spiel hat {main} die Österreichische Bundesliga zum {titleCount}. Mal gewonnen",
+    "victoryGame.austrianCup": "In diesem Spiel hat {main} den Österreichischen Cup zum {titleCount}. Mal gewonnen",
+    "victoryGame.championsLeague": "In diesem Spiel hat {main} die Champions League zum {titleCount}. Mal gewonnen",
+    "victoryGame.europaLeague": "In diesem Spiel hat {main} die Europa League zum {titleCount}. Mal gewonnen",
+    "victoryGame.conferenceLeague": "In diesem Spiel hat {main} die Conference League zum {titleCount}. Mal gewonnen"
 }

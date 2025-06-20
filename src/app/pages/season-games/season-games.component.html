@@ -6,7 +6,7 @@
         <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
             <div class="sticky top-0 z-10 bg-color-dark py-1">
                 <div class="flex justify-content-center">
-                    <app-season-select [seasons]="seasons$" [selectedSeasonId]="this.selectedSeason?.id" (onSelected)="onSeasonSelected($event)" />
+                    <app-season-select [seasons]="seasons$" [selectedSeasonId]="selectedSeasonId$" (onSelected)="onSeasonSelected($event)" />
                 </div>
             </div>
         </ng-container>

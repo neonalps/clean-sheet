@@ -13,10 +13,12 @@ import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
+import { GraphIconComponent } from '@src/app/icon/graph/graph.component';
+import { COLOR_LIGHT } from '@src/styles/constants';
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, LoadingComponent, PlayerIconComponent, BirthdayCakeComponent],
+  imports: [CommonModule, I18nPipe, LoadingComponent, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -25,6 +27,7 @@ export class PersonComponent {
   person!: GetPersonByIdResponse;
 
   isLoading = true;
+  colorLight = COLOR_LIGHT;
 
   constructor(
     private readonly countryFlagService: CountryFlagService,
