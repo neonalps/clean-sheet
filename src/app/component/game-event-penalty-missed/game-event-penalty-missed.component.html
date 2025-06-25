@@ -1,9 +1,11 @@
 <app-game-event [event]="event">
     <div info>
-        <div class="game-event-score width-md px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm">Pen</div>
+        <div class="width-xs football-container">
+            <app-football [color]="penaltyMissedColor" />
+        </div>
     </div>
     <div person>
-        <div class="game-event-scored-by text-sm">{{ getTakenByName() }}</div>
+        <div class="game-event-scored-by text-sm">{{ 'game.penaltyMissed' | $t }}: <span class="no-break">{{ getTakenByName() }}</span></div>
         <div class="text-xs text-light-grey">
             {{ getReason() }}
         </div>

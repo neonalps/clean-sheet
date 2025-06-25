@@ -18,7 +18,7 @@ export class TranslationService {
     [Locale.German, de],
   ]);
 
-  private static readonly DEFAULT_LOCALE = Locale.English;
+  private static readonly DEFAULT_LOCALE = Locale.German;
 
   private selectedLocale: Locale | null = null;
 

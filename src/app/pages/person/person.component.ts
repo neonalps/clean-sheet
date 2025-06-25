@@ -15,6 +15,7 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
 import { GraphIconComponent } from '@src/app/icon/graph/graph.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
+import { getUiPlayerStats } from '@src/app/module/stats/util';
 
 @Component({
   selector: 'app-person',
@@ -49,6 +50,10 @@ export class PersonComponent {
   onPersonResolved(person: GetPersonByIdResponse): void {
     this.person = person;
     this.isLoading = false;
+
+    if (person.stats) {
+      console.log(getUiPlayerStats(person.stats.performance));
+    }
   }
 
   getFirstName() {

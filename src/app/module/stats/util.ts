@@ -1,3 +1,5 @@
+import { SmallCompetition } from "@src/app/model/competition";
+import { Season } from "@src/app/model/season";
 import { PlayerBaseStats, PlayerSeasonStatsItemDto, PlayerStatsItemDto, UiPlayerStats } from "@src/app/model/stats";
 
 export function getEmptyPlayerBaseStats(): PlayerBaseStats {
@@ -73,7 +75,33 @@ export function combinePlayerBaseStats(first: PlayerBaseStats, second: PlayerBas
 }
 
 export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): UiPlayerStats {
-    const overallStats = seasonStats.reduce((acc, current) => {
-        return combinePlayerBaseStats(acc, fromOptionalStatsDto(current))
-    }, getEmptyPlayerBaseStats());
+    const seasons: Season[] = [];
+    const competitions: SmallCompetition[] = [];
+
+    let overall = getEmptyPlayerBaseStats();
+
+    for (const seasonItem of seasonStats) {
+        seasons.push(seasonItem.season);
+
+        for (const competitionItem of seasonItem.competitions) {
+            if (!competitions.find(item => item.id === competitionItem.competition.id)) {
+                competitions.push(competitionItem.competition);
+            }
+
+            for (const competitionSubItem of competitionItem.items) {
+                const isSubCompetition = competitionSubItem.competition !== undefined;
+                if (isSubCompetition && !competitions.find(item => item.id === competitionSubItem.competition?.id)) {
+                    competitions.push(competitionSubItem.competition as SmallCompetition);
+                }
+
+                overall = combinePlayerBaseStats(overall, fromOptionalStatsDto(competitionSubItem.stats));
+            }
+        }
+    }
+
+    return {
+        seasons,
+        competitions,
+        overall,
+    }
 }

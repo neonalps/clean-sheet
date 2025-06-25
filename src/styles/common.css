@@ -546,6 +546,11 @@
     padding-right: .5rem;
 }
 
+.px-2-dot-5 {
+    padding-left: .625rem;
+    padding-right: .625rem;
+}
+
 .px-3 {
     padding-left: .75rem;
     padding-right: .75rem;
@@ -859,6 +864,18 @@
     top: 2px;
 }
 
+.top-4 {
+    top: 4px;
+}
+
+.top-5 {
+    top: 5px;
+}
+
+.top-6 {
+    top: 6px;
+}
+
 .top-8 {
     top: 8px;
 }
@@ -1091,4 +1108,12 @@
 
 .min-w-140 {
     min-width: 140px;
+}
+
+.no-break {
+  white-space: nowrap;
+}
+
+.overflow-hidden {
+    overflow: hidden;
 }

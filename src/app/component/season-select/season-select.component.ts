@@ -4,10 +4,12 @@ import { Season } from '@src/app/model/season';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { OptionId } from '@src/app/component/select/option';
 import { CommonModule } from '@angular/common';
+import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
+import { ChevronRightComponent } from '@src/app/icon/chevron-right/chevron-right.component';
 
 @Component({
   selector: 'app-season-select',
-  imports: [CommonModule, SelectComponent],
+  imports: [CommonModule, ChevronLeftComponent, ChevronRightComponent, SelectComponent],
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })

@@ -58,11 +58,16 @@ export interface PlayerBaseStats {
     psoPenaltiesSaved: number;
 }
 
+export type SeasonCompetitionStats = {
+    seasonId: number;
+    
+}
+
 export type UiPlayerStats = {
     seasons: Season[];
     competitions: SmallCompetition[];
     overall: PlayerBaseStats;
-    bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
-    bySeason: Map<SeasonId, PlayerBaseStats>;
-    byCompetition: Map<CompetitionId, PlayerBaseStats>;
+    //bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
+    //bySeason: Map<SeasonId, PlayerBaseStats>;
+    //byCompetition: Map<CompetitionId, PlayerBaseStats>;
 }

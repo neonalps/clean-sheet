@@ -7,7 +7,9 @@ import { Observable } from "rxjs";
 
 export type GetPersonByIdResponse = {
   person: DetailedPerson;
-  stats?: Array<PlayerSeasonStatsItemDto>;
+  stats?: {
+    performance: Array<PlayerSeasonStatsItemDto>;
+  }
 }
 
 @Injectable({

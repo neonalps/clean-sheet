@@ -18,6 +18,10 @@ export function navigateToGame(router: Router, game: DetailedGame): void {
     router.navigate(["/game", game.id], { state: { game } } );
 }
 
+export function navigateToGameWithoutDetails(router: Router, gameId: number): void {
+    router.navigate(["/game", gameId]);
+}
+
 export function navigateToPerson(router: Router, personId: number): void {
     router.navigate(["/person", personId]);
 }

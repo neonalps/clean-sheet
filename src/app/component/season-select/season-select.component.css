@@ -1,7 +1,6 @@
 .button {
     display: inline-block;
     outline: none;
-    padding: 0 16px;
     background-color: transparent;
     border-radius: 0.25rem;
     border: 1px solid transparent;

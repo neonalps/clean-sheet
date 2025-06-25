@@ -1,0 +1,19 @@
+<section class="dashboard-container mt-3 px-3 py-2">
+    <div class="dashboard-item" *ngIf="dashboard?.lastGame">
+        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+            {{ 'dashboard.lastGame' | $t }}
+        </div>
+        <div class="dashboard-item-content">
+            <app-game-overview [game]="dashboard!.lastGame!" [mainClub]="mainClub" (click)="triggerNavigateToGame(dashboard!.lastGame!)" />
+        </div>
+    </div>
+
+    <div class="dashboard-item mt-6" *ngIf="dashboard?.upcomingGame">
+        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+            {{ 'dashboard.nextGame' | $t }}
+        </div>
+        <div class="dashboard-item-content">
+            <app-game-overview [game]="dashboard!.upcomingGame!" [mainClub]="mainClub" (click)="triggerNavigateToGame(dashboard!.upcomingGame!)" />
+        </div>
+    </div>
+</section>
