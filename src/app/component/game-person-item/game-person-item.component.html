@@ -5,5 +5,28 @@
     <div class="flex text-base pointer transition-text hover:text-light-darker-10">
         <div class="pl-3 pl-2 text-light-grey-darker" *ngIf="person!.shirt">{{ person!.shirt }}</div>
         <div class="pl-3">{{ getPersonName() }} </div>
+        <div class="inline-flex justify-content-center">
+            <div *ngIf="person.captain === true" class="captain-inline"><div class="captain text-sm rounded-md bold">C</div></div>
+            <div *ngIf="person.on" class="inline-flex justify-content-center">
+                <div class="arrow-inline ml-1"><app-arrow-right [color]="'green'" class="relative top-2" /></div>
+                <div class="ml-1">{{ person.on | formatGameMinute }}</div>
+            </div>
+            <div *ngIf="person.yellowCard" class="card-inline">
+                <div class="card-yellow"></div>
+            </div>
+            <div *ngIf="person.yellowRedCard" class="card-inline">
+                <div class="card-yellow-red-yellow card-yellow"></div>
+                <div class="card-yellow-red-red card-red"></div>
+                <div class="ml-2">{{ person.yellowRedCard | formatGameMinute }}</div>
+            </div>
+            <div *ngIf="person.redCard" class="card-inline">
+                <div class="card-red"></div>
+                <div class="ml-2">{{ person.redCard | formatGameMinute }}</div>
+            </div>
+            <div *ngIf="person.off" class="inline-flex justify-content-center">
+                <div class="arrow-inline ml-1"><app-arrow-left [color]="'red'" class="relative top-2" /></div>
+                <div class="ml-1">{{ person.off | formatGameMinute }}</div>
+            </div>
+        </div>
     </div>
 </div>

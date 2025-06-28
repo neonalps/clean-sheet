@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined, isNotDefined } from '@src/app/util/common';
-import { BehaviorSubject, filter, map, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, Subscription, tap } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
@@ -66,19 +66,19 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
         }
       });
 
-      const scrollingPosition: Signal<[number, number] | undefined> = toSignal(
-        this.router.events.pipe(
-          takeUntilDestroyed(),
-          filter((event): event is Scroll => event instanceof Scroll),
-          map((event: Scroll) => event.position || [0, 0]),
-        ),
-      );
+    const scrollingPosition: Signal<[number, number] | undefined> = toSignal(
+      this.router.events.pipe(
+        takeUntilDestroyed(),
+        filter((event): event is Scroll => event instanceof Scroll),
+        map((event: Scroll) => event.position || [0, 0]),
+      ),
+    );
 
-      effect(() => {
-        if (this.scrollingRef() && scrollingPosition()) {
-          this.viewportScroller.scrollToPosition(scrollingPosition()!);
-        }
-      });
+    effect(() => {
+      if (this.scrollingRef() && scrollingPosition()) {
+        this.viewportScroller.scrollToPosition(scrollingPosition()!);
+      }
+    });
   }
 
   ngOnInit(): void {

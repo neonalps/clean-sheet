@@ -22,6 +22,10 @@ export class GameEventComponent {
     return this.isPsoGoal() ? COLOR_SUCCESS : COLOR_DANGER_LIGHTER_30;
   }
 
+  showGameMinute(): boolean {
+    return !this.event.baseMinute.startsWith("FT") && !this.event.baseMinute.startsWith("AET") && !this.event.baseMinute.startsWith("APSO");
+  }
+
   private isPsoGoal(): boolean {
     return (this.event as UiPenaltyShootOutGameEvent).result === 'goal';
   }

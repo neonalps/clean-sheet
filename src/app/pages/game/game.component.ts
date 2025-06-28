@@ -1,14 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, ViewportScroller } from '@angular/common';
+import { Component, effect, OnDestroy, OnInit, Signal, viewChild } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
 import { DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
-import { convertToUiGame, getGameResult, transformGoalMinute } from '@src/app/module/game/util';
+import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToPerson, PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { Subscription, take } from 'rxjs';
+import { navigateToClub, navigateToPerson, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { BehaviorSubject, filter, map, Subject, Subscription, take, tap } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -24,6 +24,7 @@ import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.component";
 import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -54,6 +55,10 @@ export class GameComponent implements OnInit, OnDestroy {
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
+  activeTab$ = new BehaviorSubject<string | null>(null);
+
+  scrollingRef = viewChild<HTMLElement>('scrolling');
+
   private previousLeg: DetailedGame | null = null;
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
@@ -68,8 +73,14 @@ export class GameComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translationService: TranslationService,
+    private readonly viewportScroller: ViewportScroller,
   ) {
-    const game = this.router.getCurrentNavigation()?.extras?.state?.['game'];
+    const currentNav = this.router.getCurrentNavigation();
+
+    const selectedTab = currentNav?.extractedUrl?.fragment ?? 'events';
+    this.activeTab$.next(selectedTab);
+
+    const game = currentNav?.extras?.state?.['game'];
     if (isDefined(game)) {
       this.onGameResolved(game);
     } else {
@@ -83,6 +94,20 @@ export class GameComponent implements OnInit, OnDestroy {
         console.error(`Could not resolve game ID`);
       }
     }
+
+    const scrollingPosition: Signal<[number, number] | undefined> = toSignal(
+      this.router.events.pipe(
+        takeUntilDestroyed(),
+        filter((event): event is Scroll => event instanceof Scroll),
+        map((event: Scroll) => event.position || [0, 0]),
+      ),
+    );
+
+    effect(() => {
+      if (this.scrollingRef() && scrollingPosition()) {
+        this.viewportScroller.scrollToPosition(scrollingPosition()!);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -95,7 +120,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   onGameResolved(game: DetailedGame): void {
     this.game = game;
-    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGoalMinute(minute, '.') });
+    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGameMinute(minute, '.') });
 
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
@@ -112,6 +137,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
   onPersonSelected(personId: number): void {
     navigateToPerson(this.router, personId);
+  }
+
+  onTabSelected(tabId: string) {
+    replaceHash(tabId);
   }
 
   getHomeTeam(): SmallClub {

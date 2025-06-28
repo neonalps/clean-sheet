@@ -15,6 +15,10 @@
         background-color: var(--dark-grey);
     }
 
+    .hover\:bg-color-dark-grey-mid:hover {
+        background-color: var(--dark-grey-mid);
+    }
+
     .hover\:bg-color-dark-grey-lighter:hover {
         background-color: var(--dark-grey-lighter);
     }

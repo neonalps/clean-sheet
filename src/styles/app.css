@@ -62,6 +62,22 @@ textarea:focus, input:focus {
   display: flex;
 }
 
+.card-inline {
+  display: inline-flex;
+  justify-content: center;
+  padding: 0 .6rem;
+}
+
+.card-inline > .card-yellow {
+  position: relative;
+  top: 2px;
+}
+
+.card-inline > .card-red {
+  position: relative;
+  top: 2px;
+}
+
 .card-yellow {
   background-color: #f5e51b;
   border-radius: .1rem;
@@ -74,4 +90,30 @@ textarea:focus, input:focus {
   border-radius: .1rem;
   height: 18px;
   width: 10px;
+}
+
+.card-yellow-red-yellow {
+    position: relative;
+    top: 3px;
+    left: 4%;
+    z-index: 10;
+}
+
+.card-yellow-red-red {
+    position: relative;
+    left: -3px;
+    z-index: 11;
+}
+
+.captain-inline {
+  padding: 0 .5rem;
+}
+
+.captain {
+  background-color: var(--dark-grey-lighter-2);
+  padding: .1rem .2rem;
+}
+
+.arrow-inline {
+  width: 1.25rem;
 }

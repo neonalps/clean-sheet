@@ -30,7 +30,7 @@
             </div>
             <div class="basis-1/8 pt-1">
                 <div class="text-sm mb-5">
-                    <div *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
+                    <div class="mt-4" *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
                 </div>
                 <ng-container *ngIf="detailsVisible; else upcoming">
                     <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
@@ -64,12 +64,12 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible">
-        <app-tab-group>
-            <app-tab-item [tabTitle]="'game.events' | $t">
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible" #scrolling>
+        <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$">
+            <app-tab-item [tabTitle]="'game.events' | $t" [tabId]="'events'">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
-            <app-tab-item [tabTitle]="'game.lineup' | $t">
+            <app-tab-item [tabTitle]="'game.lineup' | $t" [tabId]="'lineup'">
                 <app-game-lineup [lineup]="uiGame!.lineup.main" />
             </app-tab-item>
         </app-tab-group>

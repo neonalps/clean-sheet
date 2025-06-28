@@ -7,13 +7,15 @@ import { take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
-import { DetailedGame } from '@src/app/model/game';
-import { navigateToGame } from '@src/app/util/router';
+import { BasicGame, DetailedGame } from '@src/app/model/game';
+import { navigateToGame, navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
+import { CardSkeletonComponent } from "@src/app/component/card-skeleton/card-skeleton.component";
+import { GameSmallComponent } from "@src/app/component/game-small/game-small.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent],
+  imports: [CommonModule, I18nPipe, GameOverviewComponent, CardSkeletonComponent, GameSmallComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

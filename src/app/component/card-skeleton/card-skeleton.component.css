@@ -1,0 +1,10 @@
+.skeleton-box:last-child {
+    margin-right: 0;
+}
+
+.box-2-3 {
+    height: 2rem;
+    width: 3rem;
+    background-color: var(--dark-grey-lighter-2);
+    margin-right: .5rem;
+}

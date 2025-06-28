@@ -10,6 +10,7 @@ import { Component, Input } from '@angular/core';
 export class TabItemComponent {
 
   @Input() tabTitle = '';
+  @Input() tabId!: string;
 
   active = false;
 

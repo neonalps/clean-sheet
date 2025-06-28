@@ -1,5 +1,5 @@
-import { CompetitionId, SeasonId } from "../util/domain-types";
 import { SmallCompetition } from "./competition";
+import { BasicGame, DetailedGame } from "./game";
 import { Season } from "./season";
 
 export type PlayerSeasonStatsItemDto = {
@@ -70,4 +70,9 @@ export type UiPlayerStats = {
     //bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
     //bySeason: Map<SeasonId, PlayerBaseStats>;
     //byCompetition: Map<CompetitionId, PlayerBaseStats>;
+}
+
+export interface PerformanceTrend {
+    score: number;
+    games: DetailedGame[];
 }

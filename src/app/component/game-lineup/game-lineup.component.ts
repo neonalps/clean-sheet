@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UiGamePlayer, UiPersonItem, UiTeamLineup } from '@src/app/model/game';
+import { UiGameManager, UiGamePlayer, UiTeamLineup } from '@src/app/model/game';
 import { GameLineupItemComponent } from "@src/app/component/game-lineup-item/game-lineup-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { navigateToPerson } from '@src/app/util/router';
 import { PersonId } from '@src/app/util/domain-types';
 
 export type UiLineupItem = {
-  person: UiPersonItem;
+  person: UiGamePlayer;
   additionalClasses?: string;
 }
 
@@ -59,7 +59,7 @@ export class GameLineupComponent {
     return this.lineup.players.slice(11);
   }
 
-  getManagers(): UiPersonItem[] {
+  getManagers(): UiGameManager[] {
     return this.lineup.managers;
   }
 

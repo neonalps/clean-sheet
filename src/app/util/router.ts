@@ -25,3 +25,7 @@ export function navigateToGameWithoutDetails(router: Router, gameId: number): vo
 export function navigateToPerson(router: Router, personId: number): void {
     router.navigate(["/person", personId]);
 }
+
+export function replaceHash(hash: string) {
+    window.history.replaceState(null, '', `${window.location.origin}${window.location.pathname}#${hash}`);
+}

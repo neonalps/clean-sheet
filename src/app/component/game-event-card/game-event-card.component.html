@@ -1,11 +1,11 @@
 <app-game-event [event]="event">
     <div info>
-        <div class="card-container w-full flex align-items-center justify-content-center">
+        <div class="w-full flex align-items-center justify-content-center">
             <div *ngIf="event.cardType === 'yellow'" class="card-yellow"></div>
             <div *ngIf="event.cardType === 'red'" class="card-red"></div>
             <div *ngIf="event.cardType === 'yellowRed'">
-                <div class="card-yellow-red-yellow card-yellow"></div>
-                <div class="card-yellow-red-red card-red"></div>
+                <div class="inline-block card-yellow-red-yellow card-yellow"></div>
+                <div class="inline-block card-yellow-red-red card-red"></div>
             </div>
         </div>
     </div>
@@ -15,4 +15,4 @@
             {{ getReason() }}
         </div>
     </div>
-</app-game-event>
+</app-game-event>   

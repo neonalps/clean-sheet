@@ -90,6 +90,9 @@ export interface GameManager {
     id: number;
     person: Person;
     role: ManagingRole;
+    yellowCard?: string;
+    yellowRedCard?: string;
+    redCard?: string;
 }
 
 export interface TeamGameReport {
@@ -207,13 +210,21 @@ export interface UiGamePlayer extends UiPerson {
     forMain: boolean;
     shirt: number;
     positionGrid?: string;
-    // TODO add other fields
+    captain?: boolean;
+    yellowCard?: string;
+    yellowRedCard?: string;
+    redCard?: string;
+    on?: string;
+    off?: string;
 }
 
 export interface UiGameManager extends UiPerson {
     gameManagerId: number;
     forMain: boolean;
     role: ManagingRole;
+    yellowCard?: string;
+    yellowRedCard?: string;
+    redCard?: string;
 }
 
 export type UiScoreBoardItem = {

@@ -16,6 +16,10 @@
     display: flex;
 }
 
+.inline-flex {
+    display: inline-flex;
+}
+
 .flex-col {
     flex-direction: column;
 }
@@ -738,6 +742,10 @@
     width: 1.5rem;
 }
 
+.width-1-75rem {
+    width: 1.75rem;
+}
+
 .width-2rem {
     width: 2rem;
 }
@@ -1074,6 +1082,10 @@
     border-width: 3px;
 }
 
+.border-l-2 {
+    border-left-width: 2px;
+}
+
 .border-l-3 {
     border-left-width: 3px;
 }
@@ -1088,6 +1100,10 @@
 
 .border-l-light {
     border-left-color: var(--light);
+}
+
+.border-l-dark-grey-lighter {
+    border-left-color: var(--dark-grey-lighter);
 }
 
 .min-h-24 {

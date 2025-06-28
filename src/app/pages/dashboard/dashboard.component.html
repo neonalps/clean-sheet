@@ -16,4 +16,31 @@
             <app-game-overview [game]="dashboard!.upcomingGame!" [mainClub]="mainClub" (click)="triggerNavigateToGame(dashboard!.upcomingGame!)" />
         </div>
     </div>
+
+    <div class="dashboard-item mt-6">
+        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+            {{ 'dashboard.performanceTrend' | $t }}
+        </div>
+        <div class="dashboard-item-content">
+            <ng-container *ngIf="isLoading; else loadedPerformanceTrend">
+                <app-card-skeleton />
+            </ng-container>
+            <ng-template #loadedPerformanceTrend>
+                <div class="bg-color-dark-grey-darker p-2 rounded-lg mt-3">
+                    <div class="flex justify-content-between">
+                        <ng-container *ngFor="let trendGame of dashboard?.performanceTrend?.games!">
+                            <div class="hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded p-2" (click)="triggerNavigateToGame(trendGame)">
+                                <app-game-small [game]="trendGame" />
+                            </div>
+                        </ng-container>
+                        <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-3">
+                            <div class="text-light-grey">
+                                {{ dashboard?.performanceTrend?.score }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
 </section>

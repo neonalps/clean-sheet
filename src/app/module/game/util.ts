@@ -18,7 +18,7 @@ export function getGameResult(game: BasicGame, includePso = true): ScoreTuple | 
 }
 
 
-export function transformGoalMinute(minute: string, suffix: string): string {
+export function transformGameMinute(minute: string, suffix: string): string {
     const result: string[] = [];
 
     if (minute.indexOf("+") < 0) {
@@ -42,7 +42,7 @@ export type OwnGoalLocalizer = () => string;
 export type PenaltyLocalizer = () => string;
 
 function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer {
-    return {
+    const uiGamePlayer: UiGamePlayer = {
         gamePlayerId: item.id,
         forMain,
         personId: item.player.id,
@@ -52,12 +52,38 @@ function convertToUiGamePlayer(item: GamePlayer, forMain: boolean): UiGamePlayer
         shirt: item.shirt,
         positionGrid: item.positionGrid,
     };
+
+    if (item.captain === true) {
+        uiGamePlayer.captain = true;
+    }
+
+    if (isDefined(item.yellowCard)) {
+        uiGamePlayer.yellowCard = item.yellowCard;
+    }
+
+    if (isDefined(item.yellowRedCard)) {
+        uiGamePlayer.yellowRedCard = item.yellowRedCard;
+    }
+
+    if (isDefined(item.redCard)) {
+        uiGamePlayer.redCard = item.redCard;
+    }
+
+    if (isDefined(item.on)) {
+        uiGamePlayer.on = item.on;
+    }
+
+    if (isDefined(item.off)) {
+        uiGamePlayer.off = item.off;
+    }
+
+    return uiGamePlayer;
 }
 
 type GamePlayerGoals = { gamePlayerId: number, goals: string[] };
 
 function convertToUiGameManager(item: GameManager, forMain: boolean): UiGameManager {
-    return {
+    const uiGameManager: UiGameManager = {
         gameManagerId: item.id,
         forMain,
         role: item.role,
@@ -65,7 +91,21 @@ function convertToUiGameManager(item: GameManager, forMain: boolean): UiGameMana
         firstName: item.person.firstName,
         lastName: item.person.lastName,
         avatar: item.person.avatar,
+    };
+
+    if (isDefined(item.yellowCard)) {
+        uiGameManager.yellowCard = item.yellowCard;
     }
+
+    if (isDefined(item.yellowRedCard)) {
+        uiGameManager.yellowRedCard = item.yellowRedCard;
+    }
+
+    if (isDefined(item.redCard)) {
+        uiGameManager.redCard = item.redCard;
+    }
+
+    return uiGameManager;
 }
 
 export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLocalizer, minute: MinuteLocalizer, ownGoal: OwnGoalLocalizer, penalty: PenaltyLocalizer }): UiGame {
@@ -222,6 +262,14 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         psoGameEvents.push(...(events.splice(firstPsoGameEventIndex) as UiPenaltyShootOutGameEvent[]));
     }
 
+    // remove FT events
+    const afterFullTimeEvents: UiGameEvent[] = [];
+    const firstAfterFullTimeGameEvent = events.findIndex(event => event.baseMinute.startsWith("FT"));
+    if (firstAfterFullTimeGameEvent !== undefined) {
+        const fullTimeGameEventsCount = events.filter(event => event.baseMinute.startsWith("FT")).length;
+        afterFullTimeEvents.push(...events.splice(firstAfterFullTimeGameEvent, fullTimeGameEventsCount));
+    }
+
     // add half time period event
     events.splice(eventsBeforeHalfTime, 0, {
         type: GameEventType.Period,
@@ -306,6 +354,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
             ...events,
             ...psoGameEvents,
             fullTimeEvent,
+            ...afterFullTimeEvents,
         ]
     }
 
