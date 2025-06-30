@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { getRandomNumberBetween } from '@src/app/util/random';
 
 export type ChatMessage = {
   id: number;
@@ -63,20 +64,21 @@ export class ChatComponent implements AfterViewInit {
       this.messages.push(message);
 
       if (!byUser) {
-        this.simulateTyping(message, content);
+        this.simulateTyping(message, content, 70);
       }
     }
 
-    private simulateTyping(message: ChatMessage, fullContent: string) {
+    private simulateTyping(message: ChatMessage, fullContent: string, timeoutMs: number) {
       setTimeout(() => {
         const revealedMessage = message.content;
         if (revealedMessage.length < fullContent.length) {
-          // TODO add random delays, vary revealed message length
-          const nextCharacters = fullContent.substring(revealedMessage.length, revealedMessage.length + 4);
+          const revealLength = getRandomNumberBetween(2, 6)
+          const nextCharacters = fullContent.substring(revealedMessage.length, revealedMessage.length + revealLength);
           message.content += nextCharacters;
-          this.simulateTyping(message, fullContent);
+          const randomTimeoutMs = getRandomNumberBetween(40, 120);
+          this.simulateTyping(message, fullContent, randomTimeoutMs);
         }
-      }, 70);
+      }, timeoutMs);
     }
 
 }
