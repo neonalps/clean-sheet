@@ -6,7 +6,7 @@
         <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
             <div class="sticky top-0 z-10 bg-color-dark py-1">
                 <div class="flex justify-content-center">
-                    <app-season-select [seasons]="seasons$" [selectedSeasonId]="selectedSeasonId$" (onSelected)="onSeasonSelected($event)" />
+                    <app-season-select [seasons]="seasons$" [selectedSeasonId]="selectedSeasonIdSubject" (onSelected)="onSeasonSelected($event)" />
                 </div>
             </div>
         </ng-container>
@@ -18,7 +18,7 @@
                         <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
                     </ng-container>
                 </div>
-                <div *ngIf="hasUpcomingGames">
+                <div *ngIf="hasUpcomingGames" #upcomingGamesContainer>
                     <div class="text-sm text-light-grey">{{ 'games.upcoming' | $t }}</div>
                     <ng-container *ngFor="let game of upcomingSeasonGames">
                         <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />

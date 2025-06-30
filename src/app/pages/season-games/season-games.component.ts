@@ -1,10 +1,10 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, effect, OnDestroy, OnInit, Signal, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, OnDestroy, OnInit, Signal, ViewChild, viewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
-import { assertDefined, isNotDefined } from '@src/app/util/common';
-import { BehaviorSubject, filter, map, Observable, of, Subscription, tap } from 'rxjs';
+import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
+import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, Subscription, tap } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
@@ -15,7 +15,7 @@ import { OptionId } from '@src/app/component/select/option';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
 import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
 import { environment } from '@src/environments/environment';
@@ -29,7 +29,7 @@ import { environment } from '@src/environments/environment';
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
-  selectedSeasonId$ = new BehaviorSubject<number>(0);
+  selectedSeasonIdSubject = new BehaviorSubject<number>(0);
 
   private seasons: Season[] = [];
   private seasonGames: Map<number, DetailedGame[]> = new Map();
@@ -48,7 +48,9 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   pastSeasonGames: DetailedGame[] = [];
   upcomingSeasonGames: DetailedGame[] = [];
 
-  scrollingRef = viewChild<HTMLElement>('scrolling');
+  @ViewChild('upcomingGamesContainer') upcomingGamesRef!: ElementRef;
+
+  private upcomingGamesPositionSubject = new Subject<[number, number] | undefined>();
 
   constructor(
     private readonly route: ActivatedRoute, 
@@ -57,7 +59,6 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     private readonly seasonGamesService: SeasonGamesService,
     private readonly viewportScroller: ViewportScroller,
   ) {
-
     this.router.events
       .pipe(takeUntilDestroyed())
       .subscribe(value => {
@@ -66,19 +67,48 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
         }
       });
 
-    const scrollingPosition: Signal<[number, number] | undefined> = toSignal(
-      this.router.events.pipe(
-        takeUntilDestroyed(),
-        filter((event): event is Scroll => event instanceof Scroll),
-        map((event: Scroll) => event.position || [0, 0]),
-      ),
+    const routerScrollingPosition = this.router.events.pipe(
+      takeUntilDestroyed(),
+      filter((event): event is Scroll => event instanceof Scroll),
+      map((event: Scroll) => event.position || undefined),
     );
 
-    effect(() => {
-      if (this.scrollingRef() && scrollingPosition()) {
-        this.viewportScroller.scrollToPosition(scrollingPosition()!);
+    const upcomingGamesPosition = this.upcomingGamesPositionSubject.pipe(
+        takeUntilDestroyed(),
+    );
+    
+    // note: combine latest only emits after each observable has emitted at least one value
+    combineLatest([
+      routerScrollingPosition,
+      upcomingGamesPosition,
+    ]).pipe(takeUntilDestroyed()).subscribe(([routerScrollingPositionValue, upcomingGamesPositionValue]) => {
+      // ignore any undefined upcoming games position values
+      if (upcomingGamesPositionValue === undefined) {
+        return;
       }
+
+      const scrollY = routerScrollingPositionValue !== undefined ? routerScrollingPositionValue[1] : null;
+      const upcomingGamesY = upcomingGamesPositionValue[1];
+
+      const finalScrollY = this.determineScrollY(scrollY, upcomingGamesY, window.screen.height);
+      this.viewportScroller.scrollToPosition([0, finalScrollY]);
     });
+  }
+
+  private determineScrollY(scrollY: number | null, upcomingGamesY: number | null, screenHeight: number): number {
+    // if we got a position via scroll, we take that one
+    // if we didn't get a position via scroll, we use the one we got from the upcoming games position
+    // if we didn't get a position via upcoming games, we fall back to 0.
+    if (isDefined(scrollY)) {
+      return scrollY;
+    }
+
+    // only use the effectiveUpcomingY if it larger than the screen height
+    if (isDefined(upcomingGamesY) && upcomingGamesY > screenHeight) {
+      return Math.floor(upcomingGamesY - (screenHeight * .8));
+    }
+
+    return 0;
   }
 
   ngOnInit(): void {
@@ -104,6 +134,11 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
         this.hasPastGames = this.pastSeasonGames.length > 0;
         this.hasUpcomingGames = this.upcomingSeasonGames.length > 0;
         this.hasSeasonGames = this.hasPastGames || this.hasUpcomingGames;
+
+        setTimeout(() => {
+          const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
+          this.upcomingGamesPositionSubject.next(upcomingGamesPosition !== undefined ? [upcomingGamesPosition.x, upcomingGamesPosition.y] : [0, 0]);
+        }, 0);
       }
     }));
   }
@@ -113,7 +148,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     assertDefined(season, `failed to find season for param ${seasonParam}`);
 
     this.selectedSeason = season as Season;
-    this.selectedSeasonId$.next(this.selectedSeason.id);
+    this.selectedSeasonIdSubject.next(this.selectedSeason.id);
     
     await this.seasonGamesService.getSeasonGames(this.selectedSeason.id);
   }
@@ -126,6 +161,9 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     if (seasonId === this.selectedSeason?.id) {
       return;
     }
+
+    // we must emit an undefined value for the upcoming games observable because it otherwise it will assume the previous value is still valid for this one (due to the use of combineLatest)
+    this.upcomingGamesPositionSubject.next(undefined);
 
     navigateToSeasonGames(this.router, Number(seasonId))
   }
