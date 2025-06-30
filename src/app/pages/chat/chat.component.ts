@@ -27,7 +27,7 @@ export class ChatComponent implements AfterViewInit {
     }
 
     addWelcomeMessage() {
-      this.createMessage(`Hi! My name is Mika. I will gladly answer any statistical questions about Sturm Graz that you might have. Go ahead 🏴🏳️`, false);
+      this.createMessage(`Hi! My name is Mika. I will gladly answer any statistical questions about Sturm Graz that you might have. Auf die Schwoazn 🏴🏳️`, false);
     }
 
     focusMessage(): void {
