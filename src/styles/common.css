@@ -216,6 +216,10 @@
     margin-bottom: 8rem;
 }
 
+.ml-2\/5 {
+    margin-left: 40%;
+}
+
 .ml-1 {
     margin-left: .25rem;
 }
@@ -778,6 +782,10 @@
     width: 75%;
 }
 
+.w-3\/5 {
+    width: 60%;
+}
+
 .w-4\/5 {
     width: 80%;
 }
@@ -1106,6 +1114,26 @@
     border-left-color: var(--dark-grey-lighter);
 }
 
+.h-dvh {
+    height: 100dvh;
+}
+
+.h-1\/10 {
+    height: 10%;
+}
+
+.h-1\/5 {
+    height: 20%;
+}
+
+.h-4\/5 {
+    height: 80%;
+}
+
+.h-9\/10 {
+    height: 90%;
+}
+
 .min-h-24 {
     min-height: 24px;
 }
@@ -1132,4 +1160,8 @@
 
 .overflow-hidden {
     overflow: hidden;
+}
+
+.overflow-y-scroll {
+    overflow-y: scroll;
 }

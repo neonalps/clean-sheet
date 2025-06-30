@@ -5,6 +5,7 @@ import { PATH_PARAM_CLUB_ID, PATH_PARAM_GAME_ID, PATH_PARAM_PERSON_ID, PATH_PARA
 import { PersonComponent } from './pages/person/person.component';
 import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ChatComponent } from './pages/chat/chat.component';
 
 export const routes: Routes = [
     { 
@@ -30,6 +31,11 @@ export const routes: Routes = [
     { 
         path: `person/:${PATH_PARAM_PERSON_ID}`, 
         component: PersonComponent,
+        canActivate: [],
+    },
+    { 
+        path: `chat`, 
+        component: ChatComponent,
         canActivate: [],
     },
     { 
