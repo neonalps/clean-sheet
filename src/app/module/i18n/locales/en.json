@@ -1,4 +1,5 @@
 {
+    "chat.writeMessage": "Write a message to {name}...",
     "competitionRound.final": "Final",
     "competitionRound.semifinal": "Semifinal",
     "competitionRound.quarterfinal": "Quarterfinal",

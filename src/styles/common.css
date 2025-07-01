@@ -1150,6 +1150,14 @@
     min-height: 48px;
 }
 
+.min-h-60 {
+    min-height: 60px;
+}
+
+.min-h-90 {
+    min-height: 90px;
+}
+
 .min-w-140 {
     min-width: 140px;
 }

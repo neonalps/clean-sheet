@@ -1,10 +1,10 @@
 <div class="h-dvh flex flex-col">
-    <div class="h-9/10 px-3 py-2 overflow-y-scroll">
-        <ng-container *ngFor="let message of messages;">
-            <div class="w-3/5 p-3 bg-color-dark-grey-lighter rounded" [ngClass]="getDynamicClasses(message)">{{ message.content }}</div>
+    <div class="px-3 py-2 flex-grow-1 overflow-y-scroll">
+        <ng-container *ngFor="let message of messages">
+            <div class="w-3/5 p-3 bg-color-dark-grey-lighter rounded" [ngClass]="getDynamicClasses(message)" [innerHTML]="message.content"></div>
         </ng-container>
     </div>
-    <div class="h-1/10 px-3 flex align-items-center justify-content-center">
-        <input type="text" class="w-full py-1 px-2 text-lg" placeholder="Schreibe eine Nachricht..." (keyup.enter)="onMessageSubmit()" #message />
+    <div class="px-3 min-h-90 flex align-items-center justify-content-center">
+        <input type="text" class="w-full py-1 px-2 text-lg" [attr.placeholder]="getMessagePlaceholder()" (keyup.enter)="onMessageSubmit()" #message />
     </div>
 </div>
