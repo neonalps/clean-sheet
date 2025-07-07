@@ -1,0 +1,3 @@
+<ng-container *ngIf="message.type === 'text'">
+    <div class="w-3/5 p-3 bg-color-dark-grey-lighter rounded" [ngClass]="getDynamicClasses(message)" [innerHTML]="message.content"></div>
+</ng-container>

@@ -1,8 +1,9 @@
-.skeleton-box:last-child {
+.skeleton:last-child {
+    margin-bottom: 0;
     margin-right: 0;
 }
 
-.box-2-3 {
+.skeleton-box-2-3 {
     height: 2rem;
     width: 3rem;
     background-color: var(--dark-grey-lighter-2);

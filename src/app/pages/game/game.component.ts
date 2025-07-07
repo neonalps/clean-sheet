@@ -1,5 +1,5 @@
-import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, effect, OnDestroy, OnInit, Signal, viewChild } from '@angular/core';
+import { CommonModule, getLocaleExtraDayPeriods, ViewportScroller } from '@angular/common';
+import { Component, ElementRef, OnDestroy, ViewChild, viewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
@@ -7,8 +7,8 @@ import { DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, Ui
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToPerson, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, filter, map, Subject, Subscription, take, tap } from 'rxjs';
+import { navigateToClub, navigateToGame, navigateToPerson, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -24,7 +24,10 @@ import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.component";
 import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ClubResolver } from '@src/app/module/club/resolver';
+import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
+import { GameId, SeasonId } from '@src/app/util/domain-types';
+import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -45,19 +48,23 @@ export type GameRouteState = {
     AttendanceIconComponent,
     FormatNumberPipe,
     GameLineupComponent,
-    TrophyIconComponent
+    TrophyIconComponent,
+    GamePerformanceTrendComponent,
+    GameOverviewComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
-export class GameComponent implements OnInit, OnDestroy {
+export class GameComponent implements OnDestroy {
 
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
   activeTab$ = new BehaviorSubject<string | null>(null);
+  readonly lastGamesAgainstClub$ = new Subject<DetailedGame[]>;
+  readonly performanceTrendAgainstClub$ = new Subject<DetailedGame[]>;
 
-  scrollingRef = viewChild<HTMLElement>('scrolling');
+  @ViewChild('lastGamesContainer') lastGamesContainerRef!: ElementRef;
 
   private previousLeg: DetailedGame | null = null;
 
@@ -66,56 +73,51 @@ export class GameComponent implements OnInit, OnDestroy {
 
   mainClub: SmallClub = environment.mainClub;
 
-  private subscriptions: Subscription[] = [];
+  private readonly destroy$ = new Subject<void>();
+  private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
 
   constructor(
+    private readonly clubResolver: ClubResolver,
     private readonly gameResolver: GameResolver,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translationService: TranslationService,
     private readonly viewportScroller: ViewportScroller,
   ) {
-    const currentNav = this.router.getCurrentNavigation();
+    this.router.events
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        if (value instanceof NavigationEnd) {
+          this.lastGamesAvailable.next(false);
+          this.loadGameDetails();
+        }
+      });
 
-    const selectedTab = currentNav?.extractedUrl?.fragment ?? 'events';
-    this.activeTab$.next(selectedTab);
-
-    const game = currentNav?.extras?.state?.['game'];
-    if (isDefined(game)) {
-      this.onGameResolved(game);
-    } else {
-      // no game passed in state (can happen if the user copied the link), we must resolve the game manually
-      const gameId = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
-      if (isDefined(gameId)) {
-        this.resolveGame(Number(gameId));
-      } else {
-        // TODO show error content
-        this.isLoading = false;
-        console.error(`Could not resolve game ID`);
-      }
-    }
-
-    const scrollingPosition: Signal<[number, number] | undefined> = toSignal(
-      this.router.events.pipe(
-        takeUntilDestroyed(),
-        filter((event): event is Scroll => event instanceof Scroll),
-        map((event: Scroll) => event.position || [0, 0]),
-      ),
+    const routerScrollPosition$ = this.router.events.pipe(
+      takeUntil(this.destroy$),
+      filter((event): event is Scroll => event instanceof Scroll),
+      map((event: Scroll) => event.position || undefined),
+      filter((value: [number, number] | undefined) => value !== undefined),
     );
 
-    effect(() => {
-      if (this.scrollingRef() && scrollingPosition()) {
-        this.viewportScroller.scrollToPosition(scrollingPosition()!);
-      }
-    });
-  }
+    const lastGamesAvailable$ = this.lastGamesAvailable.pipe(takeUntil(this.destroy$));
 
-  ngOnInit(): void {
-    
+    combineLatest([
+      routerScrollPosition$,
+      lastGamesAvailable$,
+    ]).pipe(takeUntil(this.destroy$)).subscribe(([routerScrollPositionValue, lastGamesAvailableValue]) => {
+      if (lastGamesAvailableValue === false) {
+        return;
+      }
+
+      console.log('scrolling to', routerScrollPositionValue);
+      this.viewportScroller.scrollToPosition(routerScrollPositionValue);
+    });    
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(item => item.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onGameResolved(game: DetailedGame): void {
@@ -128,6 +130,23 @@ export class GameComponent implements OnInit, OnDestroy {
     } else {
       // if there is no previous leg to resolvem we can finish loading now
       this.isLoading = false;
+    }
+
+    // if it is an upcoming game, fetch the last games to display the record
+    if (game.status === GameStatus.Scheduled) {
+      this.clubResolver.getById(game.opponent.id, true).pipe(take(1)).subscribe({
+        next: (club) => {
+          if (club.lastGames) {
+            this.lastGamesAgainstClub$.next(club.lastGames);
+            this.performanceTrendAgainstClub$.next(club.lastGames.slice(0, 5).reverse());
+
+            setTimeout(() => this.lastGamesAvailable.next(true), 0);
+          }
+        },
+        error: (error) => {
+          console.warn(error);
+        }
+      })
     }
   }
 
@@ -305,6 +324,10 @@ export class GameComponent implements OnInit, OnDestroy {
     return this.getResultTendencyClass(aggregateTendency);
   }
 
+  shouldShowLastGames(): boolean {
+    return this.game?.status === GameStatus.Scheduled;
+  }
+
   private getResultTendencyClass(tendency: Tendency): string {
     return `result-tendency-${tendency}`;
   }
@@ -318,8 +341,36 @@ export class GameComponent implements OnInit, OnDestroy {
     return [referee?.person.firstName, referee?.person.lastName].filter(item => isDefined(item)).join(' ');
   }
 
-  private resolveGame(gameId: number) {
-    this.gameResolver.getById(gameId).pipe(take(1)).subscribe({
+  triggerNavigateToGame(game: DetailedGame) {
+    navigateToGame(this.router, game);
+  }
+
+  private loadGameDetails() {
+    // TODO implement view port scroller to restore router scroll position
+
+    const currentNav = this.router.getCurrentNavigation();
+
+    const selectedTab = currentNav?.extractedUrl?.fragment ?? 'events';
+    this.activeTab$.next(selectedTab);
+
+    const game = currentNav?.extras?.state?.['game'];
+    if (isDefined(game)) {
+      this.onGameResolved(game);
+    } else {
+      // no game passed in state (can happen if the user copied the link), we must resolve the game manually
+      const gameId = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
+      if (isDefined(gameId)) {
+        this.resolveGame(Number(gameId));
+      } else {
+        // TODO show error content
+        this.isLoading = false;
+        console.error(`Could not resolve game ID`);
+      }
+    }
+  }
+
+  private resolveGame(gameId: GameId, seasonId?: SeasonId) {
+    this.gameResolver.getById(gameId, seasonId).pipe(take(1)).subscribe({
       next: game => {
         this.onGameResolved(game);
       },

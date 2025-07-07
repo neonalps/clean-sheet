@@ -1,6 +1,12 @@
 <div class="flex flex-col align-items-center justify-content-center">
-    <div>
+    <div *ngIf="!showGameDate">
         <app-club-icon [iconUrl]="game.opponent.iconSmall!" [iconClassName]="'width-1-75rem'"  />
+    </div>
+    <div *ngIf="showGameDate">
+        <div class="text-xs text-light-grey-darker center">
+            <div>{{ game.kickoff | date:'MMM d' }}</div>
+            <div>{{ game.kickoff | date:'YYYY' }}</div>
+        </div>
     </div>
     <div class="mt-3">
         <app-game-score [game]="game" />

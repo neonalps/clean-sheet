@@ -1,5 +1,5 @@
-import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, PenaltyShootOutGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
-import { isDefined } from "@src/app/util/common";
+import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, PenaltyShootOutGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, Tendency, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
+import { isDefined, isNotDefined } from "@src/app/util/common";
 
 export function getGameResult(game: BasicGame, includePso = true): ScoreTuple | null {
     if (isDefined(game.penaltyShootOut) && includePso === true) {
@@ -368,4 +368,22 @@ export function splitGameMinute(minute: string): [string, string | undefined] {
     }
 
     return [minute.substring(0, stoppageTimeIndicatorPosition), minute.substring(stoppageTimeIndicatorPosition)];
+}
+
+/**
+ * Returns the performance trend number for a collection of result tendencies. The number is the percentage of the maximum points possible.
+ * If no result tendencies are passed -1 will be returned.
+ * @param resultTendencies 
+ * @returns 
+ */
+export function calculatePerformanceTrend(resultTendencies: ReadonlyArray<Tendency>): number {
+    if (isNotDefined(resultTendencies) || resultTendencies.length === 0) {
+        return -1;
+    }
+
+    const resultPoints = resultTendencies
+        .map(tendency => tendency === 'w' ? 3 : tendency === 'd' ? 1 : 0)
+        .reduce((acc: number, current: number) => acc + current, 0);
+
+    return Math.floor(100 * resultPoints / (resultTendencies.length * 3));
 }

@@ -17,6 +17,7 @@ export class GameOverviewComponent {
 
   @Input() game!: BasicGame;
   @Input() mainClub!: SmallClub;
+  @Input() showYear = false;
 
   constructor(private readonly translationService: TranslationService) {}
 
@@ -41,6 +42,10 @@ export class GameOverviewComponent {
 
   getResultTendencyClass(): string {
     return `result-tendency-${this.game.resultTendency}`;
+  }
+
+  getDateFormat(): string {
+    return `EEE, MMM d ${this.showYear ? 'YYYY' : ''} - HH:mm`
   }
 
   hasExtendedPlay(): boolean {

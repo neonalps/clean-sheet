@@ -72,6 +72,10 @@
     flex: auto;
 }
 
+.flex-1 {
+    flex: 1;
+}
+
 .flex-grow, .flex-grow-1 {
     flex-grow: 1;
 }

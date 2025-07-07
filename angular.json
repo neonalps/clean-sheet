@@ -29,7 +29,8 @@
             "styles": [
               "src/styles/app.css",
               "src/styles/common.css",
-              "src/styles/hover.css"
+              "src/styles/hover.css",
+              "src/styles/skeleton.css"
             ],
             "scripts": []
           },
@@ -95,7 +96,8 @@
             "styles": [
               "src/styles/app.css",
               "src/styles/common.css",
-              "src/styles/hover.css"
+              "src/styles/hover.css",
+              "src/styles/skeleton.css"
             ],
             "scripts": []
           }

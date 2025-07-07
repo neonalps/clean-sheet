@@ -29,3 +29,11 @@ export function navigateToPerson(router: Router, personId: number): void {
 export function replaceHash(hash: string) {
     window.history.replaceState(null, '', `${window.location.origin}${window.location.pathname}#${hash}`);
 }
+
+export function convertSearchParamsToQueryString(params: URLSearchParams): string {
+    if (params.size === 0) {
+        return '';
+    }
+
+    return `?${params.toString()}`;
+}

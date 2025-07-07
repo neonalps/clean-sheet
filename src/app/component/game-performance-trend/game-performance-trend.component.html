@@ -1,0 +1,30 @@
+<div class="bg-color-dark-grey-darker p-2 mt-3 rounded-lg">
+    <ng-container *ngIf="isLoading; else loadedPerformanceTrend">
+        <div class="flex p-2 justify-content-between align-items-center">
+            <div class="skeleton skeleton-box-2-3"></div>
+            <div class="skeleton skeleton-box-2-3"></div>
+            <div class="skeleton skeleton-box-2-3"></div>
+            <div class="skeleton skeleton-box-2-3"></div>
+            <div class="skeleton skeleton-box-2-3"></div>
+        </div>
+    </ng-container>
+    <ng-template #loadedPerformanceTrend>
+        <div class="flex justify-content-between">
+            @for (placeholder of placeholderElements; track $index) {
+                <div class="flex-1"></div>
+            }
+
+            @for (game of games; track $index) {
+                <div class="flex-1 hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded p-2" (click)="triggerNavigateToGame(game)">
+                    <app-game-small [game]="game" [showGameDate]="true" />
+                </div>
+            }
+
+            <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-3">
+                <div class="text-light-grey">
+                    {{ score }}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>

@@ -116,4 +116,31 @@
             </div>
         </div>
     </div>
+
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="shouldShowLastGames()" #lastGames>
+        <div class="pt-2">
+            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+                <div class="mr-2">
+                    <div class="width-xs relative top-2">
+                        <app-icon-stadium [color]="colorLightGrey" />
+                    </div>
+                </div>
+                <div class="text-light-grey">{{ 'game.headToHead' | $t }}</div>
+            </div>
+            <app-game-performance-trend [games$]="performanceTrendAgainstClub$" />
+        </div>
+        <div class="pt-2">
+            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+                <div class="mr-2">
+                    <div class="width-xs relative top-2">
+                        <app-icon-stadium [color]="colorLightGrey" />
+                    </div>
+                </div>
+                <div class="text-light-grey">{{ 'game.headToHead' | $t }}</div>
+            </div>
+            @for (game of lastGamesAgainstClub$ | async; track $index) {
+                <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
+            }
+        </div>
+    </div>
 </ng-template>
