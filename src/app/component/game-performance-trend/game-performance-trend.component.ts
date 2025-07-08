@@ -6,10 +6,11 @@ import { GameSmallComponent } from '@src/app/component/game-small/game-small.com
 import { navigateToGame } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { calculatePerformanceTrend } from '@src/app/module/game/util';
+import { ProgressCircleComponent } from "@src/app/component/progress-circle/progress-circle.component";
 
 @Component({
   selector: 'app-game-performance-trend',
-  imports: [CommonModule, GameSmallComponent],
+  imports: [CommonModule, GameSmallComponent, ProgressCircleComponent],
   templateUrl: './game-performance-trend.component.html',
   styleUrl: './game-performance-trend.component.css'
 })

@@ -20,10 +20,8 @@
                 </div>
             }
 
-            <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-3">
-                <div class="text-light-grey">
-                    {{ score }}
-                </div>
+            <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-1" *ngIf="score">
+                <app-progress-circle [percentage]="score" [radius]="30" [transitionDelayMs]="250" />
             </div>
         </div>
     </ng-template>

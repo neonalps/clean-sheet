@@ -1,5 +1,5 @@
-import { CommonModule, getLocaleExtraDayPeriods, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, OnDestroy, ViewChild, viewChild } from '@angular/core';
+import { CommonModule, ViewportScroller } from '@angular/common';
+import { Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
@@ -64,8 +64,6 @@ export class GameComponent implements OnDestroy {
   readonly lastGamesAgainstClub$ = new Subject<DetailedGame[]>;
   readonly performanceTrendAgainstClub$ = new Subject<DetailedGame[]>;
 
-  @ViewChild('lastGamesContainer') lastGamesContainerRef!: ElementRef;
-
   private previousLeg: DetailedGame | null = null;
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
@@ -75,6 +73,7 @@ export class GameComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
+  private readonly viewportScroller = inject(ViewportScroller);
 
   constructor(
     private readonly clubResolver: ClubResolver,
@@ -82,7 +81,6 @@ export class GameComponent implements OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translationService: TranslationService,
-    private readonly viewportScroller: ViewportScroller,
   ) {
     this.router.events
       .pipe(takeUntil(this.destroy$))
@@ -110,8 +108,9 @@ export class GameComponent implements OnDestroy {
         return;
       }
 
-      console.log('scrolling to', routerScrollPositionValue);
-      this.viewportScroller.scrollToPosition(routerScrollPositionValue);
+      setTimeout(() => {
+        this.viewportScroller.scrollToPosition(routerScrollPositionValue);
+      }, 0);
     });    
   }
 

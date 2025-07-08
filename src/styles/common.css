@@ -1118,6 +1118,10 @@
     border-left-color: var(--dark-grey-lighter);
 }
 
+.h-full {
+    height: 100%;
+}
+
 .h-dvh {
     height: 100dvh;
 }

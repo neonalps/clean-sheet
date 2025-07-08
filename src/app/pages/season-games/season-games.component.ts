@@ -1,10 +1,10 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, effect, ElementRef, OnDestroy, OnInit, Signal, ViewChild, viewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
-import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, Subscription } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
