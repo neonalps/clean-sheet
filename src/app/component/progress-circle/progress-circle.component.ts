@@ -1,9 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { COLOR_LIGHT } from '@src/styles/constants';
 
 @Component({
   selector: 'app-progress-circle',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './progress-circle.component.html',
   styleUrl: './progress-circle.component.css'
 })
@@ -16,10 +17,14 @@ export class ProgressCircleComponent implements AfterViewInit {
   @Input() transitionDelayMs = 0;
 
   internalValue = 0;
+  styleAttribute = "";
+  hidden = true;
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.internalValue = this.percentage;
+      this.styleAttribute = `--from:0; --to:${this.percentage}; --time:.5s;`;
+      this.hidden = false;
     }, this.transitionDelayMs);
   }
 

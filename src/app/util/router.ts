@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { DetailedGame } from "@src/app/model/game";
+import { BasicGame, DetailedGame } from "@src/app/model/game";
 
 export const PATH_PARAM_CLUB_ID = "clubId";
 export const PATH_PARAM_GAME_ID = "gameId";
@@ -18,8 +18,8 @@ export function navigateToGame(router: Router, game: DetailedGame): void {
     router.navigate(["/game", game.id], { state: { game } } );
 }
 
-export function navigateToGameWithoutDetails(router: Router, gameId: number): void {
-    router.navigate(["/game", gameId]);
+export function navigateToGameWithoutDetails(router: Router, gameId: number, seasonId?: number): void {
+    router.navigate(["/game", gameId], { state: { seasonId: seasonId } } );
 }
 
 export function navigateToPerson(router: Router, personId: number): void {

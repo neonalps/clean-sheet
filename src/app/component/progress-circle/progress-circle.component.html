@@ -3,7 +3,7 @@
 @let strokeDashOffset = getStrokeDashOffset();
 <div>
     <div class="flex relative">
-        <span class="inline-flex w-full h-full absolute text-lg bold align-items-center justify-content-center">{{ percentage }}</span>
+        <span class="count-animation inline-flex w-full h-full absolute text-lg bold align-items-center justify-content-center" [attr.style]="styleAttribute" [ngClass]="{ 'invisible': hidden }"></span>
         <svg [attr.height]="radius * 2" [attr.width]="radius * 2">
             <circle class="circle"
                 [attr.stroke]="color"

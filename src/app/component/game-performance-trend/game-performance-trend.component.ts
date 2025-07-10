@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { DetailedGame } from '@src/app/model/game';
+import { BasicGame } from '@src/app/model/game';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { GameSmallComponent } from '@src/app/component/game-small/game-small.component';
-import { navigateToGame } from '@src/app/util/router';
+import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { calculatePerformanceTrend } from '@src/app/module/game/util';
 import { ProgressCircleComponent } from "@src/app/component/progress-circle/progress-circle.component";
@@ -16,11 +16,11 @@ import { ProgressCircleComponent } from "@src/app/component/progress-circle/prog
 })
 export class GamePerformanceTrendComponent implements OnInit, OnDestroy {
 
-  @Input() games$!: Observable<DetailedGame[]>;
+  @Input() games$!: Observable<BasicGame[]>;
   @Input() showGameDate = false;
 
   isLoading = true;
-  games: DetailedGame[] = [];
+  games: BasicGame[] = [];
   score: number | null = null;
   placeholderElements: number[] = [];
 
@@ -44,8 +44,8 @@ export class GamePerformanceTrendComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  triggerNavigateToGame(game: DetailedGame) {
-    navigateToGame(this.router, game);
+  triggerNavigateToGame(game: BasicGame) {
+    navigateToGameWithoutDetails(this.router, game.id, game.season.id);
   }
 
 }

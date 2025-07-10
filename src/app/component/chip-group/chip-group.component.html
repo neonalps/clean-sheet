@@ -1,0 +1,7 @@
+<div class="flex">
+    @for (chip of chips; track $index) {
+        <div class="chip-item">
+            <app-chip [chip]="chip" (click)="onClick(chip)" />
+        </div>
+    }
+</div>

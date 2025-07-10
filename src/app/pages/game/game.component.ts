@@ -1,13 +1,13 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
-import { DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToGame, navigateToPerson, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
@@ -28,6 +28,8 @@ import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
+import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.component";
+import { Chip } from '@src/app/component/chip/chip.component';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -50,7 +52,8 @@ export type GameRouteState = {
     GameLineupComponent,
     TrophyIconComponent,
     GamePerformanceTrendComponent,
-    GameOverviewComponent
+    GameOverviewComponent,
+    ChipGroupComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -61,13 +64,19 @@ export class GameComponent implements OnDestroy {
   uiGame!: UiGame;
   isLoading = true;
   activeTab$ = new BehaviorSubject<string | null>(null);
-  readonly lastGamesAgainstClub$ = new Subject<DetailedGame[]>;
-  readonly performanceTrendAgainstClub$ = new Subject<DetailedGame[]>;
+  readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
+  readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
 
   private previousLeg: DetailedGame | null = null;
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
+
+  readonly competitionChips: Chip[] = [
+    { displayText: 'Alle Bewerbe', value: 'all', selected: true, },
+    { displayText: 'Bundesliga', value: '2', selected: false, },
+    { displayText: 'Cup', value: '4', selected: false },
+  ];
 
   mainClub: SmallClub = environment.mainClub;
 
@@ -340,8 +349,8 @@ export class GameComponent implements OnDestroy {
     return [referee?.person.firstName, referee?.person.lastName].filter(item => isDefined(item)).join(' ');
   }
 
-  triggerNavigateToGame(game: DetailedGame) {
-    navigateToGame(this.router, game);
+  triggerNavigateToGame(game: BasicGame) {
+    navigateToGameWithoutDetails(this.router, game.id, game.season.id);
   }
 
   private loadGameDetails() {
@@ -354,12 +363,15 @@ export class GameComponent implements OnDestroy {
 
     const game = currentNav?.extras?.state?.['game'];
     if (isDefined(game)) {
+      console.log('resolved via game details')
       this.onGameResolved(game);
     } else {
       // no game passed in state (can happen if the user copied the link), we must resolve the game manually
+      const seasonId: string | undefined = currentNav?.extras?.state?.['seasonId'] ?? undefined;
+
       const gameId = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
       if (isDefined(gameId)) {
-        this.resolveGame(Number(gameId));
+        this.resolveGame(Number(gameId), seasonId !== undefined ? Number(seasonId) : undefined);
       } else {
         // TODO show error content
         this.isLoading = false;

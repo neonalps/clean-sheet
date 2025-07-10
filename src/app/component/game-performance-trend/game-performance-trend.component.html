@@ -15,7 +15,7 @@
             }
 
             @for (game of games; track $index) {
-                <div class="flex-1 hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded p-2" (click)="triggerNavigateToGame(game)">
+                <div class="flex-1 hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded-md p-2" (click)="triggerNavigateToGame(game)">
                     <app-game-small [game]="game" [showGameDate]="true" />
                 </div>
             }

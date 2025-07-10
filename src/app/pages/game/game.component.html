@@ -138,6 +138,9 @@
                 </div>
                 <div class="text-light-grey">{{ 'game.headToHead' | $t }}</div>
             </div>
+            <div class="mt-5 ml-2">
+                <app-chip-group [chips]="competitionChips" />
+            </div>
             @for (game of lastGamesAgainstClub$ | async; track $index) {
                 <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
             }

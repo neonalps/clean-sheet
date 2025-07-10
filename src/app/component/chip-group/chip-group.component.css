@@ -1,0 +1,7 @@
+.chip-item {
+    margin-right: .5rem;
+}
+
+.chip-item:last-child {
+    margin-right: 0;
+}

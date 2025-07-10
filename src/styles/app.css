@@ -46,6 +46,17 @@ textarea:focus, input:focus {
   line-height: 2rem;
 }
 
+.form-row {
+  padding: .75rem;
+}
+
+.form-row-title {
+  font-size: .875rem;
+  line-height: 1.25rem;
+  text-transform: uppercase;
+  margin-bottom: .35rem;
+}
+
 .result-tendency-w {
   background-color: var(--success);
 }

@@ -1,4 +1,4 @@
-import { DetailedGame } from "./game";
+import { BasicGame, DetailedGame } from "./game";
 import { BasicVenue } from "./venue";
 
 export interface SmallClub {
@@ -21,5 +21,5 @@ export interface BasicClub {
     district?: string;
     countryCode: string;
     homeVenue?: BasicVenue;
-    lastGames?: DetailedGame[];
+    lastGames?: BasicGame[];
 }

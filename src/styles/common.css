@@ -956,12 +956,6 @@
    border-radius: 9999px;
 }
 
-.transition-colors {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-}
-
 .rotate-90 {
     transform: rotate(90deg);
 }
@@ -1180,4 +1174,13 @@
 
 .overflow-y-scroll {
     overflow-y: scroll;
+}
+
+.fix-width-boldable::before {
+    display: block;
+    content: attr(x-content);
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
 }

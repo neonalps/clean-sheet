@@ -25,13 +25,16 @@ export class GameResolver {
         take(1),
         switchMap(gameOptional => {
           if (isDefined(gameOptional)) {
+            console.log('resolved via cache');
             return of(gameOptional);
           }
           
+          console.log('resolved via network');
           return this.gameService.getById(gameId);
         }),
       );
     } else {
+      console.log('resolved via network');
       return this.gameService.getById(gameId);
     }
   }

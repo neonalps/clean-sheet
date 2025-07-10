@@ -1,0 +1,8 @@
+<div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" [minWidth]="'150px'" (onSearch)="onSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+        </div>
+    </div>
+</div>
