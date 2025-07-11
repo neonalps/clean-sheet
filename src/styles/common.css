@@ -900,8 +900,16 @@
     top: 8px;
 }
 
+.top-9 {
+    top: 9px;
+}
+
 .top-16 {
     top: 16px;
+}
+
+.left-neg-34 {
+    left: -34px;
 }
 
 .left-16 {

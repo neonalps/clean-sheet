@@ -1,0 +1,6 @@
+<div class="flex">
+    <input type="datetime-local" name="game-date" (change)="onDateSelected($event)" #picker />
+    <div class="width-sm relative left-neg-34 top-9 pointer" (click)="showPicker()">
+        <app-calendar-icon />
+    </div>
+</div>

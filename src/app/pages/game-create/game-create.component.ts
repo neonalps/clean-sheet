@@ -6,10 +6,11 @@ import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { debounceTime, map, merge, Observable, of, Subject, switchMap } from 'rxjs';
+import { DatetimePickerComponent } from "@src/app/component/datetime-picker/datetime-picker.component";
 
 @Component({
   selector: 'app-game-create',
-  imports: [I18nPipe, SelectComponent],
+  imports: [I18nPipe, SelectComponent, DatetimePickerComponent],
   templateUrl: './game-create.component.html',
   styleUrl: './game-create.component.css'
 })

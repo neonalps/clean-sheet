@@ -2,9 +2,11 @@
     <div class="select-main p-2 flex justify-content-between" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline, 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
         <div class="flex-grow-8 flex align-items-center justify-content-center">
             <ng-container *ngIf="displayIcon">
-                <app-player-icon [iconUrl]="displayIcon" />
+                <div class="basis-1/10 mr-4">
+                    <app-player-icon [iconUrl]="displayIcon" />
+                </div>
             </ng-container>
-            <div>{{ displayText }}</div>
+            <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ displayText }}</div>
         </div>
         <div class="flex align-items-center" *ngIf="hideChevron !== true">
             <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
@@ -28,10 +30,12 @@
             <ng-container *ngFor="let option of options">
                 <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
                     <ng-container *ngIf="option.icon">
-                        <app-player-icon [iconUrl]="option.icon" />
+                        <div class="basis-1/10 mr-4">
+                            <app-player-icon [iconUrl]="option.icon" />
+                        </div>
                     </ng-container>
-                    <div class="flex-grow-8 center">{{ option.name }}</div>
-                    <div *ngIf="showSelectedTick && isSelected(option)" class="icon">
+                    <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>
+                    <div *ngIf="showSelectedTick && isSelected(option)" class="basis-1/20 icon">
                         <app-check [color]="colorLight" />
                     </div>
                 </div>

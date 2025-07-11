@@ -1,8 +1,15 @@
-<div>
+<div class="page">
+    <div class="page-title">{{ 'game.createNew' | $t }}</div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.date' | $t }}</div>
+        <div class="form-row-content flex">
+            <app-datetime-picker />
+        </div>
+    </div>
     <div class="form-row">
         <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" [minWidth]="'150px'" (onSearch)="onSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" (onSearch)="onSearchChanged($event)" (onSelected)="onClubSelected($event)" />
         </div>
     </div>
 </div>
