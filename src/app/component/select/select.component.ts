@@ -21,9 +21,11 @@ export class SelectComponent implements OnInit, OnDestroy {
 
   colorLight = COLOR_LIGHT;
   isOpen = signal(false);
+  optionsWidth = signal('0');
 
   private selected: SelectOption | null = null;
 
+  @ViewChild('main', { static: false }) mainElement!: ElementRef;
   @ViewChild('search', { static: false }) searchElement!: ElementRef;
 
   @Input() optionsSource!: Observable<SelectOption[]>;
@@ -166,6 +168,11 @@ export class SelectComponent implements OnInit, OnDestroy {
 
     if (!isOpen && this.showSearch) {
       this.focusSearch();
+    }
+
+    if (!isOpen) {
+      const mainElementWidth = this.mainElement.nativeElement.getBoundingClientRect().width;
+      this.optionsWidth.set(`${mainElementWidth - 2}px`);
     }
 
     this.isOpen.set(!isOpen);

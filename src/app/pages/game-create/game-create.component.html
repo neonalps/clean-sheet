@@ -9,7 +9,19 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" (onSearch)="onSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+            <app-select [optionsSource]="getClubOptions()" [minWidth]="'400px'"  [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.status' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getGameStatusOptions()" [showSearch]="false" (onSelected)="onGameStatusSelected($event)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.venue' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getVenueOptions()" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)" />
         </div>
     </div>
 </div>
