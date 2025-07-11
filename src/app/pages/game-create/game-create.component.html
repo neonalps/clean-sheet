@@ -9,7 +9,7 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getClubOptions()" [minWidth]="'400px'"  [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onClubSelected($event)" />
         </div>
     </div>
     <div class="form-row">
