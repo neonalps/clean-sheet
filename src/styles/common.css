@@ -864,12 +864,20 @@
     position: absolute;
 }
 
+.fixed {
+    position: fixed;
+}
+
 .relative {
     position: relative;
 }
 
 .sticky {
     position: sticky;
+}
+
+.bottom-0 {
+    bottom: 0;
 }
 
 .top-0 {
@@ -920,24 +928,17 @@
     z-index: 10;
 }
 
-.hide {
-    display: none;
-}
-
 .invisible {
     visibility: hidden;
 }
 
-.hide-transition {
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0.2s ease-in, opacity 0.15s ease-in;
+.transition-fade {
+    transition: visibility .35s ease-in-out, opacity .3s ease-in-out;
 }
 
-.show-transition {
-    visibility: visible;
-    opacity: 1;
-    transition: visibility 0.2s ease-in, opacity 0.15s ease-in;
+.hidden-fade {
+    visibility: hidden;
+    opacity: 0;
 }
 
 .capitalize {
@@ -1034,6 +1035,18 @@
 
 .bg-color-dark-grey-lighter {
     background-color: var(--dark-grey-lighter);
+}
+
+.bg-color-info {
+    background-color: var(--info);
+}
+
+.bg-color-warn {
+    background-color: var(--warn);
+}
+
+.bg-color-success {
+    background-color: var(--success);
 }
 
 .text-danger {

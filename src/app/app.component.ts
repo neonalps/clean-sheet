@@ -7,10 +7,11 @@ import { convertSeasonToSelectOption } from './module/season/util';
 import { ExternalSearchService } from './module/external-search/service';
 import { ExternalSearchEntity } from './model/external-search';
 import { convertExternalSearchItemToSelectOption } from './module/external-search/util';
+import { ToastsComponent } from "./component/toasts/toasts.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
