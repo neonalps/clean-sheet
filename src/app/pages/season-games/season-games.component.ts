@@ -11,7 +11,7 @@ import { DetailedGame, GameStatus } from '@src/app/model/game';
 import { GameOverviewComponent } from '@src/app/component/game-overview/game-overview.component';
 import { SmallClub } from '@src/app/model/club';
 import { SeasonSelectComponent } from '@src/app/component/season-select/season-select.component';
-import { OptionId } from '@src/app/component/select/option';
+import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
 import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
@@ -29,7 +29,7 @@ import { environment } from '@src/environments/environment';
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
-  selectedSeasonIdSubject = new BehaviorSubject<number>(0);
+  selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
 
   private seasons: Season[] = [];
   private seasonGames: Map<number, DetailedGame[]> = new Map();
@@ -148,7 +148,10 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     assertDefined(season, `failed to find season for param ${seasonParam}`);
 
     this.selectedSeason = season as Season;
-    this.selectedSeasonIdSubject.next(this.selectedSeason.id);
+    this.selectedSeason$.next({
+      id: this.selectedSeason.id.toString(),
+      name: this.selectedSeason.name,
+    });
     
     await this.seasonGamesService.getSeasonGames(this.selectedSeason.id);
   }

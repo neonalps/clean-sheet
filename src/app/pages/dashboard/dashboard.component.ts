@@ -7,8 +7,8 @@ import { Subject, take } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
-import { DetailedGame } from '@src/app/model/game';
-import { navigateToGame } from '@src/app/util/router';
+import { BasicGame, DetailedGame } from '@src/app/model/game';
+import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 
@@ -31,8 +31,8 @@ export class DashboardComponent implements OnInit {
     this.resolveDashboard();
   }
 
-  triggerNavigateToGame(game: DetailedGame) {
-    navigateToGame(this.router, game);
+  triggerNavigateToGame(game: BasicGame) {
+    navigateToGameWithoutDetails(this.router, game.id, game.season.id);
   }
 
   private resolveDashboard() {

@@ -5,7 +5,17 @@ export const environment = {
         id: 1,
         name: "SK Sturm Graz",
         shortName: "Sturm Graz",
-        iconSmall: "http://localhost:8020/c/1.png",
+        iconSmall: "https://neonalps.b-cdn.net/c/1.png",
+        city: 'Graz',
+        countryCode: 'at',
+        homeVenue: {
+            id: 2,
+            name: 'Merkur Arena',
+            shortName: 'Merkur Arena',
+            city: 'Graz',
+            countryCode: 'at',
+            capacity: 16764,
+        }
     },
     oauth: {
         google: {

@@ -5,7 +5,7 @@
         </div>
     </button>
     <div>
-        <app-select [optionsSource]="seasons" [onBefore]="beforeSubject" [onNext]="nextSubject" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOptionId]="selectedSeasonId" (onSelected)="onSeasonSelected($event)" (onHasBefore)="onHasBefore($event)" (onHasNext)="onHasNext($event)" />
+        <app-select [optionsSource]="seasons" [onBefore]="beforeSubject" [onNext]="nextSubject" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOption]="pushSelectedSeason$" (onSelected)="onSeasonSelected($event)" (onHasBefore)="onHasBefore($event)" (onHasNext)="onHasNext($event)" />
     </div>
     <button class="button px-2-dot-5" (click)="onNextClicked()" [ngClass]="{ 'invisible': !hasNext }">
         <div class="width-sm">

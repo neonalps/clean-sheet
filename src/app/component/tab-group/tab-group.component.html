@@ -1,6 +1,11 @@
-<div class="tab-header flex align-items-center p-1">
+<div class="tab-header bg-color-dark-grey flex align-items-center p-1">
     <ng-container *ngFor="let tab of tabs">
-        <div class="tab-selector flex-grow-1 bg-color-dark-grey-lighter center rounded-md py-1 pointer" (click)="selectTab(tab.tabId)" [class.bold]="tab.active">{{ tab.tabTitle }}</div>
+        <div class="flex-grow-1 flex align-items-center justify-content-center rounded-md py-1 pointer m-1 transition-colors" (click)="selectTab(tab.tabId)" [ngClass]="{ 'bg-color-dark-grey-lighter': !tab.active, 'bg-color-dark-grey-darker': tab.active, 'text-light-grey-darker': !tab.active, 'text-light': tab.active }">
+            <div class="width-xs mr-2 relative top-2">
+                <app-football />
+            </div>
+            <div>{{ tab.tabTitle }}</div>
+        </div>
     </ng-container>
 </div>
 <div class="tab-body mt-4">

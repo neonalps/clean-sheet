@@ -3,25 +3,48 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.date' | $t }}</div>
         <div class="form-row-content flex">
-            <app-datetime-picker />
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
-        <div class="form-row-content">
-            <app-select [optionsSource]="getClubOptions()" [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onClubSelected($event)" />
+            <app-datetime-picker (onDateSelected)="onKickoffSelected($event)" />
         </div>
     </div>
     <div class="form-row">
         <div class="form-row-title">{{ 'game.status' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getGameStatusOptions()" [showSearch]="false" (onSelected)="onGameStatusSelected($event)" />
+            <app-select [optionsSource]="getGameStatusOptions()" [showSearch]="false" [selectedOption]="pushGameState$" (onSelected)="onGameStatusSelected($event)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.competition' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getCompetitionOptions()" [isLoading]="isSearchingForCompetition" [showSearch]="true" (onSearch)="onCompetitionSearchChanged($event)" (onSelected)="onCompetitionSelected($event)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.competitionRound' | $t }}</div>
+        <div class="form-row-content">
+            <input type="text" class="input-text w-full" (change)="onCompetitionRoundChanged($event)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.isHome' | $t }}</div>
+        <div class="form-row-content flex align-items-center">
+            <app-checkbox-slider [checked]="isHomeGame()" [showText]="true" (valueChange)="onIsHomeValueChange($event)" />    
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getClubOptions()" [isLoading]="isSearchingForClub" [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onOpponentSelected($event)" />
         </div>
     </div>
     <div class="form-row">
         <div class="form-row-title">{{ 'game.venue' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getVenueOptions()" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)" />
+            <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue" [selectedOption]="pushSelectedVenue$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)" />
         </div>
+    </div>
+    <div class="form-row mt-3 flex justify-content-end">
+        <app-button [enabled]="canSubmit()">
+            {{ 'game.create' | $t}}
+        </app-button>
     </div>
 </div>

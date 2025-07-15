@@ -1,0 +1,9 @@
+<div class="flex align-items-center">
+    <div>
+        <label class="switch">
+            <input type="checkbox" [checked]="checked" (click)="onChange()" #check>
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <div *ngIf="showText" class="ml-3 pointer" (click)="onTextClicked()">{{ (checked ? 'toggle.yes' : 'toggle.no') | $t }}</div>
+</div>

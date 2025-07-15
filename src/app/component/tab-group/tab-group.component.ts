@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, Output, QueryList } from '@angular/core';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
-import { isDefined } from '@src/app/util/common';
-import { filter, Observable, Subscription } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { FootballComponent } from "@src/app/icon/football/football.component";
 
 @Component({
   selector: 'app-tab-group',
-  imports: [CommonModule],
+  imports: [CommonModule, FootballComponent],
   templateUrl: './tab-group.component.html',
   styleUrl: './tab-group.component.css'
 })
@@ -17,18 +17,19 @@ export class TabGroupComponent implements AfterContentInit, OnDestroy {
 
   @ContentChildren(TabItemComponent) tabs!: QueryList<TabItemComponent>;
 
-  private subscriptions: Subscription[] = [];
+  private readonly destroy$ = new Subject<void>();
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterContentInit(): void {
-    this.subscriptions.push(this.activeTab.subscribe(value => {
+    this.activeTab.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if (value !== null) {
         this.selectTab(value, false);
       }
-    }));
+    });
 
     const activeTabs = this.tabs.filter(tab => tab.active);
     if (activeTabs.length === 0 && this.tabs.first) {
