@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { OptionId, SelectOption } from './option';
 import { CommonModule } from '@angular/common';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { filter, Observable, Subject, takeUntil } from 'rxjs';
 import { getHtmlInputElementFromEvent, isDefined, isNotDefined } from '@src/app/util/common';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
@@ -34,7 +34,7 @@ export class SelectComponent implements OnInit {
   @Input() emptyText!: string;
   @Input() isLoading = false;
   @Input() showSearch: boolean = false;
-  @Input() selectedOption?: Observable<SelectOption>;
+  @Input() selectedOption?: Observable<SelectOption | null>;
   @Input() hideChevron = false;
   @Input() showOutline = true;
   @Input() showSelectedTick = true;
@@ -64,10 +64,7 @@ export class SelectComponent implements OnInit {
       this.options = value;
     });
 
-    console.log(this.selectedOption);
-
-    this.selectedOption?.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      console.log('push selected', value)
+    this.selectedOption?.pipe(takeUntil(this.destroy$), filter(value => value !== null)).subscribe(value => {
       this.onSelect(value);
     })
 
@@ -97,6 +94,9 @@ export class SelectComponent implements OnInit {
       this.hideDropdown();
       return;
     }
+
+    console.log('selected option', selectedOption);
+    console.log('options', this.options);
 
     this.currentValue = selectedOption;
     this.displayIcon = this.currentValue.icon ?? null;

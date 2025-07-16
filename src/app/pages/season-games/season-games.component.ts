@@ -149,7 +149,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
     this.selectedSeason = season as Season;
     this.selectedSeason$.next({
-      id: this.selectedSeason.id.toString(),
+      id: this.selectedSeason.id,
       name: this.selectedSeason.name,
     });
     

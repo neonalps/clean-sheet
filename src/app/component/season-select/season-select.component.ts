@@ -13,34 +13,19 @@ import { ChevronRightComponent } from '@src/app/icon/chevron-right/chevron-right
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })
-export class SeasonSelectComponent implements OnInit, OnDestroy {
+export class SeasonSelectComponent {
 
   @Input() seasons!: Observable<Season[]>;
   @Input() selectedSeason$!: BehaviorSubject<SelectOption | null>;
   @Output() onSelected = new EventEmitter<OptionId>();
 
-  pushSelectedSeason$ = new Subject<SelectOption>();
-
   hasBefore = false;
   hasNext = false;
-
-  private readonly destroy$ = new Subject<void>();
 
   beforeSubject = new Subject<boolean>();
   nextSubject = new Subject<boolean>();
 
   constructor(private cdr: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    this.selectedSeason$.pipe(takeUntil(this.destroy$), filter(item => item !== null)).subscribe(value => {
-      this.pushSelectedSeason$.next(value);
-    })
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 
   onSeasonSelected(selectedSeasonId: OptionId): void {
     this.onSelected.emit(selectedSeasonId);
