@@ -1,4 +1,4 @@
 <div class="flex justify-content-center align-items-center pointer transition-bg-color transition-text px-3 py-1 rounded-lg" [ngClass]="{ 'bg-color-light-grey-darker': chip.selected, 'text-dark-grey': chip.selected, 'hover:bg-color-dark-grey-lighter': !chip.selected}">
     <div *ngIf="chip.displayIcon">icon</div>
-    <div class="text-xs fix-width-boldable" [attr.x-content]="chip.displayText" [ngClass]="{ 'bold': chip.selected }">{{ chip.displayText }}</div>
+    <div class="fix-width-boldable" [attr.x-content]="chip.displayText" [ngClass]="getDynamicClasses()">{{ chip.displayText }}</div>
 </div>

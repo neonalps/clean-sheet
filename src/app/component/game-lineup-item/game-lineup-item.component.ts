@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.component';
-import { UiPersonItem } from '@src/app/model/game';
+import { GamePerson } from '../game-person-item/game-person-item.component';
 
 @Component({
   selector: 'app-game-lineup-item',
@@ -10,7 +10,7 @@ import { UiPersonItem } from '@src/app/model/game';
 })
 export class GameLineupItemComponent {
 
-  @Input() player!: UiPersonItem;
+  @Input() player!: GamePerson;
 
   getPlayerDisplayName(): string {
     const lastName = this.player.lastName;

@@ -31,6 +31,8 @@ import { GameOverviewComponent } from "@src/app/component/game-overview/game-ove
 import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.component";
 import { Chip } from '@src/app/component/chip/chip.component';
 
+type SelectableLineup = 'main' | 'opponent';
+
 export type GameRouteState = {
   game: DetailedGame;
 }
@@ -68,6 +70,7 @@ export class GameComponent implements OnDestroy {
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
 
   private previousLeg: DetailedGame | null = null;
+  private selectedLineup: SelectableLineup = 'main';
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
@@ -79,6 +82,8 @@ export class GameComponent implements OnDestroy {
   ];
 
   mainClub: SmallClub = environment.mainClub;
+
+  lineupTeamChips: Chip[] = [];
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
@@ -132,6 +137,11 @@ export class GameComponent implements OnDestroy {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGameMinute(minute, '.') });
 
+    this.lineupTeamChips = [
+      { selected: true, value: 'main', displayText: this.mainClub.shortName },
+      { selected: false, value: 'opponent', displayText: game.opponent.shortName, },
+    ]
+
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
       this.resolvePreviousLeg(this.game.previousLeg, this.game.season.id);
@@ -168,6 +178,14 @@ export class GameComponent implements OnDestroy {
 
   onTabSelected(tabId: string) {
     replaceHash(tabId);
+  }
+
+  onLineupTeamSelected(selected: string | number | boolean) {
+    this.selectedLineup = selected as SelectableLineup;
+  }
+
+  getSelectedLineup() {
+    return this.uiGame.lineup[this.selectedLineup];
   }
 
   getHomeTeam(): SmallClub {

@@ -18,5 +18,16 @@ export interface Chip {
 export class ChipComponent {
 
   @Input() chip!: Chip;
+  
+  @Input() dynamicClassNames?: string[];
+
+  getDynamicClasses(): string[] {
+    const dynamicClasses = [];
+    if (this.chip.selected) {
+      dynamicClasses.push(`bold`);
+    }
+
+    return [...(this.dynamicClassNames || ['text-xs']), ...dynamicClasses];
+  }
 
 }

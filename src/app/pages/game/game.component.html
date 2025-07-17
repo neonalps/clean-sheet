@@ -70,7 +70,10 @@
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
             <app-tab-item [tabTitle]="'game.lineup' | $t" [tabId]="'lineup'">
-                <app-game-lineup [lineup]="uiGame!.lineup.main" />
+                <div class="mt-2 mb-6">
+                    <app-chip-group [chips]="lineupTeamChips" [dynamicClassNamesContainer]="['w-full', 'align-items-center', 'justify-content-evenly']" [dynamicClassNamesChip]="[]" (onSelected)="onLineupTeamSelected($event)" />
+                </div>
+                <app-game-lineup [lineup]="getSelectedLineup()" />
             </app-tab-item>
         </app-tab-group>
     </div>

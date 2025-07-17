@@ -151,11 +151,29 @@ textarea:focus, input:focus {
   width: 10px;
 }
 
+.card-yellow-small {
+  background-color: #f5e51b;
+  border-radius: .09rem;
+  height: 15px;
+  width: 8px;
+}
+
 .card-red {
   background-color: #e74c3c;
   border-radius: .1rem;
   height: 18px;
   width: 10px;
+}
+
+.card-red-small {
+  background-color: #e74c3c;
+  border-radius: .1rem;
+  height: 15px;
+  width: 8px;
+}
+
+.text-red-card {
+  color: #e74c3c;
 }
 
 .card-yellow-red-yellow {
@@ -180,6 +198,15 @@ textarea:focus, input:focus {
   padding: .1rem .2rem;
 }
 
+.captain-small {
+  background-color: var(--dark-grey-lighter-2);
+  padding: .12rem;
+}
+
 .arrow-inline {
   width: 1.25rem;
+}
+
+.arrow-inline-small {
+  width: .9rem;
 }

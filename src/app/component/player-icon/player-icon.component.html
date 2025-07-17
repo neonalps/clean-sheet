@@ -1,4 +1,31 @@
-<div class="image-container" [ngClass]="containerClass">
+<div class="image-container relative" [ngClass]="containerClass">
+    <div *ngIf="yellowCard" class="absolute top-neg-4 left-neg-10 z-100">
+        <div class="flex p-1 rounded-full bg-color-dark-grey-lighter-2">
+            <div class="card-yellow-small"></div>
+        </div>
+    </div>
+    <div *ngIf="yellowRedCard" class="absolute top-neg-4 left-32 z-100">
+        <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
+            <div class="card-yellow-small"></div>
+            <div class="card-red-small relative left-neg-4"></div>
+            <div class="text-xs text-light">{{ yellowRedCard | formatGameMinute }}</div>
+        </div>
+    </div>
+    <div *ngIf="redCard" class="absolute top-neg-4 left-32 z-100">
+        <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
+            <div class="card-red-small"></div>
+            <div class="text-xs text-light ml-1">{{ redCard | formatGameMinute }}</div>
+        </div>
+    </div>
+    <div *ngIf="off" class="absolute left-30 top-28">
+        <div class="flex px-1 rounded-full bg-color-dark-grey-lighter-2">
+            <div class="arrow-inline-small relative top-1"><app-arrow-left [color]="'red'" /></div>
+            <div class="text-xs text-light relative top-2">{{ off | formatGameMinute }}</div>
+        </div>
+    </div>
+    <div *ngIf="captain" class="absolute left-neg-10 top-24">
+        <div class="captain-small text-xs rounded-md">C</div>
+    </div>
     <div class="person-icon-container overflow-hidden" [ngClass]="[iconBgColorClass]">
         <img [src]="iconUrl"/>
     </div>
