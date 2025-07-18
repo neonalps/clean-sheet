@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { UiIconDescriptor } from '@src/app/model/icon';
+import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 
 export interface Chip {
   selected: boolean;
   value: string | number | boolean;
   displayText: string;
-  displayIcon?: string;
+  displayIcon?: UiIconDescriptor;
   additionalClasses?: string[];
 }
 
 @Component({
   selector: 'app-chip',
-  imports: [CommonModule],
+  imports: [CommonModule, UiIconComponent],
   templateUrl: './chip.component.html',
   styleUrl: './chip.component.css'
 })

@@ -17,6 +17,10 @@ import { environment } from '@src/environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { GameStatus } from '@src/app/model/game';
+import { ToastService } from '@src/app/module/toast/service';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { CommonModule } from '@angular/common';
+import { LoadingComponent } from "@src/app/component/loading/loading.component";
 
 type UiGame = {
   kickoff: Date;
@@ -30,7 +34,7 @@ type UiGame = {
 
 @Component({
   selector: 'app-game-create',
-  imports: [I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent],
+  imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent, UiIconComponent, LoadingComponent],
   templateUrl: './game-create.component.html',
   styleUrl: './game-create.component.css'
 })
@@ -42,6 +46,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   isHomeGame = signal(true);
   
   canSubmit = signal(false);
+  isSubmitting = signal(false);
 
   readonly pushSelectedVenue$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
@@ -52,6 +57,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   private readonly clubResolver = inject(ClubResolver);
   private readonly externalSearchService = inject(ExternalSearchService);
+  private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
 
   private readonly mainClub: BasicClub = environment.mainClub;
@@ -145,17 +151,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
         this.selectedOpponent = club;
         
         // auto-fill the venue based on the information we received
-        if (this.isHomeGame()) {
-          this.pushSelectedVenue$.next({
-            id: this.mainClub.id.toString(),
-            name: this.mainClub.homeVenue!.name,
-          });
-        } else if (this.selectedOpponent.homeVenue) {
-          this.pushSelectedVenue$.next({
-            id: this.selectedOpponent.id.toString(),
-            name: this.selectedOpponent.homeVenue.shortName,
-          });
-        }
+        this.pushSelectedVenue(this.selectedOpponent);
       },
       error: (error) => {
         console.error(error);
@@ -298,6 +294,29 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       if (!this.selectedOpponent) {
         return;
       }
+
+      this.pushSelectedVenue(this.selectedOpponent);
+    }
+
+    private pushSelectedVenue(opponent: BasicClub) {
+      if (this.isHomeGame()) {
+        this.pushSelectedVenue$.next({
+          id: this.mainClub.id.toString(),
+          name: this.mainClub.homeVenue!.name,
+        });
+      } else if (opponent.homeVenue) {
+        this.pushSelectedVenue$.next({
+          id: opponent.id.toString(),
+          name: opponent.homeVenue.shortName,
+        });
+      }
+    }
+
+    createGame() {
+      this.canSubmit.set(false);
+      this.isSubmitting.set(true);
+
+      this.toastService.addToast({ type: 'success', text: this.translationService.translate('game.wasCreated') });
     }
 
 }

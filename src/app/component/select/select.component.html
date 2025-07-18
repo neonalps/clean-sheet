@@ -2,8 +2,10 @@
     <div #main class="select-main p-2 flex justify-content-between" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline, 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
         <div class="flex-grow-8 flex align-items-center justify-content-center">
             <ng-container *ngIf="displayIcon">
-                <div class="basis-1/10 mr-4">
-                    <app-player-icon [iconUrl]="displayIcon" />
+                <div class="basis-1/10 mr-1">
+                    <div class="width-1-75rem flex align-items-center">
+                        <app-ui-icon [descriptor]="displayIcon" />
+                    </div>
                 </div>
             </ng-container>
             <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ displayText }}</div>
@@ -30,8 +32,10 @@
             <ng-container *ngFor="let option of options">
                 <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
                     <ng-container *ngIf="option.icon">
-                        <div class="basis-1/10 mr-4">
-                            <app-player-icon [iconUrl]="option.icon" />
+                        <div class="basis-1/10 mr-1">
+                            <div class="width-1-75rem flex align-items-center">
+                                <app-ui-icon [descriptor]="option.icon" />
+                            </div>
                         </div>
                     </ng-container>
                     <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>

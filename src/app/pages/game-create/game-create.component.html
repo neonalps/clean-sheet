@@ -42,9 +42,17 @@
             <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue" [selectedOption]="pushSelectedVenue$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)" />
         </div>
     </div>
-    <div class="form-row mt-3 flex justify-content-end">
-        <app-button [enabled]="canSubmit()">
-            {{ 'game.create' | $t}}
+    <div class="form-row mt-4 flex justify-content-end">
+        <app-button class="flex align-items-center" [enabled]="canSubmit()" (onClicked)="createGame()">
+            <div class="width-1-25rem mr-2" [ngClass]="{ 'height-1-25rem': isSubmitting() }">
+                <ng-container *ngIf="isSubmitting(); else regular">
+                    <app-loading />
+                </ng-container>
+                <ng-template #regular>
+                    <app-ui-icon class="relative top-1" [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                </ng-template>
+            </div>
+            <div>{{ 'game.create' | $t}}</div>
         </app-button>
     </div>
 </div>

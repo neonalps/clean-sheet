@@ -86,9 +86,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private getDefaultPlayerOptions(): Observable<SelectOption[]> {
     return of([
-      { id: 10, name: "William Bøving", icon: "http://127.0.0.1:8020/p/10.png" },
-      { id: 9, name: "Otar Kiteishvili", icon: "http://127.0.0.1:8020/p/9.png" },
-      { id: 14, name: "Tochi Chukwuani", icon: "http://127.0.0.1:8020/p/14.png" }
+      { id: 10, name: "William Bøving", icon: { type: "player", content: "http://127.0.0.1:8020/p/10.png" } },
+      { id: 9, name: "Otar Kiteishvili", icon: { type: "player", content: "http://127.0.0.1:8020/p/9.png" } },
+      { id: 14, name: "Tochi Chukwuani", icon: { type: "player", content: "http://127.0.0.1:8020/p/14.png" } }
     ])
   }
 

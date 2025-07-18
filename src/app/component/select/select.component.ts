@@ -6,14 +6,15 @@ import { getHtmlInputElementFromEvent, isDefined, isNotDefined } from '@src/app/
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
-import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { CheckComponent } from '@src/app/icon/check/check.component';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { UiIconDescriptor } from '@src/app/model/icon';
 
 @Component({
   selector: 'app-select',
-  imports: [ChevronDownComponent, CheckComponent, CommonModule, ClickOutsideDirective, LoadingComponent, PlayerIconComponent, LoadingComponent, SearchComponent],
+  imports: [ChevronDownComponent, CheckComponent, CommonModule, ClickOutsideDirective, LoadingComponent, LoadingComponent, SearchComponent, UiIconComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
@@ -48,7 +49,7 @@ export class SelectComponent implements OnInit {
 
   options: SelectOption[] | null = null;
 
-  displayIcon: string | null = null;
+  displayIcon: UiIconDescriptor | null = null;
   displayText: string | null = null;
 
   private readonly destroy$ = new Subject<void>();

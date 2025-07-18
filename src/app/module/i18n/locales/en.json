@@ -26,6 +26,7 @@
     "game.competition": "Competition",
     "game.competitionRound": "Round",
     "game.create": "Create game",
+    "game.wasCreated": "The new game was created",
     "game.createNew": "Create new game",
     "game.date": "Date",
     "game.directFreeKick": "Direct free kick",

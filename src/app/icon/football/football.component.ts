@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { COLOR_LIGHT } from '@src/styles/constants';
+import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-football',
@@ -9,6 +9,10 @@ import { COLOR_LIGHT } from '@src/styles/constants';
 })
 export class FootballComponent {
 
-  @Input() color = COLOR_LIGHT;
+  @Input() color?: string;
+
+  getColor(): string {
+    return this.color || KEYWORD_CURRENT_COLOR;
+  }
 
 }

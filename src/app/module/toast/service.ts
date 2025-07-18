@@ -22,6 +22,8 @@ export class ToastService {
     // the time the toast item is fading plus a few milliseconds grace - after this has elapsed the toast will be removed from the UI
     private static readonly ITEM_FADE_TIME_MS = 800;
 
+    private static readonly DEFAULT_DURATION_MS = 2500;
+
     private readonly toasts: Toast[] = [];
     private readonly toasts$ = new BehaviorSubject<Toast[]>([]);
 
@@ -29,15 +31,17 @@ export class ToastService {
         return this.toasts$.asObservable();
     }
 
-    addToast(createToast: OmitStrict<Toast, 'id'>) {
+    addToast(createToast: OmitStrict<Toast, 'id' | 'durationMs'>, durationMs?: number) {
         const id = crypto.randomUUID();
+        const effectiveDurationMs = durationMs ?? ToastService.DEFAULT_DURATION_MS;
         this.toasts.push({
             ...createToast,
             id,
+            durationMs: effectiveDurationMs,
         });
         this.publish();
 
-        setTimeout(() => this.removeById(id), createToast.durationMs + ToastService.ITEM_FADE_TIME_MS);
+        setTimeout(() => this.removeById(id), effectiveDurationMs + ToastService.ITEM_FADE_TIME_MS);
     }
 
     private publish() {

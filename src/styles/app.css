@@ -45,10 +45,10 @@ textarea:focus, input:focus {
   vertical-align: middle;
   appearance: none;
   min-width: 64px;
-  background-color: rgb(46, 177, 116);
+  background-color: var(--success);
   text-transform: none;
   box-shadow: none;
-  color: rgb(255, 255, 255);
+  color: var(--light);
   height: 36px;
   outline: 0px;
   border-width: 0px;
@@ -68,7 +68,7 @@ textarea:focus, input:focus {
 }
 
 .button:hover {
-  background-color: rgb(87, 192, 143);
+  background-color: var(--success-lighter-5);
 }
 
 .icon {

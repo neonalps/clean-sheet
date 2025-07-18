@@ -16,7 +16,7 @@ import { GameEventsComponent } from "@src/app/component/game-events/game-events.
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
 import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
-import { COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
+import { COLOR_DARK_GREY_LIGHTER, COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
 import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
@@ -138,8 +138,8 @@ export class GameComponent implements OnDestroy {
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGameMinute(minute, '.') });
 
     this.lineupTeamChips = [
-      { selected: true, value: 'main', displayText: this.mainClub.shortName },
-      { selected: false, value: 'opponent', displayText: game.opponent.shortName, },
+      { selected: true, value: 'main', displayText: this.mainClub.shortName, displayIcon: { type: 'club', content: this.mainClub.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
+      { selected: false, value: 'opponent', displayText: game.opponent.shortName, displayIcon: { type: 'club', content: game.opponent.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
     ]
 
     // asynchronously fetch previous leg information
