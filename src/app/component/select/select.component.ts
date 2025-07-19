@@ -12,6 +12,8 @@ import { CheckComponent } from '@src/app/icon/check/check.component';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 
+export type LoadingStyle = 'skeleton' | 'spinner';
+
 @Component({
   selector: 'app-select',
   imports: [ChevronDownComponent, CheckComponent, CommonModule, ClickOutsideDirective, LoadingComponent, LoadingComponent, SearchComponent, UiIconComponent],
@@ -41,6 +43,7 @@ export class SelectComponent implements OnInit {
   @Input() showSelectedTick = true;
   @Input() minWidth: string | null = null;
   @Input() centerOptions: boolean = false;
+  @Input() loadingStyle: LoadingStyle = 'spinner';
 
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<OptionId>();
@@ -51,6 +54,8 @@ export class SelectComponent implements OnInit {
 
   displayIcon: UiIconDescriptor | null = null;
   displayText: string | null = null;
+
+  skeletonRows = [...Array(3).keys()];
 
   private readonly destroy$ = new Subject<void>();
 
@@ -95,9 +100,6 @@ export class SelectComponent implements OnInit {
       this.hideDropdown();
       return;
     }
-
-    console.log('selected option', selectedOption);
-    console.log('options', this.options);
 
     this.currentValue = selectedOption;
     this.displayIcon = this.currentValue.icon ?? null;

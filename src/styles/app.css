@@ -45,10 +45,8 @@ textarea:focus, input:focus {
   vertical-align: middle;
   appearance: none;
   min-width: 64px;
-  
   text-transform: none;
   box-shadow: none;
-  
   height: 36px;
   outline: 0px;
   border-width: 0px;
@@ -214,4 +212,9 @@ textarea:focus, input:focus {
 
 .arrow-inline-small {
   width: .9rem;
+}
+
+.loading-container-medium {
+  width: 2rem;
+  height: 2rem;
 }

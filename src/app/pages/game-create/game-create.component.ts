@@ -5,7 +5,7 @@ import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { combineLatest, debounceTime, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, delay, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { DatetimePickerComponent } from "@src/app/component/datetime-picker/datetime-picker.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ButtonComponent } from "@src/app/component/button/button.component";

@@ -1,5 +1,6 @@
-import { BasicGame, DetailedGame } from "./game";
-import { BasicVenue } from "./venue";
+import { ExternalProvider } from "./external-provider";
+import { BasicGame } from "./game";
+import { BasicVenue, VenueInput } from "./venue";
 
 export interface SmallClub {
     id: number;
@@ -22,4 +23,24 @@ export interface BasicClub {
     countryCode: string;
     homeVenue?: BasicVenue;
     lastGames?: BasicGame[];
+}
+
+export interface ClubInput {
+    clubId?: number;
+    externalClub?: ExternalClub;
+}
+
+export interface ExternalClub {
+    provider: ExternalProvider;
+    id: string;
+    name: string;
+    shortName: string;
+    iconLarge?: string;
+    iconSmall?: string;
+    city: string;
+    district?: string;
+    countryCode: string;
+    primaryColour?: string;
+    secondaryColour?: string;
+    homeVenue?: VenueInput;
 }

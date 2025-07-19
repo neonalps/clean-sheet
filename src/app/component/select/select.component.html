@@ -26,7 +26,25 @@
             </div>
         </ng-container>
         <ng-container *ngIf="isLoading; else loadedOptions">
-            <app-loading />
+            <ng-container *ngIf="loadingStyle === 'spinner'; else loadingSkeleton">
+                <div class="flex align-items-center justify-content-center py-3">
+                    <div class="loading-container-medium">
+                        <app-loading />
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #loadingSkeleton>
+                @for (skeletonRow of skeletonRows; track $index) {
+                    <div class="flex align-items-center">
+                        <div class="basis-1/8 mr-1 flex align-items-center justify-content-center p-2">
+                            <div class="skeleton-circle-small"></div>
+                        </div>
+                        <div class="flex-grow-1 flex align-items-center justify-content-start py-2">
+                            <div class="skeleton-box-small"></div>
+                        </div>
+                    </div>
+                }
+            </ng-template>
         </ng-container>
         <ng-template #loadedOptions>
             <ng-container *ngFor="let option of options">

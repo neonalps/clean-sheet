@@ -1,3 +1,5 @@
+import { ExternalProvider } from "./external-provider";
+
 export interface Person {
     id: number;
     firstName: string;
@@ -13,4 +15,18 @@ export interface DetailedPerson {
     birthday: Date;
     deathday?: Date;
     nationalities?: string[];
+}
+
+export interface PersonInput {
+    personId?: number;
+    externalPerson?: ExternalPerson;
+}
+
+export interface ExternalPerson {
+    provider: ExternalProvider;
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl?: string;
+    birthday?: Date;
 }

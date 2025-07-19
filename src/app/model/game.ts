@@ -1,8 +1,9 @@
-import { SmallClub } from "./club";
-import { SmallCompetition } from "./competition";
-import { Person } from "./person";
+import { DateString } from "../util/domain-types";
+import { ClubInput, SmallClub } from "./club";
+import { CompetitionInput, SmallCompetition } from "./competition";
+import { Person, PersonInput } from "./person";
 import { Season } from "./season";
-import { GameVenue } from "./venue";
+import { GameVenue, VenueInput } from "./venue";
 
 export enum GameStatus {
     Finished = "Finished",
@@ -17,6 +18,29 @@ export type CardType = 'yellow' | 'red' | 'yellowRed';
 export type Tendency = 'w' | 'd' | 'l';
 
 export type ScoreTuple = [number, number];
+
+export interface CreateGame {
+    kickoff: DateString;
+    opponent: ClubInput;
+    competition: CompetitionInput;
+    competitionRound: string;
+    competitionStage?: string;
+    isHomeGame: boolean;
+    status: GameStatus;
+    venue: VenueInput;
+    attendance?: number;
+    isNeutralGround?: boolean;
+    isPractice?: boolean;
+    isSoldOut?: boolean;
+    lineupMain: CreateGamePlayer[];
+    lineupOpponent: CreateGamePlayer[];
+    managersMain: CreateGameManager[];
+    managersOpponent: CreateGameManager[];
+    events: CreateGameEvent[];
+    referees: CreateGameReferee[];
+    leg?: number;
+    previousLeg?: GameInput;
+}
 
 export interface BasicGame {
     id: number;
@@ -43,6 +67,10 @@ export interface BasicGame {
     titleWinningGame?: boolean;
     titleCount?: number;
     victoryGameText?: string;
+}
+
+export interface GameInput {
+    gameId?: number;
 }
 
 export interface GamePlayer {
@@ -86,6 +114,12 @@ export enum ManagingRole {
     AssistantCoach = "assistantCoach",
 }
 
+export type PenaltyMissedReason = 'wide' | 'high' | 'post' | 'crossbar' | 'saved';
+
+export type VarDecision = 'goal' | 'noGoal' | 'penalty' | 'penaltyCancelled' | 'yellowCardOverturned' | 'noPenaltyConfirmed';
+
+export type VarDecisionReason = 'offside' | 'foul' | 'handball' | 'ballOutOfPlay';
+
 export interface GameManager {
     id: number;
     person: Person;
@@ -128,6 +162,18 @@ export enum GameEventType {
     YellowRedCard = "yellowRedCard",
     Period = "period",
 }
+
+export type ExpulsionReason = 'violentConduct' | 'denialOfGoalScoringOpportunity' | 'professionalFoul' | 'argument' | 'seriousFoulPlay';
+
+export enum BookableOffence {
+    DangerousPlay = 'dangerousPlay',
+    DenialOfGoalScoringOpportunity = 'denialOfGoalScoringOpportunity',
+    Dissent = "dissent",
+    Foul = "foul",
+    Handball = "handball",
+    Other = "other",
+    UnsportingBehavious = "unsportingBehaviour",
+};
 
 export interface GameEvent {
     id: number;
@@ -316,4 +362,100 @@ export interface UiPenaltyShootOutGameEvent extends UiGameEvent {
 
 export interface UiInjuryTimeGameEvent extends UiGameEvent {
     additionalMinutes: number;
+}
+
+export interface CreateGamePlayer {
+    sortOrder: number;
+    person: PersonInput;
+    shirt: number;
+    forMain: boolean;
+    isStarting: boolean;
+    isCaptain: boolean;
+    positionKey?: string;
+    positionGrid?: number;
+}
+
+export interface CreateGameManager {
+    sortOrder: number;
+    person: PersonInput;
+    forMain: boolean;
+    role: ManagingRole;
+}
+
+export interface CreateGameEvent {
+    type: GameEventType;
+    sortOrder: number;
+    minute: string;
+}
+
+export interface CreateGoalGameEvent extends CreateGameEvent {
+    type: GameEventType.Goal;
+    scoredBy: PersonInput;
+    assistBy?: PersonInput;
+    goalType: GoalType;
+    penalty: boolean;
+    ownGoal: boolean;
+    directFreeKick: boolean;
+    bicycleKick: boolean;
+}
+
+export interface CreateInjuryTimeGameEvent extends CreateGameEvent {
+    type: GameEventType.InjuryTime;
+    additionalMinutes: number;
+}
+
+export interface CreatePenaltyMissedGameEvent extends CreateGameEvent {
+    type: GameEventType.PenaltyMissed;
+    reason: PenaltyMissedReason;
+    takenBy: PersonInput;
+}
+
+export interface CreatePenaltyShootOutGameEvent extends CreateGameEvent {
+    type: GameEventType.PenaltyShootOut;
+    takenBy: PersonInput;
+    result: PsoResult;
+}
+
+export interface CreateRedCardGameEvent extends CreateGameEvent {
+    type: GameEventType.RedCard;
+    affectedPlayer?: PersonInput;
+    affectedManager?: PersonInput;
+    reason?: ExpulsionReason;
+    notOnPitch?: boolean;
+}
+
+export interface CreateSubstitutionGameEvent extends CreateGameEvent {
+    type: GameEventType.Substitution;
+    playerOn: PersonInput;
+    playerOff: PersonInput;
+    injured?: boolean;
+}
+
+export interface CreateVarDecisionGameEvent extends CreateGameEvent {
+    type: GameEventType.VarDecision;
+    decision: VarDecision;
+    reason: VarDecisionReason;
+    affectedPlayer: PersonInput;
+}
+
+export interface CreateYellowCardGameEvent extends CreateGameEvent {
+    type: GameEventType.YellowCard;
+    affectedPlayer?: PersonInput;
+    affectedManager?: PersonInput;
+    reason?: BookableOffence;
+    notOnPitch?: boolean;
+}
+
+export interface CreateYellowRedCardGameEvent extends CreateGameEvent {
+    type: GameEventType.YellowRedCard;
+    affectedPlayer?: PersonInput;
+    affectedManager?: PersonInput;
+    reason?: BookableOffence;
+    notOnPitch?: boolean;
+}
+
+export interface CreateGameReferee {
+    sortOrder: number;
+    person: PersonInput;
+    role: RefereeRole;
 }
