@@ -70,10 +70,6 @@ textarea:focus, input:focus {
   color: var(--light-grey);
 }
 
-.button:hover {
-  background-color: var(--success-lighter-5);
-}
-
 .icon {
   display: inline-block;
   width: 20px;
