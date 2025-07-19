@@ -1,3 +1,3 @@
-<button class="button transition-colors uppercase flex" [ngClass]="{ 'button-disabled': enabled() !== true }" (click)="onClick()">
+<button class="button transition-colors uppercase flex" [ngClass]="{ 'button-success': buttonType === 'success' && enabled(), 'button-disabled': enabled() !== true }" (click)="onClick()">
     <ng-content></ng-content>
 </button>

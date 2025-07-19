@@ -45,10 +45,10 @@ textarea:focus, input:focus {
   vertical-align: middle;
   appearance: none;
   min-width: 64px;
-  background-color: var(--success);
+  
   text-transform: none;
   box-shadow: none;
-  color: var(--light);
+  
   height: 36px;
   outline: 0px;
   border-width: 0px;
@@ -59,6 +59,11 @@ textarea:focus, input:focus {
   text-decoration: none;
   padding: 4px 12px;
   border-radius: 8px;
+}
+
+.button-success {
+  background-color: var(--success);
+  color: var(--light);
 }
 
 .button-disabled {

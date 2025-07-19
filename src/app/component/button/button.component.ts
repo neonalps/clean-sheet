@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+
+export type ButtonType = 'success';
 
 @Component({
   selector: 'app-button',
@@ -8,6 +10,8 @@ import { Component, EventEmitter, input, Output } from '@angular/core';
   styleUrl: './button.component.css'
 })
 export class ButtonComponent {
+
+  @Input() buttonType!: ButtonType;
 
   @Output() onClicked = new EventEmitter<void>();
 
