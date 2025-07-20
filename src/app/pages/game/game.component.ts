@@ -13,10 +13,10 @@ import { LargeClubComponent } from "@src/app/component/large-club/large-club.com
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
 import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
-import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { API_FIELD_TRANSLATION_PREFIX, TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
 import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
-import { COLOR_DARK_GREY_LIGHTER, COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
+import { COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
 import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
@@ -230,7 +230,9 @@ export class GameComponent implements OnDestroy {
     }
 
     // competition round
-    const round = processTranslationPlaceholders(this.game!.round, this.translationService);
+    const needsTranslation = isNaN(Number(this.game!.round));
+    const competitionRound = needsTranslation ? [`{`, API_FIELD_TRANSLATION_PREFIX, 'competitionRound.', this.game!.round, `}`].join('') : this.game!.round;
+    const round = processTranslationPlaceholders(competitionRound, this.translationService);
     parts.push(`${isNaN(Number(round)) ? '' : this.translationService.translate('competitionRound.round')} ${round}`);
 
     return parts.join(' · ');

@@ -26,6 +26,7 @@
     "game.competition": "Bewerb",
     "game.competitionRound": "Runde",
     "game.create": "Spiel anlegen",
+    "game.failedToCreate": "Das neue Spiel konnte nicht angelegt werden",
     "game.wasCreated": "Das neue Spiel wurde angelegt",
     "game.createNew": "Neues Spiel anlegen",
     "game.date": "Datum",

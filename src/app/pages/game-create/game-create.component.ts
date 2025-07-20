@@ -5,7 +5,7 @@ import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { combineLatest, debounceTime, delay, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { combineLatest, debounceTime, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { DatetimePickerComponent } from "@src/app/component/datetime-picker/datetime-picker.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ButtonComponent } from "@src/app/component/button/button.component";
@@ -16,16 +16,19 @@ import { ClubId, CompetitionId, VenueId } from '@src/app/util/domain-types';
 import { environment } from '@src/environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
-import { GameStatus } from '@src/app/model/game';
+import { CreateGame, GameStatus } from '@src/app/model/game';
 import { ToastService } from '@src/app/module/toast/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
+import { navigateToSeasonGames } from '@src/app/util/router';
+import { Router } from '@angular/router';
+import { GameService } from '@src/app/module/game/service';
 
 type UiGame = {
   kickoff: Date;
   competitionId: CompetitionId;
-  competitinRound: string;
+  competitionRound: string;
   opponentId: ClubId;
   venueId: VenueId;
   isHomeGame: boolean;
@@ -57,6 +60,8 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   private readonly clubResolver = inject(ClubResolver);
   private readonly externalSearchService = inject(ExternalSearchService);
+  private readonly gameService = inject(GameService);
+  private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
 
@@ -73,6 +78,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   private selectedOpponent?: BasicClub;
+  private gameToCreate: CreateGame | null = null;
 
   constructor() {
     this.selectedIsHomeGame$ = toObservable(this.isHomeGame);
@@ -91,22 +97,43 @@ export class GameCreateComponent implements OnInit, OnDestroy {
     ]).pipe(takeUntil(this.destroy$)).subscribe(gameInformation => {
       if (gameInformation[0] === undefined) {
         this.canSubmit.set(false);
+        this.gameToCreate = null;
         return;
       }
 
       const uiGame: UiGame = {
         kickoff: gameInformation[0],
         competitionId: gameInformation[1],
-        competitinRound: gameInformation[2],
+        competitionRound: gameInformation[2],
         opponentId: gameInformation[3],
         isHomeGame: gameInformation[4],
         gameStatus: gameInformation[5],
         venueId: gameInformation[6],
       };
 
-      this.canSubmit.set(true);
+      this.gameToCreate = {
+        kickoff: uiGame.kickoff.toISOString(),
+        status: uiGame.gameStatus,
+        competition: {
+          competitionId: uiGame.competitionId,
+        },
+        competitionRound: uiGame.competitionRound,
+        opponent: {
+          clubId: uiGame.opponentId,
+        },
+        venue: {
+          venueId: uiGame.venueId,
+        },
+        isHomeGame: uiGame.isHomeGame,
+        lineupMain: [],
+        lineupOpponent: [],
+        events: [],
+        managersMain: [],
+        managersOpponent: [],
+        referees: [],
+      }
 
-      console.log('have ui game', uiGame);
+      this.canSubmit.set(true);
     })
   }
 
@@ -316,7 +343,16 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       this.canSubmit.set(false);
       this.isSubmitting.set(true);
 
-      this.toastService.addToast({ type: 'success', text: this.translationService.translate('game.wasCreated') });
+      this.gameService.create(this.gameToCreate!).pipe(take(1)).subscribe({
+        next: createdGame => {
+          this.toastService.addToast({ type: 'success', text: this.translationService.translate('game.wasCreated') });
+          navigateToSeasonGames(this.router, createdGame.season.id);
+        },
+        error: error => {
+          console.error('failed to create game', error);
+          this.toastService.addToast({ type: 'error', text: this.translationService.translate('game.failedToCreate') });
+        }
+      });
     }
 
 }

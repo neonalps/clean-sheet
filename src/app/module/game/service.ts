@@ -12,7 +12,7 @@ export class GameService {
   constructor(private http: HttpClient) { }
 
   create(game: CreateGame): Observable<DetailedGame> {
-    throw new Error();
+    return this.http.post<DetailedGame>(`${environment.apiBaseUrl}/v1/games`, game);
   }
 
   getById(gameId: number): Observable<DetailedGame> {

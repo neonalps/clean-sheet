@@ -4,6 +4,8 @@ import en from "./locales/en.json";
 import { isNotDefined } from '@src/app/util/common';
 import { Locale } from './locales/locale';
 
+export const API_FIELD_TRANSLATION_PREFIX = `t:`;
+
 export type Ordinal = {
   ordinalValue: number;
 }
