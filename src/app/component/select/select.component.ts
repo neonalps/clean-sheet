@@ -44,6 +44,7 @@ export class SelectComponent implements OnInit {
   @Input() minWidth: string | null = null;
   @Input() centerOptions: boolean = false;
   @Input() loadingStyle: LoadingStyle = 'spinner';
+  @Input() skeletonRowCount: number = 3;
 
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<OptionId>();
@@ -55,19 +56,24 @@ export class SelectComponent implements OnInit {
   displayIcon: UiIconDescriptor | null = null;
   displayText: string | null = null;
 
-  skeletonRows = [...Array(3).keys()];
+  emptyOptionsVisible = false;
+
+  skeletonRows = [...Array(this.skeletonRowCount).keys()];
 
   private readonly destroy$ = new Subject<void>();
 
   private selectedIdx: number | null = null;
   private hasBefore = false;
   private hasNext = false;
+  private currentSearchValue = "";
 
   ngOnInit(): void {
     this.displayText = this.emptyText;
 
     this.optionsSource.pipe(takeUntil(this.destroy$)).subscribe(value => {
       this.options = value;
+
+      this.emptyOptionsVisible = this.currentSearchValue.trim().length > 0 && this.options.length === 0;
     });
 
     this.selectedOption?.pipe(takeUntil(this.destroy$), filter(value => value !== null)).subscribe(value => {
@@ -92,7 +98,9 @@ export class SelectComponent implements OnInit {
   }
 
   onSearchChange(event: Event): void {
-    this.onSearch.next(getHtmlInputElementFromEvent(event).value);
+    const searchValue = getHtmlInputElementFromEvent(event).value;
+    this.currentSearchValue = searchValue;
+    this.onSearch.next(searchValue);
   }
 
   onSelect(selectedOption: SelectOption): void {

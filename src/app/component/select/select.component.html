@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="select-options" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
+    <div class="select-options max-h-50-vh overflow-y-scroll" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
         <ng-container *ngIf="showSearch">
             <div class="search-container p-2">
                 <div class="icon absolute left-16 top-16">
@@ -47,21 +47,26 @@
             </ng-template>
         </ng-container>
         <ng-template #loadedOptions>
-            <ng-container *ngFor="let option of options">
-                <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
-                    <ng-container *ngIf="option.icon">
-                        <div class="basis-1/10 mr-1">
-                            <div class="width-1-75rem flex align-items-center">
-                                <app-ui-icon [descriptor]="option.icon" />
+            <ng-container *ngIf="options!.length > 0; else emptyOptions">
+                @for (option of options; track $index) {
+                    <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
+                        <ng-container *ngIf="option.icon">
+                            <div class="basis-1/10 mr-1">
+                                <div class="width-1-75rem flex align-items-center">
+                                    <app-ui-icon [descriptor]="option.icon" />
+                                </div>
                             </div>
+                        </ng-container>
+                        <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>
+                        <div *ngIf="showSelectedTick && isSelected(option)" class="basis-1/20 icon">
+                            <app-check [color]="colorLight" />
                         </div>
-                    </ng-container>
-                    <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>
-                    <div *ngIf="showSelectedTick && isSelected(option)" class="basis-1/20 icon">
-                        <app-check [color]="colorLight" />
                     </div>
-                </div>
+                }
             </ng-container>
+            <ng-template #emptyOptions>
+                <ng-content *ngIf="emptyOptionsVisible" select="[noOptions]"></ng-content>
+            </ng-template>
         </ng-template>
     </div>
 </div>

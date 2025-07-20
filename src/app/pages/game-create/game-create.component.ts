@@ -15,7 +15,6 @@ import { BasicClub } from '@src/app/model/club';
 import { ClubId, CompetitionId, VenueId } from '@src/app/util/domain-types';
 import { environment } from '@src/environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { CreateGame, GameStatus } from '@src/app/model/game';
 import { ToastService } from '@src/app/module/toast/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
@@ -24,6 +23,8 @@ import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { navigateToSeasonGames } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { GameService } from '@src/app/module/game/service';
+import { COLOR_LIGHT } from '@src/styles/constants';
+import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
 
 type UiGame = {
   kickoff: Date;
@@ -37,7 +38,7 @@ type UiGame = {
 
 @Component({
   selector: 'app-game-create',
-  imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent, UiIconComponent, LoadingComponent],
+  imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent, UiIconComponent, LoadingComponent, EmptySearchOptionComponent],
   templateUrl: './game-create.component.html',
   styleUrl: './game-create.component.css'
 })
@@ -45,9 +46,11 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   isSearchingForClub = false;
   isSearchingForCompetition = false;
+  isSearchingForCompetitionRound = false;
   isSearchingForVenue = false;
   isHomeGame = signal(true);
   
+  colorLight = COLOR_LIGHT;
   canSubmit = signal(false);
   isSubmitting = signal(false);
 
@@ -56,6 +59,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   private readonly clubSearch$ = new Subject<string>();
   private readonly competitionSearch$ = new Subject<string>();
+  private readonly competitionRoundSearch$ = new Subject<string>();
   private readonly venueSearch$ = new Subject<string>();
 
   private readonly clubResolver = inject(ClubResolver);
@@ -293,10 +297,6 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       return of([]);
     }
 
-    onCompetitionRoundChanged(event: Event) {
-      this.selectedCompetitionRound$.next(getHtmlInputElementFromEvent(event).value);
-    }
-
     getGameStatusOptions(): Observable<SelectOption[]> {
       return merge(this.getDefaultGameStatusOptions());
     }
@@ -313,6 +313,57 @@ export class GameCreateComponent implements OnInit, OnDestroy {
         { id: 'Abandoned', name: this.translationService.translate(`gameStatus.abandoned`) },
         { id: 'Postponed', name: this.translationService.translate(`gameStatus.postponed`) },
       ]);
+    }
+
+    onCompetitionRoundSearchChanged(value: string) {
+      this.competitionRoundSearch$.next(value);
+    }
+
+    onCompetetitionRoundSelected(id: OptionId) {
+      this.selectedCompetitionRound$.next(id.toString());
+    }
+
+    private searchForCompetitionRound(): Observable<SelectOption[]> {
+      return this.competitionRoundSearch$.pipe(
+        debounceTime(250),
+        switchMap(value => {
+          const optionSource = this.getDefaultCompetitionRoundOptions();
+
+          if (value.trim().length === 0) {
+            return optionSource;
+          }
+
+          return optionSource.pipe(
+            map(options => {
+              return options.filter(option => option.name.toLocaleLowerCase().includes(value.trim()))
+            })
+          );
+        }),
+      );
+    }
+
+    getCompetitionRoundOptions(): Observable<SelectOption[]> {
+      return merge(this.getDefaultCompetitionRoundOptions(), this.searchForCompetitionRound());
+    }
+
+    private getDefaultCompetitionRoundOptions(): Observable<SelectOption[]> {
+      const options: SelectOption[] = [];
+
+      for (let i = 1; i <= 32; i++) {
+        options.push({
+          id: i.toString(),
+          name: i.toString(),
+        });
+      }
+
+      ['final', 'semifinal', 'quarterfinal', 'roundOf16', 'roundOf32'].forEach(koRound => {
+        options.push({
+          id: koRound,
+          name: this.translationService.translate(`competitionRound.${koRound}`),
+        });
+      })
+
+      return of(options);
     }
 
     onIsHomeValueChange(newValue: boolean) {
