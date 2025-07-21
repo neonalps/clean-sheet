@@ -60,6 +60,8 @@
     "penaltyOutcome.high": "High",
     "penaltyOutcome.post": "Post",
     "penaltyOutcome.savedBy": "Saved by {goalkeeper}",
+    "performanceTrend.noClubGames": "No games were played against this club yet",
+    "performanceTrend.noSeasonGames": "No games were played in this season yet",
     "period.halfTime": "Half time",
     "period.fullTime": "Full time",
     "period.injuryTime": "Additional time",

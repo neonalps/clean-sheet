@@ -17,6 +17,7 @@ import { ProgressCircleComponent } from "@src/app/component/progress-circle/prog
 export class GamePerformanceTrendComponent implements OnInit, OnDestroy {
 
   @Input() games$!: Observable<BasicGame[]>;
+  @Input() noGamesText!: string;
   @Input() showGameDate = false;
 
   isLoading = true;

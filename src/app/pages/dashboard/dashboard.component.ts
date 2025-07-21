@@ -11,10 +11,11 @@ import { BasicGame, DetailedGame } from '@src/app/model/game';
 import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
+import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent],
+  imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

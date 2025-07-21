@@ -60,6 +60,8 @@
     "penaltyOutcome.high": "Drüber",
     "penaltyOutcome.post": "Stange",
     "penaltyOutcome.savedBy": "Gehalten von {goalkeeper}",
+    "performanceTrend.noClubGames": "Gegen diesen Verein wurden noch keine Spiele absolviert",
+    "performanceTrend.noSeasonGames": "In dieser Saison wurden noch keine Spiele absolviert",
     "period.halfTime": "Halbzeit",
     "period.fullTime": "Endstand",
     "period.injuryTime": "Nachspielzeit",

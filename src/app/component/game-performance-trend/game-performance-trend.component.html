@@ -1,4 +1,4 @@
-<div class="bg-color-dark-grey-darker p-2 mt-3 rounded-lg">
+<div class="bg-color-dark-grey-darker px-1 py-2 mt-3 rounded-lg">
     <ng-container *ngIf="isLoading; else loadedPerformanceTrend">
         <div class="flex p-2 justify-content-between align-items-center">
             <div class="skeleton skeleton-box-2-3"></div>
@@ -9,20 +9,28 @@
         </div>
     </ng-container>
     <ng-template #loadedPerformanceTrend>
-        <div class="flex justify-content-between">
-            @for (placeholder of placeholderElements; track $index) {
-                <div class="flex-1"></div>
-            }
+        <ng-container *ngIf="games.length > 0; else noGames">
+            <div class="flex justify-content-between">
+                @for (placeholder of placeholderElements; track $index) {
+                    <div class="flex-1"></div>
+                }
 
-            @for (game of games; track $index) {
-                <div class="flex-1 hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded-md p-2" (click)="triggerNavigateToGame(game)">
-                    <app-game-small [game]="game" [showGameDate]="showGameDate" />
+                @for (game of games; track $index) {
+                    <div class="flex-1 hover:bg-color-dark-grey-lighter transition-bg-color pointer rounded-md p-2" (click)="triggerNavigateToGame(game)">
+                        <app-game-small [game]="game" [showGameDate]="showGameDate" />
+                    </div>
+                }
+
+                <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-1" *ngIf="score">
+                    <app-progress-circle [percentage]="score" [radius]="30" [transitionDelayMs]="250" />
                 </div>
-            }
-
-            <div class="flex align-items-center border-l-3 border-l-solid border-l-dark-grey-lighter pl-1" *ngIf="score">
-                <app-progress-circle [percentage]="score" [radius]="30" [transitionDelayMs]="250" />
             </div>
-        </div>
+        </ng-container>
+        <ng-template #noGames>
+            <div class="p-3 text-light-grey flex flex-col align-items-center">
+                <ng-content select="[noGamesIcon]"></ng-content>
+                <div>{{ noGamesText }}</div>
+            </div>
+        </ng-template>
     </ng-template>
 </div>
