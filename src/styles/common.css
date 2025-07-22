@@ -1058,6 +1058,10 @@
     max-width: 5rem;
 }
 
+.bg-color-transparent {
+    background-color: transparent;
+}
+
 .bg-color-light {
     background-color: var(--light);
 }

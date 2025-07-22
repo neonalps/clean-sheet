@@ -52,33 +52,3 @@
         background-color: #474747;
     }
 }
-
-.skeleton-circle-small {
-    background-image: linear-gradient(90deg, var(--dark-grey-lighter-2) 0px, var(--dark-grey-mid) 40px, var(--dark-grey-lighter-2) 80px);
-    background-size: 600px;
-    animation: shine-avatar 1.8s infinite linear;
-}
-
-.skeleton-box-small {
-    background-image: linear-gradient(90deg, var(--dark-grey-lighter-2) 0px, var(--dark-grey-mid) 40px, var(--dark-grey-lighter-2) 80px);
-    background-size: 600px;
-    animation: shine-lines 1.8s infinite linear;
-}
-
-@keyframes shine-lines {
-  0% {
-    background-position: -100px;
-  }
-  40%, 100% {
-    background-position: 220px;
-  }
-}
-
-@keyframes shine-avatar {
-  0% {
-    background-position: -32px;
-  }
-  40%, 100% {
-    background-position: 288px;
-  }
-}

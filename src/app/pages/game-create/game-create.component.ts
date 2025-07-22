@@ -335,7 +335,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
           return optionSource.pipe(
             map(options => {
-              return options.filter(option => option.name.toLocaleLowerCase().includes(value.trim()))
+              return options.filter(option => option.name.toLocaleLowerCase().includes(value.toLocaleLowerCase().trim()))
             })
           );
         }),
@@ -379,12 +379,12 @@ export class GameCreateComponent implements OnInit, OnDestroy {
     private pushSelectedVenue(opponent: BasicClub) {
       if (this.isHomeGame()) {
         this.pushSelectedVenue$.next({
-          id: this.mainClub.id.toString(),
+          id: this.mainClub.homeVenue!.id.toString(),
           name: this.mainClub.homeVenue!.name,
         });
       } else if (opponent.homeVenue) {
         this.pushSelectedVenue$.next({
-          id: opponent.id.toString(),
+          id: opponent.homeVenue.id.toString(),
           name: opponent.homeVenue.shortName,
         });
       }

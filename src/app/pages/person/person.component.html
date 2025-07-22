@@ -1,6 +1,13 @@
 <ng-container *ngIf="isLoading; else loadedContent">
-    <div>
-        <app-loading />
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center">
+            <div class="basis-1/6 mr-1 flex align-items-center justify-content-center p-2">
+                <div class="skeleton-circle-medium"></div>
+            </div>
+            <div class="flex-grow-1 flex align-items-center justify-content-start py-2">
+                <div class="skeleton-box-medium"></div>
+            </div>
+        </div>
     </div>
 </ng-container>
 <ng-template #loadedContent>
@@ -10,7 +17,7 @@
     <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
         <div class="flex align-items-center">
             <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
-                <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" />
+                <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" [iconBgColorClass]="'bg-color-transparent'" />
             </div>
             <div [ngClass]="{ 'pl-4': !avatar }">
                 <div>

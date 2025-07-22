@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PersonResolver } from '@src/app/module/person/resolver';
@@ -19,7 +18,7 @@ import { getUiPlayerStats } from '@src/app/module/stats/util';
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, LoadingComponent, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
