@@ -263,6 +263,14 @@ export class GameComponent implements OnDestroy {
     return this.translationService.translate(this.game.victoryGameText, { main: this.mainClub.shortName, titleCount: { ordinalValue: this.game.titleCount as number } });
   }
 
+  getAwayGoalsText(): string | null {
+    if (this.mainWonOnAwayGoals === null) {
+      return null;
+    }
+
+    return this.translationService.translate('game.decidedByAwayGoals', { club: this.mainWonOnAwayGoals === true ? this.mainClub.shortName : this.game!.opponent.shortName })
+  }
+
   showGameDetails(): boolean {
     return this.game?.status === GameStatus.Finished;
   }

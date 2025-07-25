@@ -47,7 +47,7 @@
         <div class="center text-sm">
             <div class="mb-2">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
             <div class="mb-3">{{ getCompetitionName() }}</div>
-            <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span> <span *ngIf="mainWonOnAwayGoals !== null" class="ml-2 rounded-md px-2 py-1 text-xs bg-color-info">{{ 'game.awayGoals' | $t }}</span></div>
+            <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span></div>
         </div>
         <div class="flex justify-content-center py-1">
             <div class="basis-3/7">
@@ -93,6 +93,12 @@
                 </div>
             </div>
             <div class="text-sm">{{ victoryGameText }}</div>
+        </div>
+    </div>
+
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="mainWonOnAwayGoals !== null">
+        <div class="flex align-items-center justify-content-center p-2">
+            <div class="text-sm">{{ getAwayGoalsText() }}</div>
         </div>
     </div>
 
