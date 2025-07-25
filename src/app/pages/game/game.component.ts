@@ -1,7 +1,6 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
-import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { SmallClub } from '@src/app/model/club';
 import { BasicGame, DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
@@ -42,7 +41,6 @@ export type GameRouteState = {
   imports: [
     CommonModule,
     I18nPipe,
-    LoadingComponent,
     LargeClubComponent,
     TabGroupComponent,
     TabItemComponent,
@@ -82,6 +80,8 @@ export class GameComponent implements OnDestroy {
   ];
 
   mainClub: SmallClub = environment.mainClub;
+
+  mainWonOnAwayGoals: boolean | null = null;
 
   lineupTeamChips: Chip[] = [];
 
@@ -302,7 +302,19 @@ export class GameComponent implements OnDestroy {
     const aggregateMain = this.game!.isHomeGame ? gameScore[0] + previousLegScore[1] : gameScore[1] + previousLegScore[0];
     const aggregateOpponent = this.game!.isHomeGame ? gameScore[1] + previousLegScore[0] : gameScore[0] + previousLegScore[1];
 
-    return [aggregateMain, aggregateOpponent];
+    if (aggregateMain === aggregateOpponent) {
+      // we assume the tie was won on away goals
+      const awayGoalsMain = this.game!.isHomeGame ? previousLegScore[1] : gameScore[0];
+      const awayGoalsOpponent = this.game!.isHomeGame ? gameScore[1] : previousLegScore[0];
+
+      if (awayGoalsMain > awayGoalsOpponent) {
+        this.mainWonOnAwayGoals = true;
+      } else if (awayGoalsOpponent > awayGoalsMain) {
+        this.mainWonOnAwayGoals = false;
+      }
+    }
+
+    return [aggregateMain + (this.mainWonOnAwayGoals === true ? .5 : 0), aggregateOpponent + (this.mainWonOnAwayGoals === false ? .5 : 0)];
   }
 
   getAggregateScore(): string | null {
@@ -311,7 +323,7 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return this.game!.isHomeGame ? [aggregateScore[0], aggregateScore[1]].join(":") : [aggregateScore[1], aggregateScore[0]].join(":");
+    return this.game!.isHomeGame ? [Math.floor(aggregateScore[0]), Math.floor(aggregateScore[1])].join(":") : [Math.floor(aggregateScore[1]), Math.floor(aggregateScore[0])].join(":");
   }
 
   private getResult(score: ScoreTuple | null): string {    
@@ -335,7 +347,9 @@ export class GameComponent implements OnDestroy {
   getUpcomingText(): string {
     const daysUntil = getNumberOfDaysBetween(new Date(this.game!.kickoff), new Date());
     
-    if (daysUntil === 1) {
+    if (daysUntil === 0) {
+      return this.translationService.translate(`date.today`);
+    } else if (daysUntil === 1) {
       return this.translationService.translate(`date.tomorrow`);
     } else {
       return this.translationService.translate(`date.inDays`, { days: daysUntil });

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
@@ -6,6 +6,7 @@ import { SmallClubComponent } from '@src/app/component/small-club/small-club.com
 import { SmallClub } from '@src/app/model/club';
 import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { getNumberOfDaysBetween } from '@src/app/util/date';
 
 @Component({
   selector: 'app-game-overview',
@@ -44,7 +45,20 @@ export class GameOverviewComponent {
     return `result-tendency-${this.game.resultTendency}`;
   }
 
-  getDateFormat(): string {
+  getDateText() {
+    const daysUntil = getNumberOfDaysBetween(new Date(this.game.kickoff), new Date());
+    if (daysUntil === 0) {
+      return [this.translationService.translate(`date.today`), new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+    } else if (daysUntil === 1) {
+      return [this.translationService.translate(`date.tomorrow`), new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+    } else if (daysUntil === -1) {
+      return [this.translationService.translate(`date.yesterday`), , new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+    } else {
+      return new DatePipe('en-US').transform(this.game.kickoff, this.getDateFormat());
+    }
+  }
+
+  private getDateFormat(): string {
     return `EEE, MMM d ${this.showYear ? 'YYYY' : ''} - HH:mm`
   }
 

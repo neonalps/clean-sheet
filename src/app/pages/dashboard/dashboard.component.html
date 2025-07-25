@@ -21,7 +21,7 @@
         <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'dashboard.performanceTrend' | $t }}
         </div>
-        <div class="dashboard-item-content">
+        <div class="dashboard-item-content pt-3">
             <app-game-performance-trend [games$]="games" [noGamesText]="'performanceTrend.noSeasonGames' | $t">
                 <div class="mb-2 width-lg" noGamesIcon>
                     <app-football-shoe />
