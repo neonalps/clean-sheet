@@ -19,7 +19,7 @@
                     </ng-container>
                 </div>
                 <div *ngIf="hasUpcomingGames" #upcomingGamesContainer>
-                    <div class="text-sm text-light-grey">{{ 'games.upcoming' | $t }}</div>
+                    <div class="text-sm text-light-grey mt-6">{{ 'games.upcoming' | $t }}</div>
                     <ng-container *ngFor="let game of upcomingSeasonGames">
                         <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
                     </ng-container>
