@@ -29,8 +29,7 @@ import { GameOverviewComponent } from "@src/app/component/game-overview/game-ove
 import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.component";
 import { Chip } from '@src/app/component/chip/chip.component';
 import { GameId, SeasonId } from '@src/app/util/domain-types';
-
-type SelectableLineup = 'main' | 'opponent';
+import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -53,7 +52,8 @@ export type GameRouteState = {
     TrophyIconComponent,
     GamePerformanceTrendComponent,
     GameOverviewComponent,
-    ChipGroupComponent
+    ChipGroupComponent,
+    RoundInformationComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -68,7 +68,6 @@ export class GameComponent implements OnDestroy {
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
 
   private previousLeg: DetailedGame | null = null;
-  private selectedLineup: SelectableLineup = 'main';
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;

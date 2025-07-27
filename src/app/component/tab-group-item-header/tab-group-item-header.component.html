@@ -1,0 +1,6 @@
+<div #header class="tab-group-item flex relative align-items-center justify-content-center rounded-md px-4 py-2 pointer transition-colors" (click)="onHeaderClicked()" [ngClass]="{ 'no-break': !wordBreak, 'bg-color-dark-grey-lighter': !active, 'bg-color-dark-grey-darker': active, 'text-light-grey-darker': !active, 'text-light': active, 'hover:bg-color-dark-grey-mid': !active }">
+    <div class="mr-2" [ngClass]="tabIconClasses" *ngIf="tabIcon">
+        <app-ui-icon [descriptor]="tabIcon" />
+    </div>
+    <div>{{ tabTitle }}</div>
+</div>

@@ -1,11 +1,6 @@
-<div class="tab-header bg-color-dark-grey flex align-items-center p-1" [ngClass]="{ 'overflow-x-scroll': horizontalScroll }">
+<div #groupContainer class="tab-header bg-color-dark-grey flex align-items-center p-1" [ngClass]="{ 'overflow-x-scroll': horizontalScroll }">
     <ng-container *ngFor="let tab of tabs">
-        <div class="tab-group-item flex align-items-center justify-content-center rounded-md px-4 py-2 pointer transition-colors" (click)="selectTab(tab.tabId)" [ngClass]="{ 'no-break': horizontalScroll, 'bg-color-dark-grey-lighter': !tab.active, 'bg-color-dark-grey-darker': tab.active, 'text-light-grey-darker': !tab.active, 'text-light': tab.active, 'hover:bg-color-dark-grey-mid': !tab.active }">
-            <div class="mr-2" [ngClass]="tab.tabIconClasses" *ngIf="tab.tabIcon">
-                <app-ui-icon [descriptor]="tab.tabIcon" />
-            </div>
-            <div>{{ tab.tabTitle }}</div>
-        </div>
+        <app-tab-group-item-header (onTabItemSelected)="onTabItemSelected($event)" [tabId]="tab.tabId" [tabIcon]="tab.tabIcon" [tabIconClasses]="tab.tabIconClasses" [tabTitle]="tab.tabTitle" [active]="tab.active" [wordBreak]="false" />
     </ng-container>
 </div>
 <div class="tab-body mt-4">

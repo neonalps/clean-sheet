@@ -6,12 +6,3 @@
 .tab-header::-webkit-scrollbar { 
     display: none;  /* Older Safari and Chromium */
 }
-
-.tab-group-item {
-    margin-right: .25rem;
-    min-height: 46px;
-}
-
-.tab-group-item:last-child {
-    margin-right: 0;
-}
