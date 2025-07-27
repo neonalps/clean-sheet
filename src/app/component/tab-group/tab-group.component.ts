@@ -10,7 +10,7 @@ import { TabGroupItemHeaderComponent, TabItemInfo } from "../tab-group-item-head
   templateUrl: './tab-group.component.html',
   styleUrl: './tab-group.component.css'
 })
-export class TabGroupComponent implements AfterContentInit, AfterViewInit, OnDestroy {
+export class TabGroupComponent implements AfterContentInit, OnDestroy {
 
   @Input() activeTab!: Observable<string | null>;
   @Input() horizontalScroll = false;
@@ -20,11 +20,6 @@ export class TabGroupComponent implements AfterContentInit, AfterViewInit, OnDes
   @ContentChildren(TabItemComponent) tabs!: QueryList<TabItemComponent>;
 
   private readonly destroy$ = new Subject<void>();
-
-  ngAfterViewInit(): void {
-    const rect = this.groupContainer.nativeElement.getBoundingClientRect();
-    console.log(rect);
-  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

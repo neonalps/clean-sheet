@@ -1,1 +1,12 @@
-<p>round-games works!</p>
+<ng-container *ngIf="loading; else loadedContent">
+    @for (skeletonRow of skeletonRows; track $index) {
+        <div class="flex align-items-center justify-content-between mb-2">
+            <div class="skeleton-box-small" style="width: 35%;"></div>
+            <div class="skeleton-box-small" style="width: 20%;"></div>
+            <div class="skeleton-box-small" style="width: 35%;"></div>
+        </div>
+    }
+</ng-container>
+<ng-template #loadedContent>
+
+</ng-template>
