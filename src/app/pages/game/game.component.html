@@ -103,15 +103,15 @@
     </div>
 
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible" #scrolling>
-        <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$">
-            <app-tab-item [tabTitle]="'game.events' | $t" [tabId]="'events'">
+        <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$" [horizontalScroll]="true">
+            <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
-            <app-tab-item [tabTitle]="'game.lineup' | $t" [tabId]="'lineup'">
-                <div class="mt-2 mb-6">
-                    <app-chip-group [chips]="lineupTeamChips" [dynamicClassNamesContainer]="['w-full', 'align-items-center', 'justify-content-evenly']" [dynamicClassNamesChip]="[]" (onSelected)="onLineupTeamSelected($event)" />
-                </div>
-                <app-game-lineup [lineup]="getSelectedLineup()" />
+            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClub.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClub.iconSmall! }">
+                <app-game-lineup [lineup]="getMainLineup()" />
+            </app-tab-item>
+            <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }">
+                <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
         </app-tab-group>
     </div>

@@ -25,10 +25,10 @@ import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.
 import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
-import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.component";
 import { Chip } from '@src/app/component/chip/chip.component';
+import { GameId, SeasonId } from '@src/app/util/domain-types';
 
 type SelectableLineup = 'main' | 'opponent';
 
@@ -180,14 +180,6 @@ export class GameComponent implements OnDestroy {
     replaceHash(tabId);
   }
 
-  onLineupTeamSelected(selected: string | number | boolean) {
-    this.selectedLineup = selected as SelectableLineup;
-  }
-
-  getSelectedLineup() {
-    return this.uiGame.lineup[this.selectedLineup];
-  }
-
   getHomeTeam(): SmallClub {
     return this.game!.isHomeGame ? this.mainClub : this.game!.opponent;
   }
@@ -210,6 +202,14 @@ export class GameComponent implements OnDestroy {
 
   getAwayScoringBoard(): UiScoreBoardItem[] {
     return this.game!.isHomeGame ? this.uiGame!.scoreBoard.opponent : this.uiGame!.scoreBoard.main;
+  }
+
+  getMainLineup() {
+    return this.uiGame.lineup.main;
+  }
+
+  getOpponentLineup() {
+    return this.uiGame.lineup.opponent;
   }
 
   getCompetitionName(): string {

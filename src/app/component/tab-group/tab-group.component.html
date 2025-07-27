@@ -1,8 +1,8 @@
-<div class="tab-header bg-color-dark-grey flex align-items-center p-1">
+<div class="tab-header bg-color-dark-grey flex align-items-center p-1" [ngClass]="{ 'overflow-x-scroll': horizontalScroll }">
     <ng-container *ngFor="let tab of tabs">
-        <div class="flex-grow-1 flex align-items-center justify-content-center rounded-md py-1 pointer m-1 transition-colors" (click)="selectTab(tab.tabId)" [ngClass]="{ 'bg-color-dark-grey-lighter': !tab.active, 'bg-color-dark-grey-darker': tab.active, 'text-light-grey-darker': !tab.active, 'text-light': tab.active }">
-            <div class="width-xs mr-2 relative top-2">
-                <app-football />
+        <div class="flex align-items-center justify-content-center rounded-md px-4 py-2 pointer m-1 transition-colors" (click)="selectTab(tab.tabId)" [ngClass]="{ 'no-break': horizontalScroll, 'bg-color-dark-grey-lighter': !tab.active, 'bg-color-dark-grey-darker': tab.active, 'text-light-grey-darker': !tab.active, 'text-light': tab.active }">
+            <div class="width-sm mr-2 relative top-2" *ngIf="tab.tabIcon">
+                <app-ui-icon [descriptor]="tab.tabIcon" />
             </div>
             <div>{{ tab.tabTitle }}</div>
         </div>

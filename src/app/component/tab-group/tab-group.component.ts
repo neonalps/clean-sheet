@@ -2,17 +2,18 @@ import { CommonModule } from '@angular/common';
 import { AfterContentInit, Component, ContentChildren, EventEmitter, Input, OnDestroy, Output, QueryList } from '@angular/core';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { FootballComponent } from "@src/app/icon/football/football.component";
+import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 
 @Component({
   selector: 'app-tab-group',
-  imports: [CommonModule, FootballComponent],
+  imports: [CommonModule, UiIconComponent],
   templateUrl: './tab-group.component.html',
   styleUrl: './tab-group.component.css'
 })
 export class TabGroupComponent implements AfterContentInit, OnDestroy {
 
   @Input() activeTab!: Observable<string | null>;
+  @Input() horizontalScroll = false;
   @Output() onTabSelected = new EventEmitter<string>();  
 
   @ContentChildren(TabItemComponent) tabs!: QueryList<TabItemComponent>;

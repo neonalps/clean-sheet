@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { UiIconDescriptor } from '@src/app/model/icon';
 
 @Component({
   selector: 'app-tab-item',
@@ -9,8 +10,9 @@ import { Component, Input } from '@angular/core';
 })
 export class TabItemComponent {
 
-  @Input() tabTitle = '';
   @Input() tabId!: string;
+  @Input() tabTitle = '';
+  @Input() tabIcon?: UiIconDescriptor;
 
   active = false;
 
