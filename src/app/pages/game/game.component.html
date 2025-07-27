@@ -104,7 +104,7 @@
 
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible" #scrolling>
         <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$" [horizontalScroll]="true">
-            <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }">
+            <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
             <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClub.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClub.iconSmall! }">

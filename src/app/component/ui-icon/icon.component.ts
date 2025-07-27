@@ -5,10 +5,11 @@ import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake
 import { ClubIconComponent } from "@src/app/component/club-icon/club-icon.component";
 import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.component';
 import { PlayingFootballComponent } from "@src/app/icon/playing-football/playing-football.component";
+import { FootballGoalComponent } from "@src/app/icon/football-goal/football-goal.component";
 
 @Component({
   selector: 'app-ui-icon',
-  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent],
+  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent, FootballGoalComponent],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'
 })

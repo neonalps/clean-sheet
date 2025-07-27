@@ -1,0 +1,17 @@
+.tab-header {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+}
+
+.tab-header::-webkit-scrollbar { 
+    display: none;  /* Older Safari and Chromium */
+}
+
+.tab-group-item {
+    margin-right: .25rem;
+    min-height: 46px;
+}
+
+.tab-group-item:last-child {
+    margin-right: 0;
+}

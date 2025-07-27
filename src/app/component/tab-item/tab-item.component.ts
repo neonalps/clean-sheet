@@ -13,6 +13,7 @@ export class TabItemComponent {
   @Input() tabId!: string;
   @Input() tabTitle = '';
   @Input() tabIcon?: UiIconDescriptor;
+  @Input() tabIconClasses = ['width-sm', 'relative', 'top-2'];
 
   active = false;
 
