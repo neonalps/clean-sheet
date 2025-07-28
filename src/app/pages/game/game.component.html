@@ -114,7 +114,7 @@
                 <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
             <app-tab-item [tabId]="'table'" [tabTitle]="'competition.table' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
-                <app-round-information />
+                <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" />
             </app-tab-item>
         </app-tab-group>
     </div>

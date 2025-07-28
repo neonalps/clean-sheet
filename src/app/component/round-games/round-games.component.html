@@ -8,5 +8,7 @@
     }
 </ng-container>
 <ng-template #loadedContent>
-
+    @for (fixture of fixtures; track $index) {
+        <app-external-game-overview [fixture]="fixture" [showYear]="true" (click)="onFixtureClicked(fixture)" />
+    }
 </ng-template>

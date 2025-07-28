@@ -132,6 +132,10 @@
     flex-basis: 33.33333%;
 }
 
+.basis-2\/3 {
+    flex-basis: 66.666667%;
+}
+
 .basis-1\/4 {
     flex-basis: 25%;
 }
@@ -162,6 +166,10 @@
 
 .basis-1\/10 {
     flex-basis: 10%;
+}
+
+.basis-1\/12 {
+    flex-basis: 8.33333%;
 }
 
 .basis-1\/20 {

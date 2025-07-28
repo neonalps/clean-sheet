@@ -459,3 +459,33 @@ export interface CreateGameReferee {
     person: PersonInput;
     role: RefereeRole;
 }
+
+export interface MatchdayDetails {
+    competition: SmallCompetition;
+    fixtures?: Fixture[];
+    table?: TablePosition[];
+}
+
+export interface Fixture {
+    status: GameStatus;
+    kickoff: DateString;
+    home: SmallClub;
+    away: SmallClub;
+    fullTime: ScoreTuple;
+    halfTime?: ScoreTuple;
+    afterExtraTime?: ScoreTuple;
+    afterPenaltyShootOut?: ScoreTuple;
+    href?: string;
+}
+
+export interface TablePosition {
+    position: number;
+    club: SmallClub;
+    points: number;
+    goalsFor: number;
+    goalsAgainst: number;
+    gamesPlayed: number;
+    wins: number;
+    draws: number;
+    defeats: number;
+}

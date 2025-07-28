@@ -38,6 +38,7 @@ export class TabGroupItemHeaderComponent {
 
   onHeaderClicked(): void {
     const elementPosition = this.header.nativeElement.getBoundingClientRect();
+    
     this.onTabItemSelected.next({
       id: this.tabId,
       position: {

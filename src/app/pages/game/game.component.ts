@@ -2,7 +2,7 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
-import { BasicGame, DetailedGame, GameStatus, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -30,6 +30,8 @@ import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.com
 import { Chip } from '@src/app/component/chip/chip.component';
 import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
+import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
+import { ToastService } from '@src/app/module/toast/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -79,10 +81,11 @@ export class GameComponent implements OnDestroy {
   ];
 
   mainClub: SmallClub = environment.mainClub;
-
   mainWonOnAwayGoals: boolean | null = null;
-
   lineupTeamChips: Chip[] = [];
+
+  matchdayDetailsLoading = true;
+  matchdayDetails?: MatchdayDetails | null;
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
@@ -91,9 +94,11 @@ export class GameComponent implements OnDestroy {
   constructor(
     private readonly clubResolver: ClubResolver,
     private readonly gameResolver: GameResolver,
+    private readonly matchdayDetailsService: MatchdayDetailsService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translationService: TranslationService,
+    private readonly toastService: ToastService,
   ) {
     this.router.events
       .pipe(takeUntil(this.destroy$))
@@ -177,6 +182,22 @@ export class GameComponent implements OnDestroy {
 
   onTabSelected(tabId: string) {
     replaceHash(tabId);
+
+    if (tabId === 'table') {
+      this.matchdayDetailsLoading = true;
+      this.matchdayDetailsService.getForGame(this.game!.id).pipe(takeUntil(this.destroy$)).subscribe({
+        next: details => {
+          this.matchdayDetails = details;
+          this.matchdayDetailsLoading = false;
+        },
+        error: error => {
+          console.error(error);
+          this.matchdayDetails = null;
+          this.toastService.addToast({ type: 'error', text: this.translationService.translate(`matchdayDetails.failedToLoad`) });
+          this.matchdayDetailsLoading = false;
+        }
+      })
+    }
   }
 
   getHomeTeam(): SmallClub {
