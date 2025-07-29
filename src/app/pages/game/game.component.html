@@ -113,13 +113,13 @@
             <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }">
                 <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
-            <app-tab-item [tabId]="'table'" [tabTitle]="'competition.table' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
-                <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" />
+            <app-tab-item [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
+                <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" [hideTable]="!isMatchdayTableVisible" />
             </app-tab-item>
         </app-tab-group>
     </div>
 
-    <div class="game-section p-2 rounded-lg m-3">
+    <div class="game-section p-2 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">
         <div class="pt-2">
             <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
                 <div class="mr-2">

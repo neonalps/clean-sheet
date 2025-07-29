@@ -462,6 +462,7 @@ export interface CreateGameReferee {
 
 export interface MatchdayDetails {
     competition: SmallCompetition;
+    competitionRound: string;
     fixtures?: Fixture[];
     table?: TablePosition[];
 }

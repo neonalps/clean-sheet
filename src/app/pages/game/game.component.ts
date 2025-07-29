@@ -87,6 +87,9 @@ export class GameComponent implements OnDestroy {
   matchdayDetailsLoading = true;
   matchdayDetails?: MatchdayDetails | null;
 
+  shouldHideGeneralDetails = false;
+  isMatchdayTableVisible = true;
+
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
   private readonly viewportScroller = inject(ViewportScroller);
@@ -146,6 +149,8 @@ export class GameComponent implements OnDestroy {
       { selected: false, value: 'opponent', displayText: game.opponent.shortName, displayIcon: { type: 'club', content: game.opponent.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
     ]
 
+    this.isMatchdayTableVisible = this.game.competition.id !== 4 && !this.game.leg;
+
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
       this.resolvePreviousLeg(this.game.previousLeg, this.game.season.id);
@@ -183,11 +188,15 @@ export class GameComponent implements OnDestroy {
   onTabSelected(tabId: string) {
     replaceHash(tabId);
 
-    if (tabId === 'table') {
+    if (tabId === 'matchday') {
       this.matchdayDetailsLoading = true;
+      this.shouldHideGeneralDetails = true;
       this.matchdayDetailsService.getForGame(this.game!.id).pipe(takeUntil(this.destroy$)).subscribe({
         next: details => {
-          this.matchdayDetails = details;
+          this.matchdayDetails = {
+            ...details,
+            competitionRound: this.game!.round,
+          };
           this.matchdayDetailsLoading = false;
         },
         error: error => {
@@ -197,6 +206,8 @@ export class GameComponent implements OnDestroy {
           this.matchdayDetailsLoading = false;
         }
       })
+    } else {
+      this.shouldHideGeneralDetails = false;
     }
   }
 

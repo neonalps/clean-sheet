@@ -6,8 +6,8 @@
         </div>
     </div>
 
-    <div class="mt-6">
-        <div class="text-lg mb-2">{{ 'matchdayDetails.table' | $t }}</div>
+    <div class="mt-6" *ngIf="!hideTable">
+        <div class="text-lg mb-2">{{ getTableAfterRoundText() }}</div>
         <div>
             <app-round-table [loading]="loading" [table]="matchdayDetails?.table" />
         </div>
