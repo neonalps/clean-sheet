@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Fixture, GameStatus, ScoreTuple } from '@src/app/model/game';
-import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { isDefined } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { SmallClub } from '@src/app/model/club';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
@@ -67,13 +67,13 @@ export class ExternalGameOverviewComponent {
     return this.translationService.translate('gameResult.aet');
   }
 
-  private getGameScore(includeExtendedPlay = false): ScoreTuple {
-    if (includeExtendedPlay) {
-      if (this.fixture.afterPenaltyShootOut) {
-        return this.fixture.afterPenaltyShootOut;
-      } else if (this.fixture.afterExtraTime) {
-        return this.fixture.afterExtraTime;
-      }
+  private getGameScore(includePso = false): ScoreTuple {
+    if (includePso && this.fixture.afterPenaltyShootOut) {
+      return this.fixture.afterPenaltyShootOut;
+    }
+
+    if (this.fixture.afterExtraTime) {
+      return this.fixture.afterExtraTime;
     }
 
     return this.fixture.fullTime;
