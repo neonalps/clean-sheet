@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -7,7 +7,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { isDefined } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { take } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -15,19 +15,26 @@ import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake
 import { GraphIconComponent } from '@src/app/icon/graph/graph.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { getUiPlayerStats } from '@src/app/module/stats/util';
+import { StatsGoalsAgainstClubsComponent } from "@src/app/component/stats-goals-against-clubs/stats-goals-against-clubs.component";
+import { StatsPlayerStatsComponent } from "@src/app/component/stats-player-stats/stats-player-stats.component";
+import { UiPlayerStats } from '@src/app/model/stats';
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
-export class PersonComponent {
+export class PersonComponent implements OnDestroy {
 
   person!: GetPersonByIdResponse;
+  
+  performance?: UiPlayerStats;
 
   isLoading = true;
   colorLight = COLOR_LIGHT;
+
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly countryFlagService: CountryFlagService,
@@ -46,12 +53,17 @@ export class PersonComponent {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onPersonResolved(person: GetPersonByIdResponse): void {
     this.person = person;
     this.isLoading = false;
 
     if (person.stats) {
-      console.log(getUiPlayerStats(person.stats.performance));
+      this.performance = getUiPlayerStats(person.stats.performance);
     }
   }
 
@@ -81,7 +93,7 @@ export class PersonComponent {
   }
 
   private resolvePerson(personId: number) {
-    this.personResolver.getById(personId, true).pipe(take(1)).subscribe({
+    this.personResolver.getById(personId, true).pipe(takeUntil(this.destroy$)).subscribe({
       next: person => {
         this.onPersonResolved(person);
       },

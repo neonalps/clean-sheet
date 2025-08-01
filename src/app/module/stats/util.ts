@@ -1,6 +1,7 @@
 import { SmallCompetition } from "@src/app/model/competition";
 import { Season } from "@src/app/model/season";
 import { PlayerBaseStats, PlayerSeasonStatsItemDto, PlayerStatsItemDto, UiPlayerStats } from "@src/app/model/stats";
+import { CompetitionId, SeasonId } from "@src/app/util/domain-types";
 
 export function getEmptyPlayerBaseStats(): PlayerBaseStats {
     return {
@@ -80,8 +81,11 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
 
     let overall = getEmptyPlayerBaseStats();
 
+    const bySeasonAndCompetition = new Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>();
+
     for (const seasonItem of seasonStats) {
         seasons.push(seasonItem.season);
+        bySeasonAndCompetition.set(seasonItem.season.id, new Map<CompetitionId, PlayerBaseStats>());
 
         for (const competitionItem of seasonItem.competitions) {
             if (!competitions.find(item => item.id === competitionItem.competition.id)) {
@@ -94,7 +98,11 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
                     competitions.push(competitionSubItem.competition as SmallCompetition);
                 }
 
-                overall = combinePlayerBaseStats(overall, fromOptionalStatsDto(competitionSubItem.stats));
+                const currentCompetitionStats = fromOptionalStatsDto(competitionSubItem.stats);
+                overall = combinePlayerBaseStats(overall, currentCompetitionStats);
+
+                const effectiveCompetitionId = isSubCompetition ? (competitionSubItem.competition as SmallCompetition).id : competitionItem.competition.id;
+                bySeasonAndCompetition.get(seasonItem.season.id)?.set(effectiveCompetitionId, currentCompetitionStats);
             }
         }
     }
@@ -103,5 +111,6 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
         seasons,
         competitions,
         overall,
+        bySeasonAndCompetition,
     }
 }

@@ -1,0 +1,7 @@
+.goals-against-clubs-item {
+    margin-bottom: .75rem;
+}
+
+.goals-against-clubs-item:last-child {
+    margin-bottom: 0;
+}

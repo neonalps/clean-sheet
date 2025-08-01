@@ -1,0 +1,49 @@
+<div>
+    <ng-container *ngIf="performance; else loading">
+        @for (statsItem of getBySeasonAndCompetitionStats(); track $index) {
+            <div class="season-item">
+                <div class="bold mb-2">{{ statsItem.season.name }}</div>
+                <div>
+                    @for (competitionItem of statsItem.competitionStats; track $index) {
+                        <div class="competition-item flex align-items-center">
+                            <div class="basis-1/2">{{ competitionItem.competition.shortName }}</div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.gamesPlayed }}
+                                </div>
+                            </div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.goalsScored }}
+                                </div>
+                            </div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.assists }}
+                                </div>
+                            </div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.yellowCards }}
+                                </div>
+                            </div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.yellowRedCards }}
+                                </div>
+                            </div>
+                            <div class="basis-1/12">
+                                <div class="text-right pr-1">
+                                    {{ competitionItem.stats.redCards }}
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </ng-container>
+    <ng-template #loading>
+        loading...
+    </ng-template>
+</div>

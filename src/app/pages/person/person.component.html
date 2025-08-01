@@ -58,4 +58,19 @@
             
         </div>
     </div>
+
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+        <div>
+            <app-stats-player-stats [performance]="performance" />
+        </div>
+    </div>
+
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center mb-4">
+            <div class="bold text-light text-base">{{ 'player.goalsAgainstClubs' | $t }}</div>
+        </div>
+        <div>
+            <app-stats-goals-against-clubs [goalsAgainstClubs]="person.stats?.goalsAgainstClubs ?? []" />
+        </div>
+    </div>
 </ng-template>

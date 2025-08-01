@@ -299,7 +299,7 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return this.translationService.translate('game.decidedByAwayGoals', { club: this.mainWonOnAwayGoals === true ? this.mainClub.shortName : this.game!.opponent.shortName })
+    return this.translationService.translate('game.decidedByAwayGoals', { club: this.mainWonOnAwayGoals === true ? this.mainClub.name : this.game!.opponent.name })
   }
 
   showGameDetails(): boolean {

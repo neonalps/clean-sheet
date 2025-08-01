@@ -1,1 +1,18 @@
-<p>stats-goals-against-clubs works!</p>
+<div>
+    @for (item of goalsAgainstClubs; track $index) {
+        <div class="goals-against-clubs-item flex">
+            <div class="basis-1/2">
+                <app-small-club [club]="item.club" />
+            </div>
+            <div class="basis-1/2 flex align-items-center">
+                <div class="basis-9/10 relative mr-3">
+                    <div class="absolute w-full h-5 rounded-lg bg-color-light-grey-darker z-10"></div>
+                    <div class="absolute h-5 rounded-lg bg-color-info z-20" [style.width]="getItemWidth(item.goalsScored)"></div>
+                </div>
+                <div class="basis-1/10 text-right pr-1">
+                    {{ item.goalsScored }}
+                </div>
+            </div>
+        </div>
+    }
+</div>

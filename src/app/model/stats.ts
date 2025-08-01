@@ -1,10 +1,17 @@
+import { CompetitionId, SeasonId } from "../util/domain-types";
+import { SmallClub } from "./club";
 import { SmallCompetition } from "./competition";
-import { BasicGame, DetailedGame } from "./game";
+import { DetailedGame } from "./game";
 import { Season } from "./season";
 
 export type PlayerSeasonStatsItemDto = {
     season: Season;
     competitions: Array<PlayerCompetitionStatsItemDto>;
+}
+
+export type GoalsAgainstClubStatsItemDto = {
+    club: SmallClub;
+    goalsScored: number;
 }
 
 export type PlayerSubCompetitionStatsItemDto = {
@@ -67,7 +74,7 @@ export type UiPlayerStats = {
     seasons: Season[];
     competitions: SmallCompetition[];
     overall: PlayerBaseStats;
-    //bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
+    bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
     //bySeason: Map<SeasonId, PlayerBaseStats>;
     //byCompetition: Map<CompetitionId, PlayerBaseStats>;
 }
