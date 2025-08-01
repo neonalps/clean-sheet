@@ -1,12 +1,36 @@
 <div>
     <ng-container *ngIf="performance; else loading">
+        <div class="flex align-items-center justify-content-end mb-2">
+            <div class="basis-1/12 flex justify-content-end" [title]="'performance.gamesPlayed' | $t">
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-pitch' }" />
+                </div>
+            </div>
+            <div class="basis-1/12 flex justify-content-end" [title]="'performance.goalsScored' | $t">
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'goal' }" />
+                </div>
+            </div>
+            <div class="basis-1/12 flex justify-content-end" [title]="'performance.gamesPlayed' | $t">
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
+                </div>
+            </div>
+        </div>
         @for (statsItem of getBySeasonAndCompetitionStats(); track $index) {
             <div class="season-item">
-                <div class="bold mb-2">{{ statsItem.season.name }}</div>
+                <div class="bold mb-3">{{ statsItem.season.name }}</div>
                 <div>
                     @for (competitionItem of statsItem.competitionStats; track $index) {
                         <div class="competition-item flex align-items-center">
-                            <div class="basis-1/2">{{ competitionItem.competition.shortName }}</div>
+                            <div class="basis-1/2 flex-grow-1 flex align-items-center">
+                                <div class="width-1-25rem mr-2 relative top-1" *ngIf="competitionItem.competition.iconSmall">
+                                    <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionItem.competition.iconSmall }" />
+                                </div>
+                                <div class="text-sm">
+                                    {{ competitionItem.competition.shortName }}
+                                </div>
+                            </div>
                             <div class="basis-1/12">
                                 <div class="text-right pr-1">
                                     {{ competitionItem.stats.gamesPlayed }}
@@ -20,21 +44,6 @@
                             <div class="basis-1/12">
                                 <div class="text-right pr-1">
                                     {{ competitionItem.stats.assists }}
-                                </div>
-                            </div>
-                            <div class="basis-1/12">
-                                <div class="text-right pr-1">
-                                    {{ competitionItem.stats.yellowCards }}
-                                </div>
-                            </div>
-                            <div class="basis-1/12">
-                                <div class="text-right pr-1">
-                                    {{ competitionItem.stats.yellowRedCards }}
-                                </div>
-                            </div>
-                            <div class="basis-1/12">
-                                <div class="text-right pr-1">
-                                    {{ competitionItem.stats.redCards }}
                                 </div>
                             </div>
                         </div>

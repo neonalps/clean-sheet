@@ -5,6 +5,8 @@ import { Season } from '@src/app/model/season';
 import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 type CompetitionStats = {
   competition: SmallCompetition;
@@ -18,7 +20,7 @@ type StatsBySeasonAndCompetition = {
 
 @Component({
   selector: 'app-stats-player-stats',
-  imports: [CommonModule],
+  imports: [CommonModule, I18nPipe, UiIconComponent],
   templateUrl: './stats-player-stats.component.html',
   styleUrl: './stats-player-stats.component.css'
 })

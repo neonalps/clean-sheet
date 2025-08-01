@@ -1,5 +1,5 @@
 .season-item {
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .season-item:last-child {
@@ -7,7 +7,7 @@
 }
 
 .competition-item {
-    margin-bottom: .4rem;
+    margin-bottom: .625rem;
 }
 
 .competition-item:last-child {

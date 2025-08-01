@@ -7,10 +7,12 @@ import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.
 import { PlayingFootballComponent } from "@src/app/icon/playing-football/playing-football.component";
 import { FootballGoalComponent } from "@src/app/icon/football-goal/football-goal.component";
 import { CompetitionTableComponent } from "@src/app/icon/competition-table/competition-table.component";
+import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
+import { FootballPitchComponent } from "@src/app/icon/football-pitch/football-pitch.component";
 
 @Component({
   selector: 'app-ui-icon',
-  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent, FootballGoalComponent, CompetitionTableComponent],
+  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent, FootballGoalComponent, CompetitionTableComponent, FootballShoeComponent, FootballPitchComponent],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'
 })
