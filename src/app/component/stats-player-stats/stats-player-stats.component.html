@@ -1,7 +1,7 @@
 <div>
     <ng-container *ngIf="performance; else loading">
-        <div class="flex align-items-center justify-content-end mb-2">
-            <div class="basis-1/12 flex justify-content-end" [title]="'performance.gamesPlayed' | $t">
+        <div class="flex align-items-center justify-content-end mb-4">
+            <div class="basis-1/12 flex justify-content-end pr-1" [title]="'performance.gamesPlayed' | $t">
                 <div class="width-xs">
                     <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-pitch' }" />
                 </div>
@@ -19,7 +19,24 @@
         </div>
         @for (statsItem of getBySeasonAndCompetitionStats(); track $index) {
             <div class="season-item">
-                <div class="bold mb-3">{{ statsItem.season.name }}</div>
+                <div class="flex align-items-center bold mb-3">
+                    <div class="basis-1/2 flex-grow-1">{{ statsItem.season.name }}</div>
+                    <div class="basis-1/12">
+                        <div class="text-right pr-1">
+                            {{ statsItem.total.gamesPlayed }}
+                        </div>
+                    </div>
+                    <div class="basis-1/12">
+                        <div class="text-right pr-1">
+                            {{ statsItem.total.goalsScored }}
+                        </div
+                    ></div>
+                    <div class="basis-1/12">
+                        <div class="text-right pr-1">
+                            {{ statsItem.total.assists }}
+                        </div>
+                    </div>
+                </div>
                 <div>
                     @for (competitionItem of statsItem.competitionStats; track $index) {
                         <div class="competition-item flex align-items-center">

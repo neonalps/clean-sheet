@@ -7,6 +7,7 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { combinePlayerBaseStats, getEmptyPlayerBaseStats } from '@src/app/module/stats/util';
 
 type CompetitionStats = {
   competition: SmallCompetition;
@@ -15,6 +16,7 @@ type CompetitionStats = {
 
 type StatsBySeasonAndCompetition = {
   season: Season;
+  total: PlayerBaseStats;
   competitionStats: CompetitionStats[];
 };
 
@@ -41,22 +43,26 @@ export class StatsPlayerStatsComponent {
       const seasonItem = this.performance.seasons[i];
       const seasonCompetitionStats: CompetitionStats[] = [];
 
+      let seasonTotal = getEmptyPlayerBaseStats();
       const seasonCompetitionDetails = this.performance.bySeasonAndCompetition.get(seasonItem.id) ?? new Map();
       
       for (const seasonCompetitionId of seasonCompetitionDetails.keys()) {
         const competition = this.performance.competitions.find(item => item.id === seasonCompetitionId)!;
+        const stats = seasonCompetitionDetails.get(seasonCompetitionId);
+        seasonTotal = combinePlayerBaseStats(seasonTotal, stats);
         seasonCompetitionStats.push({
           competition: {
             ...competition,
             name: processTranslationPlaceholders(competition.name, this.translationService),
             shortName: processTranslationPlaceholders(competition.shortName, this.translationService)
           },
-          stats: seasonCompetitionDetails.get(seasonCompetitionId),
+          stats,
         })
       }
 
       bySeasonAndCompetitionStats.push({
         season: seasonItem,
+        total: seasonTotal,
         competitionStats: seasonCompetitionStats,
       });
     }
