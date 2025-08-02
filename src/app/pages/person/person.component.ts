@@ -18,10 +18,11 @@ import { getUiPlayerStats } from '@src/app/module/stats/util';
 import { StatsGoalsAgainstClubsComponent } from "@src/app/component/stats-goals-against-clubs/stats-goals-against-clubs.component";
 import { StatsPlayerStatsComponent } from "@src/app/component/stats-player-stats/stats-player-stats.component";
 import { UiPlayerStats } from '@src/app/model/stats';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, BirthdayCakeComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })

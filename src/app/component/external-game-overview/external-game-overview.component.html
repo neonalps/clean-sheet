@@ -12,7 +12,7 @@
                 <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
             </ng-container>
             <ng-template #scheduled>
-                <div class="center">-</div>
+                <div class="center text-sm" [ngClass]="getGameStatusClasses()">{{ getGameStatusText() }}</div>
             </ng-template>
         </div>
         <div class="basis-3/7">

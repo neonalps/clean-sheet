@@ -71,6 +71,14 @@ export class ExternalGameOverviewComponent {
     return this.fixture.status;
   }
 
+  getGameStatusText() {
+    return this.fixture.status === GameStatus.Ongoing ? 'live' : '-';
+  }
+
+  getGameStatusClasses() {
+    return this.fixture.status === GameStatus.Ongoing ? ['bg-color-info', 'rounded', 'px-2', 'py-1'] : [];
+  }
+
   private getGameScore(includePso = false): ScoreTuple | null {
     if (includePso && this.fixture.afterPenaltyShootOut) {
       return this.fixture.afterPenaltyShootOut;

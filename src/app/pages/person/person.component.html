@@ -33,12 +33,22 @@
                 </div>
                 <div class="mt-2 flex align-items-center" *ngIf="birthday">
                     <div class="birthday-icon-container mr-2">
-                        <div class="relative top-1">
-                            <app-birthday-cake />
+                        <div class="relative top-1 text-light-grey">
+                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'birthday-cake' }" />
                         </div>
                     </div>
                     <div>
                         <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
+                    </div>
+                </div>
+                <div class="mt-2 flex align-items-center pointer transition-colors text-light-grey-darker hover:text-light">
+                    <div class="birthday-icon-container mr-2">
+                        <div class="width-xs relative top-1">
+                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'sofascore' }" />
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-sm">Sofascore</span>
                     </div>
                 </div>
             </div>
