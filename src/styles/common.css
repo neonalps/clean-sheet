@@ -1022,6 +1022,14 @@
     opacity: 0;
 }
 
+.transition-max-height {
+    transition: max-height .2s ease-out;
+}
+
+.transition-transform {
+    transition: transform .15s linear;
+}
+
 .capitalize {
     text-transform: capitalize;
 }
@@ -1058,8 +1066,20 @@
     transform: rotate(270deg);
 }
 
+.max-h-0 {
+    max-height: 0;
+}
+
+.max-h-full {
+    max-height: 100%;
+}
+
 .max-h-50-vh {
     max-height: 50vh;
+}
+
+.max-h-100-vh {
+    max-height: 100vh;
 }
 
 .max-w-2 {

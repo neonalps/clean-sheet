@@ -7,7 +7,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { isDefined } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -28,8 +28,8 @@ import { UiPlayerStats } from '@src/app/model/stats';
 export class PersonComponent implements OnDestroy {
 
   person!: GetPersonByIdResponse;
-  
-  performance?: UiPlayerStats;
+
+  performance$ = new BehaviorSubject<UiPlayerStats | null>(null);
 
   isLoading = true;
   colorLight = COLOR_LIGHT;
@@ -63,7 +63,7 @@ export class PersonComponent implements OnDestroy {
     this.isLoading = false;
 
     if (person.stats) {
-      this.performance = getUiPlayerStats(person.stats.performance);
+      this.performance$.next(getUiPlayerStats(person.stats.performance));
     }
   }
 
