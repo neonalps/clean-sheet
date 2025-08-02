@@ -472,7 +472,7 @@ export interface Fixture {
     kickoff: DateString;
     home: SmallClub;
     away: SmallClub;
-    fullTime: ScoreTuple;
+    fullTime?: ScoreTuple;
     halfTime?: ScoreTuple;
     afterExtraTime?: ScoreTuple;
     afterPenaltyShootOut?: ScoreTuple;

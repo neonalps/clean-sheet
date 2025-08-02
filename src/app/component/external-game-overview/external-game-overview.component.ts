@@ -67,7 +67,11 @@ export class ExternalGameOverviewComponent {
     return this.translationService.translate('gameResult.aet');
   }
 
-  private getGameScore(includePso = false): ScoreTuple {
+  getGameStatus(): GameStatus {
+    return this.fixture.status;
+  }
+
+  private getGameScore(includePso = false): ScoreTuple | null {
     if (includePso && this.fixture.afterPenaltyShootOut) {
       return this.fixture.afterPenaltyShootOut;
     }
@@ -76,7 +80,11 @@ export class ExternalGameOverviewComponent {
       return this.fixture.afterExtraTime;
     }
 
-    return this.fixture.fullTime;
+    if (this.fixture.fullTime) {
+      return this.fixture.fullTime;
+    }
+
+    return null;
   }
 
 
