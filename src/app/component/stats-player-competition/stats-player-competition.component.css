@@ -1,0 +1,7 @@
+.competition-item {
+    margin-bottom: .5rem;
+}
+
+.competition-item:last-child {
+    margin-bottom: 0;
+}

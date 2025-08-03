@@ -75,8 +75,8 @@ export type UiPlayerStats = {
     competitions: SmallCompetition[];
     overall: PlayerBaseStats;
     bySeasonAndCompetition: Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>;
+    byCompetition: Map<CompetitionId, PlayerBaseStats>;
     //bySeason: Map<SeasonId, PlayerBaseStats>;
-    //byCompetition: Map<CompetitionId, PlayerBaseStats>;
 }
 
 export interface PerformanceTrend {

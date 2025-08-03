@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
-import { isDefined } from '@src/app/util/common';
+import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
@@ -18,6 +18,11 @@ import { StatsPlayerStatsComponent } from "@src/app/component/stats-player-stats
 import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
+import { StatsPlayerHeaderComponent } from '@src/app/component/stats-player-header/stats-player-header.component';
+import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
+import { CompetitionId } from '@src/app/util/domain-types';
+import { SmallCompetition } from '@src/app/model/competition';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 export type UiStatsItem = {
   iconClasses?: string[];
@@ -28,7 +33,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -41,6 +46,7 @@ export class PersonComponent implements OnDestroy {
   isLoading = true;
   colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
+  playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
 
   private readonly destroy$ = new Subject<void>();
 
@@ -48,6 +54,7 @@ export class PersonComponent implements OnDestroy {
     private readonly countryFlagService: CountryFlagService,
     private readonly personResolver: PersonResolver,
     private readonly route: ActivatedRoute,
+    private readonly translationService: TranslationService,
   ) {
     const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
     if (isDefined(personId)) {
@@ -71,6 +78,7 @@ export class PersonComponent implements OnDestroy {
     if (person.stats) {
       const playerStats = getUiPlayerStats(person.stats.performance);
       this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
+      this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition);
 
       this.performance$.next(playerStats);
     }
@@ -135,6 +143,29 @@ export class PersonComponent implements OnDestroy {
         { iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
       ],
     ]
+  }
+
+  private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>): ReadonlyArray<CompetitionStats> {
+    const result: CompetitionStats[] = [];
+
+    const competitionIds = competitionStats.keys();
+    for (const competitionId of competitionIds) {
+      const competition = competitions.find(item => item.id === competitionId);
+      if (!competition) {
+        continue;
+      }
+
+      result.push({
+        competition: {
+          ...competition,
+          name: processTranslationPlaceholders(competition.name, this.translationService),
+          shortName: processTranslationPlaceholders(competition.shortName, this.translationService),
+        },
+        stats: competitionStats.get(competitionId)!,
+      })
+    }
+
+    return Array.from(result);
   }
 
 }

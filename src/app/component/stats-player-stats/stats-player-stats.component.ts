@@ -1,20 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { SmallCompetition } from '@src/app/model/competition';
 import { Season } from '@src/app/model/season';
 import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
-import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { combinePlayerBaseStats, getEmptyPlayerBaseStats } from '@src/app/module/stats/util';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible.component";
-
-type CompetitionStats = {
-  competition: SmallCompetition;
-  stats: PlayerBaseStats;
-};
+import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
+import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
 
 type StatsBySeasonAndCompetition = {
   season: Season;
@@ -25,7 +20,7 @@ type StatsBySeasonAndCompetition = {
 
 @Component({
   selector: 'app-stats-player-stats',
-  imports: [CommonModule, I18nPipe, UiIconComponent, CollapsibleComponent],
+  imports: [CommonModule, CollapsibleComponent, I18nPipe, StatsPlayerCompetitionComponent, StatsPlayerHeaderComponent],
   templateUrl: './stats-player-stats.component.html',
   styleUrl: './stats-player-stats.component.css'
 })

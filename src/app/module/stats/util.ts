@@ -81,6 +81,7 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
 
     let overall = getEmptyPlayerBaseStats();
 
+    const byCompetition = new Map<CompetitionId, PlayerBaseStats>();
     const bySeasonAndCompetition = new Map<SeasonId, Map<CompetitionId, PlayerBaseStats>>();
 
     for (const seasonItem of seasonStats) {
@@ -103,6 +104,9 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
 
                 const effectiveCompetitionId = isSubCompetition ? (competitionSubItem.competition as SmallCompetition).id : competitionItem.competition.id;
                 bySeasonAndCompetition.get(seasonItem.season.id)?.set(effectiveCompetitionId, currentCompetitionStats);
+
+                const storedCompetitionStats = byCompetition.get(effectiveCompetitionId) || getEmptyPlayerBaseStats();
+                byCompetition.set(effectiveCompetitionId, combinePlayerBaseStats(storedCompetitionStats, currentCompetitionStats));
             }
         }
     }
@@ -111,6 +115,7 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
         seasons,
         competitions,
         overall,
+        byCompetition,
         bySeasonAndCompetition,
     }
 }

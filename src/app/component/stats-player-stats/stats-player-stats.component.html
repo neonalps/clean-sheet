@@ -1,42 +1,23 @@
 <div>
     <ng-container *ngIf="statsBySeasonAndCompetition !== null; else loading">
-        <div class="flex align-items-center mb-4">
-            <div class="flex-grow-1 flex align-items-center">
-                <span class="bold text-light text-base">{{ headerText | $t }}</span>
-            </div>
-            <div class="basis-1/12 flex justify-content-end pr-1" [title]="'performance.gamesPlayed' | $t">
-                <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-pitch' }" />
-                </div>
-            </div>
-            <div class="basis-1/12 flex justify-content-end" [title]="'performance.goalsScored' | $t">
-                <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'goal' }" />
-                </div>
-            </div>
-            <div class="basis-1/12 flex justify-content-end" [title]="'performance.gamesPlayed' | $t">
-                <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
-                </div>
-            </div>
-        </div>
+        <app-stats-player-header [containerClasses]="'mb-4'" [headerText]="'performance.seasonStats' | $t" />
         @for (statsItem of statsBySeasonAndCompetition; track $index) {
             <div class="season-item">
                 <app-collapsible [collapsed]="!statsItem.isCurrent">
                     <ng-container header>
                         <div class="flex align-items-center bold mb-3">
                             <div class="basis-1/2 flex-grow-1">{{ statsItem.season.name }}</div>
-                            <div class="basis-1/12">
+                            <div class="basis-1/10">
                                 <div class="text-right pr-1">
                                     {{ statsItem.total.gamesPlayed }}
                                 </div>
                             </div>
-                            <div class="basis-1/12">
+                            <div class="basis-1/10">
                                 <div class="text-right pr-1">
                                     {{ statsItem.total.goalsScored }}
                                 </div
                             ></div>
-                            <div class="basis-1/12">
+                            <div class="basis-1/10">
                                 <div class="text-right pr-1">
                                     {{ statsItem.total.assists }}
                                 </div>
@@ -44,33 +25,9 @@
                         </div>
                     </ng-container>
                     <ng-container content>
-                        @for (competitionItem of statsItem.competitionStats; track $index) {
-                            <div class="competition-item flex align-items-center">
-                                <div class="basis-1/2 flex-grow-1 flex align-items-center">
-                                    <div class="width-1-25rem mr-2 relative top-1" *ngIf="competitionItem.competition.iconSmall">
-                                        <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionItem.competition.iconSmall }" />
-                                    </div>
-                                    <div class="text-sm">
-                                        {{ competitionItem.competition.shortName }}
-                                    </div>
-                                </div>
-                                <div class="basis-1/12">
-                                    <div class="text-right pr-1">
-                                        {{ competitionItem.stats.gamesPlayed }}
-                                    </div>
-                                </div>
-                                <div class="basis-1/12">
-                                    <div class="text-right pr-1">
-                                        {{ competitionItem.stats.goalsScored }}
-                                    </div>
-                                </div>
-                                <div class="basis-1/12">
-                                    <div class="text-right pr-1">
-                                        {{ competitionItem.stats.assists }}
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                        <div class="ml-2">
+                            <app-stats-player-competition [competitionStats]="statsItem.competitionStats" />
+                        </div>
                     </ng-container>
                 </app-collapsible>
             </div>

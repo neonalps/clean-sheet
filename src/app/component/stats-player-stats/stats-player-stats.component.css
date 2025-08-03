@@ -5,11 +5,3 @@
 .season-item:last-child {
     margin-bottom: 0;
 }
-
-.competition-item {
-    margin-bottom: .625rem;
-}
-
-.competition-item:last-child {
-    margin-bottom: 0;
-}

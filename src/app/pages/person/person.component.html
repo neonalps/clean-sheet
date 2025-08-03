@@ -91,6 +91,13 @@
 
     <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
         <div>
+            <app-stats-player-header [containerClasses]="'mb-4'" [headerText]="'performance.competitionStats' | $t" />
+            <app-stats-player-competition [competitionStats]="playerCompetitionStats" />
+        </div>
+    </div>
+
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+        <div>
             <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" />
         </div>
     </div>
