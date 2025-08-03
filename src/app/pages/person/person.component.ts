@@ -41,8 +41,6 @@ export class PersonComponent implements OnDestroy {
     private readonly countryFlagService: CountryFlagService,
     private readonly personResolver: PersonResolver,
     private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly translationService: TranslationService,
   ) {
     const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
     if (isDefined(personId)) {
@@ -66,6 +64,10 @@ export class PersonComponent implements OnDestroy {
     if (person.stats) {
       this.performance$.next(getUiPlayerStats(person.stats.performance));
     }
+  }
+
+  externalLinkClicked(link: string) {
+    window.open(link, '_blank');
   }
 
   getFirstName() {

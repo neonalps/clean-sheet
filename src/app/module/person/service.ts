@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ExternalProviderLinkDto } from "@src/app/model/external-provider";
 import { DetailedPerson } from "@src/app/model/person";
 import { GoalsAgainstClubStatsItemDto, PlayerSeasonStatsItemDto } from "@src/app/model/stats";
 import { environment } from "@src/environments/environment";
@@ -10,7 +11,8 @@ export type GetPersonByIdResponse = {
   stats?: {
     performance: Array<PlayerSeasonStatsItemDto>;
     goalsAgainstClubs: Array<GoalsAgainstClubStatsItemDto>;
-  }
+  },
+  externalLinks?: ReadonlyArray<ExternalProviderLinkDto>;
 }
 
 @Injectable({
