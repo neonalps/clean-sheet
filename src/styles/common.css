@@ -977,12 +977,36 @@
     left: -4px;
 }
 
+.left-neg-8 {
+    left: -8px;
+}
+
 .left-neg-10 {
     left: -10px;
 }
 
 .left-neg-34 {
     left: -34px;
+}
+
+.left-1 {
+    left: 1px;
+}
+
+.left-2 {
+    left: 2px;
+}
+
+.left-3 {
+    left: 3px;
+}
+
+.left-4 {
+    left: 4px;
+}
+
+.left-5 {
+    left: 5px;
 }
 
 .left-16 {
@@ -1280,6 +1304,10 @@
 
 .h-9\/10 {
     height: 90%;
+}
+
+.min-h-22 {
+    min-height: 22px;
 }
 
 .min-h-24 {

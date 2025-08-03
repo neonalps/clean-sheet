@@ -66,14 +66,32 @@
             </div>
             <div class="text-light text-base">{{ 'player.stats' | $t }}</div>
         </div>
-        <div>
-            
+        <div *ngIf="playerTotalStatsRows" class="pb-4">
+            @for (totalStatsRow of playerTotalStatsRows; track $index) {
+                <div class="flex mt-8">
+                    @for (statsItem of totalStatsRow; track $index) {
+                        <div class="basis-1/3 flex flex-col align-items-center">
+                            <div class="flex align-items-center mb-3 min-h-22">
+                                <div *ngIf="statsItem.iconDescriptor" [attr.title]="statsItem.titleText">
+                                    <div class="width-1-25rem text-light" [ngClass]="statsItem.iconClasses ?? []">
+                                        <app-ui-icon [descriptor]="statsItem.iconDescriptor" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span>{{ statsItem.value }}</span>
+                            </div>
+                            <div class="mt-2 text-xs text-center text-light-grey-darker">{{ statsItem.titleText }}</div>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </div>
 
     <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
         <div>
-            <app-stats-player-stats [performance$]="performance$" />
+            <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" />
         </div>
     </div>
 

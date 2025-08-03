@@ -25,6 +25,18 @@
         @case ('table') {
             <app-competition-table [color]="descriptor.color" />
         }
+        @case ('yellow-card') {
+            <div class="card-yellow"></div>
+        }
+        @case ('yellow-red-card') {
+            <div class="card-inline">
+              <div class="card-yellow-red-yellow card-yellow"></div>
+              <div class="card-yellow-red-red card-red"></div>
+            </div>
+        }
+        @case ('red-card') {
+            <div class="card-red"></div>
+        }
     }
   }
   @case ('club') {

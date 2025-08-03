@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
-import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { isDefined } from '@src/app/util/common';
@@ -11,14 +10,21 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
 import { GraphIconComponent } from '@src/app/icon/graph/graph.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { getUiPlayerStats } from '@src/app/module/stats/util';
 import { StatsGoalsAgainstClubsComponent } from "@src/app/component/stats-goals-against-clubs/stats-goals-against-clubs.component";
 import { StatsPlayerStatsComponent } from "@src/app/component/stats-player-stats/stats-player-stats.component";
-import { UiPlayerStats } from '@src/app/model/stats';
+import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { UiIconDescriptor } from '@src/app/model/icon';
+
+export type UiStatsItem = {
+  iconClasses?: string[];
+  iconDescriptor?: UiIconDescriptor;
+  titleText?: string;
+  value: number;
+}
 
 @Component({
   selector: 'app-person',
@@ -34,6 +40,7 @@ export class PersonComponent implements OnDestroy {
 
   isLoading = true;
   colorLight = COLOR_LIGHT;
+  playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
 
   private readonly destroy$ = new Subject<void>();
 
@@ -62,7 +69,10 @@ export class PersonComponent implements OnDestroy {
     this.isLoading = false;
 
     if (person.stats) {
-      this.performance$.next(getUiPlayerStats(person.stats.performance));
+      const playerStats = getUiPlayerStats(person.stats.performance);
+      this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
+
+      this.performance$.next(playerStats);
     }
   }
 
@@ -106,6 +116,25 @@ export class PersonComponent implements OnDestroy {
         console.error(`Could not resolve person`, err);
       }
     });
+  }
+
+  private getPlayerTotalStats(stats: PlayerBaseStats): ReadonlyArray<UiStatsItem[]> {
+    return [
+      [
+        { iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: 'Spiele', value: stats.gamesPlayed },
+        { iconDescriptor: { type: 'standard', content: 'goal' }, titleText: 'Tore', value: stats.goalsScored },
+        { iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: 'Assists', value: stats.assists },
+      ],
+      /*[
+        { iconDescriptor: { type: 'standard', content: 'penalties-taken' }, titleText: 'Elfmeter angetreten', value: stats.regulationPenaltiesTaken },
+        { iconDescriptor: { type: 'standard', content: 'penalties-scored' }, titleText: 'Elfmeter getroffen', value: stats.regulationPenaltiesScored },
+      ],*/
+      [
+        { iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: 'Gelbe Karten', value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
+        { iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-neg-8'] },
+        { iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
+      ],
+    ]
   }
 
 }

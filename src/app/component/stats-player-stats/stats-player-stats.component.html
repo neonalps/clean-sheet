@@ -1,6 +1,9 @@
 <div>
     <ng-container *ngIf="statsBySeasonAndCompetition !== null; else loading">
-        <div class="flex align-items-center justify-content-end mb-4">
+        <div class="flex align-items-center mb-4">
+            <div class="flex-grow-1 flex align-items-center">
+                <span class="bold text-light text-base">{{ headerText | $t }}</span>
+            </div>
             <div class="basis-1/12 flex justify-content-end pr-1" [title]="'performance.gamesPlayed' | $t">
                 <div class="width-xs">
                     <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-pitch' }" />

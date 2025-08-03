@@ -31,6 +31,7 @@ type StatsBySeasonAndCompetition = {
 })
 export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
 
+  @Input() headerText!: string;
   @Input() performance$!: Subject<UiPlayerStats | null>;
 
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
