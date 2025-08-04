@@ -279,7 +279,7 @@ export class GameComponent implements OnDestroy {
 
     parts.push(this.translationService.translate(`game.leg.${this.game!.leg}`));
 
-    if (isDefined(this.previousLeg)) {
+    if (isDefined(this.previousLeg) && this.previousLeg.status === GameStatus.Finished) {
       parts.push(this.translationService.translate(`game.aggregate`));
     }
 
@@ -357,6 +357,11 @@ export class GameComponent implements OnDestroy {
   }
 
   getAggregateScore(): string | null {
+    // only show the aggregate score box if the first leg is already finished
+    if (this.previousLeg?.status !== GameStatus.Finished) {
+      return null;
+    }
+
     const aggregateScore = this.getAggregateScoreTuple();
     if (aggregateScore === null) {
       return null;

@@ -3,7 +3,7 @@
         <app-stats-player-header [containerClasses]="'mb-4'" [headerText]="'performance.seasonStats' | $t" />
         @for (statsItem of statsBySeasonAndCompetition; track $index) {
             <div class="season-item">
-                <app-collapsible [collapsed]="!statsItem.isCurrent">
+                <app-collapsible [initiallyOpen]="statsItem.season.isCurrent === true">
                     <ng-container header>
                         <div class="flex align-items-center bold mb-3">
                             <div class="basis-1/2 flex-grow-1">{{ statsItem.season.name }}</div>

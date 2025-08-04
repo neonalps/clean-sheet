@@ -34,6 +34,14 @@ export class SeasonService implements OnDestroy {
         this.seasonsFetchHandle.fetch();
     }
 
+    getCurrentSeason(): Season | null {
+        if (this.seasons.length === 0) {
+            return null;
+        }
+
+        return this.seasons[0];
+    }
+
     getSeasons(): Season[] {
         return this.copyOfSeasons();
     }
@@ -43,9 +51,14 @@ export class SeasonService implements OnDestroy {
     }
 
     private onSeasonsUpdate(updatedSeasons: Season[]): void {
-        console.log('SeasonService: received seasons', updatedSeasons);
-        this.seasons = updatedSeasons;
-        this.seasonsSubject.next(updatedSeasons);
+        const transformedSeasons = updatedSeasons.map((item, idx) => ({
+            ...item,
+            isCurrent: idx === 0,
+        }));
+
+        console.log('SeasonService: received seasons', transformedSeasons);
+        this.seasons = transformedSeasons;
+        this.seasonsSubject.next(transformedSeasons);
     }
 
     private copyOfSeasons(): Season[] {

@@ -10,12 +10,12 @@ import { filter, Subject, takeUntil } from 'rxjs';
 import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible.component";
 import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
 import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
+import { SeasonService } from '@src/app/module/season/service';
 
 type StatsBySeasonAndCompetition = {
   season: Season;
   total: PlayerBaseStats;
   competitionStats: CompetitionStats[];
-  isCurrent: boolean;
 };
 
 @Component({
@@ -32,6 +32,7 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
 
   private readonly destroy$ = new Subject<void>();
+  private readonly seasonService = inject(SeasonService);
   private readonly translationService = inject(TranslationService);
 
   ngOnInit(): void {
@@ -52,6 +53,8 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
 
   getBySeasonAndCompetitionStats(performance: UiPlayerStats): StatsBySeasonAndCompetition[] {
     const bySeasonAndCompetitionStats: StatsBySeasonAndCompetition[] = [];
+
+    const currentSeason = this.seasonService.getCurrentSeason();
 
     for (let i = 0; i < performance.seasons.length; i++) {
       const seasonItem = performance.seasons[i];
@@ -75,10 +78,12 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
       }
 
       bySeasonAndCompetitionStats.push({
-        season: seasonItem,
+        season: {
+          ...seasonItem,
+          isCurrent: seasonItem.id === currentSeason?.id,
+        },
         total: seasonTotal,
         competitionStats: seasonCompetitionStats,
-        isCurrent: i === 0,
       });
     }
 
