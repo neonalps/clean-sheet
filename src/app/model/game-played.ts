@@ -1,7 +1,7 @@
 export type GamePlayedFilterOptions = {
   competitionId?: number;
   seasonId?: number;
-  goalsScored?: number;
+  goalsScored?: string;
   assists?: number;
   goalsConceded?: number;
   ownGoals?: number;

@@ -122,7 +122,7 @@ export class PersonComponent implements OnDestroy {
 
   onStatsItemClicked(itemType: StatsItemType) {
     const filterOptions: GamePlayedFilterOptions = {
-      goalsScored: itemType === 'goalsScored' ? 1 : 0,
+      goalsScored: itemType === 'goalsScored' ? '+1' : '0',
       assists: itemType === 'assists' ? 1 : 0,
       yellowCard: itemType === 'yellowCards',
       yellowRedCard: itemType === 'yellowRedCards',
