@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
@@ -23,8 +23,13 @@ import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/comp
 import { CompetitionId } from '@src/app/util/domain-types';
 import { SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { ModalService } from '@src/app/module/modal/service';
+import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+
+export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards';
 
 export type UiStatsItem = {
+  itemType: StatsItemType;
   iconClasses?: string[];
   iconDescriptor?: UiIconDescriptor;
   titleText?: string;
@@ -47,6 +52,8 @@ export class PersonComponent implements OnDestroy {
   colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
+
+  private readonly modalService = inject(ModalService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -113,6 +120,25 @@ export class PersonComponent implements OnDestroy {
     return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
   }
 
+  onStatsItemClicked(itemType: StatsItemType) {
+    const filterOptions: GamePlayedFilterOptions = {
+      goalsScored: itemType === 'goalsScored' ? 1 : 0,
+      assists: itemType === 'assists' ? 1 : 0,
+      yellowCard: itemType === 'yellowCards',
+      yellowRedCard: itemType === 'yellowRedCards',
+      redCard: itemType === 'redCards',
+    };
+
+    this.modalService.showStatsModal({
+      personId: this.person.person.id,
+      filterOptions: filterOptions,
+    }).pipe(takeUntil(this.destroy$)).subscribe({
+      complete: () => {
+        console.log('modal closed');
+      }
+    })
+  }
+
   private resolvePerson(personId: number) {
     this.personResolver.getById(personId, true).pipe(takeUntil(this.destroy$)).subscribe({
       next: person => {
@@ -129,18 +155,18 @@ export class PersonComponent implements OnDestroy {
   private getPlayerTotalStats(stats: PlayerBaseStats): ReadonlyArray<UiStatsItem[]> {
     return [
       [
-        { iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: 'Spiele', value: stats.gamesPlayed },
-        { iconDescriptor: { type: 'standard', content: 'goal' }, titleText: 'Tore', value: stats.goalsScored },
-        { iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: 'Assists', value: stats.assists },
+        { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: 'Spiele', value: stats.gamesPlayed },
+        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'goal' }, titleText: 'Tore', value: stats.goalsScored },
+        { itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: 'Assists', value: stats.assists },
       ],
       /*[
         { iconDescriptor: { type: 'standard', content: 'penalties-taken' }, titleText: 'Elfmeter angetreten', value: stats.regulationPenaltiesTaken },
         { iconDescriptor: { type: 'standard', content: 'penalties-scored' }, titleText: 'Elfmeter getroffen', value: stats.regulationPenaltiesScored },
       ],*/
       [
-        { iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: 'Gelbe Karten', value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
-        { iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-neg-8'] },
-        { iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: 'Gelbe Karten', value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-neg-8'] },
+        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
       ],
     ]
   }

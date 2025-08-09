@@ -179,13 +179,11 @@ textarea:focus, input:focus {
     position: relative;
     top: 3px;
     left: 4%;
-    z-index: 10;
 }
 
 .card-yellow-red-red {
     position: relative;
     left: -3px;
-    z-index: 11;
 }
 
 .captain-inline {
@@ -213,4 +211,8 @@ textarea:focus, input:focus {
 .loading-container-medium {
   width: 2rem;
   height: 2rem;
+}
+
+.scrollbar-color-modal {
+    scrollbar-color: var(--dark-grey) var(--dark-grey-lighter-2);
 }

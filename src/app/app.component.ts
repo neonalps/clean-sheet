@@ -1,17 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SeasonService } from './module/season/service';
 import { OptionId, SelectOption } from './component/select/option';
-import { debounceTime, map, merge, Observable, of, Subject, Subscription, switchMap, tap } from 'rxjs';
+import { debounceTime, map, merge, Observable, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { convertSeasonToSelectOption } from './module/season/util';
 import { ExternalSearchService } from './module/external-search/service';
 import { ExternalSearchEntity } from './model/external-search';
 import { convertExternalSearchItemToSelectOption } from './module/external-search/util';
 import { ToastsComponent } from "./component/toasts/toasts.component";
+import { ModalsComponent } from "./component/modals/modals.component";
+import { ModalService } from './module/modal/service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastsComponent],
+  imports: [CommonModule, RouterOutlet, ToastsComponent, ModalsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -24,15 +27,31 @@ export class AppComponent implements OnInit, OnDestroy {
   isSearchingForPlayer = false;
   private playerSearch = new Subject<string>();
 
-  private subscriptions: Subscription[] = [];
+  modalOpen = signal(false);
 
-  constructor(private readonly seasonService: SeasonService, private readonly externalSearchService: ExternalSearchService) {}
+  private subscriptions: Subscription[] = [];
+  private readonly destroy$ = new Subject<void>();
+
+  constructor(
+    private readonly seasonService: SeasonService,
+    private readonly externalSearchService: ExternalSearchService,
+    private readonly modalService: ModalService,
+  ) {}
 
   ngOnInit(): void {
     this.seasonService.init();
+
+    this.modalService.active$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(open => {
+        this.modalOpen.set(open);
+    });
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
     this.subscriptions.forEach(item => item.unsubscribe());
   }
 

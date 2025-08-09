@@ -1,24 +1,24 @@
 @for (competitionItem of competitionStats; track $index) {
     <div class="competition-item flex align-items-center">
         <div class="basis-1/2 flex-grow-1 flex align-items-center">
-            <div class="width-1-25rem mr-2 relative top-1" *ngIf="competitionItem.competition.iconSmall">
+            <div class="width-sm mr-3 relative top-1" *ngIf="competitionItem.competition.iconSmall">
                 <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionItem.competition.iconSmall }" />
             </div>
-            <div class="text-sm">
+            <div class="text-base">
                 {{ competitionItem.competition.shortName }}
             </div>
         </div>
-        <div class="basis-1/10">
+        <div class="basis-1/8 text-base">
             <div class="text-right pr-1">
                 {{ competitionItem.stats.gamesPlayed }}
             </div>
         </div>
-        <div class="basis-1/10">
+        <div class="basis-1/8">
             <div class="text-right pr-1">
                 {{ competitionItem.stats.goalsScored }}
             </div>
         </div>
-        <div class="basis-1/10">
+        <div class="basis-1/8">
             <div class="text-right pr-1">
                 {{ competitionItem.stats.assists }}
             </div>

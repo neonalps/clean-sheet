@@ -37,3 +37,14 @@ export function convertSearchParamsToQueryString(params: URLSearchParams): strin
 
     return `?${params.toString()}`;
 }
+
+export function convertDtoToQueryString(dto: Record<string, unknown>): string {
+    const params = new URLSearchParams();
+
+    for (const property in dto) {
+        const value = dto[property];
+        params.set(property, typeof value === 'string' ? value : (value as any).toString());
+    }
+
+    return params.toString();
+}

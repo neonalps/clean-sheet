@@ -1,1 +1,13 @@
-<p>modal works!</p>
+<div class="modal-container" (click)="containerClicked()">
+    <section class="modal flex flex-col px-3 py-4 h-4/5">
+        <div class="text-lg bold mb-4">
+            <ng-content select="[header]" />
+        </div>
+        <div class="flex-grow-1 overflow-y-auto scrollbar-thin scrollbar-color-modal">
+            <ng-content select="[content]" />
+        </div>
+        <div class="flex-shrink-1">
+            <ng-content select="[footer]" />
+        </div>
+    </section>
+</div>

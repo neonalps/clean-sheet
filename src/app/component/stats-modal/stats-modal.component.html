@@ -1,0 +1,33 @@
+<app-modal>
+    <div header>{{ 'player.stats' | $t }}</div>
+    <div content>
+        @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
+            <div class="mb-6 last:mb-0">
+                <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
+                @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {
+                    <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24">
+                        <div class="basis-1/12 flex align-items-center">
+                            <div class="width-xs relative top-1">
+                                <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': gamePlayed.game.competition.iconSmall! }" />
+                            </div>
+                        </div>
+                        <div class="basis-1/6 text-sm text-center">
+                            {{ gamePlayed.game.kickoff | date:'MMM d' }}
+                        </div>
+                        <div class="basis-2/5 flex text-sm">
+                            <div class="width-xs mr-2 relative top-1" *ngIf="gamePlayed.game.opponent.iconSmall">
+                                <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
+                            </div>
+                            <div>
+                                {{ gamePlayed.game.opponent.shortName }}
+                            </div>
+                        </div>
+                        <div class="basis-1/6 flex align-items-center">
+                            <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</app-modal>

@@ -20,6 +20,12 @@
     display: inline-flex;
 }
 
+.disallow-scroll {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
 .flex-col {
     flex-direction: column;
 }
@@ -112,6 +118,10 @@
     flex-grow: 10;
 }
 
+.flex-shrink, .flex-shrink-1 {
+    flex-shrink: 1;
+}
+
 .order-1 {
     order: 1;
 }
@@ -174,6 +184,10 @@
 
 .basis-1\/8 {
     flex-basis: 12.5%;
+}
+
+.basis-1\/9 {
+    flex-basis: 11.111111%;
 }
 
 .basis-1\/10 {
@@ -617,6 +631,11 @@
     padding-right: 2rem;
 }
 
+.py-1\2 {
+    padding-top: .125rem;
+    padding-bottom: .125rem;
+}
+
 .py-1 {
     padding-top: .25rem;
     padding-bottom: .25rem;
@@ -664,6 +683,10 @@
 .py-4 {
     padding-top: 1rem;
     padding-bottom: 1rem;
+}
+
+.p-1\/2 {
+    padding: .125rem;
 }
 
 .p-1 {
@@ -764,6 +787,10 @@
 
 .pt-8 {
     padding-top: 2rem;
+}
+
+.last\:mb-0:last-child {
+    margin-bottom: 0;
 }
 
 .height-1-25rem {
@@ -1038,7 +1065,7 @@
 }
 
 .transition-fade {
-    transition: visibility .35s ease-in-out, opacity .3s ease-in-out;
+    transition: visibility .35s ease, opacity .3s ease;
 }
 
 .hidden-fade {
@@ -1306,6 +1333,10 @@
     height: 90%;
 }
 
+.h-80vh {
+    height: 80vh;
+}
+
 .min-h-22 {
     min-height: 22px;
 }
@@ -1346,8 +1377,16 @@
     overflow: hidden;
 }
 
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
 .overflow-x-scroll {
     overflow-x: scroll;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
 }
 
 .overflow-y-scroll {
@@ -1361,4 +1400,12 @@
     height: 0;
     overflow: hidden;
     visibility: hidden;
+}
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+}
+
+.scrollbar-stable {
+    scrollbar-gutter: stable;
 }

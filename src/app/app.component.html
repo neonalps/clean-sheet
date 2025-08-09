@@ -1,7 +1,8 @@
-<div class="app-wrapper">
+<div class="app-wrapper" [ngClass]="{ 'disallow-scroll': modalOpen() }">
   <header></header>
   <main>
     <router-outlet></router-outlet>
   </main>
+  <app-modals />
   <app-toasts />
 </div>
