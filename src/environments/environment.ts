@@ -1,6 +1,7 @@
 export const environment = {
     production: true,
     apiBaseUrl: "https://liebenau.neonalps.at/api",
+    frontendBaseUrl: "https://1909.neonalps.at",
     mainClub: {
         id: 1,
         name: "SK Sturm Graz",

@@ -1,13 +1,13 @@
 <div>
     @for (item of goalsAgainstClubs; track $index) {
-        <div class="goals-against-clubs-item flex">
+        <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey p-1 rounded-md transition-colors" (click)="itemClicked(item)">
             <div class="basis-1/2">
                 <app-small-club [club]="item.club" />
             </div>
             <div class="basis-1/2 flex align-items-center">
                 <div class="basis-9/10 relative mr-3">
-                    <div class="absolute w-full h-5 rounded-lg bg-color-light-grey-darker z-10"></div>
-                    <div class="absolute h-5 rounded-lg bg-color-info z-20" [style.width]="getItemWidth(item.goalsScored)"></div>
+                    <div class="absolute w-full h-5 rounded-lg bg-color-light-grey-darker"></div>
+                    <div class="absolute h-5 rounded-lg bg-color-info" [style.width]="getItemWidth(item.goalsScored)"></div>
                 </div>
                 <div class="basis-1/10 text-right pr-1">
                     {{ item.goalsScored }}

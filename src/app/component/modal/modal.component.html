@@ -1,5 +1,5 @@
-<div class="modal-container" (click)="containerClicked()">
-    <section class="modal flex flex-col px-3 py-4 h-4/5">
+<div class="modal-container">
+    <section class="modal flex flex-col px-3 py-4 h-4/5" appClickOutside (clickOutside)="handleOutsideClick()">
         <div class="text-lg bold mb-4">
             <ng-content select="[header]" />
         </div>

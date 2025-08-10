@@ -1,8 +1,9 @@
 export type GamePlayedFilterOptions = {
-  competitionId?: number;
+  competitionId?: string;
+  opponentId?: string;
   seasonId?: number;
   goalsScored?: string;
-  assists?: number;
+  assists?: string;
   goalsConceded?: number;
   ownGoals?: number;
   isCaptain?: boolean;

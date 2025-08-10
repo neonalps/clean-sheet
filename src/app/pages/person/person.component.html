@@ -89,25 +89,27 @@
         </div>
     </div>
 
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
-        <div>
-            <app-stats-player-header [containerClasses]="'mb-6'" [headerText]="'performance.competitionStats' | $t" />
-            <app-stats-player-competition [competitionStats]="playerCompetitionStats" />
+    <ng-container *ngIf="playerCompetitionStats.length > 0">
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
+            <div>
+                <app-stats-player-header [containerClasses]="'mb-6'" [headerText]="'performance.competitionStats' | $t" />
+                <app-stats-player-competition [competitionStats]="playerCompetitionStats" />
+            </div>
         </div>
-    </div>
 
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
-        <div>
-            <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" />
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+            <div>
+                <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" />
+            </div>
         </div>
-    </div>
 
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
-        <div class="flex align-items-center mb-4">
-            <div class="bold text-light text-base">{{ 'player.goalsAgainstClubs' | $t }}</div>
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-6">
+            <div class="flex align-items-center mb-4">
+                <div class="bold text-light text-base">{{ 'player.goalsAgainstClubs' | $t }}</div>
+            </div>
+            <div>
+                <app-stats-goals-against-clubs [goalsAgainstClubs]="person.stats?.goalsAgainstClubs ?? []" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+            </div>
         </div>
-        <div>
-            <app-stats-goals-against-clubs [goalsAgainstClubs]="person.stats?.goalsAgainstClubs ?? []" />
-        </div>
-    </div>
+    </ng-container>
 </ng-template>

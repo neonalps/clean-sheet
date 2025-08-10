@@ -15,6 +15,7 @@ export type GetPlayerGamesPlayedResponse = {
   minutesPlayed?: number;
   goalsScored?: number;
   assists?: number;
+  ownGoals?: number;
   goalsConceded?: number;
   regulationPenaltiesTaken?: [number, number];
   regulationPenaltiesFaced?: [number, number];

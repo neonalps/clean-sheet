@@ -120,15 +120,23 @@ export class PersonComponent implements OnDestroy {
     return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
   }
 
+  onFilterOptionsSelected(filterOptions: GamePlayedFilterOptions) {
+    this.showStatsModal(filterOptions);
+  }
+
   onStatsItemClicked(itemType: StatsItemType) {
     const filterOptions: GamePlayedFilterOptions = {
       goalsScored: itemType === 'goalsScored' ? '+1' : '0',
-      assists: itemType === 'assists' ? 1 : 0,
+      assists: itemType === 'assists' ? '+1' : '0',
       yellowCard: itemType === 'yellowCards',
       yellowRedCard: itemType === 'yellowRedCards',
       redCard: itemType === 'redCards',
     };
 
+    this.showStatsModal(filterOptions);
+  }
+
+  private showStatsModal(filterOptions?: GamePlayedFilterOptions) {
     this.modalService.showStatsModal({
       personId: this.person.person.id,
       filterOptions: filterOptions,
@@ -136,7 +144,7 @@ export class PersonComponent implements OnDestroy {
       complete: () => {
         console.log('modal closed');
       }
-    })
+    });
   }
 
   private resolvePerson(personId: number) {
@@ -165,7 +173,7 @@ export class PersonComponent implements OnDestroy {
       ],*/
       [
         { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: 'Gelbe Karten', value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
-        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-neg-8'] },
+        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-3'] },
         { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
       ],
     ]

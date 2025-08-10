@@ -1012,6 +1012,18 @@
     left: -10px;
 }
 
+.left-neg-16 {
+    left: -16px;
+}
+
+.left-neg-24 {
+    left: -24px;
+}
+
+.left-neg-32 {
+    left: -32px;
+}
+
 .left-neg-34 {
     left: -34px;
 }
@@ -1034,6 +1046,14 @@
 
 .left-5 {
     left: 5px;
+}
+
+.left-8 {
+    left: 8px;
+}
+
+.left-14 {
+    left: 14px;
 }
 
 .left-16 {

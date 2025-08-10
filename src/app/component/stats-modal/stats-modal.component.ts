@@ -11,6 +11,7 @@ import { getGameResult } from '@src/app/module/game/util';
 import { PersonId } from '@src/app/util/domain-types';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ModalService } from '@src/app/module/modal/service';
+import { environment } from "@src/environments/environment";
 
 export type StatsModalPayload = {
   personId: PersonId;
@@ -57,6 +58,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.gamesPlayedService.getForPlayer(personId, filterOptions).pipe(takeUntil(this.destroy$)).subscribe({
       next: (value) => {
+        console.log(value);
         const groupedResponse = groupBy(value.items, item => item.game.season.name);
         
         for (const seasonName of groupedResponse.keys()) {
@@ -99,6 +101,32 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   getResultTendencyClass(game: BasicGame): string {
     return `result-tendency-${game.resultTendency}`;
+  }
+
+  getNumberArray(goalsScored?: number): number[] {
+    return [...Array(goalsScored ?? 0).keys()];
+  }
+
+  getMultipleIconPositionModifiers(idx: number, total: number): string[] {
+    if (total === 0) {
+      return [];
+    }
+
+    const modifiers: string[] = [];
+
+    if (idx > 0) {
+      modifiers.push(`left-neg-${idx * 8}`);
+    }
+
+    if ((idx + 1) === total) {
+      modifiers.push(`mr-2`);
+    }
+
+    return modifiers;
+  }
+
+  onGameClicked(game: BasicGame) {
+    window.open(`${environment.frontendBaseUrl}/game/${game.id}`, '_blank');
   }
 
 }
