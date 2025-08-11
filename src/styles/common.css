@@ -1048,6 +1048,14 @@
     left: 5px;
 }
 
+.left-6 {
+    left: 6px;
+}
+
+.left-7 {
+    left: 7px;
+}
+
 .left-8 {
     left: 8px;
 }
@@ -1225,6 +1233,10 @@
     background-color: var(--dark-grey-lighter-2);
 }
 
+.bg-color-dark-grey-mid {
+    background-color: var(--dark-grey-mid);
+}
+
 .bg-color-info {
     background-color: var(--info);
 }
@@ -1269,8 +1281,16 @@
     scrollbar-gutter: stable;
 }
 
+.border-none {
+    border: none;
+}
+
 .border-b-1 {
     border-bottom-width: 1px;
+}
+
+.border-b-2 {
+    border-bottom-width: 2px;
 }
 
 .border-b-solid {
@@ -1371,6 +1391,10 @@
 
 .min-h-40 {
     min-height: 40px;
+}
+
+.min-h-46 {
+    min-height: 46px;
 }
 
 .min-h-48 {

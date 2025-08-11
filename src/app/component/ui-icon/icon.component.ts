@@ -10,10 +10,11 @@ import { CompetitionTableComponent } from "@src/app/icon/competition-table/compe
 import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
 import { FootballPitchComponent } from "@src/app/icon/football-pitch/football-pitch.component";
 import { SofascoreComponent } from "@src/app/icon/sofascore/sofascore.component";
+import { MenuIconComponent } from "@src/app/icon/menu/menu.component";
 
 @Component({
   selector: 'app-ui-icon',
-  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent, FootballGoalComponent, CompetitionTableComponent, FootballShoeComponent, FootballPitchComponent, SofascoreComponent],
+  imports: [FootballComponent, BirthdayCakeComponent, ClubIconComponent, PlayerIconComponent, PlayingFootballComponent, FootballGoalComponent, CompetitionTableComponent, FootballShoeComponent, FootballPitchComponent, SofascoreComponent, MenuIconComponent],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'
 })

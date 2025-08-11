@@ -1,0 +1,9 @@
+.menu-search {
+    border-style: none;
+    border-bottom: 2px solid transparent;
+    transition: border .15s linear;
+}
+
+.menu-search:focus {
+    border-bottom: 2px solid var(--light);
+}

@@ -11,10 +11,11 @@ import { ToastsComponent } from "./component/toasts/toasts.component";
 import { ModalsComponent } from "./component/modals/modals.component";
 import { ModalService } from './module/modal/service';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from "./component/header/header.component";
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ToastsComponent, ModalsComponent],
+  imports: [CommonModule, RouterOutlet, ToastsComponent, ModalsComponent, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
