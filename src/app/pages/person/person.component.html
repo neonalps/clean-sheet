@@ -93,13 +93,13 @@
         <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
             <div>
                 <app-stats-player-header [containerClasses]="'mb-6'" [headerText]="'performance.competitionStats' | $t" />
-                <app-stats-player-competition [competitionStats]="playerCompetitionStats" />
+                <app-stats-player-competition [competitionStats]="playerCompetitionStats" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
             </div>
         </div>
 
         <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
             <div>
-                <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" />
+                <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
             </div>
         </div>
 

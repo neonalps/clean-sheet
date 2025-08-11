@@ -1,7 +1,7 @@
 <div>
-    <div class="flex align-items-center pointer" (click)="toggle()">
-        <div class="mr-2">
-            <div class="width-xs transition-transform" [ngClass]="{ 'rotate-90': this.isOpen() }">
+    <div class="flex align-items-center">
+        <div class="mr-2 pointer">
+            <div class="width-xs transition-transform" [ngClass]="{ 'rotate-90': this.isOpen() }" (click)="toggle()">
                 <app-chevron-right />
             </div>
         </div>

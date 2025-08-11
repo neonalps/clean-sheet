@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Season } from '@src/app/model/season';
 import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -11,6 +11,8 @@ import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible
 import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
 import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
 import { SeasonService } from '@src/app/module/season/service';
+import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+import { CompetitionId, SeasonId } from '@src/app/util/domain-types';
 
 type StatsBySeasonAndCompetition = {
   season: Season;
@@ -28,6 +30,8 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
 
   @Input() headerText!: string;
   @Input() performance$!: Subject<UiPlayerStats | null>;
+  
+  @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
 
@@ -88,6 +92,20 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
     }
 
     return bySeasonAndCompetitionStats;
+  }
+
+  seasonTotalClicked(seasonId: SeasonId, filterItemType: keyof GamePlayedFilterOptions) {
+    this.filterOptionsSelected.next({
+      seasonId: `${seasonId}`,
+      [filterItemType]:  filterItemType === 'minutesPlayed' ? '+0' : '+1',
+    });
+  }
+
+  seasonCompetitionClicked(seasonId: SeasonId, filterOptions: GamePlayedFilterOptions) {
+    this.filterOptionsSelected.next({
+      ...filterOptions,
+      seasonId: `${seasonId}`,
+    });
   }
 
 }

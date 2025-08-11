@@ -25,12 +25,20 @@
         background-color: var(--dark-grey);
     }
 
+    .hover\:bg-color-dark-grey-darker:hover {
+        background-color: var(--dark-grey-darker);
+    }
+
     .hover\:bg-color-dark-grey-mid:hover {
         background-color: var(--dark-grey-mid);
     }
 
     .hover\:bg-color-dark-grey-lighter:hover {
         background-color: var(--dark-grey-lighter);
+    }
+
+    .hover\:bg-color-dark-grey-lighter-2:hover {
+        background-color: var(--dark-grey-lighter-2);
     }
 
     .hover\:bg-color-light-grey-darker:hover {

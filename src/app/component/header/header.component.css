@@ -7,3 +7,15 @@
 .menu-search:focus {
     border-bottom: 2px solid var(--light);
 }
+
+.menu-drawer {
+    position: absolute;
+    left: -280px;
+    top: 0;
+    width: 280px;
+    transition: left .15s ease-out;
+}
+
+.menu-drawer-open {
+    left: 0;
+}

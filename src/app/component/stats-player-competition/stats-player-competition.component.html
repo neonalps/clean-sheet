@@ -10,17 +10,17 @@
         </div>
         <div class="basis-1/8 text-base">
             <div class="text-right pr-1">
-                {{ competitionItem.stats.gamesPlayed }}
+                <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="itemClicked(competitionItem.competition.id, 'minutesPlayed')">{{ competitionItem.stats.gamesPlayed }}</span>
             </div>
         </div>
         <div class="basis-1/8">
             <div class="text-right pr-1">
-                {{ competitionItem.stats.goalsScored }}
+                <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="itemClicked(competitionItem.competition.id, 'goalsScored')">{{ competitionItem.stats.goalsScored }}</span>
             </div>
         </div>
         <div class="basis-1/8">
             <div class="text-right pr-1">
-                {{ competitionItem.stats.assists }}
+                <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="itemClicked(competitionItem.competition.id, 'assists')">{{ competitionItem.stats.assists }}</span>
             </div>
         </div>
     </div>

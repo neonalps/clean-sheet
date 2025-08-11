@@ -1,8 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SmallCompetition } from '@src/app/model/competition';
 import { PlayerBaseStats } from '@src/app/model/stats';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 import { CommonModule } from '@angular/common';
+import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+import { CompetitionId } from '@src/app/util/domain-types';
 
 export type CompetitionStats = {
   competition: SmallCompetition;
@@ -18,5 +20,14 @@ export type CompetitionStats = {
 export class StatsPlayerCompetitionComponent {
 
   @Input() competitionStats!: ReadonlyArray<CompetitionStats>;
+
+  @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
+
+  itemClicked(competitionId: CompetitionId, filterItemType: keyof GamePlayedFilterOptions) {
+    this.filterOptionsSelected.next({
+      competitionId: `${competitionId}`,
+      [filterItemType]:  filterItemType === 'minutesPlayed' ? '+0' : '+1',
+    });
+  }
 
 }

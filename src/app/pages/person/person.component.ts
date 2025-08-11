@@ -125,13 +125,31 @@ export class PersonComponent implements OnDestroy {
   }
 
   onStatsItemClicked(itemType: StatsItemType) {
-    const filterOptions: GamePlayedFilterOptions = {
-      goalsScored: itemType === 'goalsScored' ? '+1' : '0',
-      assists: itemType === 'assists' ? '+1' : '0',
-      yellowCard: itemType === 'yellowCards',
-      yellowRedCard: itemType === 'yellowRedCards',
-      redCard: itemType === 'redCards',
-    };
+    const filterOptions: GamePlayedFilterOptions = {};
+
+    if (itemType === 'goalsScored') {
+      filterOptions.goalsScored = '+1';
+    }
+
+    if (itemType === 'assists') {
+      filterOptions.assists = '+1';
+    } 
+
+    if (itemType === 'gamesPlayed') {
+      filterOptions.gamesPlayed = '+1';
+    }
+
+    if (itemType === 'yellowCards') {
+      filterOptions.yellowCard = true;
+    }
+
+    if (itemType === 'yellowRedCards') {
+      filterOptions.yellowRedCard = true;
+    }
+
+    if (itemType === 'redCards') {
+      filterOptions.redCard = true;
+    }
 
     this.showStatsModal(filterOptions);
   }

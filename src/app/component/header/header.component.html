@@ -1,19 +1,24 @@
-<header class="flex align-items-center mx-3 pt-3 mb-4">
-    <div class="basis-1/10 mr-3">
-        <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer min-h-46">
-            <div class="width-sm relative top-2">
-                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'menu' }" />
+<header>
+    <div class="flex align-items-center mx-3 pt-3 mb-4">
+        <div class="basis-1/10 mr-3">
+            <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer min-h-46" (click)="toggleMenu()">
+                <div class="width-sm relative top-2">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'menu' }" />
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow">
+            <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg">
+                <div class="relative">
+                    <div class="icon absolute left-5 top-4">
+                        <app-search [color]="colorLight" />
+                    </div>
+                    <input type="text" class="menu-search w-full bg-color-dark-grey-lighter-2 text-light text-lg pl-8 pr-2" />
+                </div>
             </div>
         </div>
     </div>
-    <div class="flex-grow">
-        <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg">
-            <div class="relative">
-                <div class="icon absolute left-5 top-4">
-                    <app-search [color]="colorLight" />
-                </div>
-                <input type="text" class="menu-search w-full bg-color-dark-grey-lighter-2 text-light text-lg pl-8 pr-2" />
-            </div>
-        </div>
+    <div class="menu-drawer bg-color-dark-grey px-2 py-3" [ngClass]="{ 'menu-drawer-open': isOpen() }">
+        drawer
     </div>
 </header>

@@ -9,24 +9,24 @@
                             <div class="basis-1/2 flex-grow-1">{{ statsItem.season.name }}</div>
                             <div class="basis-1/8">
                                 <div class="text-right pr-1">
-                                    {{ statsItem.total.gamesPlayed }}
+                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'minutesPlayed')">{{ statsItem.total.gamesPlayed }}</span>
                                 </div>
                             </div>
                             <div class="basis-1/8">
                                 <div class="text-right pr-1">
-                                    {{ statsItem.total.goalsScored }}
+                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'goalsScored')">{{ statsItem.total.goalsScored }}</span>
                                 </div
                             ></div>
                             <div class="basis-1/8">
                                 <div class="text-right pr-1">
-                                    {{ statsItem.total.assists }}
+                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'assists')">{{ statsItem.total.assists }}</span>
                                 </div>
                             </div>
                         </div>
                     </ng-container>
                     <ng-container content>
                         <div class="ml-2">
-                            <app-stats-player-competition [competitionStats]="statsItem.competitionStats" />
+                            <app-stats-player-competition [competitionStats]="statsItem.competitionStats" (filterOptionsSelected)="seasonCompetitionClicked(statsItem.season.id, $event)" />
                         </div>
                     </ng-container>
                 </app-collapsible>
