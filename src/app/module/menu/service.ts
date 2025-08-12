@@ -12,4 +12,8 @@ export class MenuService {
       this.open$.next(!this.open$.getValue());
     }
 
+    close() {
+      this.open$.next(false);
+    }
+
 }

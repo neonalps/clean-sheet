@@ -1,10 +1,10 @@
-<section class="page">
+<section class="px-3">
     <ng-container *ngIf="selectedSeason === null; else loadedContent">
         <app-loading />
     </ng-container>
     <ng-template #loadedContent>
         <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
-            <div class="sticky top-0 z-10 bg-color-dark py-1">
+            <div class="sticky top-0 z-1 bg-color-dark py-1">
                 <div class="flex justify-content-center">
                     <app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" />
                 </div>

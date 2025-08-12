@@ -1,6 +1,6 @@
 <header>
     <div class="flex align-items-center mx-3 pt-3 mb-4">
-        <div class="basis-1/10 mr-3">
+        <div class="basis-1/10 mr-2">
             <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer min-h-46" (click)="toggleMenu()">
                 <div class="width-sm relative top-2">
                     <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'menu' }" />
@@ -17,6 +17,7 @@
         </div>
     </div>
     <div class="menu-drawer h-full bg-color-dark-grey px-2 py-3 z-10" [ngClass]="{ 'menu-drawer-open': isMenuOpen() }">
-        drawer
+        <app-nav-menu (onNavigationSelected)="onNavigation()" />
     </div>
+    <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
 </header>

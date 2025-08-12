@@ -7,7 +7,6 @@ import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChatComponent } from './pages/chat/chat.component';
 import { GameCreateComponent } from './pages/game-create/game-create.component';
-import { AppComponent } from './app.component';
 
 export const routes: Routes = [
     { 
