@@ -8,17 +8,15 @@
             </div>
         </div>
         <div class="flex-grow">
-            <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg">
-                <div class="relative">
-                    <div class="icon absolute left-5 top-4">
-                        <app-search [color]="colorLight" />
-                    </div>
-                    <input type="text" class="menu-search w-full bg-color-dark-grey-lighter-2 text-light text-lg pl-8 pr-2" />
+            <div class="relative">
+                <div class="width-sm absolute left-8 top-11" (click)="onSearchIconClicked()">
+                    <app-search [color]="colorLight" />
                 </div>
+                <input #search type="text" class="menu-search bg-color-dark-grey-darker text-light text-lg pl-10 py-1 rounded-lg min-h-46" />
             </div>
         </div>
     </div>
-    <div class="menu-drawer bg-color-dark-grey px-2 py-3" [ngClass]="{ 'menu-drawer-open': isOpen() }">
+    <div class="menu-drawer h-full bg-color-dark-grey px-2 py-3 z-10" [ngClass]="{ 'menu-drawer-open': isMenuOpen() }">
         drawer
     </div>
 </header>

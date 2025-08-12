@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { MenuService } from '@src/app/module/menu/service';
@@ -14,8 +14,10 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
+  @ViewChild('search', { static: false }) searchElement!: ElementRef;
+
   colorLight = COLOR_LIGHT;
-  readonly isOpen = signal(false);
+  readonly isMenuOpen = signal(false);
 
   private readonly menuService = inject(MenuService);
 
@@ -25,13 +27,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.menuService.open$
       .pipe(takeUntil(this.destroy$))
       .subscribe(open => {
-        this.isOpen.set(open);
+        this.isMenuOpen.set(open);
       });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onSearchIconClicked() {
+    this.searchElement.nativeElement.focus();
   }
 
   toggleMenu() {

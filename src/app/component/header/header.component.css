@@ -1,11 +1,13 @@
 .menu-search {
     border-style: none;
-    border-bottom: 2px solid transparent;
-    transition: border .15s linear;
+    border: 1px solid transparent;
+    width: 0;
+    transition: border .15s linear, width .15s ease-out;
 }
 
 .menu-search:focus {
-    border-bottom: 2px solid var(--light);
+    border: 1px solid var(--light);
+    width: 100%;
 }
 
 .menu-drawer {
