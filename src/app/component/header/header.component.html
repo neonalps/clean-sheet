@@ -27,7 +27,7 @@
         <app-nav-menu (onNavigationSelected)="onNavigation()" />
     </div>
     <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
-    <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchOpen() }">
+    <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
         <div>
             <div class="right" (click)="closeSearch()">close</div>
             <div>search results</div>

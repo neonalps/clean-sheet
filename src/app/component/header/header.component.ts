@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { MenuService } from '@src/app/module/menu/service';
@@ -15,14 +15,14 @@ import { ExternalSearchService } from '@src/app/module/external-search/service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('search', { static: false }) searchElement!: ElementRef;
 
   colorLight = COLOR_LIGHT;
   readonly isMenuOpen = signal(false);
   readonly isSearchFocused = signal(false);
-  readonly isSearchOpen = signal(false);
+  readonly isSearchResultOpen = signal(false);
 
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly menuService = inject(MenuService);
@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
       debounceTime(300),
       switchMap(searchValue => {
-        this.isSearchOpen.set(true);
+        this.isSearchResultOpen.set(true);
 
         return this.externalSearchService.search(searchValue);
       }),
@@ -51,7 +51,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
       error: error => {
         console.error('search error', error);
-        this.isSearchOpen.set(false);
+        this.isSearchResultOpen.set(false);
       },
     })
   }
@@ -61,9 +61,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  ngAfterViewInit(): void {
+    this.searchElement.nativeElement.onblur = () => {
+      if (!this.isSearchResultOpen()) {
+        this.isSearchFocused.set(false);
+      }
+    }
+  }
+
   closeSearch() {
     this.isSearchFocused.set(false);
-    this.isSearchOpen.set(false);
+    this.isSearchResultOpen.set(false);
     this.resetSearch();
   }
 
