@@ -1,6 +1,15 @@
 <section class="px-3">
     <ng-container *ngIf="selectedSeason === null; else loadedContent">
-        <app-loading />
+        <div>
+            <div class="skeleton-box-medium" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+            <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
+        </div>
     </ng-container>
     <ng-template #loadedContent>
         <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">

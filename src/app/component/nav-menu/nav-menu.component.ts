@@ -45,7 +45,25 @@ export class NavMenuComponent {
             i18nKey: 'menu.games',
           }
         ]
-      }
+      },
+      {
+        i18nKey: 'menu.statistics',
+        items: [
+          {
+            target: '/chat',
+            i18nKey: 'menu.chat',
+          }
+        ]
+      },
+      {
+        i18nKey: 'menu.management',
+        items: [
+          {
+            target: '/create-game',
+            i18nKey: 'menu.createGame',
+          }
+        ]
+      },
     ];
   }
 

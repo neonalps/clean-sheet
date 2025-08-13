@@ -1217,6 +1217,10 @@
     max-width: 5rem;
 }
 
+.max-w-48 {
+    max-width: 48px;
+}
+
 .bg-color-transparent {
     background-color: transparent;
 }

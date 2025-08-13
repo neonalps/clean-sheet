@@ -5,7 +5,6 @@ import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
 import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, Subscription } from 'rxjs';
-import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
 import { GameOverviewComponent } from '@src/app/component/game-overview/game-overview.component';
@@ -22,7 +21,7 @@ import { environment } from '@src/environments/environment';
 
 @Component({
   selector: 'app-season-games',
-  imports: [GameOverviewComponent, CommonModule, LoadingComponent, SeasonSelectComponent, I18nPipe, EmptyStateComponent, FieldWithBallComponent],
+  imports: [GameOverviewComponent, CommonModule, SeasonSelectComponent, I18nPipe, EmptyStateComponent, FieldWithBallComponent],
   templateUrl: './season-games.component.html',
   styleUrl: './season-games.component.css'
 })
