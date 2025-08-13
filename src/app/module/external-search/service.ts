@@ -11,8 +11,8 @@ export class ExternalSearchService {
 
     constructor(private readonly http: HttpClient) {}
 
-    search(search: string, filters: ExternalSearchEntity[]): Observable<ExternalSearchResponseDto> {
-        return this.http.post<ExternalSearchResponseDto>(`${environment.apiBaseUrl}/v1/search/regular`, { search, filters });
+    search(search: string, filters?: ExternalSearchEntity[]): Observable<ExternalSearchResponseDto> {
+        return this.http.post<ExternalSearchResponseDto>(`${environment.apiBaseUrl}/v1/search/regular`, { search, filters: filters ?? [] });
     }
 
 }

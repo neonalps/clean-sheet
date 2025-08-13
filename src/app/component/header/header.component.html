@@ -12,7 +12,7 @@
                 <div class="width-sm absolute left-8 top-11 pointer" (click)="onSearchIconClicked()">
                     <app-search [color]="colorLight" />
                 </div>
-                <input #search type="text" class="menu-search bg-color-dark-grey-darker text-light text-base pl-10 py-1 rounded-lg min-h-46" />
+                <input #search type="text" class="menu-search bg-color-dark-grey-darker text-light text-base pl-10 py-1 rounded-lg min-h-46" [ngClass]="{ 'menu-search-focus': isSearchFocused()  }" (input)="onSearchChange($event)" />
             </div>
         </div>
         <div class="basis-1/10">
@@ -27,4 +27,14 @@
         <app-nav-menu (onNavigationSelected)="onNavigation()" />
     </div>
     <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
+    <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchOpen() }">
+        <div>
+            <div class="right" (click)="closeSearch()">close</div>
+            <div>search results</div>
+            <div>search results</div>
+            <div>search results</div>
+            <div>search results</div>
+            <div>search results</div>
+        </div>
+    </div>
 </header>

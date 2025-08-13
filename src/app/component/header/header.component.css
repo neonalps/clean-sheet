@@ -5,7 +5,7 @@
     transition: border .15s linear, width .15s ease-out;
 }
 
-.menu-search:focus {
+.menu-search-focus {
     border: 1px solid var(--light);
     width: 100%;
 }
@@ -36,4 +36,15 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+}
+
+.search-results {
+    position: fixed;
+    overflow-x: hidden;
+    left: 100%;
+    transition: left .15s ease-out;
+}
+
+.search-results-open {
+    left: 0;
 }
