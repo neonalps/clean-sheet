@@ -12,7 +12,7 @@ export interface DetailedPerson {
     lastName: string;
     firstName: string;
     avatar: string;
-    birthday: Date;
+    birthday?: Date;
     deathday?: Date;
     nationalities?: string[];
 }

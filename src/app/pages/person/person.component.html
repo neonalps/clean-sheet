@@ -37,7 +37,7 @@
                             <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'birthday-cake' }" />
                         </div>
                     </div>
-                    <div>
+                    <div *ngIf="birthday">
                         <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
                     </div>
                 </div>

@@ -156,7 +156,15 @@
                 <div class="text-light-grey">{{ 'game.referee' | $t }}</div>
             </div>
             <div>
-                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">{{ getRefereeName() }}</div>
+                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">
+                    <span class="mr-2">{{ getRefereeName() }}</span>
+                    @let refereeNationalities = getRefereeNationalities();
+                    <ng-container *ngIf="refereeNationalities.length > 0">
+                        @for (country of refereeNationalities; track $index) {
+                            <span [title]="country.title">{{ country.flag }}</span>
+                        }
+                    </ng-container>
+                </div>
             </div>
         </div>
     </div>

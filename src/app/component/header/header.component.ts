@@ -6,12 +6,16 @@ import { MenuService } from '@src/app/module/menu/service';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { debounceTime, Subject, switchMap, takeUntil } from 'rxjs';
 import { NavMenuComponent } from "@src/app/component/nav-menu/nav-menu.component";
-import { getHtmlInputElementFromEvent } from '@src/app/util/common';
+import { assertUnreachable, getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
+import { ExternalSearchEntity, ExternalSearchResultItemDto } from '@src/app/model/external-search';
+import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
+import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent],
+  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -24,8 +28,11 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly isSearchFocused = signal(false);
   readonly isSearchResultOpen = signal(false);
 
+  readonly searchResultItems$ = new Subject<ExternalSearchResultItemDto[]>();
+
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly menuService = inject(MenuService);
+  private readonly router = inject(Router);
 
   private readonly destroy$ = new Subject<void>();
   private readonly search$ = new Subject<string>();
@@ -48,6 +55,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe({
       next: searchResult => {
         console.log('search', searchResult);
+
+        this.searchResultItems$.next(searchResult.items);
       },
       error: error => {
         console.error('search error', error);
@@ -95,6 +104,57 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleMenu() {
     this.menuService.toggle();
+  }
+
+  getIconDescriptor(resultItem: ExternalSearchResultItemDto): UiIconDescriptor {
+    return {
+      type: this.convertResultItemTypeToIconType(resultItem.type),
+      content: resultItem.icon!,
+    }
+  }
+
+  resultItemClicked(resultItem: ExternalSearchResultItemDto) {
+    switch (resultItem.type) {
+      case ExternalSearchEntity.Person:
+        navigateToPerson(this.router, resultItem.entityId);
+        break;
+      case ExternalSearchEntity.Club:
+        navigateToClub(this.router, resultItem.entityId);
+        break;
+      case ExternalSearchEntity.Competition:
+        throw new Error(`Competition not handled`);
+      case ExternalSearchEntity.Game:
+        navigateToGameWithoutDetails(this.router, resultItem.entityId);
+        break;
+      case ExternalSearchEntity.Season:
+        navigateToSeasonGames(this.router, resultItem.entityId);
+        break;
+      case ExternalSearchEntity.Venue:
+        throw new Error(`Venue not handled`);
+      default:
+        assertUnreachable(resultItem.type);
+    }
+
+    this.closeSearch();
+  }
+
+  private convertResultItemTypeToIconType(entity: ExternalSearchEntity): UiIconType {
+    switch (entity) {
+      case ExternalSearchEntity.Person:
+        return 'player';
+      case ExternalSearchEntity.Club:
+        return 'club';
+      case ExternalSearchEntity.Competition:
+        return 'competition';
+      case ExternalSearchEntity.Game:
+        throw new Error(`Game not handled`);
+      case ExternalSearchEntity.Season:
+        throw new Error(`Season not handled`);
+      case ExternalSearchEntity.Venue:
+        throw new Error(`Venue not handled`);
+      default:
+        assertUnreachable(entity);
+    }
   }
 
   private closeMenuIfOpen() {

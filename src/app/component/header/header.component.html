@@ -7,9 +7,9 @@
                 </div>
             </div>
         </div>
-        <div class="flex-grow mx-4">
+        <div class="flex-grow mx-4 pointer" (click)="onSearchIconClicked()">
             <div class="relative">
-                <div class="width-sm absolute left-8 top-11 pointer" (click)="onSearchIconClicked()">
+                <div class="width-sm absolute left-8 top-11">
                     <app-search [color]="colorLight" />
                 </div>
                 <input #search type="text" class="menu-search bg-color-dark-grey-darker text-light text-base pl-10 py-1 rounded-lg min-h-46" [ngClass]="{ 'menu-search-focus': isSearchFocused()  }" (input)="onSearchChange($event)" />
@@ -28,13 +28,24 @@
     </div>
     <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
     <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
-        <div>
-            <div class="right" (click)="closeSearch()">close</div>
-            <div>search results</div>
-            <div>search results</div>
-            <div>search results</div>
-            <div>search results</div>
-            <div>search results</div>
+        <div class="flex justify-content-end" (click)="closeSearch()">
+            <span class="mr-2 mt-2 rounded px-1 bg-color-dark-grey-darker hover:bg-color-dark-grey pointer transition-colors">x</span>
+        </div>
+        <div class="flex align-items-center">
+            <div>
+                @for (resultItem of searchResultItems$ | async; track $index) {
+                    <div class="flex align-items-center mx-4 p-2 mb-3 last:mb-0 rounded-lg pointer hover:bg-color-dark-grey-darker transition-colors" (click)="resultItemClicked(resultItem)">
+                        <div class="flex align-items-center mr-3" *ngIf="resultItem.icon">
+                            <div class="width-md">
+                                <app-ui-icon [descriptor]="getIconDescriptor(resultItem)" />
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            {{ resultItem.title }}
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </header>

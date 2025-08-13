@@ -1,7 +1,7 @@
 import { DateString } from "../util/domain-types";
 import { ClubInput, SmallClub } from "./club";
 import { CompetitionInput, SmallCompetition } from "./competition";
-import { Person, PersonInput } from "./person";
+import { DetailedPerson, Person, PersonInput } from "./person";
 import { Season } from "./season";
 import { GameVenue, VenueInput } from "./venue";
 
@@ -145,7 +145,7 @@ export enum RefereeRole {
 
 export interface GameReferee {
     id: number;
-    person: Person;
+    person: DetailedPerson;
     role: RefereeRole;
 }
 

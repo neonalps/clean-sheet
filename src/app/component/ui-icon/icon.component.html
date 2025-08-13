@@ -49,7 +49,7 @@
     <app-club-icon [iconUrl]="descriptor.content" />
   }
   @case ('player') {
-    <app-player-icon [iconUrl]="descriptor.content" />
+    <app-player-icon [iconUrl]="descriptor.content" [iconBgColorClass]="'bg-color-transparent'" />
   }
   @default {
     <div class="text-danger">not implemented</div>

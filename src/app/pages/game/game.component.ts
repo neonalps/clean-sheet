@@ -32,6 +32,7 @@ import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
+import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -92,6 +93,8 @@ export class GameComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
+
+  private readonly countryFlagService = inject(CountryFlagService);
   private readonly viewportScroller = inject(ViewportScroller);
 
   constructor(
@@ -424,7 +427,17 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return [referee?.person.firstName, referee?.person.lastName].filter(item => isDefined(item)).join(' ');
+    return [referee.person.firstName, referee.person.lastName].filter(item => isDefined(item)).join(' ');
+  }
+
+  getRefereeNationalities(): CountryFlag[] {
+    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
+    if (isNotDefined(referee)) {
+      return []
+    }
+
+    const nationalities = referee.person.nationalities ?? [];
+    return this.countryFlagService.resolveNationalities(nationalities);
   }
 
   triggerNavigateToGame(game: BasicGame) {

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
@@ -20,7 +20,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { StatsPlayerHeaderComponent } from '@src/app/component/stats-player-header/stats-player-header.component';
 import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
-import { CompetitionId } from '@src/app/util/domain-types';
+import { CompetitionId, PersonId } from '@src/app/util/domain-types';
 import { SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ModalService } from '@src/app/module/modal/service';
@@ -53,24 +53,23 @@ export class PersonComponent implements OnDestroy {
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
 
+  private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
+  private readonly personResolver = inject(PersonResolver);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(
-    private readonly countryFlagService: CountryFlagService,
-    private readonly personResolver: PersonResolver,
-    private readonly route: ActivatedRoute,
-    private readonly translationService: TranslationService,
-  ) {
-    const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
-    if (isDefined(personId)) {
-      this.resolvePerson(Number(personId));
-    } else {
-      // TODO show error content
-      this.isLoading = false;
-      console.error(`Could not resolve game ID`);
-    }
+  constructor() {
+    this.router.events.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(value => {
+      if (value instanceof NavigationEnd) {
+        this.loadPersonDetails();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -112,7 +111,12 @@ export class PersonComponent implements OnDestroy {
   }
 
   getPersonAge() {
-    return getAge(new Date(this.getBirthday()));
+    const birthday = this.getBirthday();
+    if (!birthday) {
+      return null;
+    }
+
+    return getAge(new Date(birthday));
   }
 
   getNationalities(): CountryFlag[] {
@@ -154,6 +158,18 @@ export class PersonComponent implements OnDestroy {
     this.showStatsModal(filterOptions);
   }
 
+  private loadPersonDetails() {
+    const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
+    this.isLoading = true;
+    if (isDefined(personId)) {
+      this.resolvePerson(Number(personId));
+    } else {
+      // TODO show error content
+      this.isLoading = false;
+      console.error(`Could not resolve person ID`);
+    }
+  }
+
   private showStatsModal(filterOptions?: GamePlayedFilterOptions) {
     this.modalService.showStatsModal({
       personId: this.person.person.id,
@@ -165,7 +181,7 @@ export class PersonComponent implements OnDestroy {
     });
   }
 
-  private resolvePerson(personId: number) {
+  private resolvePerson(personId: PersonId) {
     this.personResolver.getById(personId, true).pipe(takeUntil(this.destroy$)).subscribe({
       next: person => {
         this.onPersonResolved(person);
