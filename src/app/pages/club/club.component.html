@@ -41,12 +41,15 @@
             </div>
         </div>
     </div>
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" appScrollNearEnd (nearEnd)="onNearEndScroll()">
         <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
             <div class="text-light-grey">{{ 'club.games' | $t }}</div>
         </div>
-        <div class="mt-5 ml-2 mb-4">
-            <app-chip-group [chips]="competitionChips" />
+        <div class="mt-5 ml-2 mb-4" *ngIf="competitionFiltersVisible()">
+            <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
+        </div>
+        <div>
+            <app-game-record [gameRecord$]="gameRecord$" />
         </div>
         @for (gameAgainstClub of lastGamesAgainstClub$ | async; track $index) {
             <app-game-overview [game]="gameAgainstClub" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(gameAgainstClub)" />

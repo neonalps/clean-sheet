@@ -1,9 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { Chip, ChipComponent } from '@src/app/component/chip/chip.component';
-import { assertUnreachable } from '@src/app/util/common';
+import { assertDefined, assertUnreachable } from '@src/app/util/common';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 export type ChipGroupMode = 'single';   // could also support: toggle, multi
+
+export type ChipGroupInput = {
+  chips: Chip[];
+  mode: ChipGroupMode;
+  dynamicClassNamesContainer?: string[];
+  dynamicClassNamesChip?: string[];
+};
 
 @Component({
   selector: 'app-chip-group',
@@ -13,26 +21,42 @@ export type ChipGroupMode = 'single';   // could also support: toggle, multi
 })
 export class ChipGroupComponent {
 
-  @Input() chips: Chip[] = [];
-  @Input() mode: ChipGroupMode = 'single';
-  @Input() dynamicClassNamesContainer?: string[];
-  @Input() dynamicClassNamesChip?: string[];
-
+  @Input() chipGroup$!: Observable<ChipGroupInput>;
   @Output() onSelected = new EventEmitter<string | number | boolean>();
+
+  readonly chipGroup = signal<ChipGroupInput | null>(null);
+
+  private readonly destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.chipGroup$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        this.chipGroup.set(value);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onClick(chip: Chip) {
     if (chip.selected === true) {
       return;
     }
 
-    switch (this.mode) {
+    const currentChipGroup = this.chipGroup();
+    assertDefined(currentChipGroup);
+
+    switch (currentChipGroup!.mode) {
       case 'single':
-        this.chips.forEach(chip => chip.selected = false);
+        currentChipGroup!.chips.forEach(chip => chip.selected = false);
         chip.selected = true;
         this.onSelected.next(chip.value);
         break;
       default:
-        assertUnreachable(this.mode);
+        assertUnreachable(currentChipGroup!.mode);
     }
   }
 

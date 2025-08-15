@@ -1,0 +1,11 @@
+@let record = gameRecord();
+<ng-container *ngIf="record !== null; else loading">
+    <div class="flex align-items-center justify-content-center py-3">
+        <div class="px-3">{{ record.w }}</div>
+        <div class="px-3">{{ record.d }}</div>
+        <div class="px-3">{{ record.l }}</div>
+    </div>
+</ng-container>
+<ng-template #loading>
+    loading...
+</ng-template>
