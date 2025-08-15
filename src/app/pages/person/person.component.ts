@@ -25,6 +25,7 @@ import { SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ModalService } from '@src/app/module/modal/service';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+import { ExternalLinksComponent } from "@src/app/component/external-links/external-links.component";
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards';
 
@@ -38,7 +39,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -90,8 +91,8 @@ export class PersonComponent implements OnDestroy {
     }
   }
 
-  externalLinkClicked(link: string) {
-    window.open(link, '_blank');
+  getExternalLinks() {
+    return this.person.externalLinks ? [...this.person.externalLinks] : [];
   }
 
   getFirstName() {

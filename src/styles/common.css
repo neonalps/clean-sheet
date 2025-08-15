@@ -813,6 +813,10 @@
     width: 2rem;
 }
 
+.width-3rem {
+    width: 3rem;
+}
+
 .width-3-5rem {
     width: 3.5rem;
 }
@@ -1451,6 +1455,18 @@
 
 .min-w-140 {
     min-width: 140px;
+}
+
+.height-sm {
+    height: 1.5rem;
+}
+
+.height-2rem {
+    height: 2rem;
+}
+
+.height-3rem {
+    height: 3rem;
 }
 
 .no-break {

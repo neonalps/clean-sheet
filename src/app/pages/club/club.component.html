@@ -1,1 +1,55 @@
-<p>club works!</p>
+<ng-container *ngIf="isLoading; else loadedContent">
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center">
+            <div class="basis-1/6 mr-1 flex align-items-center justify-content-center p-2">
+                <div class="skeleton-circle-medium"></div>
+            </div>
+            <div class="flex-grow-1 flex align-items-center justify-content-start py-2">
+                <div class="skeleton-box-medium"></div>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-template #loadedContent>
+    @let nationalities = getNationalities();
+    @let avatar = getIconUrl();
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+        <div class="flex align-items-center">
+            <div class="basis-1/10 flex align-items-center justify-content-center">
+                <div>
+                    <div class="rounded-lg width-sm height-sm mb-2" [style.background-color]="clubResponse.club.primaryColour"></div>
+                    <div class="rounded-lg width-sm height-sm" [style.background-color]="clubResponse.club.secondaryColour"></div>
+                </div>
+            </div>
+            <div class="basis-1/5 flex align-items-center justify-content-center mr-3" *ngIf="avatar">
+                <div class="max-w-4">
+                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': avatar }" />
+                </div>
+            </div>
+            <div class="flex-grow">
+                <div>
+                    <span class="mr-2 text-xl">
+                        <span class="bold"> {{ clubResponse.club.name }}</span>
+                    </span>
+                    <ng-container *ngIf="nationalities.length > 0">
+                        <ng-container *ngFor="let country of nationalities">
+                            <span [title]="country.title">{{ country.flag }}</span>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <app-external-links [externalLinks]="getExternalLinks()" />
+            </div>
+        </div>
+    </div>
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+        <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
+            <div class="text-light-grey">{{ 'club.games' | $t }}</div>
+        </div>
+        <div class="mt-5 ml-2 mb-4">
+            <app-chip-group [chips]="competitionChips" />
+        </div>
+        @for (gameAgainstClub of lastGamesAgainstClub$ | async; track $index) {
+            <app-game-overview [game]="gameAgainstClub" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(gameAgainstClub)" />
+        }
+    </div>
+</ng-template>

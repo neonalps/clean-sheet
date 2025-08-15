@@ -181,21 +181,5 @@
             </div>
             <app-game-performance-trend [games$]="performanceTrendAgainstClub$" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
         </div>
-        <div class="pt-2 mt-3">
-            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
-                <div class="mr-2">
-                    <div class="width-xs relative top-2">
-                        <app-icon-stadium [color]="colorLightGrey" />
-                    </div>
-                </div>
-                <div class="text-light-grey">{{ 'game.headToHead' | $t }}</div>
-            </div>
-            <div class="mt-5 ml-2">
-                <app-chip-group [chips]="competitionChips" />
-            </div>
-            @for (game of lastGamesAgainstClub$ | async; track $index) {
-                <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
-            }
-        </div>
     </div>
 </ng-template>

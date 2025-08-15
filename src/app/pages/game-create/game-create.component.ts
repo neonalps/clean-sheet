@@ -178,8 +178,8 @@ export class GameCreateComponent implements OnInit, OnDestroy {
     this.selectedOpponentId$.next(Number(id));
 
     this.clubResolver.getById(Number(id), false).pipe(take(1)).subscribe({
-      next: (club) => {
-        this.selectedOpponent = club;
+      next: (clubResponse) => {
+        this.selectedOpponent = clubResponse.club;
         
         // auto-fill the venue based on the information we received
         this.pushSelectedVenue(this.selectedOpponent);

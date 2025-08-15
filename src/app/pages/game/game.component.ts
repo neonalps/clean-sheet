@@ -25,8 +25,6 @@ import { GameLineupComponent } from "@src/app/component/game-lineup/game-lineup.
 import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
-import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
-import { ChipGroupComponent } from "@src/app/component/chip-group/chip-group.component";
 import { Chip } from '@src/app/component/chip/chip.component';
 import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
@@ -54,8 +52,6 @@ export type GameRouteState = {
     GameLineupComponent,
     TrophyIconComponent,
     GamePerformanceTrendComponent,
-    GameOverviewComponent,
-    ChipGroupComponent,
     RoundInformationComponent
 ],
   templateUrl: './game.component.html',
@@ -74,12 +70,6 @@ export class GameComponent implements OnDestroy {
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
-
-  readonly competitionChips: Chip[] = [
-    { displayText: 'Alle Bewerbe', value: 'all', selected: true, },
-    { displayText: 'Bundesliga', value: '2', selected: false, },
-    { displayText: 'Cup', value: '4', selected: false },
-  ];
 
   mainClub: SmallClub = environment.mainClub;
   mainWonOnAwayGoals: boolean | null = null;
@@ -165,10 +155,11 @@ export class GameComponent implements OnDestroy {
     // if it is an upcoming game, fetch the last games to display the record
     if (game.status === GameStatus.Scheduled) {
       this.clubResolver.getById(game.opponent.id, true).pipe(take(1)).subscribe({
-        next: (club) => {
-          if (club.lastGames) {
-            this.lastGamesAgainstClub$.next(club.lastGames);
-            this.performanceTrendAgainstClub$.next(club.lastGames.slice(0, 5).reverse());
+        next: (clubResponse) => {
+          if (clubResponse.lastGames) {
+            const lastGamesWithOpponent = clubResponse.lastGames.map(item => ({ opponent: clubResponse.club, ...item }));
+            this.lastGamesAgainstClub$.next(lastGamesWithOpponent);
+            this.performanceTrendAgainstClub$.next(lastGamesWithOpponent.slice(0, 5).reverse());
 
             setTimeout(() => this.lastGamesAvailable.next(true), 0);
           }
