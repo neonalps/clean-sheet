@@ -45,8 +45,11 @@
         <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
             <div class="text-light-grey">{{ 'club.games' | $t }}</div>
         </div>
-        <div class="mt-5 ml-2 mb-4" *ngIf="competitionFiltersVisible()">
+        <div class="mt-5 ml-2" *ngIf="competitionFiltersVisible()">
             <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
+        </div>
+        <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
+            <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
         </div>
         <div>
             <app-game-record [gameRecord$]="gameRecord$" />

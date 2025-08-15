@@ -20,6 +20,9 @@ import { GameRecord, GameRecordComponent } from "@src/app/component/game-record/
 import { SmallCompetition } from '@src/app/model/competition';
 import { ScrollNearEndDirective } from '@src/app/directive/scroll-near-end/scroll-near-end.directive';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { Chip } from '@src/app/component/chip/chip.component';
+
+type HomeAwayFilter = 'home' | 'away' | 'neutral';
 
 @Component({
   selector: 'app-club',
@@ -31,6 +34,7 @@ export class ClubComponent implements OnDestroy {
 
   clubResponse!: GetClubByIdResponse;
   competitionFiltersVisible = signal(false);
+  homeAwayFiltersVisible = signal(false);
   isLoading = true;
 
   mainClub: SmallClub = environment.mainClub;
@@ -38,6 +42,7 @@ export class ClubComponent implements OnDestroy {
   readonly lastGamesAgainstClub$ = new BehaviorSubject<BasicGame[]>([]);
   readonly gameRecord$ = new BehaviorSubject<GameRecord>({ w: 0, d: 0, l: 0 });
   readonly competitionChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly homeAwayChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
 
   private readonly clubResolver = inject(ClubResolver);
   private readonly countryFlagService = inject(CountryFlagService);
@@ -50,6 +55,7 @@ export class ClubComponent implements OnDestroy {
   private storedGames: BasicGame[] = [];
   private currentActivePage = 1;
   private currentCompetitionFilters: CompetitionId[] = [];
+  private currentHomeAwayFilters: HomeAwayFilter[] = [];
   
   private isCurrentlyLoadingMore = false;
   private isLoadingMoreAvailable = false;
@@ -106,6 +112,48 @@ export class ClubComponent implements OnDestroy {
         this.competitionFiltersVisible.set(false);
       }
 
+      const hasAwayGame = this.storedGames.some(game => game.isHomeGame === false);
+      const hasHomeGame = this.storedGames.some(game => game.isHomeGame === true);
+      const hasNeutralGroundGame = this.storedGames.some(game => game.isNeutralGround === true);
+      if ([hasAwayGame, hasHomeGame, hasNeutralGroundGame].filter(condition => condition === true).length > 1) {
+        const homeAwayChips: Chip[] = [];
+        if (hasHomeGame) {
+          homeAwayChips.push({
+            displayText: this.translationService.translate('game.home'),
+            value: 'home',
+            selected: false,
+          });
+        }
+
+        if (hasAwayGame) {
+          homeAwayChips.push({
+            displayText: this.translationService.translate('game.away'),
+            value: 'away',
+            selected: false,
+          });
+        }
+
+        if (hasNeutralGroundGame) {
+          homeAwayChips.push({
+            displayText: this.translationService.translate('game.neutralGround'),
+            value: 'neutral',
+            selected: false,
+          });
+        }
+
+        this.homeAwayChips$.next({
+          mode: 'single',
+          chips: [
+            { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
+            ...homeAwayChips,
+          ],
+      });
+
+        this.homeAwayFiltersVisible.set(true);
+      } else {
+        this.homeAwayFiltersVisible.set(false);
+      }
+
       if (this.storedGames.length > this.gamesPageSize) {
         this.isLoadingMoreAvailable = true;
       }
@@ -118,6 +166,11 @@ export class ClubComponent implements OnDestroy {
 
   onCompetitionFilterChanged(value: string | number | boolean) {
     this.currentCompetitionFilters = value === 'all' ? [] : [value as CompetitionId];
+    this.updateUi();
+  }
+
+  onHomeAwayFilterChanged(value: string | number | boolean) {
+    this.currentHomeAwayFilters = value === 'all' ? [] : [value as HomeAwayFilter];
     this.updateUi();
   }
 
@@ -151,9 +204,25 @@ export class ClubComponent implements OnDestroy {
 
   private updateUi() {
     // determine visible games
-    const visibleGames = this.storedGames.filter(game => {
+    const visibleGames = this.storedGames
+    .filter(game => {
       const effectiveCompetition = this.getEffectiveCompetition(game);
       return this.currentCompetitionFilters.length === 0 || this.currentCompetitionFilters.includes(effectiveCompetition.id);
+    })
+    .filter(game => {
+      if (this.currentHomeAwayFilters.includes('neutral')) {
+        return game.isNeutralGround === true;
+      }
+
+      if (this.currentHomeAwayFilters.includes('away')) {
+        return game.isHomeGame === false && game.isNeutralGround !== true;
+      }
+
+      if (this.currentHomeAwayFilters.includes('home')) {
+        return game.isHomeGame === true && game.isNeutralGround !== true;
+      }
+
+      return true;
     });
 
     // determine and publish new game record
