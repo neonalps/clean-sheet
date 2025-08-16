@@ -1,0 +1,16 @@
+<div>
+    <div class="mt-5 ml-2" *ngIf="competitionFiltersVisible()">
+        <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
+    </div>
+    <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
+        <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
+    </div>
+    <div>
+        <app-game-record [gameRecord$]="gameRecord$" />
+    </div>
+    <div appScrollNearEnd (nearEnd)="onNearEndScroll()">
+        @for (game of visibleGames$ | async; track $index) {
+            <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
+        }
+    </div>
+</div>

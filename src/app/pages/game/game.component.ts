@@ -175,6 +175,15 @@ export class GameComponent implements OnDestroy {
     navigateToClub(this.router, clubId);
   }
 
+  onRefereeSelected() {
+    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
+    if (isNotDefined(referee)) {
+      return;
+    }
+
+    this.onPersonSelected(referee.person.id);
+  }
+
   onPersonSelected(personId: number): void {
     navigateToPerson(this.router, personId);
   }

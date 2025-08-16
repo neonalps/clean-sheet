@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -26,6 +26,8 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ModalService } from '@src/app/module/modal/service';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ExternalLinksComponent } from "@src/app/component/external-links/external-links.component";
+import { BasicGame } from '@src/app/model/game';
+import { FilterableGameListComponent } from "@src/app/component/filterable-game-list/filterable-game-list.component";
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards';
 
@@ -39,7 +41,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -53,6 +55,9 @@ export class PersonComponent implements OnDestroy {
   colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
+  refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
+
+  readonly shouldDisplayPlayerStatistics = signal(false);
 
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
@@ -86,6 +91,10 @@ export class PersonComponent implements OnDestroy {
       const playerStats = getUiPlayerStats(person.stats.performance);
       this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
       this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition);
+
+      this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
+
+      this.refereeGames$.next(person.stats.refereeGames ?? []);
 
       this.performance$.next(playerStats);
     }

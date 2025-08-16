@@ -21,8 +21,7 @@ import { SmallCompetition } from '@src/app/model/competition';
 import { ScrollNearEndDirective } from '@src/app/directive/scroll-near-end/scroll-near-end.directive';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { Chip } from '@src/app/component/chip/chip.component';
-
-type HomeAwayFilter = 'home' | 'away' | 'neutral';
+import { HomeAwayFilter } from '@src/app/util/filter';
 
 @Component({
   selector: 'app-club',
@@ -142,12 +141,12 @@ export class ClubComponent implements OnDestroy {
         }
 
         this.homeAwayChips$.next({
-          mode: 'single',
-          chips: [
-            { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
-            ...homeAwayChips,
-          ],
-      });
+            mode: 'single',
+            chips: [
+              { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
+              ...homeAwayChips,
+            ],
+        });
 
         this.homeAwayFiltersVisible.set(true);
       } else {
@@ -205,25 +204,25 @@ export class ClubComponent implements OnDestroy {
   private updateUi() {
     // determine visible games
     const visibleGames = this.storedGames
-    .filter(game => {
-      const effectiveCompetition = this.getEffectiveCompetition(game);
-      return this.currentCompetitionFilters.length === 0 || this.currentCompetitionFilters.includes(effectiveCompetition.id);
-    })
-    .filter(game => {
-      if (this.currentHomeAwayFilters.includes('neutral')) {
-        return game.isNeutralGround === true;
-      }
+      .filter(game => {
+        const effectiveCompetition = this.getEffectiveCompetition(game);
+        return this.currentCompetitionFilters.length === 0 || this.currentCompetitionFilters.includes(effectiveCompetition.id);
+      })
+      .filter(game => {
+        if (this.currentHomeAwayFilters.includes('neutral')) {
+          return game.isNeutralGround === true;
+        }
 
-      if (this.currentHomeAwayFilters.includes('away')) {
-        return game.isHomeGame === false && game.isNeutralGround !== true;
-      }
+        if (this.currentHomeAwayFilters.includes('away')) {
+          return game.isHomeGame === false && game.isNeutralGround !== true;
+        }
 
-      if (this.currentHomeAwayFilters.includes('home')) {
-        return game.isHomeGame === true && game.isNeutralGround !== true;
-      }
+        if (this.currentHomeAwayFilters.includes('home')) {
+          return game.isHomeGame === true && game.isNeutralGround !== true;
+        }
 
-      return true;
-    });
+        return true;
+      });
 
     // determine and publish new game record
     this.gameRecord$.next(visibleGames.reduce((acc: GameRecord, current: BasicGame): GameRecord => {

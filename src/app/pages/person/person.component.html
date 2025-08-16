@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="shouldDisplayPlayerStatistics()">
         <div class="uppercase pl-2 flex align-items-center mb-1">
             <div class="mr-2">
                 <div class="width-2rem relative top-2">
@@ -99,6 +99,12 @@
             <div>
                 <app-stats-goals-against-clubs [goalsAgainstClubs]="person.stats?.goalsAgainstClubs ?? []" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
             </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="refereeGames$ | async">
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+            <app-filterable-game-list [games$]="refereeGames$" />
         </div>
     </ng-container>
 </ng-template>

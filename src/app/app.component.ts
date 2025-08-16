@@ -64,7 +64,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   googleLogin(): void {
     const queryParams = {
-      state: "abcd",
       response_type: "code",
       client_id: "984243160947-36q75qghqgc386gpusdg71jqc653kng6.apps.googleusercontent.com",
       scope: "openid",
