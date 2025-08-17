@@ -58,6 +58,7 @@ export class PersonComponent implements OnDestroy {
   refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   readonly shouldDisplayPlayerStatistics = signal(false);
+  readonly refereeListVisible = signal(false);
 
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
@@ -94,7 +95,9 @@ export class PersonComponent implements OnDestroy {
 
       this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
 
-      this.refereeGames$.next(person.stats.refereeGames ?? []);
+      const refereeGames = person.stats.refereeGames ?? [];
+      this.refereeGames$.next(refereeGames);
+      this.refereeListVisible.set(refereeGames.length > 0)
 
       this.performance$.next(playerStats);
     }

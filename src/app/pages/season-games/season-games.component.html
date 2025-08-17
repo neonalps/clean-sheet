@@ -21,7 +21,7 @@
         </ng-container>
 
         <ng-container *ngIf="hasSeasonGames; else emptySeasonGames">
-            <div #scrolling>
+            <div #scrolling class="mb-8">
                 <div *ngIf="hasPastGames">
                     <ng-container *ngFor="let game of pastSeasonGames">
                         <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />

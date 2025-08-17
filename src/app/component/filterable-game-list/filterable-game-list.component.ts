@@ -13,11 +13,12 @@ import { CompetitionId } from '@src/app/util/domain-types';
 import { HomeAwayFilter } from '@src/app/util/filter';
 import { SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { Chip } from '../chip/chip.component';
+import { Chip } from '@src/app/component/chip/chip.component';
+import { ScrollNearEndDirective } from '@src/app/directive/scroll-near-end/scroll-near-end.directive';
 
 @Component({
   selector: 'app-filterable-game-list',
-  imports: [CommonModule, GameOverviewComponent, ChipGroupComponent, GameRecordComponent],
+  imports: [CommonModule, GameOverviewComponent, ChipGroupComponent, GameRecordComponent, ScrollNearEndDirective],
   templateUrl: './filterable-game-list.component.html',
   styleUrl: './filterable-game-list.component.css'
 })

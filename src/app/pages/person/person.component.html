@@ -102,8 +102,8 @@
         </div>
     </ng-container>
 
-    <ng-container *ngIf="refereeGames$ | async">
-        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
+    <ng-container *ngIf="refereeListVisible()">
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8">
             <app-filterable-game-list [games$]="refereeGames$" />
         </div>
     </ng-container>
