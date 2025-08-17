@@ -56,3 +56,7 @@
 .account-menu-open {
     border: 1px solid var(--light);
 }
+
+.left-search-close {
+    left: calc(100% - 22px);
+}

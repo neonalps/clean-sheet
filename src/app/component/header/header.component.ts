@@ -13,10 +13,11 @@ import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
 import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
+import { StopEventPropagationDirective } from '@src/app/directive/stop-event-propagation/stop-event-propagation.directive';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective],
+  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -27,6 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   colorLight = COLOR_LIGHT;
   readonly isMenuOpen = signal(false);
   readonly isAccountMenuOpen = signal(false);
+  readonly isSearchCloseVisible = signal(false);
   readonly isSearchFocused = signal(false);
   readonly isSearchResultOpen = signal(false);
 
@@ -51,6 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       debounceTime(300),
       switchMap(searchValue => {
         this.isSearchResultOpen.set(true);
+        this.isSearchCloseVisible.set(true);
 
         return this.externalSearchService.search(searchValue);
       }),
@@ -83,7 +86,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   closeSearch() {
     this.isSearchFocused.set(false);
     this.isSearchResultOpen.set(false);
-    this.resetSearch();
+    this.isSearchCloseVisible.set(false);
+
+    setTimeout(() => {
+      this.searchElement.nativeElement.blur();
+      this.resetSearch();
+    }, 0);
   }
 
   hideAccountMenuIfOpen() {
@@ -93,7 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onNavigation() {
-    this.closeMenuIfOpen();
+    this.closeMenuIfOpen(); 
   }
 
   onSearchChange(event: Event): void {

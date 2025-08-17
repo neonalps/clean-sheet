@@ -12,6 +12,9 @@
                 <div class="width-sm absolute left-8 top-11">
                     <app-search [color]="colorLight" />
                 </div>
+                <div class="width-sm absolute left-search-close top-11 transition-fade" [ngClass]="{ 'hidden-fade': !isSearchCloseVisible() }" (click)="closeSearch()" appStopEventPropagation>
+                    x
+                </div>
                 <input #search type="text" class="menu-search bg-color-dark-grey-darker text-light text-base pl-10 py-1 rounded-lg min-h-46" [ngClass]="{ 'menu-search-focus': isSearchFocused()  }" (input)="onSearchChange($event)" />
             </div>
         </div>
@@ -28,9 +31,6 @@
     </div>
     <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
     <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
-        <div class="flex justify-content-end" (click)="closeSearch()">
-            <span class="mr-2 mt-2 rounded px-1 bg-color-dark-grey-darker hover:bg-color-dark-grey pointer transition-colors">x</span>
-        </div>
         <div class="flex align-items-center">
             <div>
                 @for (resultItem of searchResultItems$ | async; track $index) {

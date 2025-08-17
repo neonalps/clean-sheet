@@ -26,6 +26,14 @@ a {
     color: inherit;
 }
 
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .input-text {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
   padding: .5rem;
