@@ -19,6 +19,7 @@ export class GamePerformanceTrendComponent implements OnInit, OnDestroy {
   @Input() games$!: Observable<BasicGame[]>;
   @Input() noGamesText!: string;
   @Input() showGameDate = false;
+  @Input() applyInnerPadding = false;
 
   isLoading = true;
   games: BasicGame[] = [];

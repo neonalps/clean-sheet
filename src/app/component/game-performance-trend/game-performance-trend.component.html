@@ -10,7 +10,7 @@
     </ng-container>
     <ng-template #loadedPerformanceTrend>
         <ng-container *ngIf="games.length > 0; else noGames">
-            <div class="flex justify-content-between">
+            <div class="flex justify-content-between" [ngClass]="{ 'px-1': applyInnerPadding, 'py-2': applyInnerPadding }">
                 @for (placeholder of placeholderElements; track $index) {
                     <div class="flex-1"></div>
                 }

@@ -22,11 +22,11 @@
             {{ 'dashboard.performanceTrend' | $t }}
         </div>
         <div class="dashboard-item-content pt-3">
-            <app-game-performance-trend [games$]="games" [noGamesText]="'performanceTrend.noSeasonGames' | $t">
-                <div class="mb-2 width-lg" noGamesIcon>
-                    <app-football-shoe />
-                </div>
-            </app-game-performance-trend>
+            <app-game-performance-trend [games$]="games" [applyInnerPadding]="true" [noGamesText]="'performanceTrend.noSeasonGames' | $t">
+                    <div class="mb-2 width-lg" noGamesIcon>
+                        <app-football-shoe />
+                    </div>
+                </app-game-performance-trend>
         </div>
     </div>
 </section>

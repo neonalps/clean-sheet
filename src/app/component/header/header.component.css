@@ -1,5 +1,4 @@
 .menu-search {
-    border-style: none;
     border: 1px solid transparent;
     width: 0;
     transition: border .15s linear, width .15s ease-out;
@@ -47,4 +46,13 @@
 
 .search-results-open {
     left: 0;
+}
+
+.account-menu {
+    border: 1px solid transparent;
+    transition: border .15s linear, width .15s ease-out;
+}
+
+.account-menu-open {
+    border: 1px solid var(--light);
 }

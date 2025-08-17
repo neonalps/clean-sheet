@@ -12,10 +12,11 @@ import { ExternalSearchEntity, ExternalSearchResultItemDto } from '@src/app/mode
 import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
 import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
 import { Router } from '@angular/router';
+import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent],
+  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -25,6 +26,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   colorLight = COLOR_LIGHT;
   readonly isMenuOpen = signal(false);
+  readonly isAccountMenuOpen = signal(false);
   readonly isSearchFocused = signal(false);
   readonly isSearchResultOpen = signal(false);
 
@@ -84,6 +86,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetSearch();
   }
 
+  hideAccountMenuIfOpen() {
+    if (this.isAccountMenuOpen()) {
+      this.isAccountMenuOpen.set(false);
+    }
+  }
+
   onNavigation() {
     this.closeMenuIfOpen();
   }
@@ -104,6 +112,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleMenu() {
     this.menuService.toggle();
+  }
+
+  toggleAccountMenu() {
+    this.isAccountMenuOpen.set(!this.isAccountMenuOpen());
   }
 
   getIconDescriptor(resultItem: ExternalSearchResultItemDto): UiIconDescriptor {
