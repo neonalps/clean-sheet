@@ -6,7 +6,7 @@
                 <app-collapsible [initiallyOpen]="statsItem.season.isCurrent === true">
                     <ng-container header>
                         <div class="flex align-items-center bold mb-3">
-                            <div class="basis-1/2 flex-grow-1">{{ statsItem.season.name }}</div>
+                            <div class="basis-1/2 flex-grow-1 pointer" (click)="triggerToggle()">{{ statsItem.season.name }}</div>
                             <div class="basis-1/8">
                                 <div class="text-right pr-1">
                                     <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'minutesPlayed')">{{ statsItem.total.gamesPlayed }}</span>

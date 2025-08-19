@@ -78,6 +78,7 @@
     "gameStatus.ongoing": "Ongoing",
     "gameStatus.postponed": "Postponed",
     "gameStatus.scheduled": "Scheduled",
+    "login.google": "Login with Google",
     "injured": "Injured",
     "matchdayDetails.failedToLoad": "Failed to load the matchday details",
     "matchdayDetails.otherGames": "Other games",

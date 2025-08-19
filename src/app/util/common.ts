@@ -14,6 +14,14 @@ export function assertDefined<T>(toCheck: T, errorMessage?: string) {
     }
 }
 
+export function assertHasText(toCheck: string, errorMessage?: string) {
+    assertDefined(toCheck, errorMessage);
+    
+    if (toCheck.trim().length === 0) {
+        throw new Error(errorMessage ?? `expected input to have text but it did not`);
+    }
+}
+
 export function getHtmlInputElementFromEvent(event: Event): HTMLInputElement {
     return event.target as HTMLInputElement;
 }

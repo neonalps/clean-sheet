@@ -5,6 +5,7 @@ export const PATH_PARAM_CLUB_ID = "clubId";
 export const PATH_PARAM_GAME_ID = "gameId";
 export const PATH_PARAM_PERSON_ID = "personId";
 export const PATH_PARAM_SEASON_ID = "seasonId";
+export const PATH_PARAM_OAUTH_PROVIDER = "provider";
 
 export function navigateToSeasonGames(router: Router, seasonId: number): void {
     router.navigate(["/season", seasonId, "games"]);

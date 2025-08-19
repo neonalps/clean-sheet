@@ -12,7 +12,7 @@ import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/comp
 import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
 import { SeasonService } from '@src/app/module/season/service';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
-import { CompetitionId, SeasonId } from '@src/app/util/domain-types';
+import { SeasonId } from '@src/app/util/domain-types';
 
 type StatsBySeasonAndCompetition = {
   season: Season;
@@ -31,6 +31,7 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   @Input() headerText!: string;
   @Input() performance$!: Subject<UiPlayerStats | null>;
   
+  @Output() onCollapsibleToggleTriggered = new EventEmitter<void>();
   @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
@@ -106,6 +107,11 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
       ...filterOptions,
       seasonId: `${seasonId}`,
     });
+  }
+
+  triggerToggle() {
+    console.log('triggering in component');
+    this.onCollapsibleToggleTriggered.next();
   }
 
 }

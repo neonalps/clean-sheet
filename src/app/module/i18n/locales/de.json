@@ -78,6 +78,7 @@
     "gameStatus.postponed": "Verschoben",
     "gameStatus.scheduled": "Angesetzt",
     "injured": "Verletzt",
+    "login.google": "Login mit Google",
     "matchdayDetails.failedToLoad": "Die Spieltag-Details konnten nicht geladen werden",
     "matchdayDetails.otherGames": "Andere Spiele",
     "matchdayDetails.tableAfterRound": "Tabelle nach Runde {round}",

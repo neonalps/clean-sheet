@@ -62,17 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(item => item.unsubscribe());
   }
 
-  googleLogin(): void {
-    const queryParams = {
-      response_type: "code",
-      client_id: "984243160947-36q75qghqgc386gpusdg71jqc653kng6.apps.googleusercontent.com",
-      scope: "openid",
-      redirect_uri: "http://localhost:3025/oauth/google",
-    };
-    
-    window.location.href = ["https://accounts.google.com/o/oauth2/auth", "?", new URLSearchParams(queryParams).toString()].join("");
-  }
-
   getSeasonsOptionSource(): Observable<SelectOption[]> {
     return this.seasonService.getSeasonsObservable().pipe(
       map(seasons => seasons.map(item => convertSeasonToSelectOption(item))),
