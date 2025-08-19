@@ -19,9 +19,11 @@
             </div>
         </div>
         <div class="basis-1/10">
-            <div class="account-menu bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer max-w-48 min-h-46" (click)="toggleAccountMenu()" [ngClass]="{ 'account-menu-open': isAccountMenuOpen() }" appClickOutside (clickOutside)="hideAccountMenuIfOpen()">
-                <div class="width-sm flex align-items-center justify-content-center">
-                    <div class="text-lg">M</div>
+            <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isLoggedIn() }">
+                <div class="account-menu bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer max-w-48 min-h-46" (click)="toggleAccountMenu()" [ngClass]="{ 'account-menu-open': isAccountMenuOpen() }" appClickOutside (clickOutside)="hideAccountMenuIfOpen()">
+                    <div class="width-sm flex align-items-center justify-content-center">
+                        <div class="text-lg">{{ getLoginInitial() }}</div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -31,7 +31,7 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   @Input() headerText!: string;
   @Input() performance$!: Subject<UiPlayerStats | null>;
   
-  @Output() onCollapsibleToggleTriggered = new EventEmitter<void>();
+  @Output() onCollapsibleToggleTriggered = new EventEmitter<string>();
   @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
@@ -111,7 +111,7 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
 
   triggerToggle() {
     console.log('triggering in component');
-    this.onCollapsibleToggleTriggered.next();
+    this.onCollapsibleToggleTriggered.next('ha');
   }
 
 }

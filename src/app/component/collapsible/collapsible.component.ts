@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterContentInit, AfterViewInit, Component, ContentChildren, ElementRef, Input, OnDestroy, QueryList, signal, ViewChild } from '@angular/core';
 import { ChevronRightComponent } from "@src/app/icon/chevron-right/chevron-right.component";
 import { Subject, takeUntil } from 'rxjs';
-import { StatsPlayerStatsComponent } from '../stats-player-stats/stats-player-stats.component';
+import { StatsPlayerStatsComponent } from '@src/app/component/stats-player-stats/stats-player-stats.component';
 
 @Component({
   selector: 'app-collapsible',
@@ -26,7 +26,15 @@ export class CollapsibleComponent implements AfterContentInit, AfterViewInit, On
   private readonly destroy$ = new Subject<void>();
 
   ngAfterContentInit(): void {
-    
+    // react if children are added/removed dynamically
+    this.templates.changes.pipe(takeUntil(this.destroy$)).subscribe((newItems: QueryList<StatsPlayerStatsComponent>) => {
+      console.log('child content', newItems);
+    });
+
+    this.templates.forEach(template => {
+      console.log('registering child template');
+      template.onCollapsibleToggleTriggered.pipe(takeUntil(this.destroy$)).subscribe(value => console.log('triggered from component:', value));
+    });
   }
 
   ngAfterViewInit(): void {
@@ -36,11 +44,6 @@ export class CollapsibleComponent implements AfterContentInit, AfterViewInit, On
       this.hasEmitted = true;
       this.elementMaxHeight$.next('0px');
     }
-
-    console.log('templates', this.templates);
-    this.templates.forEach(template => {
-      template.onCollapsibleToggleTriggered.pipe(takeUntil(this.destroy$)).subscribe(_ => console.log('triggered from component'));
-    });
   }
   
   ngOnDestroy(): void {

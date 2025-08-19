@@ -1,14 +1,18 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { AuthResponse } from "@src/app/model/auth";
+import { inject, Injectable, signal } from "@angular/core";
+import { AuthResponse, Identity } from "@src/app/model/auth";
 import { assertHasText } from "@src/app/util/common";
 import { environment } from "@src/environments/environment";
-import { Observable, tap } from "rxjs";
+import { BehaviorSubject, Observable, tap } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+    readonly authIdentity$ = new BehaviorSubject<Identity | null>(null);
+
+    private readonly authState = signal<AuthResponse | null>(null);
 
     private static readonly OAUTH_LOGIN_URL =`${environment.apiBaseUrl}/v1/auth/oauth`;
     private static readonly REFRESH_TOKEN_URL =`${environment.apiBaseUrl}/v1/auth/refresh-token`;
@@ -24,9 +28,9 @@ export class AuthService {
             code,
             }).pipe(
                 tap((authResponse: AuthResponse) => {
-                    console.log('received auth response', authResponse);
-
-                    // TODO store auth state
+                    this.authState.set(authResponse);
+                    
+                    this.authIdentity$.next(authResponse.identity);
                 }),
         );
     }

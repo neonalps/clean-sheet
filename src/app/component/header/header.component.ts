@@ -14,6 +14,8 @@ import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigat
 import { Router } from '@angular/router';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { StopEventPropagationDirective } from '@src/app/directive/stop-event-propagation/stop-event-propagation.directive';
+import { AuthService } from '@src/app/module/auth/service';
+import { Identity } from '@src/app/model/auth';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +36,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly searchResultItems$ = new Subject<ExternalSearchResultItemDto[]>();
 
+  private readonly authIdentity = signal<Identity | null>(null);
+
+  private readonly authService = inject(AuthService);
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly menuService = inject(MenuService);
   private readonly router = inject(Router);
@@ -42,6 +47,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly search$ = new Subject<string>();
 
   ngOnInit(): void {
+    this.authService.authIdentity$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(identity => this.authIdentity.set(identity));
+
     this.menuService.open$
       .pipe(takeUntil(this.destroy$))
       .subscribe(open => {
@@ -124,6 +133,15 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleAccountMenu() {
     this.isAccountMenuOpen.set(!this.isAccountMenuOpen());
+  }
+
+  isLoggedIn(): boolean {
+    return this.authIdentity() !== null;
+  }
+
+  getLoginInitial(): string {
+    const identity = this.authIdentity();
+    return identity !== null && identity.firstName ? identity.firstName.substring(0, 1) : '';
   }
 
   getIconDescriptor(resultItem: ExternalSearchResultItemDto): UiIconDescriptor {
