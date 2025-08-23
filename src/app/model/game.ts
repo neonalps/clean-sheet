@@ -195,7 +195,7 @@ export interface DetailedGame extends BasicGame {
 
 export type GoalType = 'left' | 'right' | 'head' | 'other' | 'unknown';
 
-export type TacticalFormation = '442-diamond' | '4231';
+export type TacticalFormation = '442-diamond' | '4231' | '433';
 
 export interface GoalGameEvent extends GameEvent {
     scoredBy: number;

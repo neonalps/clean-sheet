@@ -1,3 +1,7 @@
+export function getNow(): Date {
+    return new Date();
+}
+
 export function getDateFromUnixTimestamp(unix: number): Date {
     return new Date(unix * 1000);
 }
@@ -20,6 +24,10 @@ export function isToday(input: Date): boolean {
 
 const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 export function getNumberOfDaysBetween(first: Date, second: Date): number {
+    // set hours to midnight to avoid weird jumps depending the kickoff time during the day
+    first.setHours(0, 0, 0, 0);
+    second.setHours(0, 0, 0, 0);
+
     return Math.round((first.getTime() - second.getTime()) / ONE_DAY_IN_MILLISECONDS);
 }
 

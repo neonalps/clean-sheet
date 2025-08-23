@@ -13,6 +13,7 @@ import { ModalService } from './module/modal/service';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "./component/header/header.component";
 import { MenuService } from './module/menu/service';
+import { AuthService } from './module/auth/service';
 
 @Component({
   selector: 'app-root',
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   constructor(
+    private readonly authService: AuthService,
     private readonly seasonService: SeasonService,
     private readonly externalSearchService: ExternalSearchService,
     private readonly menuService: MenuService,
@@ -40,6 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.authService.init();
     this.seasonService.init();
 
     this.menuService.open$

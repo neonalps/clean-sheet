@@ -1,17 +1,19 @@
 import { Router } from "@angular/router";
-import { BasicGame, DetailedGame } from "@src/app/model/game";
+import { DetailedGame } from "@src/app/model/game";
+import { ClubId, GameId, PersonId, SeasonId, VenueId } from "./domain-types";
 
 export const PATH_PARAM_CLUB_ID = "clubId";
 export const PATH_PARAM_GAME_ID = "gameId";
 export const PATH_PARAM_PERSON_ID = "personId";
 export const PATH_PARAM_SEASON_ID = "seasonId";
+export const PATH_PARAM_VENUE_ID = "venueId";
 export const PATH_PARAM_OAUTH_PROVIDER = "provider";
 
-export function navigateToSeasonGames(router: Router, seasonId: number): void {
+export function navigateToSeasonGames(router: Router, seasonId: SeasonId): void {
     router.navigate(["/season", seasonId, "games"]);
 }
 
-export function navigateToClub(router: Router, clubId: number): void {
+export function navigateToClub(router: Router, clubId: ClubId): void {
     router.navigate(["/club", clubId]);
 }
 
@@ -19,12 +21,16 @@ export function navigateToGame(router: Router, game: DetailedGame): void {
     router.navigate(["/game", game.id], { state: { game } } );
 }
 
-export function navigateToGameWithoutDetails(router: Router, gameId: number, seasonId?: number): void {
+export function navigateToGameWithoutDetails(router: Router, gameId: GameId, seasonId?: number): void {
     router.navigate(["/game", gameId], { state: { seasonId: seasonId } } );
 }
 
-export function navigateToPerson(router: Router, personId: number): void {
+export function navigateToPerson(router: Router, personId: PersonId): void {
     router.navigate(["/person", personId]);
+}
+
+export function navigateToVenue(router: Router, venueId: VenueId): void {
+    router.navigate(["/venue", venueId]);
 }
 
 export function replaceHash(hash: string) {

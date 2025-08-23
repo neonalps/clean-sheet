@@ -27,7 +27,7 @@
                     </span>
                     <ng-container *ngIf="nationalities.length > 0">
                         <ng-container *ngFor="let country of nationalities">
-                            <span [title]="country.title">{{ country.flag }}</span>
+                            <span class="mr-1 last:mr-0" [title]="country.title">{{ country.flag }}</span>
                         </ng-container>
                     </ng-container>
                 </div>

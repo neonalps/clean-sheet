@@ -46,6 +46,8 @@ export class GameLineupComponent {
         return this.getLineup442Diamond(starters, usePositionGrid);
       case '4231':
         return this.getLineup4231(starters, usePositionGrid);
+      case '433':
+        return this.getLineup433(starters, usePositionGrid);
       default:
         assertUnreachable(tacticalFormation);
     }
@@ -123,7 +125,7 @@ export class GameLineupComponent {
         ],
         additionalClasses: 'mt-4',
       },
-      // centeral + attacking midfielders
+      // central + attacking midfielders
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "41" : undefined) },
@@ -137,6 +139,47 @@ export class GameLineupComponent {
         items: [
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "31" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "32" : undefined) },
+        ],
+        additionalClasses: 'mt-8',
+      },
+      // defenders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 4, usePositionGrid ? "21" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 3, usePositionGrid ? "22" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
+        ],
+        additionalClasses: 'mt-8',
+      },
+      // gk
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
+        ],
+        additionalClasses: 'mt-8',
+      }
+    ];
+
+  }
+
+  getLineup433(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
+    return [
+      // strikers
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "41" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "42" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "43" : undefined) },
+        ],
+        additionalClasses: 'mt-14',
+      },
+      // midfielders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 7, usePositionGrid ? "31" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "32" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "33" : undefined) },
         ],
         additionalClasses: 'mt-8',
       },

@@ -789,6 +789,10 @@
     margin-bottom: 0;
 }
 
+.last\:mr-0:last-child {
+    margin-right: 0;
+}
+
 .height-1-25rem {
     height: 1.25rem;
 }

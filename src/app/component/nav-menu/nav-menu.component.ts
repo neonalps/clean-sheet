@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { AuthService } from '@src/app/module/auth/service';
+import { AccountRole } from '@src/app/model/auth';
 
 type MenuSection = {
   i18nKey: string;
+  isOnlyVisibleTo?: AccountRole[];
   items: MenuItem[];
 }
 
@@ -20,14 +24,40 @@ type MenuItem = {
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.css'
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit, OnDestroy {
 
-  readonly menuSections: MenuSection[];
+  readonly menuSections$ = new BehaviorSubject<MenuSection[]>([]);
 
   @Output() onNavigationSelected = new EventEmitter<string>();
 
-  constructor() {
-    this.menuSections = [
+  private readonly authService = inject(AuthService);
+  private readonly destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.authService.authIdentity$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(identity => {
+        if (identity === null) {
+          this.menuSections$.next([]);
+          return;
+        }
+
+        const visibleSections = this.resolveMenuSectionsForRole(identity.role);
+        this.menuSections$.next(visibleSections);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.subscribe();
+  }
+
+  navItemClicked(target: string) {
+    this.onNavigationSelected.next(target);
+  }
+
+  private resolveMenuSectionsForRole(role: AccountRole): MenuSection[] {
+    return [
       {
         i18nKey: 'menu.home',
         items: [
@@ -57,18 +87,21 @@ export class NavMenuComponent {
       },
       {
         i18nKey: 'menu.management',
+        isOnlyVisibleTo: [AccountRole.Manager],
         items: [
+          {
+            target: '/user-list',
+            i18nKey: 'menu.users',
+          },
           {
             target: '/create-game',
             i18nKey: 'menu.createGame',
           }
         ]
       },
-    ];
-  }
-
-  navItemClicked(target: string) {
-    this.onNavigationSelected.next(target);
+    ].filter(item => {
+      return item.isOnlyVisibleTo === undefined || item.isOnlyVisibleTo.includes(role);
+    });
   }
 
 }
