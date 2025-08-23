@@ -6,20 +6,21 @@ import { MenuService } from '@src/app/module/menu/service';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { debounceTime, Subject, switchMap, takeUntil } from 'rxjs';
 import { NavMenuComponent } from "@src/app/component/nav-menu/nav-menu.component";
-import { assertUnreachable, getHtmlInputElementFromEvent } from '@src/app/util/common';
+import { assertUnreachable, getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity, ExternalSearchResultItemDto } from '@src/app/model/external-search';
 import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
-import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
+import { navigateToClub, navigateToGameWithoutDetails, navigateToLogout, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { StopEventPropagationDirective } from '@src/app/directive/stop-event-propagation/stop-event-propagation.directive';
 import { AuthService } from '@src/app/module/auth/service';
 import { Identity } from '@src/app/model/auth';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective],
+  imports: [CommonModule, I18nPipe, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -135,6 +136,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isAccountMenuOpen.set(!this.isAccountMenuOpen());
   }
 
+  triggerLogout() {
+    navigateToLogout(this.router);
+  }
+
   isLoggedIn(): boolean {
     return this.authIdentity() !== null;
   }
@@ -149,6 +154,24 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       type: this.convertResultItemTypeToIconType(resultItem.type),
       content: resultItem.icon!,
     }
+  }
+
+  getLoggedInEmail(): string | null {
+    const identity = this.authIdentity();
+    if (identity === null) {
+      return null;
+    }
+
+    return identity.email;
+  }
+
+  getLoggedInName(): string | null {
+    const identity = this.authIdentity();
+    if (identity === null) {
+      return null;
+    }
+
+    return [identity.firstName, identity.lastName].filter(item => isDefined(item)).join(' ');
   }
 
   resultItemClicked(resultItem: ExternalSearchResultItemDto) {

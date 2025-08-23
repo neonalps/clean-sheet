@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
 import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
@@ -7,7 +7,7 @@ import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, identity, map, Subject, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -31,6 +31,9 @@ import { RoundInformationComponent } from "@src/app/component/round-information/
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
+import { ContextMenuComponent } from "@src/app/component/context-menu/context-menu.component";
+import { AuthService } from '@src/app/module/auth/service';
+import { AccountRole } from '@src/app/model/auth';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -52,7 +55,8 @@ export type GameRouteState = {
     GameLineupComponent,
     TrophyIconComponent,
     GamePerformanceTrendComponent,
-    RoundInformationComponent
+    RoundInformationComponent,
+    ContextMenuComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -65,6 +69,7 @@ export class GameComponent implements OnDestroy {
   activeTab$ = new BehaviorSubject<string | null>(null);
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
+  readonly isContextMenuVisible = signal(false);
 
   private previousLeg: DetailedGame | null = null;
 
@@ -88,6 +93,7 @@ export class GameComponent implements OnDestroy {
   private readonly viewportScroller = inject(ViewportScroller);
 
   constructor(
+    private readonly authService: AuthService,
     private readonly clubResolver: ClubResolver,
     private readonly gameResolver: GameResolver,
     private readonly matchdayDetailsService: MatchdayDetailsService,
@@ -96,6 +102,10 @@ export class GameComponent implements OnDestroy {
     private readonly translationService: TranslationService,
     private readonly toastService: ToastService,
   ) {
+    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
+      this.isContextMenuVisible.set(identity !== null && identity.role === AccountRole.Manager);
+    });
+
     this.router.events
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {

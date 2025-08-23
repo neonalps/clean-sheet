@@ -44,10 +44,18 @@
     @let victoryGameText = getVictoryGameText();
     
     <div class="game-section py-3 rounded-lg mt-3 mx-3">
-        <div class="center text-sm">
-            <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
-            <div class="mb-3">{{ getCompetitionName() }}</div>
-            <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span></div>
+        <div class="flex">
+            <div class="basis-1/15" *ngIf="isContextMenuVisible()"></div>
+            <div class="flex-grow">
+                <div class="center text-sm">
+                    <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
+                    <div class="mb-3">{{ getCompetitionName() }}</div>
+                    <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span></div>
+                </div>
+            </div>
+            <div class="basis-1/15" *ngIf="isContextMenuVisible()">
+                <app-context-menu />
+            </div>
         </div>
         <div class="flex justify-content-center py-1">
             <div class="basis-3/7">

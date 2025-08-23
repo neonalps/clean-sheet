@@ -1,0 +1,12 @@
+<div appClickOutside (clickOutside)="close()">
+    <div class="flex justify-content-center mr-1 pointer hover:text-light transition-colors" [ngClass]="{ 'text-light': isOpen(), 'text-light-grey-darker': !isOpen() }" (click)="toggle()">
+        <div class="width-1-25rem">
+            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'menu-vertical' }" />
+        </div>
+    </div>
+    <div class="relative">
+        <div class="bg-color-dark-grey-darker absolute z-200 min-w-160 right-0 p-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
+            context menu
+        </div>
+    </div>
+</div>

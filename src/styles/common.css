@@ -198,6 +198,10 @@
     flex-basis: 8.33333%;
 }
 
+.basis-1\/15 {
+    flex-basis: 6.666667%;
+}
+
 .basis-1\/20 {
     flex-basis: 5%;
 }
@@ -1108,6 +1112,10 @@
     left: 32px;
 }
 
+.right-0 {
+    right: 0;
+}
+
 .z-1 {
     z-index: 1;
 }
@@ -1130,6 +1138,10 @@
 
 .z-100 {
     z-index: 100;
+}
+
+.z-200 {
+    z-index: 200;
 }
 
 .invisible {
@@ -1459,6 +1471,10 @@
 
 .min-w-140 {
     min-width: 140px;
+}
+
+.min-w-160 {
+    min-width: 160px;
 }
 
 .height-sm {

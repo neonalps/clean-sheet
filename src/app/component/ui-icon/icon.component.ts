@@ -12,6 +12,7 @@ import { FootballPitchComponent } from "@src/app/icon/football-pitch/football-pi
 import { SofascoreComponent } from "@src/app/icon/sofascore/sofascore.component";
 import { MenuIconComponent } from "@src/app/icon/menu/menu.component";
 import { GoogleIconComponent } from '@src/app/icon/google/google.component';
+import { MenuIconVerticalComponent } from "@src/app/icon/menu-vertical/menu-vertical.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -28,7 +29,8 @@ import { GoogleIconComponent } from '@src/app/icon/google/google.component';
     SofascoreComponent,
     MenuIconComponent,
     GoogleIconComponent,
-  ],
+    MenuIconVerticalComponent
+],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'
 })

@@ -19,10 +19,21 @@
             </div>
         </div>
         <div class="basis-1/10">
-            <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isLoggedIn() }">
-                <div class="account-menu bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer max-w-48 min-h-46" (click)="toggleAccountMenu()" [ngClass]="{ 'account-menu-open': isAccountMenuOpen() }" appClickOutside (clickOutside)="hideAccountMenuIfOpen()">
-                    <div class="width-sm flex align-items-center justify-content-center">
-                        <div class="text-lg">{{ getLoginInitial() }}</div>
+            <div class="relative" appClickOutside (clickOutside)="hideAccountMenuIfOpen()">
+                <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isLoggedIn() }">
+                    <div class="account-menu bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer max-w-48 min-h-46" (click)="toggleAccountMenu()" [ngClass]="{ 'account-menu-open': isAccountMenuOpen() }">
+                        <div class="width-sm flex align-items-center justify-content-center">
+                            <div class="text-lg">{{ getLoginInitial() }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-color-dark-grey-darker absolute z-200 min-w-160 right-0 p-2 transition-fade account-menu-details rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isAccountMenuOpen() }">
+                    <div class="px-2 py-1 mb-3">
+                        <div class="text-base">{{ getLoggedInName() }}</div>
+                        <div class="text-sm text-light-grey">{{ getLoggedInEmail() }}</div>
+                    </div>
+                    <div>
+                        <a class="inline-block w-full pointer hover:bg-color-dark-grey transition-bg-color px-2 py-1 rounded-sm" (click)="triggerLogout()">{{ 'menu.logout' | $t }}</a>
                     </div>
                 </div>
             </div>

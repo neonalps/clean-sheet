@@ -33,6 +33,10 @@ export function navigateToVenue(router: Router, venueId: VenueId): void {
     router.navigate(["/venue", venueId]);
 }
 
+export function navigateToLogout(router: Router): void {
+    router.navigate(["/logout"]);
+}
+
 export function replaceHash(hash: string) {
     window.history.replaceState(null, '', `${window.location.origin}${window.location.pathname}#${hash}`);
 }
