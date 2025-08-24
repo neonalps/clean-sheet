@@ -12,10 +12,11 @@ import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
+import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent],
+  imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent, MainFlagComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

@@ -1,4 +1,14 @@
 <section class="dashboard-container mt-3 px-3 py-2">
+    <div class="flex align-items-center mt-1 mb-8">
+        <div class="basis-1/5 pl-2 mr-2">
+            <div class="width-3-5rem relative top-2">
+                <app-main-flag />
+            </div>
+        </div>
+        <div class="flex-grow flex align-items-center">
+            <div class="text-2xl">Willkommen, <span class="bold">Michael</span>!</div>
+        </div>
+    </div>
     <div class="dashboard-item mb-6" *ngIf="dashboard?.upcomingGame">
         <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'dashboard.nextGame' | $t }}

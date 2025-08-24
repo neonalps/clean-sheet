@@ -69,8 +69,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       }),
     ).subscribe({
       next: searchResult => {
-        console.log('search', searchResult);
-
         this.searchResultItems$.next(searchResult.items);
       },
       error: error => {
@@ -137,6 +135,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   triggerLogout() {
+    this.hideAccountMenuIfOpen();
     navigateToLogout(this.router);
   }
 
