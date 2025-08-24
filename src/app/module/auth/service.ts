@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
-import { AuthResponse, Identity, TokenResponse } from "@src/app/model/auth";
+import { AccountRole, AuthResponse, Identity, TokenResponse } from "@src/app/model/auth";
 import { assertHasText, ensureNotNullish } from "@src/app/util/common";
 import { environment } from "@src/environments/environment";
 import { BehaviorSubject, Observable, tap } from "rxjs";
@@ -63,6 +63,11 @@ export class AuthService {
 
     public isLoggedIn(): boolean {
         return this.isInitialized() && this.authState() !== null;
+    }
+
+    public hasRole(role: AccountRole): boolean {
+        console.log('validating whether auth identity has role', role)
+        return this.isLoggedIn() && role === ensureNotNullish(this.authState()).identity.role;
     }
 
     public logout() {

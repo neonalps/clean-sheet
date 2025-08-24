@@ -21,6 +21,10 @@ export function navigateToGame(router: Router, game: DetailedGame): void {
     router.navigate(["/game", game.id], { state: { game } } );
 }
 
+export function navigateToModifyGame(router: Router, gameId: GameId): void {
+    router.navigate(["/game", gameId, "edit"],);
+}
+
 export function navigateToGameWithoutDetails(router: Router, gameId: GameId, seasonId?: number): void {
     router.navigate(["/game", gameId], { state: { seasonId: seasonId } } );
 }

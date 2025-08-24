@@ -10,9 +10,11 @@ import { GameCreateComponent } from './pages/game-create/game-create.component';
 import { LoginComponent } from './pages/login/login.component';
 import { OAuthHandlerComponent } from './component/oauth-handler/oauth-handler.component';
 import { LogoutComponent } from './component/logout/logout.component';
-import { loggedInGuard } from './module/auth/logged-in.guard';
+import { loggedInGuard, roleGuard } from './module/auth/auth.guard';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { VenueComponent } from './pages/venue/venue.component';
+import { ModifyGameComponent } from './pages/game-modify/game-modify.component';
+import { AccountRole } from './model/auth';
 
 export const routes: Routes = [
     { 
@@ -61,6 +63,14 @@ export const routes: Routes = [
         path: `chat`, 
         component: ChatComponent,
         canActivate: [loggedInGuard],
+    },
+    { 
+        path: `game/:${PATH_PARAM_GAME_ID}/edit`, 
+        component: ModifyGameComponent,
+        canActivate: [roleGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
     },
     { 
         path: `create-game`, 

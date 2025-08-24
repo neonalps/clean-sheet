@@ -13,6 +13,7 @@ import { SofascoreComponent } from "@src/app/icon/sofascore/sofascore.component"
 import { MenuIconComponent } from "@src/app/icon/menu/menu.component";
 import { GoogleIconComponent } from '@src/app/icon/google/google.component';
 import { MenuIconVerticalComponent } from "@src/app/icon/menu-vertical/menu-vertical.component";
+import { EditIconComponent } from "@src/app/icon/edit/edit.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -29,7 +30,8 @@ import { MenuIconVerticalComponent } from "@src/app/icon/menu-vertical/menu-vert
     SofascoreComponent,
     MenuIconComponent,
     GoogleIconComponent,
-    MenuIconVerticalComponent
+    MenuIconVerticalComponent,
+    EditIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

@@ -22,3 +22,7 @@ export function loginRedirect(router: Router, targetUrl: string): Promise<boolea
 export async function loggedInGuard(_: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     return inject(AuthService).isLoggedIn() ? true : loginRedirect(inject(Router), state.url);
 };
+
+export async function roleGuard(route: ActivatedRouteSnapshot): Promise<boolean> {
+    return inject(AuthService).hasRole(route.data['role']) ? true : inject(Router).navigate(['/dashboard']);
+};

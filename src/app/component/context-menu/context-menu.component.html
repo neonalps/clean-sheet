@@ -5,8 +5,21 @@
         </div>
     </div>
     <div class="relative">
-        <div class="bg-color-dark-grey-darker absolute z-200 min-w-160 right-0 p-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
-            <div class="pointer" (click)="itemClicked()">context menu</div>
+        <div class="bg-color-dark-grey-darker absolute z-200 min-w-160 right-0 py-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
+            @for (section of sections(); track $index) {
+                @for (item of section.items; track item.id) {
+                    <div class="flex align-items-center transition-colors hover:bg-color-dark-grey px-2 py-1 pointer" (click)="itemSelected(item.id)">
+                        <div class="basis-1/6 mr-1" *ngIf="item.iconDescriptor">
+                            <div class="width-xs relative top-2 left-2">
+                                <app-ui-icon [descriptor]="item.iconDescriptor" />
+                            </div>
+                        </div>
+                        <div class="flex-grow flex align-items-center">
+                            <span class="text-sm">{{ item.text }}</span>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>

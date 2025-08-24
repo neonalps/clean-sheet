@@ -56,7 +56,6 @@ export class SeasonService implements OnDestroy {
             isCurrent: idx === 0,
         }));
 
-        console.log('SeasonService: received seasons', transformedSeasons);
         this.seasons = transformedSeasons;
         this.seasonsSubject.next(transformedSeasons);
     }

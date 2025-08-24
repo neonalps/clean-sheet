@@ -6,8 +6,8 @@ import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, Scor
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToGameWithoutDetails, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, filter, identity, map, Subject, take, takeUntil } from 'rxjs';
+import { navigateToClub, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -31,7 +31,7 @@ import { RoundInformationComponent } from "@src/app/component/round-information/
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
-import { ContextMenuComponent } from "@src/app/component/context-menu/context-menu.component";
+import { ContextMenuSection, ContextMenuComponent } from "@src/app/component/context-menu/context-menu.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 
@@ -63,6 +63,8 @@ export type GameRouteState = {
 })
 export class GameComponent implements OnDestroy {
 
+  private static readonly KEY_GAME_EDIT = "game-edit";
+
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
@@ -70,6 +72,7 @@ export class GameComponent implements OnDestroy {
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
   readonly isContextMenuVisible = signal(false);
+  readonly gameContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
 
   private previousLeg: DetailedGame | null = null;
 
@@ -103,7 +106,18 @@ export class GameComponent implements OnDestroy {
     private readonly toastService: ToastService,
   ) {
     this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
-      this.isContextMenuVisible.set(identity !== null && identity.role === AccountRole.Manager);
+      if (identity === null || identity.role !== AccountRole.Manager) {
+        this.isContextMenuVisible.set(false);
+        this.gameContextMenuOptions.next([]);
+        return;
+      }
+
+      this.gameContextMenuOptions.next([
+        { items: [
+          { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
+        ] },
+      ])
+      this.isContextMenuVisible.set(true);
     });
 
     this.router.events
@@ -183,6 +197,12 @@ export class GameComponent implements OnDestroy {
 
   onClubSelected(clubId: number): void {
     navigateToClub(this.router, clubId);
+  }
+
+  onGameContextMenuItemSelected(itemId: string) {
+    if (this.game && itemId === GameComponent.KEY_GAME_EDIT) {
+      navigateToModifyGame(this.router, this.game.id)
+    }
   }
 
   onRefereeSelected() {
