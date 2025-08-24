@@ -116,6 +116,8 @@ export class GameComponent implements OnDestroy {
       this.gameContextMenuOptions.next([
         { items: [
           { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
+        ] },
+        { items: [
           { 'id': GameComponent.KEY_GAME_DELETE, 'text': this.translationService.translate('menu.deleteGame'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },
         ] },
       ])

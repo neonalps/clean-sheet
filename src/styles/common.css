@@ -793,6 +793,10 @@
     padding-top: 2rem;
 }
 
+.first\:mt-0:first-child {
+    margin-top: 0;
+}
+
 .last\:mb-0:last-child {
     margin-bottom: 0;
 }
