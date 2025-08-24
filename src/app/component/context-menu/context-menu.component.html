@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="relative">
-        <div class="bg-color-dark-grey-darker absolute z-200 min-w-160 right-0 py-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
+        <div class="bg-color-dark-grey-darker absolute z-200 min-w-180 right-0 py-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
             @for (section of sections(); track $index) {
                 @for (item of section.items; track item.id) {
                     <div class="flex align-items-center transition-colors hover:bg-color-dark-grey px-2 py-1 pointer mb-1 last:mb-0" (click)="itemSelected(item.id)" [ngClass]="{ 'text-danger': item.isDanger }">
@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="flex-grow flex align-items-center">
-                            <span class="text-sm">{{ item.text }}</span>
+                            <span>{{ item.text }}</span>
                         </div>
                     </div>
                 }
