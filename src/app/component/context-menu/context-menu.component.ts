@@ -21,4 +21,8 @@ export class ContextMenuComponent {
     this.isOpen.set(!this.isOpen());
   }
 
+  itemClicked() {
+    this.close();
+  }
+
 }
