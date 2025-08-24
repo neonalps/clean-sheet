@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { DashboardResponse } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
-import { Subject, take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
 import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
+import { AuthService } from '@src/app/module/auth/service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,17 +21,37 @@ import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.compon
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   dashboard?: DashboardResponse;
   isLoading = true;
   mainClub: SmallClub = environment.mainClub;
   games = new Subject<DetailedGame[]>;
 
+  readonly loginName = signal<string | null>(null);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly destroy$ = new Subject<void>();
+
   constructor(private readonly dashboardResolver: DashboardResolver, private readonly router: Router) {}
 
   ngOnInit(): void {
     this.resolveDashboard();
+
+    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
+      if (identity === null || !identity.firstName) {
+        this.loginName.set(null);
+        return;
+      }
+
+      this.loginName.set(identity.firstName);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   triggerNavigateToGame(game: BasicGame) {

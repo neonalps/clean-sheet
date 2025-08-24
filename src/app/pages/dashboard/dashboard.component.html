@@ -6,7 +6,8 @@
             </div>
         </div>
         <div class="flex-grow flex align-items-center">
-            <div class="text-2xl">Willkommen, <span class="bold">Michael</span>!</div>
+            @let name = loginName();
+            <div class="text-2xl">Willkommen<span *ngIf="name !== null">, <span class="bold">{{ name }}</span></span>!</div>
         </div>
     </div>
     <div class="dashboard-item mb-6" *ngIf="dashboard?.upcomingGame">
