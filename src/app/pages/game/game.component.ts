@@ -63,6 +63,7 @@ export type GameRouteState = {
 })
 export class GameComponent implements OnDestroy {
 
+  private static readonly KEY_GAME_DELETE = "game-delete";
   private static readonly KEY_GAME_EDIT = "game-edit";
 
   game: DetailedGame | null = null;
@@ -115,6 +116,7 @@ export class GameComponent implements OnDestroy {
       this.gameContextMenuOptions.next([
         { items: [
           { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
+          { 'id': GameComponent.KEY_GAME_DELETE, 'text': this.translationService.translate('menu.deleteGame'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },
         ] },
       ])
       this.isContextMenuVisible.set(true);
@@ -200,8 +202,12 @@ export class GameComponent implements OnDestroy {
   }
 
   onGameContextMenuItemSelected(itemId: string) {
-    if (this.game && itemId === GameComponent.KEY_GAME_EDIT) {
-      navigateToModifyGame(this.router, this.game.id)
+    if (this.game) {
+      if (itemId === GameComponent.KEY_GAME_EDIT) {
+        navigateToModifyGame(this.router, this.game.id)
+      } else if (itemId === GameComponent.KEY_GAME_DELETE) {
+        console.log('delete')
+      }
     }
   }
 

@@ -66,7 +66,6 @@ export class AuthService {
     }
 
     public hasRole(role: AccountRole): boolean {
-        console.log('validating whether auth identity has role', role)
         return this.isLoggedIn() && role === ensureNotNullish(this.authState()).identity.role;
     }
 

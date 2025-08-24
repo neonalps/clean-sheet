@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { COLOR_DANGER_LIGHTER_40 } from '@src/styles/constants';
 
 export type ContextMenuSection = {
   title?: string;
@@ -14,6 +15,7 @@ export type ContextMenuItem = {
   id: string;
   iconDescriptor?: UiIconDescriptor;
   text: string;
+  isDanger?: boolean;
 }
 
 @Component({
@@ -28,9 +30,10 @@ export class ContextMenuComponent implements OnInit, OnDestroy {
 
   @Output() onMenuItemSelected = new EventEmitter<string>();
 
-  readonly sections = signal<ContextMenuSection[]>([]);
+  readonly colorDanger = COLOR_DANGER_LIGHTER_40;
 
   readonly isOpen = signal(false);
+  readonly sections = signal<ContextMenuSection[]>([]);
 
   private readonly destroy$ = new Subject<void>();
 

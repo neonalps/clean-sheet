@@ -32,7 +32,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (getNow() <= currentRefreshTokenExpiresAt) {
     return authService.refreshToken(currentRefreshToken.token).pipe(
       switchMap((tokenResponse: TokenResponse) => {
-        console.log('successfully refreshed access token on the fly');
         authReq = addAuthHeader(req, tokenResponse.accessToken);
         return next(authReq);
       }),
