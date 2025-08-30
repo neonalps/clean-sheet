@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { GameService } from './service';
 import { DetailedGame } from '@src/app/model/game';
-import { from, map, Observable, of, switchMap, take } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { isDefined, isNotDefined } from '@src/app/util/common';
+import { GameId, SeasonId } from '@src/app/util/domain-types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameResolver {
 
-  constructor(private readonly gameService: GameService, private readonly seasonGamesService: SeasonGamesService) {}
+  private readonly gameService = inject(GameService);
+  private readonly seasonGamesService = inject(SeasonGamesService);
 
   /**
    * Resolves a game by ID.
@@ -18,11 +20,10 @@ export class GameResolver {
    * @param seasonId optional seasonId, can be passed as an indicator to fetch the game from the cache
    * @returns 
    */
-  getById(gameId: number, seasonId?: number): Observable<DetailedGame> {
+  getById(gameId: GameId, seasonId?: SeasonId): Observable<DetailedGame> {
     if (isDefined(seasonId)) {
       // try to get the game from the cache first
       return this.getGameFromCache(seasonId, gameId).pipe(
-        take(1),
         switchMap(gameOptional => {
           if (isDefined(gameOptional)) {
             console.log('resolved via cache');
@@ -39,10 +40,9 @@ export class GameResolver {
     }
   }
 
-  private getGameFromCache(seasonId: number, gameId: number): Observable<DetailedGame | null> {
+  private getGameFromCache(seasonId: SeasonId, gameId: GameId): Observable<DetailedGame | null> {
     return from(this.seasonGamesService.getSeasonGamesFromCache(seasonId))
       .pipe(
-        take(1),
         map((cacheEntry: DetailedGame[] | undefined) => {
           if (isNotDefined(cacheEntry)) {
             return null;

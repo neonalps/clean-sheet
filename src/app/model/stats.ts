@@ -4,6 +4,8 @@ import { SmallCompetition } from "./competition";
 import { DetailedGame } from "./game";
 import { Season } from "./season";
 
+
+
 export type PlayerSeasonStatsItemDto = {
     season: Season;
     competitions: Array<PlayerCompetitionStatsItemDto>;

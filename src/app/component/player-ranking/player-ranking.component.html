@@ -1,0 +1,34 @@
+<div *ngIf="competitionChipsVisible()" class="p-2 mb-4">
+    <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterUpdated($event)" />
+</div>
+<ng-container *ngIf="isLoading(); else loadedContent">
+    <div>
+        @for (skeletonRow of skeletonRows; track $index) {
+            <div class="flex align-items-center mb-3 last:mb-0">
+                <div class="skeleton-circle-small mr-3"></div>
+                <div class="skeleton-box-small" style="width: 100%;"></div>
+            </div>
+        }
+    </div>
+</ng-container>
+<ng-template #loadedContent>
+    <div>
+        @for (rankingElement of rankingElements(); track $index) {
+            <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md p-1" (click)="onPlayerClicked(rankingElement.player.id)">
+                <div class="basis-1/8 flex align-items-center mr-2" *ngIf="rankingElement.player.avatar">
+                    <div class="width-md">
+                        <app-player-icon [iconUrl]="rankingElement.player.avatar" [iconBgColorClass]="'transparent'" />
+                    </div>
+                </div>
+                <div class="flex-grow flex align-items-center">
+                    {{ rankingElement.player.firstName }} {{ rankingElement.player.lastName }}
+                </div>
+                <div class="basis-1/8 flex align-items-center justify-content-end">
+                    <div class="right mr-2">
+                        {{ rankingElement.value }}
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</ng-template>

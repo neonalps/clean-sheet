@@ -31,7 +31,7 @@ import { RoundInformationComponent } from "@src/app/component/round-information/
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
-import { ContextMenuSection, ContextMenuComponent } from "@src/app/component/context-menu/context-menu.component";
+import { ContextMenuSection, ContextMenuComponent, ContextMenuItem } from "@src/app/component/context-menu/context-menu.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 
@@ -65,6 +65,9 @@ export class GameComponent implements OnDestroy {
 
   private static readonly KEY_GAME_DELETE = "game-delete";
   private static readonly KEY_GAME_EDIT = "game-edit";
+  private static readonly KEY_GAME_IMPORT = "game-import";
+
+  private static readonly GAME_IMPORT_THRESHOLD_MILLISECONDS = 7_200_000;  // 2 hours
 
   game: DetailedGame | null = null;
   uiGame!: UiGame;
@@ -112,16 +115,6 @@ export class GameComponent implements OnDestroy {
         this.gameContextMenuOptions.next([]);
         return;
       }
-
-      this.gameContextMenuOptions.next([
-        { items: [
-          { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
-        ] },
-        { items: [
-          { 'id': GameComponent.KEY_GAME_DELETE, 'text': this.translationService.translate('menu.deleteGame'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },
-        ] },
-      ])
-      this.isContextMenuVisible.set(true);
     });
 
     this.router.events
@@ -164,6 +157,25 @@ export class GameComponent implements OnDestroy {
   onGameResolved(game: DetailedGame): void {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGameMinute(minute, '.') });
+
+    // context menu
+    const topSectionItems: ContextMenuItem[] = [
+      { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
+    ];
+
+    if (this.game.status === GameStatus.Scheduled && (new Date().getTime() - new Date(this.game.kickoff).getTime() > GameComponent.GAME_IMPORT_THRESHOLD_MILLISECONDS)) {
+      topSectionItems.push(
+        { 'id': GameComponent.KEY_GAME_IMPORT, 'text': this.translationService.translate('menu.importGame'), iconDescriptor: { 'type': 'standard', 'content': 'import' } },
+      )
+    }
+
+    this.gameContextMenuOptions.next([
+      { items: topSectionItems },
+      { items: [
+        { 'id': GameComponent.KEY_GAME_DELETE, 'text': this.translationService.translate('menu.deleteGame'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },
+      ] },
+    ])
+    this.isContextMenuVisible.set(true);
 
     this.lineupTeamChips = [
       { selected: true, value: 'main', displayText: this.mainClub.shortName, displayIcon: { type: 'club', content: this.mainClub.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
@@ -209,6 +221,8 @@ export class GameComponent implements OnDestroy {
         navigateToModifyGame(this.router, this.game.id)
       } else if (itemId === GameComponent.KEY_GAME_DELETE) {
         console.log('delete')
+      } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
+        console.log('import')
       }
     }
   }

@@ -10,7 +10,7 @@
             <div class="text-2xl">{{ 'dashboard.welcome' | $t }}<span *ngIf="name !== null">, <span class="bold">{{ name }}</span></span>!</div>
         </div>
     </div>
-    <div class="dashboard-item mb-6" *ngIf="dashboard?.upcomingGame">
+    <div class="mb-8" *ngIf="dashboard?.upcomingGame">
         <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'dashboard.nextGame' | $t }}
         </div>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-     <div class="dashboard-item" *ngIf="dashboard?.lastGame">
+    <div class="mb-8" *ngIf="dashboard?.lastGame">
         <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'dashboard.lastGame' | $t }}
         </div>
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="dashboard-item mt-6">
+    <div class="mb-8">
         <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'dashboard.performanceTrend' | $t }}
         </div>
@@ -38,6 +38,15 @@
                         <app-football-shoe />
                     </div>
                 </app-game-performance-trend>
+        </div>
+    </div>
+
+    <div class="mb-8" *ngIf="dashboard?.topScorers">
+        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+            {{ 'dashboard.topScorers' | $t }}
+        </div>
+        <div class="bg-color-dark-grey-darker rounded-lg p-2 mt-3">
+            <app-player-ranking [loading]="topScorersLoading$" [ranking]="topScorersRanking$" [competitionChips$]="competitionChips$" (onPlayerSelected)="onPlayerClicked($event)" (onCompetitionFilterChanged)="onCompetitionFilterChanged($event)" />
         </div>
     </div>
 </section>

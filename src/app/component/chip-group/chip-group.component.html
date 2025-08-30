@@ -3,7 +3,7 @@
     <div class="flex" [ngClass]="currentChipGroup.dynamicClassNamesContainer">
         @for (chip of currentChipGroup.chips; track $index) {
             <div class="chip-item">
-                <app-chip [chip]="chip" [dynamicClassNames]="currentChipGroup.dynamicClassNamesChip" (click)="onClick(chip)" />
+                <app-chip [chip]="chip" [dynamicClassNames]="currentChipGroup.dynamicClassNamesChip" [dynamicBoundingClassNames]="currentChipGroup.chipBoundingClassNames" (click)="onClick(chip)" />
             </div>
         }
     </div>

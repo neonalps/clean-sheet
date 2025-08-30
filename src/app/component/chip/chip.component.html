@@ -1,6 +1,10 @@
-<div class="flex justify-content-center align-items-center pointer transition-bg-color transition-text px-3 py-1 rounded-lg" [ngClass]="{ 'bg-color-light-grey-darker': chip.selected, 'text-dark-grey': chip.selected, 'hover:bg-color-dark-grey-lighter': !chip.selected}">
+<div class="flex justify-content-center align-items-center pointer transition-bg-color transition-text px-3 py-1 rounded-lg" [ngClass]="getBoundingClasses()">
     <ng-container *ngIf="chip.displayIcon">
-        <app-ui-icon [descriptor]="chip.displayIcon" [ngClass]="chip.displayIcon.containerClasses" />
+        <div class="flex align-items-center">
+            <div class="width-1-25rem" [ngClass]="{ 'mr-2': chip.displayText }">
+                <app-ui-icon [descriptor]="chip.displayIcon" [ngClass]="chip.displayIcon.containerClasses" />
+            </div>
+        </div>
     </ng-container>
-    <div class="fix-width-boldable" [attr.x-content]="chip.displayText" [ngClass]="getDynamicClasses()">{{ chip.displayText }}</div>
-</div>
+    <div class="fix-width-boldable" *ngIf="chip.displayText" [attr.x-content]="chip.displayText" [ngClass]="getDynamicClasses()">{{ chip.displayText }}</div>
+</div>  

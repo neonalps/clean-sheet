@@ -15,6 +15,7 @@ import { GoogleIconComponent } from '@src/app/icon/google/google.component';
 import { MenuIconVerticalComponent } from "@src/app/icon/menu-vertical/menu-vertical.component";
 import { EditIconComponent } from "@src/app/icon/edit/edit.component";
 import { DeleteIconComponent } from '@src/app/icon/delete/delete.component';
+import { ImportIconComponent } from '@src/app/icon/import/import.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -33,7 +34,8 @@ import { DeleteIconComponent } from '@src/app/icon/delete/delete.component';
     GoogleIconComponent,
     MenuIconVerticalComponent,
     EditIconComponent,
-    DeleteIconComponent
+    DeleteIconComponent,
+    ImportIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

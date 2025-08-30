@@ -1,5 +1,6 @@
 {
     "chat.writeMessage": "Schreibe eine Nachricht an {name}...",
+    "chip.all": "Alle",
     "club.games": "Spiele",
     "competitionRound.final": "Finale",
     "competitionRound.semifinal": "Halbfinale",
@@ -23,6 +24,7 @@
     "dashboard.lastGame": "Letztes Spiel",
     "dashboard.nextGame": "Nächstes Spiel",
     "dashboard.performanceTrend": "Leistungs-Trend",
+    "dashboard.topScorers": "Top-Scorers",
     "dashboard.welcome": "Willkommen",
     "date.today": "Heute",
     "date.tomorrow": "Morgen",
@@ -90,6 +92,7 @@
     "menu.dashboard": "Dashboard",
     "menu.deleteGame": "Spiel löschen",
     "menu.editGame": "Spiel bearbeiten",
+    "menu.importGame": "Spiel importieren",
     "menu.games": "Spiele",
     "menu.home": "Home",
     "menu.logout": "Logout",

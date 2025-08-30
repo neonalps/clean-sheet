@@ -11,6 +11,7 @@ export type ChipGroupInput = {
   mode: ChipGroupMode;
   dynamicClassNamesContainer?: string[];
   dynamicClassNamesChip?: string[];
+  chipBoundingClassNames?: string[];
 };
 
 @Component({
