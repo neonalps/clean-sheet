@@ -74,6 +74,8 @@
     "game.redCard": "Red card",
     "games.all": "All games",
     "games.upcoming": "Upcoming games",
+    "gameImport.success": "The game was imported successfully",
+    "gameImport.failure": "The game could not be imported",
     "gameResult.aet": "AET",
     "gameResult.pso": "Pen {score}",
     "gameStatus.abandoned": "Abandoned",

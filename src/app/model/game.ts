@@ -490,3 +490,8 @@ export interface TablePosition {
     draws: number;
     defeats: number;
 }
+
+export interface ImportGameResponse {
+    success: boolean;
+    error?: string;
+}

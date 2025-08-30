@@ -73,6 +73,8 @@
     "game.redCard": "Rote Karte",
     "games.all": "Alle Spiele",
     "games.upcoming": "Anstehende Spiele",
+    "gameImport.success": "Das Spiel wurde erfolgreich importiert",
+    "gameImport.failure": "Das Spiel konnte nicht importiert werden",
     "gameResult.aet": "n.V.",
     "gameResult.pso": "{score} n.E.",
     "gameStatus.abandoned": "Abgebrochen",

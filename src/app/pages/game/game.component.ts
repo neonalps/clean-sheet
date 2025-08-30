@@ -34,6 +34,7 @@ import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/se
 import { ContextMenuSection, ContextMenuComponent, ContextMenuItem } from "@src/app/component/context-menu/context-menu.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
+import { GameService } from '@src/app/module/game/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -102,6 +103,7 @@ export class GameComponent implements OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly clubResolver: ClubResolver,
+    private readonly gameService: GameService,
     private readonly gameResolver: GameResolver,
     private readonly matchdayDetailsService: MatchdayDetailsService,
     private readonly route: ActivatedRoute,
@@ -222,7 +224,13 @@ export class GameComponent implements OnDestroy {
       } else if (itemId === GameComponent.KEY_GAME_DELETE) {
         console.log('delete')
       } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
-        console.log('import')
+        this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
+          if (result.success) {
+            this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });
+          } else {
+            this.toastService.addToast({ text: `${this.translationService.translate('gameImport.failure')}: "${result.error}"`, type: 'error' }, 10_000);
+          }
+        });
       }
     }
   }
