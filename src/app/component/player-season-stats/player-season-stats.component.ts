@@ -33,6 +33,7 @@ export type SeasonTotalClickedEvent = {
 export class PlayerSeasonStatsComponent implements OnDestroy {
 
   @Input() seasonStatsItem!: StatsBySeasonAndCompetition;
+  @Input() isLastItem = false;
 
   @Output() onSeasonCompetitionClicked = new EventEmitter<SeasonCompetitionClickedEvent>();
   @Output() onSeasonTotalClicked = new EventEmitter<SeasonTotalClickedEvent>();
