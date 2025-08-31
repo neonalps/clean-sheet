@@ -1,0 +1,29 @@
+<div class="season-item">
+    <app-collapsible [initiallyOpen]="seasonStatsItem.season.isCurrent === true" [toggle$]="toggle$">
+        <ng-container header>
+            <div class="flex align-items-center bold mb-3">
+                <div class="basis-1/2 flex-grow-1 pointer" (click)="triggerToggle()">{{ seasonStatsItem.season.name }}</div>
+                <div class="basis-1/8">
+                    <div class="text-right pr-1">
+                        <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(seasonStatsItem.season.id, 'minutesPlayed')">{{ seasonStatsItem.total.gamesPlayed }}</span>
+                    </div>
+                </div>
+                <div class="basis-1/8">
+                    <div class="text-right pr-1">
+                        <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(seasonStatsItem.season.id, 'goalsScored')">{{ seasonStatsItem.total.goalsScored }}</span>
+                    </div
+                ></div>
+                <div class="basis-1/8">
+                    <div class="text-right pr-1">
+                        <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(seasonStatsItem.season.id, 'assists')">{{ seasonStatsItem.total.assists }}</span>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container content>
+            <div class="ml-2">
+                <app-stats-player-competition [competitionStats]="seasonStatsItem.competitionStats" (filterOptionsSelected)="seasonCompetitionClicked(seasonStatsItem.season.id, $event)" />
+            </div>
+        </ng-container>
+    </app-collapsible>
+</div>

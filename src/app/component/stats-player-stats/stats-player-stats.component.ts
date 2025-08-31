@@ -1,28 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Season } from '@src/app/model/season';
-import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
+import { UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { combinePlayerBaseStats, getEmptyPlayerBaseStats } from '@src/app/module/stats/util';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible.component";
-import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
+import { CompetitionStats } from '@src/app/component/stats-player-competition/stats-player-competition.component';
 import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
 import { SeasonService } from '@src/app/module/season/service';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { SeasonId } from '@src/app/util/domain-types';
-
-type StatsBySeasonAndCompetition = {
-  season: Season;
-  total: PlayerBaseStats;
-  competitionStats: CompetitionStats[];
-};
+import { StatsBySeasonAndCompetition, PlayerSeasonStatsComponent } from '@src/app/component/player-season-stats/player-season-stats.component';
 
 @Component({
   selector: 'app-stats-player-stats',
-  imports: [CommonModule, CollapsibleComponent, I18nPipe, StatsPlayerCompetitionComponent, StatsPlayerHeaderComponent],
+  imports: [CommonModule, I18nPipe, StatsPlayerHeaderComponent, PlayerSeasonStatsComponent],
   templateUrl: './stats-player-stats.component.html',
   styleUrl: './stats-player-stats.component.css'
 })
@@ -31,7 +24,6 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   @Input() headerText!: string;
   @Input() performance$!: Subject<UiPlayerStats | null>;
   
-  @Output() onCollapsibleToggleTriggered = new EventEmitter<string>();
   @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
   statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
@@ -107,11 +99,6 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
       ...filterOptions,
       seasonId: `${seasonId}`,
     });
-  }
-
-  triggerToggle() {
-    console.log('triggering in component');
-    this.onCollapsibleToggleTriggered.next('ha');
   }
 
 }

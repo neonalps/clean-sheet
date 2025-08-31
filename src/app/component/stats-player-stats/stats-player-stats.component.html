@@ -1,36 +1,8 @@
 <div>
     <ng-container *ngIf="statsBySeasonAndCompetition !== null; else loading">
         <app-stats-player-header [containerClasses]="'mb-4'" [headerText]="'performance.seasonStats' | $t" />
-        @for (statsItem of statsBySeasonAndCompetition; track $index) {
-            <div class="season-item">
-                <app-collapsible [initiallyOpen]="statsItem.season.isCurrent === true">
-                    <ng-container header>
-                        <div class="flex align-items-center bold mb-3">
-                            <div class="basis-1/2 flex-grow-1 pointer" (click)="triggerToggle()">{{ statsItem.season.name }}</div>
-                            <div class="basis-1/8">
-                                <div class="text-right pr-1">
-                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'minutesPlayed')">{{ statsItem.total.gamesPlayed }}</span>
-                                </div>
-                            </div>
-                            <div class="basis-1/8">
-                                <div class="text-right pr-1">
-                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'goalsScored')">{{ statsItem.total.goalsScored }}</span>
-                                </div
-                            ></div>
-                            <div class="basis-1/8">
-                                <div class="text-right pr-1">
-                                    <span class="pointer hover:bg-color-dark-grey-lighter-2 transition-colors p-1 rounded-md" (click)="seasonTotalClicked(statsItem.season.id, 'assists')">{{ statsItem.total.assists }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-container content>
-                        <div class="ml-2">
-                            <app-stats-player-competition [competitionStats]="statsItem.competitionStats" (filterOptionsSelected)="seasonCompetitionClicked(statsItem.season.id, $event)" />
-                        </div>
-                    </ng-container>
-                </app-collapsible>
-            </div>
+        @for (statsItem of statsBySeasonAndCompetition; track statsItem.season.id) {
+            <app-player-season-stats [seasonStatsItem]="statsItem" (onSeasonCompetitionClicked)="seasonCompetitionClicked($event.seasonId, $event.filterOptions)" (onSeasonTotalClicked)="seasonTotalClicked($event.seasonId, $event.filterItemType)" />
         }
     </ng-container>
     <ng-template #loading>

@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, AfterViewInit, Component, ContentChildren, ElementRef, Input, OnDestroy, QueryList, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { ChevronRightComponent } from "@src/app/icon/chevron-right/chevron-right.component";
-import { Subject, takeUntil } from 'rxjs';
-import { StatsPlayerStatsComponent } from '@src/app/component/stats-player-stats/stats-player-stats.component';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-collapsible',
@@ -10,13 +9,12 @@ import { StatsPlayerStatsComponent } from '@src/app/component/stats-player-stats
   templateUrl: './collapsible.component.html',
   styleUrl: './collapsible.component.css'
 })
-export class CollapsibleComponent implements AfterContentInit, AfterViewInit, OnDestroy {
+export class CollapsibleComponent implements OnInit, AfterViewInit {
 
   @Input() initiallyOpen = false;
+  @Input() toggle$!: Observable<void>;
 
   @ViewChild('content') contentEl!: ElementRef;
-
-  @ContentChildren(StatsPlayerStatsComponent) templates!: QueryList<StatsPlayerStatsComponent>;
 
   isOpen = signal<boolean>(true);
 
@@ -25,18 +23,6 @@ export class CollapsibleComponent implements AfterContentInit, AfterViewInit, On
 
   private readonly destroy$ = new Subject<void>();
 
-  ngAfterContentInit(): void {
-    // react if children are added/removed dynamically
-    this.templates.changes.pipe(takeUntil(this.destroy$)).subscribe((newItems: QueryList<StatsPlayerStatsComponent>) => {
-      console.log('child content', newItems);
-    });
-
-    this.templates.forEach(template => {
-      console.log('registering child template');
-      template.onCollapsibleToggleTriggered.pipe(takeUntil(this.destroy$)).subscribe(value => console.log('triggered from component:', value));
-    });
-  }
-
   ngAfterViewInit(): void {
     this.isOpen.set(this.initiallyOpen);
 
@@ -44,6 +30,12 @@ export class CollapsibleComponent implements AfterContentInit, AfterViewInit, On
       this.hasEmitted = true;
       this.elementMaxHeight$.next('0px');
     }
+  }
+
+  ngOnInit(): void {
+    this.toggle$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.toggle();
+    })
   }
   
   ngOnDestroy(): void {
