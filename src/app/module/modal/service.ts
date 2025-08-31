@@ -9,6 +9,7 @@ interface ModalEvent {
 }
 
 export enum Modal {
+    Delete = 'delete',
     Stats = 'stats'
 }
 
@@ -20,9 +21,14 @@ export class ModalService {
     readonly active$ = new BehaviorSubject<boolean>(false);
     readonly modalType = signal<Modal | null>(null);
 
+    readonly deleteModalPayload$ = new Subject<void>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
     private modalEvent$?: Subject<ModalEvent>;
+
+    showDeleteModal(payload: void): Observable<ModalEvent> {
+        return this.showModal(Modal.Delete, payload);
+    }
 
     showStatsModal(payload: StatsModalPayload): Observable<ModalEvent> {
         return this.showModal(Modal.Stats, payload);
@@ -62,6 +68,9 @@ export class ModalService {
 
     private publishPayload(type: Modal, payload: unknown) {
         switch (type) {
+            case Modal.Delete:
+                this.deleteModalPayload$.next();
+                break;
             case Modal.Stats:
                 this.statsModalPayload$.next(payload as StatsModalPayload);
                 break;

@@ -1,4 +1,6 @@
 {
+    "action.cancel": "Abbrechen",
+    "action.delete": "Löschen",
     "chat.writeMessage": "Schreibe eine Nachricht an {name}...",
     "chip.all": "Alle",
     "club.games": "Spiele",
@@ -46,6 +48,7 @@
     "game.createNew": "Neues Spiel anlegen",
     "game.away": "Auswärts",
     "game.date": "Datum",
+    "game.delete": "Spiel löschen",
     "game.directFreeKick": "Direkter Freistoß",
     "game.events": "Spielbericht",
     "game.goal": "Tor",

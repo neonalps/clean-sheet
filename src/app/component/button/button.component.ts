@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 
-export type ButtonType = 'success';
+export type ButtonType = 'success' | 'danger' | 'secondary';
 
 @Component({
   selector: 'app-button',
@@ -15,7 +15,7 @@ export class ButtonComponent {
 
   @Output() onClicked = new EventEmitter<void>();
 
-  enabled = input.required<boolean>();
+  enabled = input<boolean>(true);
 
   onClick() {
     this.onClicked.next();

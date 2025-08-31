@@ -1213,6 +1213,10 @@
     max-height: 0;
 }
 
+.max-h-4\/5 {
+    max-height: 80%;
+}
+
 .max-h-full {
     max-height: 100%;
 }

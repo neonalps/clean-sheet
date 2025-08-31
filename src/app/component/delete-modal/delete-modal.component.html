@@ -1,0 +1,21 @@
+<app-modal>
+    <div content>
+        <div class="flex align-items-center justify-content-center mb-5">
+            <div class="width-md text-danger">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
+            </div>
+        </div>
+        <div class="text-lg bold center mb-5">Spiel wirklich löschen?</div>
+        <div class="text-base center px-4 text-light-grey">Dieser Vorgang kann nicht rückgängig gemacht werden.</div>
+    </div>
+    <div footer>
+        <div class="flex justify-content-center">
+            <div class="w-1/2">
+                <div class="flex align-items-center justify-content-between mt-12">
+                    <app-button class="mx-4" [buttonType]="'secondary'">{{ 'action.cancel' | $t }}</app-button>
+                    <app-button class="mx-4" [buttonType]="'danger'">{{ 'action.delete' | $t }}</app-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-modal>

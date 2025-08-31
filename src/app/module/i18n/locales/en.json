@@ -1,4 +1,6 @@
 {
+    "action.cancel": "Cancel",
+    "action.delete": "Delete",
     "chat.writeMessage": "Write a message to {name}...",
     "chip.all": "All",
     "club.games": "Games",
@@ -47,6 +49,7 @@
     "game.wasCreated": "The new game was created",
     "game.createNew": "Create new game",
     "game.date": "Date",
+    "game.delete": "Delete game",
     "game.directFreeKick": "Direct free kick",
     "game.events": "Game events",
     "game.goal": "Goal",

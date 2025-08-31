@@ -35,6 +35,7 @@ import { ContextMenuSection, ContextMenuComponent, ContextMenuItem } from "@src/
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 import { GameService } from '@src/app/module/game/service';
+import { ModalService } from '@src/app/module/modal/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -106,6 +107,7 @@ export class GameComponent implements OnDestroy {
     private readonly gameService: GameService,
     private readonly gameResolver: GameResolver,
     private readonly matchdayDetailsService: MatchdayDetailsService,
+    private readonly modalService: ModalService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly translationService: TranslationService,
@@ -222,7 +224,7 @@ export class GameComponent implements OnDestroy {
       if (itemId === GameComponent.KEY_GAME_EDIT) {
         navigateToModifyGame(this.router, this.game.id)
       } else if (itemId === GameComponent.KEY_GAME_DELETE) {
-        console.log('delete')
+        this.modalService.showDeleteModal();
       } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
         this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
           if (result.success) {

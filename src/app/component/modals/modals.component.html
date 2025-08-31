@@ -1,3 +1,4 @@
 <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isActive() }">
+    <app-delete-modal *ngIf="isDeleteModalActive()" />
     <app-stats-modal *ngIf="isStatsModalActive()" />
 </div>
