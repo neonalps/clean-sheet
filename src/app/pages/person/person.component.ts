@@ -58,6 +58,7 @@ export class PersonComponent implements OnDestroy {
   refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   readonly shouldDisplayPlayerStatistics = signal(false);
+  readonly goalsAgainstClubsVisible = signal(false);
   readonly refereeListVisible = signal(false);
 
   private readonly countryFlagService = inject(CountryFlagService);
@@ -94,6 +95,7 @@ export class PersonComponent implements OnDestroy {
       this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition);
 
       this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
+      this.goalsAgainstClubsVisible.set(person.stats.goalsAgainstClubs !== undefined && person.stats.goalsAgainstClubs.length > 0);
 
       const refereeGames = person.stats.refereeGames ?? [];
       this.refereeGames$.next(refereeGames);
@@ -211,7 +213,7 @@ export class PersonComponent implements OnDestroy {
     return [
       [
         { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: 'Spiele', value: stats.gamesPlayed },
-        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'goal' }, titleText: 'Tore', value: stats.goalsScored },
+        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: 'Tore', value: stats.goalsScored },
         { itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: 'Assists', value: stats.assists },
       ],
       /*[
