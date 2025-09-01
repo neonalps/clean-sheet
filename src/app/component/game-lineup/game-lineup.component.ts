@@ -172,7 +172,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "42" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "43" : undefined) },
         ],
-        additionalClasses: 'mt-14',
+        additionalClasses: 'mt-10',
       },
       // midfielders
       {
@@ -181,7 +181,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "32" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "33" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-18',
       },
       // defenders
       {
@@ -191,14 +191,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-18',
       },
       // gk
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-16',
       }
     ];
 

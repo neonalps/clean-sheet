@@ -11,6 +11,7 @@ import { GamePerson } from '../game-person-item/game-person-item.component';
 export class GameLineupItemComponent {
 
   @Input() player!: GamePerson;
+  @Input() showPersonPlaceholder = false;
 
   getPlayerDisplayName(): string {
     const lastName = this.player.lastName;

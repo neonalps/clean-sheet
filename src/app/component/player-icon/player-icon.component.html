@@ -27,6 +27,13 @@
         <div class="captain-small text-xs rounded-md">C</div>
     </div>
     <div class="person-icon-container overflow-hidden" [ngClass]="[iconBgColorClass]">
-        <img [src]="iconUrl"/>
+        <ng-container *ngIf="iconUrl || !showPlaceholder; else personPlaceholder">
+            <img [src]="iconUrl"/>
+        </ng-container>
+        <ng-template #personPlaceholder>
+            <div class="width-2-25rem">
+                <app-placeholder-person />
+            </div>
+        </ng-template>
     </div>
 </div>

@@ -10,7 +10,7 @@ import { assertUnreachable, getHtmlInputElementFromEvent, isDefined } from '@src
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity, ExternalSearchResultItemDto } from '@src/app/model/external-search';
 import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
-import { navigateToClub, navigateToGameWithoutDetails, navigateToLogout, navigateToPerson, navigateToSeasonGames } from '@src/app/util/router';
+import { navigateToClub, navigateToGameWithoutDetails, navigateToLogout, navigateToPerson, navigateToSeasonGames, navigateToVenue } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { StopEventPropagationDirective } from '@src/app/directive/stop-event-propagation/stop-event-propagation.directive';
@@ -190,7 +190,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         navigateToSeasonGames(this.router, resultItem.entityId);
         break;
       case ExternalSearchEntity.Venue:
-        throw new Error(`Venue not handled`);
+        navigateToVenue(this.router, resultItem.entityId);
+        break;
       default:
         assertUnreachable(resultItem.type);
     }

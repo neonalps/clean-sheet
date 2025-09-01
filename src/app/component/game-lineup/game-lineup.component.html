@@ -5,7 +5,7 @@
                 <div class="lineup-row flex justify-content-evenly" [ngClass]="row.additionalClasses">
                     <ng-container *ngFor="let item of row.items">
                         <div class="lineup-item flex-grow" [ngClass]="item.additionalClasses">
-                            <app-game-lineup-item [player]="item.person" (click)="personSelected(item.person.personId)" />
+                            <app-game-lineup-item [player]="item.person" [showPersonPlaceholder]="true" (click)="personSelected(item.person.personId)" />
                         </div>
                     </ng-container>
                 </div>
