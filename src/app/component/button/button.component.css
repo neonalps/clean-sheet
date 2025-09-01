@@ -1,0 +1,45 @@
+.button {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+  text-transform: none;
+  box-shadow: none;
+  height: 36px;
+  outline: 0px;
+  margin: 0px;
+  text-decoration: none;
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+
+.button-success {
+  background-color: var(--success);
+  color: var(--light);
+}
+
+.button-danger {
+  background-color: var(--danger);
+  color: var(--light);
+}
+
+.button-secondary {
+  background-color: transparent;
+  border: 1px solid var(--light-grey-darker);
+  color: var(--light);
+}
+
+.button-disabled {
+  pointer-events: none;
+  background-color: var(--dark-grey-lighter-2);
+  color: var(--light-grey);
+}

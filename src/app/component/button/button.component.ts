@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output, signal } from '@angular/core';
+import { assertUnreachable } from '@src/app/util/common';
 
 export type ButtonType = 'success' | 'danger' | 'secondary';
 
@@ -19,6 +20,26 @@ export class ButtonComponent {
 
   onClick() {
     this.onClicked.next();
+  }
+
+  getDynamicClasses(): string[] {
+    const dynamic: string[] = [];
+
+    switch (this.buttonType) {
+      case 'success':
+        dynamic.push('button-success');
+        break;
+      case 'danger':
+        dynamic.push('button-danger');
+        break;
+      case 'secondary':
+        dynamic.push('button-secondary');
+        break;
+      default:
+        assertUnreachable(this.buttonType);
+    }
+
+    return dynamic;
   }
 
 }

@@ -3,10 +3,6 @@
         cursor: pointer;
     }
 
-    .button:hover {
-        background-color: var(--success-lighter-5);
-    }
-
     .transition-text {
         transition: color .15s linear;
     }
