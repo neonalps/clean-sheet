@@ -1,15 +1,15 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { Season } from '@src/app/model/season';
-import { BehaviorSubject, filter, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { CommonModule } from '@angular/common';
-import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
 import { ChevronRightComponent } from '@src/app/icon/chevron-right/chevron-right.component';
+import { ChevronLeftComponent } from '@src/app/icon/chevron-left/chevron-left.component';
 
 @Component({
   selector: 'app-season-select',
-  imports: [CommonModule, ChevronLeftComponent, ChevronRightComponent, SelectComponent],
+  imports: [CommonModule, ChevronRightComponent, SelectComponent, ChevronLeftComponent],
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })

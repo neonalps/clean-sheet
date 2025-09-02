@@ -1,3 +1,17 @@
 <button class="button transition-colors uppercase flex min-w-160" [ngClass]="getDynamicClasses()" (click)="onClick()">
-    <ng-content></ng-content>
+    <div class="flex align-items-center px-3">
+        <div class="mr-3" *ngIf="icon">
+            <div class="width-sm">
+                <app-ui-icon [descriptor]="icon" />
+            </div>
+        </div>
+        <div *ngIf="text">
+            {{ text }}
+        </div>
+        <div class="ml-3" *ngIf="iconRight">
+            <div class="width-sm">
+                <app-ui-icon [descriptor]="iconRight" />
+            </div>
+        </div>
+    </div>
 </button>

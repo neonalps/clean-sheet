@@ -224,7 +224,14 @@ export class GameComponent implements OnDestroy {
       if (itemId === GameComponent.KEY_GAME_EDIT) {
         navigateToModifyGame(this.router, this.game.id)
       } else if (itemId === GameComponent.KEY_GAME_DELETE) {
-        this.modalService.showDeleteModal();
+        this.modalService.showDeleteModal()
+          .pipe(takeUntil(this.destroy$)).subscribe({
+            next: event => {
+              if (event.type === 'confirm') {
+                // TODO actually delete game here
+              }
+            }
+          });
       } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
         this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
           if (result.success) {

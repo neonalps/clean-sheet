@@ -38,7 +38,7 @@ type UiGame = {
 
 @Component({
   selector: 'app-game-create',
-  imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent, UiIconComponent, LoadingComponent, EmptySearchOptionComponent],
+  imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, ButtonComponent, CheckboxSliderComponent, EmptySearchOptionComponent],
   templateUrl: './game-create.component.html',
   styleUrl: './game-create.component.css'
 })

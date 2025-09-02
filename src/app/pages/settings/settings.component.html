@@ -1,0 +1,18 @@
+<div class="page">
+    <div class="page-title mb-6">{{ 'menu.settings' | $t }}</div>
+    <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$" [horizontalScroll]="false">
+        <app-tab-item [tabId]="'general'" [tabTitle]="'settings.general' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'profile' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
+            <ng-container *ngIf="isLoading(); else loadedContent">
+                loading...
+            </ng-container>
+            <ng-template #loadedContent>
+                <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-8">
+                    general
+                </div>
+                <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3">
+                    game minute, score
+                </div>
+            </ng-template>
+        </app-tab-item>
+    </app-tab-group>
+</div>

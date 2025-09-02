@@ -15,6 +15,7 @@ import { UserListComponent } from './pages/user-list/user-list.component';
 import { VenueComponent } from './pages/venue/venue.component';
 import { ModifyGameComponent } from './pages/game-modify/game-modify.component';
 import { AccountRole } from './model/auth';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
     { 
@@ -80,6 +81,11 @@ export const routes: Routes = [
     { 
         path: `user-list`, 
         component: UserListComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: 'settings', 
+        component: SettingsComponent,
         canActivate: [loggedInGuard],
     },
     { 

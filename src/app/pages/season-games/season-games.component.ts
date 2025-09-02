@@ -27,6 +27,8 @@ import { environment } from '@src/environments/environment';
 })
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
+  private static readonly UPCOMING_GAMES_TOP_OFFSET_TRIGGER = 174;
+
   seasons$: Observable<Season[]> | null = null;
   selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
 
@@ -89,12 +91,12 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       const scrollY = routerScrollingPositionValue !== undefined ? routerScrollingPositionValue[1] : null;
       const upcomingGamesY = upcomingGamesPositionValue[1];
 
-      const finalScrollY = this.determineScrollY(scrollY, upcomingGamesY, window.screen.height);
+      const finalScrollY = this.determineScrollY(scrollY, upcomingGamesY, window.innerHeight);
       this.viewportScroller.scrollToPosition([0, finalScrollY]);
     });
   }
 
-  private determineScrollY(scrollY: number | null, upcomingGamesY: number | null, screenHeight: number): number {
+  private determineScrollY(scrollY: number | null, upcomingGamesY: number | null, innerHeight: number): number {
     // if we got a position via scroll, we take that one
     // if we didn't get a position via scroll, we use the one we got from the upcoming games position
     // if we didn't get a position via upcoming games, we fall back to 0.
@@ -103,8 +105,8 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     }
 
     // only use the effectiveUpcomingY if it larger than the screen height
-    if (isDefined(upcomingGamesY) && upcomingGamesY > screenHeight) {
-      return Math.floor(upcomingGamesY - (screenHeight * .8));
+    if (isDefined(upcomingGamesY) && (upcomingGamesY + SeasonGamesComponent.UPCOMING_GAMES_TOP_OFFSET_TRIGGER) > innerHeight) {
+      return Math.floor(upcomingGamesY - (innerHeight - SeasonGamesComponent.UPCOMING_GAMES_TOP_OFFSET_TRIGGER));
     }
 
     return 0;
@@ -136,6 +138,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
           const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
+
           this.upcomingGamesPositionSubject.next(upcomingGamesPosition !== undefined ? [upcomingGamesPosition.x, upcomingGamesPosition.y] : [0, 0]);
         }, 0);
       }

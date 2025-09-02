@@ -1,14 +1,14 @@
 <div class="flex align-items-center w-full">
     <button class="button px-2-dot-5" (click)="onBeforeClicked()" [ngClass]="{ 'invisible': !hasBefore }">
-        <div class="width-sm">
+        <div class="width-sm relative top-5">
             <app-chevron-left />
         </div>
     </button>
-    <div>
+    <div class="mx-2">
         <app-select [optionsSource]="seasons" [onBefore]="beforeSubject" [onNext]="nextSubject" [showSearch]="false" [hideChevron]="true" [showOutline]="false" [showSelectedTick]="false" [minWidth]="'150px'" [centerOptions]="true" [selectedOption]="selectedSeason$" (onSelected)="onSeasonSelected($event)" (onHasBefore)="onHasBefore($event)" (onHasNext)="onHasNext($event)" />
     </div>
     <button class="button px-2-dot-5" (click)="onNextClicked()" [ngClass]="{ 'invisible': !hasNext }">
-        <div class="width-sm">
+        <div class="width-sm relative top-5">
             <app-chevron-right />
         </div>
     </button>

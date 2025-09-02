@@ -16,10 +16,14 @@ import { MenuIconVerticalComponent } from "@src/app/icon/menu-vertical/menu-vert
 import { EditIconComponent } from "@src/app/icon/edit/edit.component";
 import { DeleteIconComponent } from '@src/app/icon/delete/delete.component';
 import { ImportIconComponent } from '@src/app/icon/import/import.component';
+import { ProfileIconComponent } from "@src/app/icon/profile/profile.component";
+import { LoadingComponent } from '@src/app/component/loading/loading.component';
+import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
 
 @Component({
   selector: 'app-ui-icon',
   imports: [
+    LoadingComponent,
     FootballComponent,
     BirthdayCakeComponent,
     ClubIconComponent,
@@ -35,7 +39,9 @@ import { ImportIconComponent } from '@src/app/icon/import/import.component';
     MenuIconVerticalComponent,
     EditIconComponent,
     DeleteIconComponent,
-    ImportIconComponent
+    ImportIconComponent,
+    ProfileIconComponent,
+    ChevronLeftComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

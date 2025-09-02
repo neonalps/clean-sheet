@@ -38,17 +38,35 @@ export class ModalService {
         this.onModalCancel();
     }
 
-    onModalValue(value: unknown) {
-        this.modalEvent$?.next({ type: 'value', value: value });
+    onCancel() {
+        this.onModalCancel();
     }
 
-    private onModalCancel() {
-        this.modalEvent$?.next({ 'type': 'cancel' });
+    onConfirm(confirmValue?: unknown) {
+        this.onModalConfirm(confirmValue);
+    }
+
+    private closeModal(event: ModalEvent) {
+        this.modalEvent$?.next(event);
         this.modalEvent$?.complete();
         this.active$.next(false);
 
         // delay setting the modal type to null so the transition can be executed
         setTimeout(() => this.modalType.set(null), 400);
+    }
+
+    private onModalCancel() {
+        this.closeModal({ type: 'cancel' });
+    }
+
+    private onModalConfirm(confirmValue?: unknown) {
+        const event: ModalEvent = { type: 'confirm'  };
+
+        if (confirmValue) {
+            event.value = confirmValue;
+        }
+
+        this.closeModal(event);
     }
 
     private showModal(type: Modal, payload: unknown): Observable<ModalEvent> {

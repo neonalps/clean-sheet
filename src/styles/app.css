@@ -47,6 +47,10 @@ a {
     box-shadow: 0px 0px 4px 0px rgba(177, 177, 177, 0.75);
 }
 
+.section-divider {
+    border-top: 2px solid var(--dark-grey-lighter-2);
+}
+
 .icon {
   display: inline-block;
   width: 20px;

@@ -20,6 +20,7 @@
   padding: 4px 12px;
   border: 1px solid transparent;
   border-radius: 8px;
+  font-weight: bold;
 }
 
 .button-success {
@@ -34,12 +35,23 @@
 
 .button-secondary {
   background-color: transparent;
-  border: 1px solid var(--light-grey-darker);
-  color: var(--light);
+  border: 1px solid var(--light-grey);
+  color: var(--light-grey);
 }
 
 .button-disabled {
   pointer-events: none;
   background-color: var(--dark-grey-lighter-2);
   color: var(--light-grey);
+}
+
+@media (hover: hover) {
+    .button-danger:hover {
+        background-color: var(--danger-lighter-30);
+    }
+
+    .button-secondary:hover {
+        background-color: rgba(50, 50, 50, .7);
+        border: 1px solid var(--light-grey-darker);
+    }
 }

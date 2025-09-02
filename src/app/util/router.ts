@@ -37,6 +37,10 @@ export function navigateToVenue(router: Router, venueId: VenueId): void {
     router.navigate(["/venue", venueId]);
 }
 
+export function navigateToSettings(router: Router): void {
+    router.navigate(["/settings"]);
+}
+
 export function navigateToLogout(router: Router): void {
     router.navigate(["/logout"]);
 }

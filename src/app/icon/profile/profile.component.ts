@@ -2,15 +2,14 @@ import { Component, Input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
-  selector: 'app-chevron-left',
+  selector: 'app-profile-icon',
   imports: [],
-  templateUrl: './chevron-left.component.html',
-  styleUrl: './chevron-left.component.css'
+  templateUrl: './profile.component.html',
 })
-export class ChevronLeftComponent {
+export class ProfileIconComponent {
 
   @Input() color?: string;
-  
+
   getColor(): string {
     return this.color || KEYWORD_CURRENT_COLOR;
   }
