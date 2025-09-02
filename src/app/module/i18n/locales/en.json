@@ -155,6 +155,7 @@
     "varDecision.decision": "Decision",
     "varDecision.goal": "Goal awarded",
     "varDecision.goalConfirmed": "Goal confirmed",
+    "varDecision.noGoalConfirmed": "No goal confirmed",
     "varDecision.noGoal": "No goal",
     "varDecision.noPenaltyConfirmed": "No penalty confirmed",
     "varDecision.penalty": "Penalty",

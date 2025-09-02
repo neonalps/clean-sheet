@@ -153,6 +153,7 @@
     "varDecision.goal": "Tor",
     "varDecision.goalConfirmed": "Tor bestätigt",
     "varDecision.noGoal": "Kein Tor",
+    "varDecision.noGoalConfirmed": "Kein Tor bestätigt",
     "varDecision.noPenaltyConfirmed": "Kein Strafstoß bestätigt",
     "varDecision.penalty": "Strafstoß",
     "varDecision.penaltyCancelled": "Kein Strafstoß",
