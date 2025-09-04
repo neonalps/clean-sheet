@@ -112,7 +112,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.dashboard.topScorers?.competitions && this.dashboard.topScorers.competitions.length > 1) {
       const chips: Chip[] = [
-        { value: 'all', displayText: this.translationService.translate('chip.all'), selected: true,  },
+        { value: 'all', displayText: this.translationService.translate('competitions.all'), selected: true,  },
         ...this.dashboard.topScorers.competitions.map(item => {
           const competitionShortName = processTranslationPlaceholders(item.shortName, this.translationService);
           const competitionChip: Chip = {
