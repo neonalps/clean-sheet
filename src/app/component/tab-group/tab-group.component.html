@@ -1,4 +1,4 @@
-<div #groupContainer class="tab-header bg-color-dark-grey flex align-items-center p-1" [ngClass]="{ 'overflow-x-scroll': horizontalScroll }">
+<div #groupContainer class="tab-header bg-color-dark-grey align-items-center p-1" [ngClass]="{ 'overflow-x-scroll': horizontalScroll, 'flex': stretchWholeWidth, 'inline-flex': !stretchWholeWidth }">
     <ng-container *ngFor="let tab of tabs">
         <app-tab-group-item-header (onTabItemSelected)="onTabItemSelected($event)" [tabId]="tab.tabId" [tabIcon]="tab.tabIcon" [tabIconClasses]="tab.tabIconClasses" [tabTitle]="tab.tabTitle" [active]="tab.active" [wordBreak]="false" />
     </ng-container>

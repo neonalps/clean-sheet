@@ -1,11 +1,11 @@
 <button class="button transition-colors uppercase flex min-w-160" [ngClass]="getDynamicClasses()" (click)="onClick()">
     <div class="flex align-items-center px-3">
         <div class="mr-3" *ngIf="icon">
-            <div class="width-sm">
+            <div class="width-sm relative top-1">
                 <app-ui-icon [descriptor]="icon" />
             </div>
         </div>
-        <div *ngIf="text">
+        <div *ngIf="text" class="text-base">
             {{ text }}
         </div>
         <div class="ml-3" *ngIf="iconRight">

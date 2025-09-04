@@ -19,6 +19,7 @@ import { ImportIconComponent } from '@src/app/icon/import/import.component';
 import { ProfileIconComponent } from "@src/app/icon/profile/profile.component";
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
+import { SaveIconComponent } from "@src/app/icon/save/save.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -41,7 +42,8 @@ import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.co
     DeleteIconComponent,
     ImportIconComponent,
     ProfileIconComponent,
-    ChevronLeftComponent
+    ChevronLeftComponent,
+    SaveIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

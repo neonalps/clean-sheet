@@ -38,9 +38,14 @@ a {
   padding: .5rem;
   border: 1px solid var(--light);
   color: var(--light);
-  background-color: var(--dark);
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.input-text-disabled {
+  pointer-events: none;
+  border: 1px solid var(--dark-grey-lighter-2);
+  color: var(--light-grey);
 }
 
 .context-menu-shadow {
@@ -79,6 +84,10 @@ a {
 .form-row {
   padding-top: .75rem;
   margin-bottom: .5rem;
+}
+
+.form-row:first-child {
+  padding-top: 0;
 }
 
 .form-row:last-child {
@@ -187,6 +196,11 @@ a {
 
 .arrow-inline-small {
   width: .9rem;
+}
+
+.loading-container-small {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .loading-container-medium {

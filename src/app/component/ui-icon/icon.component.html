@@ -29,7 +29,9 @@
             <app-import-icon [color]="descriptor.color" />
         }
         @case ('loading') {
-            <app-loading />
+            <div class="loading-container-small">
+                <app-loading />
+            </div>
         }
         @case ('menu') {
             <app-menu-icon [color]="descriptor.color" />
@@ -45,6 +47,9 @@
         }
         @case ('profile') {
             <app-profile-icon [color]="descriptor.color" />
+        }
+        @case ('save') {
+            <app-save-icon [color]="descriptor.color" />
         }
         @case ('sofascore') {
             <app-sofascore [color]="descriptor.color" />

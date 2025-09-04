@@ -14,6 +14,7 @@ export class TabGroupComponent implements AfterContentInit, OnDestroy {
 
   @Input() activeTab!: Observable<string | null>;
   @Input() horizontalScroll = false;
+  @Input() stretchWholeWidth = true;
   @Output() onTabSelected = new EventEmitter<string>();  
 
   @ViewChild('groupContainer', { static: false }) groupContainer!: ElementRef;

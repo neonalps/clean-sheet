@@ -8,6 +8,8 @@ import { BehaviorSubject, delay, Subject, takeUntil } from 'rxjs';
 import { LabelComponent } from "@src/app/component/label/label.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { getRandomNumberBetween } from '@src/app/util/random';
+import { AccountRole } from '@src/app/model/auth';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 export type UserInfo = Account & { myself?: boolean };
 
@@ -28,6 +30,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   private readonly accountService = inject(AccountService);
   private readonly authService = inject(AuthService);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -59,6 +62,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     } else {
       return account.email.substring(0, 1);
     }
+  }
+
+  getTranslatedRole(role: AccountRole) {
+    return this.translationService.translate(`role.${role}`);
   }
 
   getUserName(account: Account) {
