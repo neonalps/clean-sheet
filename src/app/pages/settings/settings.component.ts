@@ -166,6 +166,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.toastService.addToast({ type: 'success', text: this.translationService.translate('account.profileUpdate.success') });
         this.onAccountProfileLoaded(updatedProfile);
         this.isSubmitting.set(false);
+
+        setTimeout(() => window.location.reload(), 0);
       },
       error: err => {
         console.error(err);

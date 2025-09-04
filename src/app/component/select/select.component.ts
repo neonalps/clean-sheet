@@ -168,7 +168,7 @@ export class SelectComponent implements OnInit {
 
     if (!isOpen) {
       const mainElementWidth = this.mainElement.nativeElement.getBoundingClientRect().width;
-      this.optionsWidth.set(`${mainElementWidth - 2}px`);
+      this.optionsWidth.set(`${mainElementWidth}px`);
     }
 
     this.isOpen.set(!isOpen);

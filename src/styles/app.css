@@ -36,10 +36,15 @@ a {
 .input-text {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
   padding: .5rem;
-  border: 1px solid var(--light);
+  border: 1px solid var(--light-grey-darker);
   color: var(--light);
   font-size: 1rem;
   line-height: 1.5rem;
+  transition: border-color .15s linear;
+}
+
+.input-text:focus {
+  border: 1px solid var(--light);
 }
 
 .input-text-disabled {

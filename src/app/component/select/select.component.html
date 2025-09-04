@@ -1,5 +1,5 @@
 <div class="select-container pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
-    <div #main class="select-main p-2 flex justify-content-between" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline, 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
+    <div #main class="select-main p-2 flex justify-content-between transition-colors" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline && !isOpen(), 'select-outline-focus': showOutline && isOpen(), 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
         <div class="flex-grow-8 flex align-items-center justify-content-center">
             <ng-container *ngIf="displayIcon">
                 <div class="basis-1/10 mr-1">
@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="select-options max-h-50-vh overflow-y-auto" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
+    <div class="select-options context-menu-shadow max-h-50-vh overflow-y-auto" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
         <ng-container *ngIf="showSearch">
             <div class="search-container p-2">
                 <div class="icon absolute left-16 top-16">
