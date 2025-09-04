@@ -5,6 +5,9 @@
     <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
         <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
     </div>
+    <div class="mt-5 ml-2 mb-4" *ngIf="tendencyFiltersVisible()">
+        <app-chip-group [chipGroup$]="tendencyChips$" (onSelected)="onTendencyFilterChanged($event)" />
+    </div>
     <div>
         <app-game-record [gameRecord$]="gameRecord$" />
     </div>

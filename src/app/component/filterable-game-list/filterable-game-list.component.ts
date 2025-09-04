@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
-import { BasicGame } from '@src/app/model/game';
+import { BasicGame, Tendency } from '@src/app/model/game';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
@@ -28,11 +28,13 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
 
   competitionFiltersVisible = signal(false);
   homeAwayFiltersVisible = signal(false);
+  tendencyFiltersVisible = signal(false);
 
   readonly mainClub: SmallClub = environment.mainClub;
   readonly gameRecord$ = new BehaviorSubject<GameRecord>({ w: 0, d: 0, l: 0 });
   readonly competitionChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly homeAwayChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly tendencyChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly visibleGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   private readonly router = inject(Router);
@@ -42,6 +44,7 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
   private currentActivePage = 1;
   private currentCompetitionFilters: CompetitionId[] = [];
   private currentHomeAwayFilters: HomeAwayFilter[] = [];
+  private currentTendencyFilters: Tendency[] = [];
   
   private isCurrentlyLoadingMore = false;
   private isLoadingMoreAvailable = false;
@@ -122,6 +125,48 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
         this.homeAwayFiltersVisible.set(false);
       }
 
+      const hasWin = this.storedGames.some(game => game.resultTendency === 'w');
+      const hasDraw = this.storedGames.some(game => game.resultTendency === 'd');
+      const hasLoss = this.storedGames.some(game => game.resultTendency === 'l');
+      if ([hasWin, hasDraw, hasLoss].filter(condition => condition === true).length > 1) {
+        const tendencyChips: Chip[] = [];
+        if (hasWin) {
+          tendencyChips.push({
+            displayText: this.translationService.translate('tendency.win'),
+            value: 'w',
+            selected: false,
+          });
+        }
+
+        if (hasDraw) {
+          tendencyChips.push({
+            displayText: this.translationService.translate('tendency.draw'),
+            value: 'd',
+            selected: false,
+          });
+        }
+
+        if (hasLoss) {
+          tendencyChips.push({
+            displayText: this.translationService.translate('tendency.loss'),
+            value: 'l',
+            selected: false,
+          });
+        }
+
+        this.tendencyChips$.next({
+            mode: 'single',
+            chips: [
+              { displayText: this.translationService.translate('tendency.all'), value: 'all', selected: true, },
+              ...tendencyChips,
+            ],
+        });
+
+        this.tendencyFiltersVisible.set(true);
+      } else {
+        this.tendencyFiltersVisible.set(false);
+      }
+
       if (this.storedGames.length > this.gamesPageSize) {
         this.isLoadingMoreAvailable = true;
       }
@@ -142,6 +187,11 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
 
   onHomeAwayFilterChanged(value: string | number | boolean) {
     this.currentHomeAwayFilters = value === 'all' ? [] : [value as HomeAwayFilter];
+    this.updateUi();
+  }
+
+  onTendencyFilterChanged(value: string | number | boolean) {
+    this.currentTendencyFilters = value === 'all' ? [] : [value as Tendency];
     this.updateUi();
   }
 
@@ -182,6 +232,9 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
         }
 
         return true;
+      })
+      .filter(game => {
+        return this.currentTendencyFilters.length > 0 ? game.resultTendency === this.currentTendencyFilters[0] : true;
       });
 
     // determine and publish new game record
