@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SeasonService } from './module/season/service';
 import { OptionId, SelectOption } from './component/select/option';
-import { debounceTime, map, merge, Observable, of, Subject, Subscription, switchMap, take, takeUntil, tap } from 'rxjs';
+import { debounceTime, filter, map, merge, Observable, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { convertSeasonToSelectOption } from './module/season/util';
 import { ExternalSearchService } from './module/external-search/service';
 import { ExternalSearchEntity } from './model/external-search';
@@ -14,6 +14,8 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from "./component/header/header.component";
 import { MenuService } from './module/menu/service';
 import { AuthService } from './module/auth/service';
+import { TranslationService } from './module/i18n/translation.service';
+import { isDefined } from './util/common';
 
 @Component({
   selector: 'app-root',
@@ -39,11 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly externalSearchService: ExternalSearchService,
     private readonly menuService: MenuService,
     private readonly modalService: ModalService,
+    private readonly translationService: TranslationService,
   ) {}
 
   ngOnInit(): void {
     this.authService.init();
     this.seasonService.init();
+    this.translationService.init(this.authService.profileSettings$.pipe(filter(value => isDefined(value)), map(value => value.language)));
 
     this.menuService.open$
       .pipe(takeUntil(this.destroy$))

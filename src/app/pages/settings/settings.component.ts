@@ -10,12 +10,13 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ensureNotNullish, getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, merge, Observable, of, Subject, takeUntil } from 'rxjs';
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { ToastService } from '@src/app/module/toast/service';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
-import { AccountCacheService } from '@src/app/module/cache/account';
-import { ProfileSettings } from '@src/app/model/auth';
+import { AuthResponse, ProfileSettings } from '@src/app/model/auth';
+import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
+import { AuthService } from '@src/app/module/auth/service';
 
 export const KEY_ACCOUNT_PROFILE_SETTINGS = "profileSettings";
 
@@ -60,7 +61,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private readonly selectedScoreFormat$ = new Subject<string>();
 
   private readonly accountService = inject(AccountService);
-  private readonly accountCacheService = inject(AccountCacheService);
+  private readonly localStorageService = inject(LocalStorageStorageProvider);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
   private readonly destroy$ = new Subject<void>();
@@ -158,17 +159,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     const profile = ensureNotNullish(this.currentAccountProfile());
 
-    const cacheableSettings = { language: profile.language, dateFormat: profile.dateFormat, scoreFormat: profile.scoreFormat };
-    this.accountCacheService.set(KEY_ACCOUNT_PROFILE_SETTINGS, cacheableSettings).pipe(
-      switchMap(() => {
-        return this.accountService.updateAccountProfile({
+    const currentStoredAuth = ensureNotNullish(this.localStorageService.get<AuthResponse>(AuthService.STORAGE_KEY_AUTH));
+    this.localStorageService.set(AuthService.STORAGE_KEY_AUTH, {
+      ...currentStoredAuth,
+      profileSettings: {
+        ...currentStoredAuth.profileSettings,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        language: profile.language,
+        dateFormat: profile.dateFormat,
+        scoreFormat: profile.scoreFormat,
+      },
+    })
+
+    this.accountService.updateAccountProfile({
           firstName: profile.firstName ?? '',
           lastName: profile.lastName ?? '',
           language: profile.language,
           dateFormat: profile.dateFormat,
           scoreFormat: profile.scoreFormat,
-        });
-      }),
+    }).pipe(
       takeUntil(this.destroy$),
     ).subscribe({
       next: updatedProfile => {

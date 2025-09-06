@@ -3,6 +3,8 @@ import de from "./locales/de.json";
 import en from "./locales/en.json";
 import { isNotDefined } from '@src/app/util/common';
 import { Locale } from './locales/locale';
+import { Language } from '@src/app/model/account';
+import { Observable } from 'rxjs';
 
 export const API_FIELD_TRANSLATION_PREFIX = `t:`;
 
@@ -23,6 +25,18 @@ export class TranslationService {
   private static readonly DEFAULT_LOCALE = Locale.English;
 
   private selectedLocale: Locale | null = null;
+
+  init(selectedLanguage: Observable<Language>) {
+    selectedLanguage.subscribe(value => {
+      console.log('setting locale to', value);
+
+      if (value === Language.AustrianGerman) {
+        this.selectedLocale = Locale.German;
+      } else if (value === Language.BritishEnglish) {
+        this.selectedLocale = Locale.English;
+      }
+    })
+  }
 
   translate(key: string, args: Record<string, string | number | Ordinal> = {}): string {
     const localeMap: Record<string, string> | undefined = TranslationService.LOCALES.get(this.getLocale());

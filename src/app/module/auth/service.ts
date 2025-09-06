@@ -26,10 +26,11 @@ type AuthState = {
 })
 export class AuthService {
 
+    public static readonly STORAGE_KEY_AUTH = "auth";
+
     public static readonly OAUTH_LOGIN_URL =`${environment.apiBaseUrl}/v1/auth/oauth`;
     public static readonly REFRESH_TOKEN_URL =`${environment.apiBaseUrl}/v1/auth/refresh-token`;
 
-    private static readonly STORAGE_KEY_AUTH = "auth";
     private static readonly TOKEN_KEY_EXP = "exp";
 
     readonly authIdentity$ = new BehaviorSubject<Identity | null>(null);
