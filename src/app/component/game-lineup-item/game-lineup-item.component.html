@@ -2,7 +2,7 @@
     <div class="mb-2">
         <app-player-icon [iconUrl]="player.avatar" [containerClass]="'max-w-2-dot-4'" [iconBgColorClass]="'bg-color-light-grey'" [yellowCard]="player.yellowCard" [yellowRedCard]="player.yellowRedCard" [redCard]="player.redCard" [captain]="player.captain === true" [off]="player.off" [showPlaceholder]="showPersonPlaceholder" />
     </div>
-    <div class="text-sm flex">
+    <div class="text-lineup-item flex">
         <div class="mr-1 text-light-grey-darker">{{ player.shirt }}</div>
         <div>{{ getPlayerDisplayName() }}</div>
     </div>

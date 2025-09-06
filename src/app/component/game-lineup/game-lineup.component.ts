@@ -77,14 +77,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "61" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "62" : undefined) },
         ],
-        additionalClasses: 'mt-4',
+        additionalClasses: 'mt-5',
       },
       // attacking midfielder
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "51" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       },
       // centeral + defensive midfielders
       {
@@ -93,7 +93,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "31" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "42" : undefined), additionalClasses: 'position-modifier-diamond-midfield' },
         ],
-        additionalClasses: 'mt-14',
+        additionalClasses: 'mt-15',
       },
       // defenders
       {
@@ -103,14 +103,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       },
       // gk
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       }
     ];
 
@@ -123,7 +123,7 @@ export class GameLineupComponent {
         items: [
           { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "51" : undefined) },
         ],
-        additionalClasses: 'mt-4',
+        additionalClasses: 'mt-5',
       },
       // central + attacking midfielders
       {
@@ -132,7 +132,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "42" : undefined), additionalClasses: 'position-modifier-4231-midfield' },
           { person: this.getByPositionGridOrIndex(players, 7, usePositionGrid ? "43" : undefined) },
         ],
-        additionalClasses: 'mt-14',
+        additionalClasses: 'mt-15',
       },
       // defensive midfielders
       {
@@ -140,7 +140,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "31" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "32" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       },
       // defenders
       {
@@ -150,14 +150,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       },
       // gk
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
-        additionalClasses: 'mt-8',
+        additionalClasses: 'mt-9',
       }
     ];
 
