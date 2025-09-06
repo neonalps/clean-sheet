@@ -36,6 +36,7 @@ import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 import { GameService } from '@src/app/module/game/service';
 import { ModalService } from '@src/app/module/modal/service';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -58,7 +59,8 @@ export type GameRouteState = {
     TrophyIconComponent,
     GamePerformanceTrendComponent,
     RoundInformationComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    UiIconComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'

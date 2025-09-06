@@ -49,7 +49,14 @@
             <div class="flex-grow">
                 <div class="center text-sm">
                     <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
-                    <div class="mb-3">{{ getCompetitionName() }}</div>
+                    <div class="mb-3 flex align-items-center justify-content-center">
+                        <div>
+                            <div class="width-sm relative top-1 mr-2">
+                                <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': game!.competition!.iconSmall! }" />
+                            </div>
+                        </div>
+                        <div>{{ getCompetitionName() }}</div>
+                    </div>
                     <div class="mt-2 mb-3" *ngIf="legInformation !== null">{{ legInformation }}<span class="ml-2 px-2 py-1 rounded-md center bold" *ngIf="aggregateScore" [ngClass]="getAggregateResultTendencyClass()">{{ aggregateScore }}</span></div>
                 </div>
             </div>
