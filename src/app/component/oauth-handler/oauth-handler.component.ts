@@ -7,8 +7,7 @@ import { take } from 'rxjs';
 @Component({
   selector: 'app-oauth-handler',
   imports: [],
-  templateUrl: './oauth-handler.component.html',
-  styleUrl: './oauth-handler.component.css'
+  template: '',
 })
 export class OAuthHandlerComponent implements OnInit {
 

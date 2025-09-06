@@ -10,16 +10,18 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ensureNotNullish, getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, map, merge, Observable, of, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ButtonComponent } from "@src/app/component/button/button.component";
-import { OmitStrict } from '@src/app/util/types';
 import { ToastService } from '@src/app/module/toast/service';
+import { LoadingComponent } from "@src/app/component/loading/loading.component";
+import { AccountCacheService } from '@src/app/module/cache/account';
+import { ProfileSettings } from '@src/app/model/auth';
 
-type AccountProfileUpdate = OmitStrict<AccountProfile, 'id' | 'email' | 'createdAt' | 'role'>;
+export const KEY_ACCOUNT_PROFILE_SETTINGS = "profileSettings";
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, I18nPipe, TabGroupComponent, TabItemComponent, SelectComponent, ButtonComponent],
+  imports: [CommonModule, I18nPipe, TabGroupComponent, TabItemComponent, SelectComponent, ButtonComponent, LoadingComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
@@ -31,8 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   readonly isSubmitting = signal(false);
   readonly accountProfile = signal<AccountProfile | null>(null);
 
-  readonly currentAccountProfile = signal<AccountProfileUpdate | null>(null);
-  readonly storedAccountProfile = signal<AccountProfileUpdate | null>(null);
+  readonly currentAccountProfile = signal<ProfileSettings | null>(null);
+  readonly storedAccountProfile = signal<ProfileSettings | null>(null);
 
   readonly pushEmail$ = new BehaviorSubject<string>('');
   readonly pushFirstName$ = new BehaviorSubject<string>('');
@@ -40,7 +42,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   readonly pushLanguage$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushDateFormat$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushScoreFormat$ = new BehaviorSubject<SelectOption | null>(null);
-  readonly pushAccountRole$ = new BehaviorSubject<string>('');
 
   private readonly dateFormatOptions: SelectOption[] = [
     { id: 'br', name: 'Sat, 24 May 2025 - 17:00' },
@@ -59,6 +60,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private readonly selectedScoreFormat$ = new Subject<string>();
 
   private readonly accountService = inject(AccountService);
+  private readonly accountCacheService = inject(AccountCacheService);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
   private readonly destroy$ = new Subject<void>();
@@ -155,26 +157,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.isSubmitting.set(true);
 
     const profile = ensureNotNullish(this.currentAccountProfile());
-    this.accountService.updateAccountProfile({
-      firstName: profile.firstName ?? '',
-      lastName: profile.lastName ?? '',
-      language: profile.language,
-      dateFormat: profile.dateFormat,
-      scoreFormat: profile.scoreFormat,
-    }).pipe(takeUntil(this.destroy$)).subscribe({
+
+    const cacheableSettings = { language: profile.language, dateFormat: profile.dateFormat, scoreFormat: profile.scoreFormat };
+    this.accountCacheService.set(KEY_ACCOUNT_PROFILE_SETTINGS, cacheableSettings).pipe(
+      switchMap(() => {
+        return this.accountService.updateAccountProfile({
+          firstName: profile.firstName ?? '',
+          lastName: profile.lastName ?? '',
+          language: profile.language,
+          dateFormat: profile.dateFormat,
+          scoreFormat: profile.scoreFormat,
+        });
+      }),
+      takeUntil(this.destroy$),
+    ).subscribe({
       next: updatedProfile => {
         this.toastService.addToast({ type: 'success', text: this.translationService.translate('account.profileUpdate.success') });
         this.onAccountProfileLoaded(updatedProfile);
         this.isSubmitting.set(false);
-
-        setTimeout(() => window.location.reload(), 0);
       },
       error: err => {
         console.error(err);
         this.toastService.addToast({ type: 'error', text: this.translationService.translate('account.profileUpdate.failure') });
         this.isSubmitting.set(false);
       }
-    })
+    });
   }
 
   private getDefaultLanguageOptions(): Observable<SelectOption[]> {
@@ -200,38 +207,37 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private onAccountProfileLoaded(profile: AccountProfile) {
     this.accountProfile.set(profile);
 
-      this.storedAccountProfile.set({
-        firstName: profile.firstName ?? '',
-        lastName: profile.lastName ?? '',
-        language: profile.language,
-        dateFormat: profile.dateFormat,
-        scoreFormat: profile.scoreFormat,
-      });
+    this.storedAccountProfile.set({
+      firstName: profile.profileSettings.firstName ?? '',
+      lastName: profile.profileSettings.lastName ?? '',
+      language: profile.profileSettings.language,
+      dateFormat: profile.profileSettings.dateFormat,
+      scoreFormat: profile.profileSettings.scoreFormat,
+    });
 
-      // all observables must emit once so that combinedLatest will have the current state (it only emits after each observables has emitted at least once)
-      this.selectedFirstName$.next(profile.firstName ?? '');
-      this.selectedLastName$.next(profile.lastName ?? '');
+    // all observables must emit once so that combinedLatest will have the current state (it only emits after each observables has emitted at least once)
+    this.selectedFirstName$.next(profile.profileSettings.firstName ?? '');
+    this.selectedLastName$.next(profile.profileSettings.lastName ?? '');
 
-      const selectedLanguage = this.languageOptions.find(item => item.id === profile.language);
-      const selectedDateFormat = this.dateFormatOptions.find(item => item.id === profile.dateFormat);
-      const selectedScoreFormat = this.scoreFormatOptions.find(item => item.id === profile.scoreFormat);
+    const selectedLanguage = this.languageOptions.find(item => item.id === profile.profileSettings.language);
+    const selectedDateFormat = this.dateFormatOptions.find(item => item.id === profile.profileSettings.dateFormat);
+    const selectedScoreFormat = this.scoreFormatOptions.find(item => item.id === profile.profileSettings.scoreFormat);
 
-      this.pushEmail$.next(profile.email);
+    this.pushEmail$.next(profile.email);
 
-      if (profile.firstName) {
-        this.pushFirstName$.next(profile.firstName);
-      }
+    if (profile.profileSettings.firstName) {
+      this.pushFirstName$.next(profile.profileSettings.firstName);
+    }
 
-      if (profile.lastName) {
-        this.pushLastName$.next(profile.lastName);
-      }
+    if (profile.profileSettings.lastName) {
+      this.pushLastName$.next(profile.profileSettings.lastName);
+    }
 
-      this.pushLanguage$.next(ensureNotNullish(selectedLanguage));
-      this.pushDateFormat$.next(ensureNotNullish(selectedDateFormat));
-      this.pushScoreFormat$.next(ensureNotNullish(selectedScoreFormat));
-      this.pushAccountRole$.next(this.translationService.translate(`role.${profile.role}`));
+    this.pushLanguage$.next(ensureNotNullish(selectedLanguage));
+    this.pushDateFormat$.next(ensureNotNullish(selectedDateFormat));
+    this.pushScoreFormat$.next(ensureNotNullish(selectedScoreFormat));
 
-      this.isLoading.set(false);
+    this.isLoading.set(false);
   }
 
 }

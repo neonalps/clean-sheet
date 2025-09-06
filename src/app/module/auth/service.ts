@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
-import { AccountRole, AuthResponse, Identity, TokenResponse } from "@src/app/model/auth";
+import { AccountRole, AuthResponse, Identity, ProfileSettings, TokenResponse } from "@src/app/model/auth";
 import { assertHasText, ensureNotNullish } from "@src/app/util/common";
 import { environment } from "@src/environments/environment";
 import { BehaviorSubject, Observable, tap } from "rxjs";
@@ -16,6 +16,7 @@ export type StoredToken = {
 
 type AuthState = {
     identity: Identity;
+    profileSettings: ProfileSettings;
     accessToken: StoredToken;
     refreshToken: StoredToken;
 }
@@ -32,6 +33,7 @@ export class AuthService {
     private static readonly TOKEN_KEY_EXP = "exp";
 
     readonly authIdentity$ = new BehaviorSubject<Identity | null>(null);
+    readonly profileSettings$ = new BehaviorSubject<ProfileSettings | null>(null);
 
     private readonly authState = signal<AuthState | null>(null);
 
@@ -73,6 +75,7 @@ export class AuthService {
         this.localStorageService.remove(AuthService.STORAGE_KEY_AUTH);
         this.authState.set(null);
         this.authIdentity$.next(null);
+        this.profileSettings$.next(null);
     }
 
     public handleOAuthLogin(provider: string, code: string): Observable<AuthResponse> {
@@ -104,6 +107,7 @@ export class AuthService {
 
         const authState: AuthState = {
             identity: auth.identity,
+            profileSettings: auth.profileSettings,
             accessToken: {
                 token: auth.token.accessToken,
                 expiresAt: getDateFromUnixTimestamp(accessTokenExpiresAtUnix).toISOString(),
@@ -117,6 +121,7 @@ export class AuthService {
         this.localStorageService.set(AuthService.STORAGE_KEY_AUTH, auth satisfies AuthResponse);
         this.authState.set(authState);
         this.authIdentity$.next(auth.identity);
+        this.profileSettings$.next(auth.profileSettings);
     }
 
     private onSuccessfulTokenRefresh(token: TokenResponse) {
@@ -129,6 +134,7 @@ export class AuthService {
 
         const authState: AuthState = {
             identity: currentAuthState.identity,
+            profileSettings: currentAuthState.profileSettings,
             accessToken: {
                 token: token.accessToken,
                 expiresAt: getDateFromUnixTimestamp(accessTokenExpiresAtUnix).toISOString(),
@@ -142,6 +148,7 @@ export class AuthService {
         this.localStorageService.set(AuthService.STORAGE_KEY_AUTH, {
             identity: currentAuthState.identity,
             token: token,
+            profileSettings: currentAuthState.profileSettings,
         } satisfies AuthResponse);
         this.authState.set(authState);
     }

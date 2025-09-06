@@ -20,7 +20,7 @@ export class TranslationService {
     [Locale.German, de],
   ]);
 
-  private static readonly DEFAULT_LOCALE = Locale.German;
+  private static readonly DEFAULT_LOCALE = Locale.English;
 
   private selectedLocale: Locale | null = null;
 
@@ -30,10 +30,13 @@ export class TranslationService {
       throw new Error(`Selected locale ${this.getLocale()} does not seem to be registered`);
     }
 
-    const value: string | null | undefined = localeMap[key];
+    const pluralise = (args['plural'] ?? null) as number | null;
+    const effectiveKey = pluralise !== null ? `${key}${pluralise === 1 ? '.singular' : '.plural'}` : key;
+
+    const value: string | null | undefined = localeMap[effectiveKey];
 
     if (isNotDefined(value)) {
-      return `Missing translation for key ${key}`;
+      return `Missing translation for key ${effectiveKey}`;
     }
 
     let resolvedValue = value;

@@ -212,18 +212,18 @@ export class PersonComponent implements OnDestroy {
   private getPlayerTotalStats(stats: PlayerBaseStats): ReadonlyArray<UiStatsItem[]> {
     return [
       [
-        { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: 'Spiele', value: stats.gamesPlayed },
-        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: 'Tore', value: stats.goalsScored },
-        { itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: 'Assists', value: stats.assists },
+        { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: this.translationService.translate('stats.games', { plural: stats.gamesPlayed }), value: stats.gamesPlayed },
+        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: stats.goalsScored }), value: stats.goalsScored },
+        { itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: stats.assists }), value: stats.assists },
       ],
       /*[
         { iconDescriptor: { type: 'standard', content: 'penalties-taken' }, titleText: 'Elfmeter angetreten', value: stats.regulationPenaltiesTaken },
         { iconDescriptor: { type: 'standard', content: 'penalties-scored' }, titleText: 'Elfmeter getroffen', value: stats.regulationPenaltiesScored },
       ],*/
       [
-        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: 'Gelbe Karten', value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
-        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: 'Gelb-Rote Karten', value: stats.yellowRedCards, iconClasses: ['relative', 'left-3'] },
-        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: 'Rote Karten', value: stats.redCards, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: this.translationService.translate('stats.yellowCards', { plural: stats.yellowCards }), value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: this.translationService.translate('stats.yellowRedCards', { plural: stats.yellowRedCards }), value: stats.yellowRedCards, iconClasses: ['relative', 'left-3'] },
+        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: this.translationService.translate('stats.redCards', { plural: stats.redCards }), value: stats.redCards, iconClasses: ['relative', 'left-5'] },
       ],
     ]
   }

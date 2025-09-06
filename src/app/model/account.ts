@@ -1,5 +1,5 @@
 import { DateString } from "@src/app/util/domain-types";
-import { AccountRole } from "./auth";
+import { AccountRole, ProfileSettings } from "./auth";
 
 export enum Language {
     AustrianGerman = 'de-at',
@@ -31,13 +31,7 @@ export interface Account {
 export interface AccountProfile {
     id: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
-    language: Language;
-    dateFormat: DateFormat;
-    scoreFormat: ScoreFormat;
-    role: AccountRole;
-    createdAt: DateString;
+    profileSettings: ProfileSettings;
 }
 
 export interface UpdateAccountProfile {

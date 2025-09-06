@@ -1,10 +1,3 @@
 <div>
-    <div>
-        <app-button class="flex align-items-center p-2" [enabled]="true" (onClicked)="googleLogin()">
-            <div class="width-sm mr-3">
-                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'google' }" />
-            </div>
-            <div>{{ 'login.google' | $t}}</div>
-        </app-button>
-    </div>
+    <app-button class="flex align-items-center p-2" [enabled]="true" (onClicked)="googleLogin()" [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'google' }" [text]="'login.google' | $t" />
 </div>

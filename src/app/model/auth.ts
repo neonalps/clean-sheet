@@ -1,3 +1,5 @@
+import { DateFormat, Language, ScoreFormat } from "./account";
+
 export enum AccountRole {
     Subsitute = 'substitute',
     Player = 'player',
@@ -7,13 +9,21 @@ export enum AccountRole {
 export interface Identity {
     email: string;
     publicId: string;
+    role: AccountRole;
+}
+
+export interface ProfileSettings {
     firstName?: string;
     lastName?: string;
-    role: AccountRole;
+    profilePicture?: string;
+    language: Language;
+    dateFormat: DateFormat;
+    scoreFormat: ScoreFormat;
 }
 
 export interface AuthResponse {
     identity: Identity;
+    profileSettings: ProfileSettings;
     token: TokenResponse;
 }
 

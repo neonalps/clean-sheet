@@ -51,13 +51,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.resolveDashboard();
 
-    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
-      if (identity === null || !identity.firstName) {
+    this.authService.profileSettings$.pipe(takeUntil(this.destroy$)).subscribe(profile => {
+      if (profile === null || !profile.firstName) {
         this.loginName.set(null);
         return;
       }
 
-      this.loginName.set(identity.firstName);
+      this.loginName.set(profile.firstName);
     });
   }
 

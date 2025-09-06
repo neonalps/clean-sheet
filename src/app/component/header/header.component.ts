@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { StopEventPropagationDirective } from '@src/app/directive/stop-event-propagation/stop-event-propagation.directive';
 import { AuthService } from '@src/app/module/auth/service';
-import { Identity } from '@src/app/model/auth';
+import { Identity, ProfileSettings } from '@src/app/model/auth';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
@@ -38,6 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly searchResultItems$ = new Subject<ExternalSearchResultItemDto[]>();
 
   private readonly authIdentity = signal<Identity | null>(null);
+  private readonly profileSettings = signal<ProfileSettings | null>(null);
 
   private readonly authService = inject(AuthService);
   private readonly externalSearchService = inject(ExternalSearchService);
@@ -51,6 +52,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authService.authIdentity$
       .pipe(takeUntil(this.destroy$))
       .subscribe(identity => this.authIdentity.set(identity));
+
+    this.authService.profileSettings$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(profile => this.profileSettings.set(profile));
 
     this.menuService.open$
       .pipe(takeUntil(this.destroy$))
@@ -149,8 +154,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getLoginInitial(): string {
-    const identity = this.authIdentity();
-    return identity !== null && identity.firstName ? identity.firstName.substring(0, 1) : '';
+    const profile = this.profileSettings();
+    return profile !== null && profile.firstName ? profile.firstName.substring(0, 1) : '';
   }
 
   getIconDescriptor(resultItem: ExternalSearchResultItemDto): UiIconDescriptor {
@@ -170,12 +175,12 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getLoggedInName(): string | null {
-    const identity = this.authIdentity();
-    if (identity === null) {
+    const profile = this.profileSettings();
+    if (profile === null) {
       return null;
     }
 
-    return [identity.firstName, identity.lastName].filter(item => isDefined(item)).join(' ');
+    return [profile.firstName, profile.lastName].filter(item => isDefined(item)).join(' ');
   }
 
   resultItemClicked(resultItem: ExternalSearchResultItemDto) {
