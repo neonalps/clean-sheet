@@ -1389,6 +1389,30 @@
     border-bottom-color: transparent;
 }
 
+.border-light {
+    border-color: var(--light);
+}
+
+.border-light-grey {
+    border-color: var(--light-grey);
+}
+
+.border-light-grey-darker {
+    border-color: var(--light-grey-darker);
+}
+
+.border-mid-grey {
+    border-color: var(--mid-grey);
+}
+
+.border-dark-grey {
+    border-color: var(--dark-grey);
+}
+
+.border-dark-grey-lighter {
+    border-color: var(--dark-grey-lighter);
+}
+
 .border-gold {
     border-color: var(--gold);
 }

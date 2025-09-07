@@ -56,4 +56,8 @@
     .hover\:text-light-grey-darker:hover {
         color: var(--light-grey-darker);
     }
+
+    .hover\:border-light-grey-darker:hover {
+        border-color: var(--light-grey-darker);
+    }
 }

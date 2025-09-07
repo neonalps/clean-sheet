@@ -4,7 +4,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { MenuService } from '@src/app/module/menu/service';
 import { COLOR_LIGHT } from '@src/styles/constants';
-import { debounceTime, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, Subject, switchMap, takeUntil } from 'rxjs';
 import { NavMenuComponent } from "@src/app/component/nav-menu/nav-menu.component";
 import { assertUnreachable, getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
@@ -17,10 +17,12 @@ import { StopEventPropagationDirective } from '@src/app/directive/stop-event-pro
 import { AuthService } from '@src/app/module/auth/service';
 import { Identity, ProfileSettings } from '@src/app/model/auth';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, I18nPipe, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective],
+  imports: [CommonModule, I18nPipe, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective, ChipGroupComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -36,6 +38,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly isSearchResultOpen = signal(false);
 
   readonly searchResultItems$ = new Subject<ExternalSearchResultItemDto[]>();
+  readonly searchTypeFilterChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly searchTypeFilter$ = new BehaviorSubject<string | null>(null);
 
   private readonly authIdentity = signal<Identity | null>(null);
   private readonly profileSettings = signal<ProfileSettings | null>(null);
@@ -44,11 +48,14 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly menuService = inject(MenuService);
   private readonly router = inject(Router);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
   private readonly search$ = new Subject<string>();
 
   ngOnInit(): void {
+    this.resetSearchFilters();
+
     this.authService.authIdentity$
       .pipe(takeUntil(this.destroy$))
       .subscribe(identity => this.authIdentity.set(identity));
@@ -63,24 +70,27 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isMenuOpen.set(open);
       });
 
-    this.search$.pipe(
-      takeUntil(this.destroy$),
-      debounceTime(300),
-      switchMap(searchValue => {
-        this.isSearchResultOpen.set(true);
-        this.isSearchCloseVisible.set(true);
+      combineLatest([
+        this.searchTypeFilter$,
+        this.search$.pipe(
+          debounceTime(400),
+          switchMap(searchValue => {
+            this.isSearchResultOpen.set(true);
+            this.isSearchCloseVisible.set(true);
 
-        return this.externalSearchService.search(searchValue);
-      }),
-    ).subscribe({
-      next: searchResult => {
-        this.searchResultItems$.next(searchResult.items);
-      },
-      error: error => {
-        console.error('search error', error);
-        this.isSearchResultOpen.set(false);
-      },
-    })
+            return this.externalSearchService.search(searchValue);
+          }),
+        ),
+      ]).pipe(takeUntil(this.destroy$))
+      .subscribe(([filter, searchResult]) => {
+        this.searchResultItems$.next(searchResult.items.filter(item => {
+          if (filter === null) {
+            return true;
+          }
+
+          return item.type === filter;
+        }));
+      });
   }
 
   ngOnDestroy(): void {
@@ -91,7 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.searchElement.nativeElement.onblur = () => {
       if (!this.isSearchResultOpen()) {
-        this.isSearchFocused.set(false);
+        this.closeSearch();
       }
     }
   }
@@ -104,6 +114,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => {
       this.searchElement.nativeElement.blur();
       this.resetSearch();
+      this.resetSearchFilters();
     }, 0);
   }
 
@@ -129,6 +140,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   overlayClick() {
     this.closeMenuIfOpen();
+  }
+
+  onSearchTypeFilterChanged(value: string | number | boolean) {
+    this.searchTypeFilter$.next(value === 'all' ? null : value as string);
   }
 
   toggleMenu() {
@@ -207,6 +222,16 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.closeSearch();
+  }
+
+  private resetSearchFilters() {
+    this.searchTypeFilterChips$.next({ chips: [
+      { value: 'all', selected: true, displayText: this.translationService.translate('chip.all') },
+      { value: 'person', selected: false, displayText: this.translationService.translate('chip.people'), },
+      { value: 'game', selected: false, displayText: this.translationService.translate('chip.games'), },
+      { value: 'club', selected: false, displayText: this.translationService.translate('chip.clubs'), },
+      { value: 'copmetition', selected: false, displayText: this.translationService.translate('chip.competitions'), },
+    ], mode: 'single' });
   }
 
   private convertResultItemTypeToIconType(entity: ExternalSearchEntity): UiIconType {

@@ -1,4 +1,4 @@
-<header>
+<header *ngIf="isLoggedIn()">
     <div class="flex align-items-center mx-3 pt-3 mb-4">
         <div class="basis-1/10">
             <div class="bg-color-dark-grey-darker px-3 py-2 rounded-lg pointer max-w-48 min-h-46" (click)="toggleMenu()">
@@ -47,18 +47,23 @@
         <app-nav-menu (onNavigationSelected)="onNavigation()" />
     </div>
     <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
-    <div class="search-results z-10 bg-color-dark-grey w-full h-full" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
-        <div class="flex align-items-center">
-            <div>
-                @for (resultItem of searchResultItems$ | async; track $index) {
-                    <div class="flex align-items-center mx-4 p-2 mb-3 last:mb-0 rounded-lg pointer hover:bg-color-dark-grey-darker transition-colors" (click)="resultItemClicked(resultItem)">
-                        <div class="flex align-items-center mr-3" *ngIf="resultItem.icon">
-                            <div class="width-md">
+    <div class="search-results z-2 bg-color-dark-grey w-full h-full p-3" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
+        <div class="text-lg bold">{{ 'search.results' | $t }}</div>
+        @let resultItems = searchResultItems$ | async;
+        <div>
+            <div class="mt-4">
+                <app-chip-group [chipGroup$]="searchTypeFilterChips$" (onSelected)="onSearchTypeFilterChanged($event)" />
+            </div>
+            <div class="w-full pt-6">
+                @for (resultItem of resultItems; track $index) {
+                    <div class="flex align-items-center px-3 py-2 mb-3 last:mb-0 rounded-lg pointer hover:bg-color-dark-grey-darker transition-colors border-1 border-solid border-mid-grey hover:border-light-grey-darker" (click)="resultItemClicked(resultItem)">
+                        <div class="basis-1/10 flex align-items-center mr-3" *ngIf="resultItem.icon">
+                            <div class="width-2-25rem">
                                 <app-ui-icon [descriptor]="getIconDescriptor(resultItem)" />
                             </div>
                         </div>
                         <div class="flex-grow">
-                            {{ resultItem.title }}
+                            <div>{{ resultItem.title }}</div>
                         </div>
                     </div>
                 }

@@ -42,6 +42,7 @@ export class CountryFlagService {
         ['si', '🇸🇮'],
         ['sk', '🇸🇰'],
         ['tr', '🇹🇷'],
+        ['ua', '🇺🇦'],
     ]);
 
     resolveNationalities(nationalities: string[]): CountryFlag[] {
