@@ -56,14 +56,45 @@
             </div>
             <div class="w-full pt-6">
                 @for (resultItem of resultItems; track $index) {
-                    <div class="flex align-items-center px-3 py-2 mb-3 last:mb-0 rounded-lg pointer hover:bg-color-dark-grey-darker transition-colors border-1 border-solid border-mid-grey hover:border-light-grey-darker" (click)="resultItemClicked(resultItem)">
-                        <div class="basis-1/10 flex align-items-center mr-3" *ngIf="resultItem.icon">
-                            <div class="width-2-25rem">
-                                <app-ui-icon [descriptor]="getIconDescriptor(resultItem)" />
-                            </div>
+                    <div class="px-3 py-2 mb-3 last:mb-0 rounded-lg pointer hover:bg-color-dark-grey-darker transition-colors border-1 border-solid border-mid-grey hover:border-light-grey-darker" (click)="resultItemClicked(resultItem)">
+                        <div class="mb-3">
+                            <span class="text-xs bg-color-dark-grey-lighter-2 px-2 py-1 rounded-md">{{ getSearchResultItemTypeText(resultItem.type) }}</span>
                         </div>
-                        <div class="flex-grow">
-                            <div>{{ resultItem.title }}</div>
+                        <div class="flex align-items-center">
+                            <div class="basis-1/10 flex align-items-center mr-3" *ngIf="resultItem.icon || resultItem.type === 'game'">
+                                <div class="width-2-25rem" *ngIf="resultItem.type !== 'game'; else gameSearchResultIcon">
+                                    <app-ui-icon [descriptor]="getIconDescriptor(resultItem)" />
+                                </div>
+                                <ng-template #gameSearchResultIcon>
+                                    <div class="flex">
+                                        @let homeTeamIcon = getGameSearchResultHomeTeamIcon(resultItem);
+                                        @let awayTeamIcon = getGameSearchResultAwayTeamIcon(resultItem);
+                                        <div class="width-xs" *ngIf="homeTeamIcon">
+                                            <app-ui-icon [descriptor]="{ 'type': 'club', 'content': homeTeamIcon }" />
+                                        </div>
+                                        <div class="width-xs" *ngIf="awayTeamIcon">
+                                            <app-ui-icon [descriptor]="{ 'type': 'club', 'content': awayTeamIcon }" />
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </div>
+                            <div class="flex-grow">
+                                <div *ngIf="resultItem.type !== 'game'; else gameSearchResultContent">{{ resultItem.title }}</div>
+                                <ng-template #gameSearchResultContent>
+                                    <div class="flex align-items-center">
+                                        <div class="mr-4">
+                                            <div class="text-sm text-light-grey-darker">{{ getGameSearchResultKickoff(resultItem) }}</div>
+                                            <div class="mt-1 text-base">
+                                                {{ getGameParticipants(resultItem) }}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="getResultTendencyClass(resultItem)">{{ getGameScoreBeforePso(resultItem) }}</div>
+                                            <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay(resultItem)">{{ getExtendedPlayText(resultItem) }}</div>
+                                        </div>
+                                    </div>                                    
+                                </ng-template>
+                            </div>
                         </div>
                     </div>
                 }

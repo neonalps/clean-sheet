@@ -1325,6 +1325,10 @@
     background-color: var(--dark-grey-mid);
 }
 
+.bg-color-mid-grey {
+    background-color: var(--mid-grey);
+}
+
 .bg-color-info {
     background-color: var(--info);
 }
@@ -1584,4 +1588,12 @@
 
 .scrollbar-stable {
     scrollbar-gutter: stable;
+}
+
+.gap-y-4 {
+    row-gap: 1rem;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }

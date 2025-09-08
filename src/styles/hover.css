@@ -41,6 +41,10 @@
         background-color: var(--light-grey-darker);
     }
 
+    .hover\:bg-color-mid-grey:hover {
+        background-color: var(--mid-grey);
+    }
+
     .hover\:text-light:hover {
         color: var(--light);
     }

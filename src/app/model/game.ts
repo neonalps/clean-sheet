@@ -1,6 +1,7 @@
 import { DateString } from "../util/domain-types";
-import { ClubInput, SmallClub } from "./club";
+import { BasicClub, ClubInput, SmallClub } from "./club";
 import { CompetitionInput, SmallCompetition } from "./competition";
+import { GameResult } from "./external-search";
 import { DetailedPerson, Person, PersonInput } from "./person";
 import { Season } from "./season";
 import { GameVenue, VenueInput } from "./venue";

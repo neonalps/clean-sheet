@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
@@ -8,7 +8,7 @@ import { BehaviorSubject, combineLatest, debounceTime, Subject, switchMap, takeU
 import { NavMenuComponent } from "@src/app/component/nav-menu/nav-menu.component";
 import { assertUnreachable, getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
-import { ExternalSearchEntity, ExternalSearchResultItemDto } from '@src/app/model/external-search';
+import { ExternalSearchEntity, ExternalSearchResultItemDto, GameSearchResultContext } from '@src/app/model/external-search';
 import { UiIconDescriptor, UiIconType } from '@src/app/model/icon';
 import { navigateToClub, navigateToGameWithoutDetails, navigateToLogout, navigateToPerson, navigateToSeasonGames, navigateToSettings, navigateToVenue } from '@src/app/util/router';
 import { Router } from '@angular/router';
@@ -19,6 +19,11 @@ import { Identity, ProfileSettings } from '@src/app/model/auth';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { DateString } from '@src/app/util/domain-types';
+import { SmallClub } from '@src/app/model/club';
+import { environment } from '@src/environments/environment';
+import { GameStatus, ScoreTuple } from '@src/app/model/game';
+import { getGameResult } from '@src/app/module/game/util';
 
 @Component({
   selector: 'app-header',
@@ -41,6 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly searchTypeFilterChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly searchTypeFilter$ = new BehaviorSubject<string | null>(null);
 
+  private readonly mainClub: SmallClub = environment.mainClub;
   private readonly authIdentity = signal<Identity | null>(null);
   private readonly profileSettings = signal<ProfileSettings | null>(null);
 
@@ -116,6 +122,80 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       this.resetSearch();
       this.resetSearchFilters();
     }, 0);
+  }
+
+  getGameParticipants(resultItem: ExternalSearchResultItemDto): string {
+    const context = this.extractGameSearchResultContext(resultItem);
+    const opponentName = context.opponent.shortName;
+    
+    const participants = [this.mainClub.shortName, opponentName];
+    if (context.isHomeGame) {
+      return participants.join(' - ');
+    } else {
+      return participants.reverse().join(' - ');
+    }
+  }
+
+  getGameSearchResultKickoff(resultItem: ExternalSearchResultItemDto): string | null {
+    const kickoff: DateString = (resultItem.context as any)['kickoff'];
+    return new DatePipe('en-US').transform(kickoff, `EEE, MMM d YYYY`);
+  }
+
+  getGameSearchResultHomeTeamIcon(resultItem: ExternalSearchResultItemDto): string | undefined {
+    const context = this.extractGameSearchResultContext(resultItem);
+    if (context.isHomeGame) {
+      return this.mainClub.iconSmall;
+    } else {
+      return context.opponent.iconSmall;
+    }
+  }
+
+  getGameSearchResultAwayTeamIcon(resultItem: ExternalSearchResultItemDto): string | undefined {
+    const context = this.extractGameSearchResultContext(resultItem);
+    if (!context.isHomeGame) {
+      return this.mainClub.iconSmall;
+    } else {
+      return context.opponent.iconSmall;
+    }
+  }
+
+  hasExtendedPlay(resultItem: ExternalSearchResultItemDto): boolean {
+    const context = this.extractGameSearchResultContext(resultItem);
+    return isDefined(context.result?.afterExtraTime) || isDefined(context.result?.penaltyShootOut);
+  }
+  
+  getResult(score: ScoreTuple | null): string {
+    return score !== null ? score.join(":") : "-";
+  }
+
+  getGameScoreBeforePso(resultItem: ExternalSearchResultItemDto) {
+    const context = this.extractGameSearchResultContext(resultItem);
+    if (context.status === GameStatus.Scheduled) {
+      return '';
+    }
+
+    return this.getResult(getGameResult({ isHomeGame: context.isHomeGame, fullTime: context.result?.fullTime, afterExtraTime: context.result?.afterExtraTime, penaltyShootOut: context.result?.penaltyShootOut }, false));
+  }
+
+  getGameScoreAfterPso(resultItem: ExternalSearchResultItemDto) {
+    const context = this.extractGameSearchResultContext(resultItem);
+    return this.getResult(getGameResult({ isHomeGame: context.isHomeGame, fullTime: context.result?.fullTime, afterExtraTime: context.result?.afterExtraTime, penaltyShootOut: context.result?.penaltyShootOut }, true));
+  }
+
+  getExtendedPlayText(resultItem: ExternalSearchResultItemDto): string {
+    if (isDefined(this.extractGameSearchResultContext(resultItem).result?.penaltyShootOut)) {
+      return this.translationService.translate(`gameResult.pso`, { 'score': this.getGameScoreAfterPso(resultItem) });
+    }
+
+    return this.translationService.translate('gameResult.aet');
+  }
+
+  getResultTendencyClass(resultItem: ExternalSearchResultItemDto): string {
+    return `result-tendency-${this.extractGameSearchResultContext(resultItem).resultTendency}`;
+  }
+
+  private extractGameSearchResultContext(resultItem: ExternalSearchResultItemDto): GameSearchResultContext {
+    return resultItem.context as GameSearchResultContext;
   }
 
   hideAccountMenuIfOpen() {
@@ -198,6 +278,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     return [profile.firstName, profile.lastName].filter(item => isDefined(item)).join(' ');
   }
 
+  getSearchResultItemTypeText(itemType: string): string {
+    return this.translationService.translate(`searchItemType.${itemType}`);
+  }
+
   resultItemClicked(resultItem: ExternalSearchResultItemDto) {
     switch (resultItem.type) {
       case ExternalSearchEntity.Person:
@@ -230,7 +314,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       { value: 'person', selected: false, displayText: this.translationService.translate('chip.people'), },
       { value: 'game', selected: false, displayText: this.translationService.translate('chip.games'), },
       { value: 'club', selected: false, displayText: this.translationService.translate('chip.clubs'), },
-      { value: 'copmetition', selected: false, displayText: this.translationService.translate('chip.competitions'), },
+      { value: 'competition', selected: false, displayText: this.translationService.translate('chip.competitions'), },
+      { value: 'season', selected: false, displayText: this.translationService.translate('chip.seasons'), },
     ], mode: 'single' });
   }
 

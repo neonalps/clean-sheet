@@ -1,7 +1,7 @@
 import { BasicGame, CardGameEvent, DetailedGame, GameEventType, GameManager, GamePlayer, GoalGameEvent, InjuryTimeGameEvent, PenaltyMissedGameEvent, PenaltyShootOutGameEvent, ScoreTuple, SubstitutionGameEvent, TeamGameReport, Tendency, UiCardGameEvent, UiGame, UiGameEvent, UiGameManager, UiGamePlayer, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiTeamLineup, UiVarDecisionGameEvent, VarDecisionGameEvent } from "@src/app/model/game";
 import { isDefined, isNotDefined } from "@src/app/util/common";
 
-export function getGameResult(game: BasicGame, includePso = true): ScoreTuple | null {
+export function getGameResult(game: Pick<BasicGame, 'isHomeGame' | 'penaltyShootOut' | 'afterExtraTime' | 'fullTime'>, includePso = true): ScoreTuple | null {
     if (isDefined(game.penaltyShootOut) && includePso === true) {
         return game.isHomeGame ? game.penaltyShootOut : [game.penaltyShootOut[1], game.penaltyShootOut[0]];
     }

@@ -1,5 +1,6 @@
 import { DateString } from "@src/app/util/domain-types";
 import { BasicClub } from "./club";
+import { GameStatus, Tendency } from "./game";
 
 export interface ExternalSearchResponseDto {
     items: ExternalSearchResultItemDto[];
@@ -34,6 +35,8 @@ export type GameResult = {
 export type GameSearchResultContext = {
     opponent: BasicClub;
     kickoff: DateString;
+    resultTendency?: Tendency;
+    status: GameStatus;
     isHomeGame: boolean;
     result?: GameResult;
-};
+}
