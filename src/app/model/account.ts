@@ -12,6 +12,11 @@ export enum DateFormat {
     European = "eu",
 }
 
+export enum MinuteFormat {
+    Apostrophe = "apostrophe",
+    Dot = "dot",
+}
+
 export enum ScoreFormat {
     Colon = "colon",
     Hyphen = "hyphen",

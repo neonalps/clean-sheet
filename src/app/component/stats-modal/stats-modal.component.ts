@@ -12,6 +12,7 @@ import { PersonId } from '@src/app/util/domain-types';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 export type StatsModalPayload = {
   personId: PersonId;
@@ -38,6 +39,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   private readonly gamesPlayedService = inject(GamesPlayedService);
   private readonly modalService = inject(ModalService);
+  private readonly scoreFormatter = inject(ScoreFormatter);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -84,7 +86,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   }
 
   getResult(score: ScoreTuple | null): string {
-      return score !== null ? score.join(":") : "-";
+      return this.scoreFormatter.format(score);
     }
   
   getGameScoreBeforePso(game: BasicGame) {

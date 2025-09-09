@@ -20,6 +20,7 @@ import { ProfileIconComponent } from "@src/app/icon/profile/profile.component";
 import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
 import { SaveIconComponent } from "@src/app/icon/save/save.component";
+import { FilterIconComponent } from '@src/app/icon/filter/filter.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -30,6 +31,7 @@ import { SaveIconComponent } from "@src/app/icon/save/save.component";
     ClubIconComponent,
     PlayerIconComponent,
     PlayingFootballComponent,
+    FilterIconComponent,
     FootballGoalComponent,
     CompetitionTableComponent,
     FootballShoeComponent,

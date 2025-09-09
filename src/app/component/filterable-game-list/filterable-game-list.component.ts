@@ -15,10 +15,14 @@ import { SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { Chip } from '@src/app/component/chip/chip.component';
 import { ScrollNearEndDirective } from '@src/app/directive/scroll-near-end/scroll-near-end.directive';
+import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible.component";
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { FilterIconComponent } from "@src/app/icon/filter/filter.component";
+import { COLOR_LIGHT } from '@src/styles/constants';
 
 @Component({
   selector: 'app-filterable-game-list',
-  imports: [CommonModule, GameOverviewComponent, ChipGroupComponent, GameRecordComponent, ScrollNearEndDirective],
+  imports: [CommonModule, I18nPipe, GameOverviewComponent, ChipGroupComponent, GameRecordComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent],
   templateUrl: './filterable-game-list.component.html',
   styleUrl: './filterable-game-list.component.css'
 })
@@ -26,9 +30,12 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
 
   @Input() games$!: Observable<BasicGame[]>;
 
-  competitionFiltersVisible = signal(false);
-  homeAwayFiltersVisible = signal(false);
-  tendencyFiltersVisible = signal(false);
+  readonly colorLight = COLOR_LIGHT;
+
+  readonly competitionFiltersVisible = signal(false);
+  readonly hasActiveFilters = signal(false);
+  readonly homeAwayFiltersVisible = signal(false);
+  readonly tendencyFiltersVisible = signal(false);
 
   readonly mainClub: SmallClub = environment.mainClub;
   readonly gameRecord$ = new BehaviorSubject<GameRecord>({ w: 0, d: 0, l: 0 });
@@ -36,6 +43,8 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
   readonly homeAwayChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly tendencyChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly visibleGames$ = new BehaviorSubject<BasicGame[]>([]);
+
+  readonly toggle$ = new Subject<void>();
 
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
@@ -211,6 +220,10 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
     navigateToGameWithoutDetails(this.router, game.id, game.season.id);
   }
 
+  triggerToggle() {
+    this.toggle$.next();
+  }
+
   private updateUi() {
     // determine visible games
     const visibleGames = this.storedGames
@@ -236,6 +249,8 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
       .filter(game => {
         return this.currentTendencyFilters.length > 0 ? game.resultTendency === this.currentTendencyFilters[0] : true;
       });
+
+    this.hasActiveFilters.set(visibleGames.length !== this.storedGames.length);
 
     // determine and publish new game record
     this.gameRecord$.next(visibleGames.reduce((acc: GameRecord, current: BasicGame): GameRecord => {

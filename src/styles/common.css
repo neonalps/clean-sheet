@@ -968,6 +968,15 @@
     line-height: 2rem;
 }
 
+.text-3xl {
+    font-size: 1.75rem;
+    line-height: 2rem;
+}
+
+.min-w-140 {
+    min-width: 140px;
+}
+
 .text-left {
     text-align: left;
 }
@@ -1523,6 +1532,10 @@
 
 .min-h-90 {
     min-height: 90px;
+}
+
+.min-w-120 {
+    min-width: 120px;
 }
 
 .min-w-140 {

@@ -1,14 +1,32 @@
 <div>
-    <div class="mt-5 ml-2" *ngIf="competitionFiltersVisible()">
-        <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
+    <div class="mb-4">
+        <app-collapsible [toggle$]="toggle$">
+            <ng-container header>
+                <div class="flex align-items-center pointer relative uppercase text-sm text-light-grey" [style.top]="'-3px'" (click)="triggerToggle()">
+                    <div class="mr-2">
+                        <div class="width-1-25rem relative top-1">
+                            <app-filter-icon [fillColor]="hasActiveFilters() ? colorLight : undefined" />
+                        </div>
+                    </div>
+                    <div class="relative" [style.top]="'-2px'">
+                        <div class="hover:text-light-grey-darker">{{ 'list.filterOptions' | $t }}</div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container content>
+                <div class="mt-5 ml-2" *ngIf="competitionFiltersVisible()">
+                    <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
+                </div>
+                <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
+                    <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
+                </div>
+                <div class="mt-5 ml-2 mb-4" *ngIf="tendencyFiltersVisible()">
+                    <app-chip-group [chipGroup$]="tendencyChips$" (onSelected)="onTendencyFilterChanged($event)" />
+                </div>
+            </ng-container>
+        </app-collapsible>
     </div>
-    <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
-        <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
-    </div>
-    <div class="mt-5 ml-2 mb-4" *ngIf="tendencyFiltersVisible()">
-        <app-chip-group [chipGroup$]="tendencyChips$" (onSelected)="onTendencyFilterChanged($event)" />
-    </div>
-    <div>
+    <div class="mb-6">
         <app-game-record [gameRecord$]="gameRecord$" />
     </div>
     <div appScrollNearEnd (nearEnd)="onNearEndScroll()">

@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
@@ -7,6 +7,7 @@ import { SmallClub } from '@src/app/model/club';
 import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getNumberOfDaysBetween } from '@src/app/util/date';
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-game-overview',
@@ -20,7 +21,8 @@ export class GameOverviewComponent {
   @Input() mainClub!: SmallClub;
   @Input() showYear = false;
 
-  constructor(private readonly translationService: TranslationService) {}
+  private readonly scoreFormatter = inject(ScoreFormatter);
+  private readonly translationService = inject(TranslationService);
 
   getHomeTeam(): SmallClub {
     return this.game.isHomeGame ? this.mainClub : this.game.opponent;
@@ -67,7 +69,7 @@ export class GameOverviewComponent {
   }
 
   getResult(score: ScoreTuple | null): string {
-    return score !== null ? score.join(":") : "-";
+    return this.scoreFormatter.format(score);
   }
 
   getGameScoreBeforePso() {

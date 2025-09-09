@@ -1,10 +1,11 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Fixture, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { isDefined } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { SmallClub } from '@src/app/model/club';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-external-game-overview',
@@ -17,7 +18,8 @@ export class ExternalGameOverviewComponent {
   @Input() fixture!: Fixture;
   @Input() showYear = false;
 
-  constructor(private readonly translationService: TranslationService) {}
+  private readonly scoreFormatter = inject(ScoreFormatter);
+  private readonly translationService = inject(TranslationService);
 
   getHomeTeam(): SmallClub {
     return this.fixture.home;
@@ -44,7 +46,7 @@ export class ExternalGameOverviewComponent {
   }
 
   getResult(score: ScoreTuple | null): string {
-    return score !== null ? score.join(":") : "-";
+    return this.scoreFormatter.format(score);
   }
 
   getGameScoreBeforePso() {

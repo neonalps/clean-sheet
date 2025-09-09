@@ -37,6 +37,7 @@ import { AccountRole } from '@src/app/model/auth';
 import { GameService } from '@src/app/module/game/service';
 import { ModalService } from '@src/app/module/modal/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -103,18 +104,19 @@ export class GameComponent implements OnDestroy {
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly viewportScroller = inject(ViewportScroller);
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly clubResolver: ClubResolver,
-    private readonly gameService: GameService,
-    private readonly gameResolver: GameResolver,
-    private readonly matchdayDetailsService: MatchdayDetailsService,
-    private readonly modalService: ModalService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly translationService: TranslationService,
-    private readonly toastService: ToastService,
-  ) {
+  private readonly authService = inject(AuthService);
+  private readonly clubResolver = inject(ClubResolver);
+  private readonly gameService = inject(GameService);
+  private readonly gameResolver = inject(GameResolver);
+  private readonly matchdayDetailsService = inject(MatchdayDetailsService);
+  private readonly modalService = inject(ModalService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly scoreFormatter = inject(ScoreFormatter);
+  private readonly translationService = inject(TranslationService);
+  private readonly toastService = inject(ToastService);
+
+  constructor() {
     this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
       if (identity === null || identity.role !== AccountRole.Manager) {
         this.isContextMenuVisible.set(false);
@@ -162,7 +164,7 @@ export class GameComponent implements OnDestroy {
 
   onGameResolved(game: DetailedGame): void {
     this.game = game;
-    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => [tuple[0], tuple[1]].join(":"), minute: (minute) => transformGameMinute(minute, '.') });
+    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => transformGameMinute(minute, '.') });
 
     // context menu
     const topSectionItems: ContextMenuItem[] = [
@@ -445,11 +447,12 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return this.game!.isHomeGame ? [Math.floor(aggregateScore[0]), Math.floor(aggregateScore[1])].join(":") : [Math.floor(aggregateScore[1]), Math.floor(aggregateScore[0])].join(":");
+    const effectiveAggregateScore: [number, number] = this.game!.isHomeGame ? [Math.floor(aggregateScore[0]), Math.floor(aggregateScore[1])] : [Math.floor(aggregateScore[1]), Math.floor(aggregateScore[0])];
+    return this.scoreFormatter.format(effectiveAggregateScore);
   }
 
   private getResult(score: ScoreTuple | null): string {    
-    return score !== null ? score.join(":") : "-";
+    return this.scoreFormatter.format(score);
   }
 
   getGameResultTendencyClass(): string {

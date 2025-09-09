@@ -3,6 +3,7 @@ import { Component, inject, Input } from '@angular/core';
 import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { isDefined } from '@src/app/util/common';
 
 @Component({
@@ -15,6 +16,7 @@ export class GameScoreComponent {
 
   @Input() game!: BasicGame;
 
+  private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);
 
   getResultTendencyClass(): string {
@@ -26,7 +28,11 @@ export class GameScoreComponent {
     }
   
     getResult(score: ScoreTuple | null): string {
-      return score !== null ? score.join(":") : "-";
+      if (score === null) {
+        return '-';
+      }
+
+      return this.scoreFormatter.format(score);
     }
   
     getGameScoreBeforePso() {

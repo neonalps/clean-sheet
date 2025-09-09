@@ -42,8 +42,8 @@
         </div>
     </div>
     <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8">
-        <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
-            <div class="text-light-grey">{{ 'club.games' | $t }}</div>
+        <div class="page-title mb-6">
+            <div>{{ 'club.games' | $t }}</div>
         </div>
         <div>
             <app-filterable-game-list [games$]="gamesAgainstClub$" />

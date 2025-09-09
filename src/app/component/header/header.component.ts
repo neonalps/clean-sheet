@@ -24,6 +24,7 @@ import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
 import { GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
+import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-header',
@@ -54,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly menuService = inject(MenuService);
   private readonly router = inject(Router);
+  private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
@@ -165,7 +167,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   
   getResult(score: ScoreTuple | null): string {
-    return score !== null ? score.join(":") : "-";
+    return this.scoreFormatter.format(score);
   }
 
   getGameScoreBeforePso(resultItem: ExternalSearchResultItemDto) {
