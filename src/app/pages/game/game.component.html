@@ -49,7 +49,7 @@
             <div class="flex-grow">
                 <div class="center text-sm">
                     <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
-                    <div class="mb-3 flex align-items-center justify-content-center rounded-md transition-bg-color pointer hover:bg-color-dark-grey">
+                    <div class="mb-3 flex align-items-center justify-content-center rounded-md transition-bg-color pointer hover:bg-color-dark-grey" (click)="onCompetitionSelected(game!.competition!.id)">
                         <div>
                             <div class="width-sm relative top-1 mr-2">
                                 <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': game!.competition!.iconSmall! }" />

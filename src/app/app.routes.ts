@@ -16,6 +16,7 @@ import { VenueComponent } from './pages/venue/venue.component';
 import { ModifyGameComponent } from './pages/game-modify/game-modify.component';
 import { AccountRole } from './model/auth';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { CompetitionComponent } from './pages/competition/competition.component';
 
 export const routes: Routes = [
     { 
@@ -58,6 +59,11 @@ export const routes: Routes = [
     { 
         path: `venue/:${PATH_PARAM_VENUE_ID}`, 
         component: VenueComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `competition/:${PATH_PARAM_VENUE_ID}`, 
+        component: CompetitionComponent,
         canActivate: [loggedInGuard],
     },
     { 

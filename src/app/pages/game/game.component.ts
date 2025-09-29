@@ -6,7 +6,7 @@ import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, Scor
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
@@ -26,7 +26,7 @@ import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { Chip } from '@src/app/component/chip/chip.component';
-import { GameId, PersonId, SeasonId, VenueId } from '@src/app/util/domain-types';
+import { CompetitionId, GameId, PersonId, SeasonId, VenueId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
@@ -221,6 +221,10 @@ export class GameComponent implements OnDestroy {
 
   onClubSelected(clubId: number): void {
     navigateToClub(this.router, clubId);
+  }
+
+  onCompetitionSelected(competitionId: CompetitionId) {
+    navigateToCompetition(this.router, competitionId);
   }
 
   onGameContextMenuItemSelected(itemId: string) {
