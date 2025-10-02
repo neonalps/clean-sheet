@@ -40,7 +40,7 @@ export class AppLoadService {
 
         if (existingEntry.validUntilUnix >= getCurrentUnix()) {
             if (existingEntry.scrollPosition) {
-                window.scrollTo(existingEntry.scrollPosition.x, existingEntry.scrollPosition.y);
+                this.scrollOnNextTick(existingEntry.scrollPosition.x, existingEntry.scrollPosition.y);
             }
 
             if (existingEntry.toast) {
@@ -49,6 +49,10 @@ export class AppLoadService {
         }
 
         this.localStorageService.remove(AppLoadService.LOCAL_STORAGE_KEY_APP_LOAD);
+    }
+
+    private scrollOnNextTick(x: number, y: number) {
+        setTimeout(() => window.scrollTo(x, y), 0);
     }
 
 }
