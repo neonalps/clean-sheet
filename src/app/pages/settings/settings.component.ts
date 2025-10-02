@@ -4,7 +4,7 @@ import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
-import { AccountProfile, DateFormat, Language, ScoreFormat } from '@src/app/model/account';
+import { AccountProfile, DateFormat, GameMinuteFormat, Language, ScoreFormat } from '@src/app/model/account';
 import { AccountService } from '@src/app/module/account/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -17,6 +17,8 @@ import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { AuthResponse, ProfileSettings } from '@src/app/model/auth';
 import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 import { AuthService } from '@src/app/module/auth/service';
+import { AppLoadService } from '@src/app/module/app-load/service';
+import { getUnixTimestampFromDate } from '@src/app/util/date';
 
 export const KEY_ACCOUNT_PROFILE_SETTINGS = "profileSettings";
 
@@ -42,12 +44,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
   readonly pushLastName$ = new BehaviorSubject<string>('');
   readonly pushLanguage$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushDateFormat$ = new BehaviorSubject<SelectOption | null>(null);
+  readonly pushGameMinuteFormat$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushScoreFormat$ = new BehaviorSubject<SelectOption | null>(null);
 
   private readonly dateFormatOptions: SelectOption[] = [
     { id: 'br', name: 'Sat, 24 May 2025 - 17:00' },
     { id: 'us', name: 'Sat, May 24 2025 - 17:00' },
     { id: 'eu', name: 'Sa, 24.05.2025 - 17:00' },
+  ];
+  private readonly gameMinuteFormatOptions: SelectOption[] = [
+    { id: 'dot', name: `42.` },
+    { id: 'apostrophe', name: `42'` },
   ];
   private readonly scoreFormatOptions: SelectOption[] = [
     { id: 'colon', name: '3:1' },
@@ -58,9 +65,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private readonly selectedLastName$ = new Subject<string>();
   private readonly selectedLanguage$ = new Subject<string>();
   private readonly selectedDateFormat$ = new Subject<string>();
+  private readonly selectedGameMinuteFormat$ = new Subject<string>();
   private readonly selectedScoreFormat$ = new Subject<string>();
 
   private readonly accountService = inject(AccountService);
+  private readonly appLoadService = inject(AppLoadService);
   private readonly localStorageService = inject(LocalStorageStorageProvider);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
@@ -78,6 +87,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.selectedLanguage$,
       this.selectedDateFormat$,
       this.selectedScoreFormat$,
+      this.selectedGameMinuteFormat$,
     ]).pipe(
       takeUntil(this.destroy$),
       map(combined => ({ 
@@ -86,6 +96,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         language: combined[2] as Language,
         dateFormat: combined[3] as DateFormat,
         scoreFormat: combined[4] as ScoreFormat,
+        gameMinuteFormat: combined[5] as GameMinuteFormat,
         }))
     ).subscribe(profileUpdate => {
       this.currentAccountProfile.set(profileUpdate);
@@ -111,6 +122,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     return merge(this.getDefaultDateFormatOptions());
   }
 
+  getGameMinuteFormatOptions(): Observable<SelectOption[]> {
+    return merge(this.getDefaultGameMinuteFormatOptions());
+  }
+
   getScoreFormatOptions(): Observable<SelectOption[]> {
     return merge(this.getDefaultScoreFormatOptions());
   }
@@ -129,6 +144,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onDateFormatSelected(id: OptionId) {
     this.selectedDateFormat$.next(id.toString());
+  }
+
+  onGameMinuteFormatSelected(id: OptionId) {
+    this.selectedGameMinuteFormat$.next(id.toString());
   }
 
   onScoreFormatSelected(id: OptionId) {
@@ -151,7 +170,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
       currentProfile.lastName !== storedProfile.lastName ||
       currentProfile.language !== storedProfile.language ||
       currentProfile.dateFormat !== storedProfile.dateFormat ||
-      currentProfile.scoreFormat !== storedProfile.scoreFormat;
+      currentProfile.scoreFormat !== storedProfile.scoreFormat ||
+      currentProfile.gameMinuteFormat !== storedProfile.gameMinuteFormat;
   }
 
   onSave() {
@@ -169,6 +189,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         language: profile.language,
         dateFormat: profile.dateFormat,
         scoreFormat: profile.scoreFormat,
+        gameMinuteFormat: profile.gameMinuteFormat,
       },
     })
 
@@ -178,13 +199,29 @@ export class SettingsComponent implements OnInit, OnDestroy {
           language: profile.language,
           dateFormat: profile.dateFormat,
           scoreFormat: profile.scoreFormat,
+          gameMinuteFormat: profile.gameMinuteFormat,
     }).pipe(
       takeUntil(this.destroy$),
     ).subscribe({
-      next: updatedProfile => {
-        this.toastService.addToast({ type: 'success', text: this.translationService.translate('account.profileUpdate.success') });
-        this.onAccountProfileLoaded(updatedProfile);
+      next: _ => {
         this.isSubmitting.set(false);
+
+        const appLoadEntryValidUntil = new Date();
+        appLoadEntryValidUntil.setSeconds(appLoadEntryValidUntil.getSeconds() + 1);
+
+        this.appLoadService.createEntry({
+          validUntilUnix: getUnixTimestampFromDate(appLoadEntryValidUntil),
+          toast: {
+            type: 'success',
+            i18nKey: `account.profileUpdate.success`,
+          },
+          scrollPosition: {
+            x: window.scrollX,
+            y: window.scrollY,
+          },
+        });
+
+        window.location.reload();
       },
       error: err => {
         console.error(err);
@@ -200,6 +237,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   private getDefaultDateFormatOptions(): Observable<SelectOption[]> {
     return of(this.dateFormatOptions);
+  }
+
+  private getDefaultGameMinuteFormatOptions(): Observable<SelectOption[]> {
+    return of(this.gameMinuteFormatOptions);
   }
 
   private getDefaultScoreFormatOptions(): Observable<SelectOption[]> {
@@ -223,6 +264,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       language: profile.profileSettings.language,
       dateFormat: profile.profileSettings.dateFormat,
       scoreFormat: profile.profileSettings.scoreFormat,
+      gameMinuteFormat: profile.profileSettings.gameMinuteFormat,
     });
 
     // all observables must emit once so that combinedLatest will have the current state (it only emits after each observables has emitted at least once)
@@ -232,6 +274,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const selectedLanguage = this.languageOptions.find(item => item.id === profile.profileSettings.language);
     const selectedDateFormat = this.dateFormatOptions.find(item => item.id === profile.profileSettings.dateFormat);
     const selectedScoreFormat = this.scoreFormatOptions.find(item => item.id === profile.profileSettings.scoreFormat);
+    const selectedGameMinuteFormat = this.gameMinuteFormatOptions.find(item => item.id === profile.profileSettings.gameMinuteFormat);
 
     this.pushEmail$.next(profile.email);
 
@@ -246,6 +289,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.pushLanguage$.next(ensureNotNullish(selectedLanguage));
     this.pushDateFormat$.next(ensureNotNullish(selectedDateFormat));
     this.pushScoreFormat$.next(ensureNotNullish(selectedScoreFormat));
+    this.pushGameMinuteFormat$.next(ensureNotNullish(selectedGameMinuteFormat));
 
     this.isLoading.set(false);
   }

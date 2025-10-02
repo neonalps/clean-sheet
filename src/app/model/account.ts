@@ -12,7 +12,7 @@ export enum DateFormat {
     European = "eu",
 }
 
-export enum MinuteFormat {
+export enum GameMinuteFormat {
     Apostrophe = "apostrophe",
     Dot = "dot",
 }
@@ -45,4 +45,5 @@ export interface UpdateAccountProfile {
     language: Language;
     dateFormat: DateFormat;
     scoreFormat: ScoreFormat;
+    gameMinuteFormat: GameMinuteFormat;
 }

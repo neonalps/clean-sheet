@@ -1,4 +1,4 @@
-import { DateFormat, Language, ScoreFormat } from "./account";
+import { DateFormat, GameMinuteFormat, Language, ScoreFormat } from "./account";
 
 export enum AccountRole {
     Subsitute = 'substitute',
@@ -19,6 +19,7 @@ export interface ProfileSettings {
     language: Language;
     dateFormat: DateFormat;
     scoreFormat: ScoreFormat;
+    gameMinuteFormat: GameMinuteFormat;
 }
 
 export interface AuthResponse {

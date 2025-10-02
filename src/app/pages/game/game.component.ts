@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
 import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
-import { convertToUiGame, getGameResult, transformGameMinute } from '@src/app/module/game/util';
+import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
@@ -38,6 +38,7 @@ import { GameService } from '@src/app/module/game/service';
 import { ModalService } from '@src/app/module/modal/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
+import { GameMinuteFormatter } from '@src/app/module/game/minute-formatter';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -109,6 +110,7 @@ export class GameComponent implements OnDestroy {
   private readonly gameService = inject(GameService);
   private readonly gameResolver = inject(GameResolver);
   private readonly matchdayDetailsService = inject(MatchdayDetailsService);
+  private readonly gameMinuteFormatter = inject(GameMinuteFormatter);
   private readonly modalService = inject(ModalService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -164,7 +166,7 @@ export class GameComponent implements OnDestroy {
 
   onGameResolved(game: DetailedGame): void {
     this.game = game;
-    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => transformGameMinute(minute, '.') });
+    this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => this.gameMinuteFormatter.format(minute) });
 
     // context menu
     const topSectionItems: ContextMenuItem[] = [

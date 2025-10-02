@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { AuthService } from "@src/app/module/auth/service";
-import { MinuteFormat } from "@src/app/model/account";
+import { GameMinuteFormat } from "@src/app/model/account";
 import { filter } from "rxjs";
 import { isDefined } from "@src/app/util/common";
 import { transformGameMinute } from "./util";
@@ -10,18 +10,19 @@ import { transformGameMinute } from "./util";
 })
 export class GameMinuteFormatter {
 
-    private readonly minuteFormat = signal<MinuteFormat>(MinuteFormat.Apostrophe);
+    private readonly minuteFormat = signal<GameMinuteFormat>(GameMinuteFormat.Apostrophe);
 
     private readonly authService = inject(AuthService);
 
     constructor() {
         this.authService.profileSettings$.pipe(filter(value => isDefined(value))).subscribe(value => {
-            // TODO implement
+            console.log('setting game minute format to', value.gameMinuteFormat);
+            this.minuteFormat.set(value.gameMinuteFormat);
         });
     }
 
     getCurrentMinuteFormat(): string {
-        return this.minuteFormat() === MinuteFormat.Apostrophe ? "'" : '.';
+        return this.minuteFormat() === GameMinuteFormat.Apostrophe ? "'" : '.';
     }
 
     format(minute: string) {

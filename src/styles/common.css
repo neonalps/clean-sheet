@@ -1518,6 +1518,10 @@
     min-height: 40px;
 }
 
+.min-h-42 {
+    min-height: 42px;
+}
+
 .min-h-46 {
     min-height: 46px;
 }
