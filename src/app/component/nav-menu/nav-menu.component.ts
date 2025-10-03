@@ -73,6 +73,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
           {
             target: '/season/current/games',
             i18nKey: 'menu.games',
+          },
+          {
+            target: '/season/current/squad',
+            i18nKey: 'menu.squad',
           }
         ]
       },

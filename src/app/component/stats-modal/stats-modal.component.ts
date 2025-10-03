@@ -13,6 +13,7 @@ import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
+import { isDefined } from '@src/app/util/common';
 
 export type StatsModalPayload = {
   personId: PersonId;
@@ -36,6 +37,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
   isLoading = signal(true);
+  isMoreAvailable = signal(false);
 
   private readonly gamesPlayedService = inject(GamesPlayedService);
   private readonly modalService = inject(ModalService);
@@ -78,6 +80,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
         this.groupedGamesPlayed$.next(this.groupedGamesPlayed);
 
         this.isLoading.set(false);
+        this.isMoreAvailable.set(isDefined(value.nextPageKey));
       },
       error: (error) => {
         console.error(error);
@@ -129,6 +132,10 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   onGameClicked(game: BasicGame) {
     window.open(`${environment.frontendBaseUrl}/game/${game.id}`, '_blank');
+  }
+
+  triggerLoadMore() {
+    
   }
 
 }

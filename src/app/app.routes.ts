@@ -17,6 +17,7 @@ import { ModifyGameComponent } from './pages/game-modify/game-modify.component';
 import { AccountRole } from './model/auth';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { CompetitionComponent } from './pages/competition/competition.component';
+import { SeasonSquadComponent } from './pages/season-squad/season-squad.component';
 
 export const routes: Routes = [
     { 
@@ -39,6 +40,11 @@ export const routes: Routes = [
     { 
         path: `season/:${PATH_PARAM_SEASON_ID}/games`, 
         component: SeasonGamesComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `season/:${PATH_PARAM_SEASON_ID}/squad`, 
+        component: SeasonSquadComponent,
         canActivate: [loggedInGuard],
     },
     { 
