@@ -1,10 +1,10 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
-import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
 import { GameOverviewComponent } from '@src/app/component/game-overview/game-overview.component';
@@ -14,7 +14,6 @@ import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
 import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
 import { environment } from '@src/environments/environment';
@@ -34,7 +33,6 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private seasons: Season[] = [];
   private seasonGames: Map<number, DetailedGame[]> = new Map();
-  private subscriptions: Subscription[] = [];
 
   hasSeasonGames = false;
   hasPastGames = false;
@@ -51,17 +49,19 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   @ViewChild('upcomingGamesContainer') upcomingGamesRef!: ElementRef;
 
-  private upcomingGamesPositionSubject = new Subject<[number, number] | undefined>();
+  private readonly upcomingGamesPositionSubject = new Subject<[number, number] | undefined>();
 
-  constructor(
-    private readonly route: ActivatedRoute, 
-    private readonly router: Router,
-    private readonly seasonService: SeasonService, 
-    private readonly seasonGamesService: SeasonGamesService,
-    private readonly viewportScroller: ViewportScroller,
-  ) {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly seasonService = inject(SeasonService);
+  private readonly seasonGamesService = inject(SeasonGamesService);
+  private readonly viewportScroller = inject(ViewportScroller);
+
+  private readonly destroy$ = new Subject<void>();
+
+  constructor() {
     this.router.events
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         if (value instanceof NavigationEnd && this.seasons.length > 0) { // trigger load only if we already have received the seasons
           this.loadSeasonGames(this.getSeasonIdRouteParam());
@@ -69,20 +69,20 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       });
 
     const routerScrollingPosition = this.router.events.pipe(
-      takeUntilDestroyed(),
+      takeUntil(this.destroy$),
       filter((event): event is Scroll => event instanceof Scroll),
       map((event: Scroll) => event.position || undefined),
     );
 
     const upcomingGamesPosition = this.upcomingGamesPositionSubject.pipe(
-        takeUntilDestroyed(),
+        takeUntil(this.destroy$)
     );
     
     // note: combine latest only emits after each observable has emitted at least one value
     combineLatest([
       routerScrollingPosition,
       upcomingGamesPosition,
-    ]).pipe(takeUntilDestroyed()).subscribe(([routerScrollingPositionValue, upcomingGamesPositionValue]) => {
+    ]).pipe(takeUntil(this.destroy$)).subscribe(([routerScrollingPositionValue, upcomingGamesPositionValue]) => {
       // ignore any undefined upcoming games position values
       if (upcomingGamesPositionValue === undefined) {
         return;
@@ -115,16 +115,18 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
 
-    this.subscriptions.push(this.seasonService.getSeasonsObservable().subscribe(seasons => {
+    this.seasonService.getSeasonsObservable().pipe(takeUntil(this.destroy$)).subscribe(seasons => {
       this.seasons = seasons;
 
       if (seasons.length > 0) {
         this.seasons$ = of(seasons);
         this.loadSeasonGames(this.getSeasonIdRouteParam());
       }
-    }));
+    });
 
-    this.subscriptions.push(this.seasonGamesService.getSeasonGamesObservable().subscribe(payload => {
+    this.seasonGamesService.getSeasonGamesObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(payload => {
       this.seasonGames.set(payload.seasonId, payload.games);
 
       if (payload.seasonId === this.selectedSeason?.id) {
@@ -142,7 +144,12 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
           this.upcomingGamesPositionSubject.next(upcomingGamesPosition !== undefined ? [upcomingGamesPosition.x, upcomingGamesPosition.y] : [0, 0]);
         }, 0);
       }
-    }));
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async loadSeasonGames(seasonParam: string): Promise<void> {
@@ -156,10 +163,6 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     });
     
     await this.seasonGamesService.getSeasonGames(this.selectedSeason.id);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(item => item.unsubscribe()); 
   }
 
   onSeasonSelected(seasonId: OptionId) {

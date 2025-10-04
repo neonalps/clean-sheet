@@ -1,0 +1,35 @@
+@let nationalities = getNationalities();
+<div [ngClass]="containerClass">
+    <div class="basis-1/10 flex justify-content-center align-items-center">
+        {{ member.shirt }}
+    </div>
+    <div class="basis-1/8" *ngIf="member.player.avatar">
+        <div class="width-md">
+            <app-ui-icon [descriptor]="{ 'type': 'player', 'content': member.player.avatar }" />
+        </div>
+    </div>
+    <div class="flex-grow">
+        <div class="flex align-items-center">
+            <div>
+                {{ member.player.firstName }} <span class="bold">{{ member.player.lastName }}</span>
+            </div>
+            <ng-container *ngIf="nationalities && nationalities.length > 0">
+                <div class="ml-1">
+                    <ng-container *ngFor="let country of nationalities">
+                        <span [title]="country.title">{{ country.flag }}</span>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+        <div class="mt-2 text-sm text-light-grey" *ngIf="member.from || member.to">
+            <div class="flex" *ngIf="member.from">
+                <div class="text-light-grey-darker mr-2">{{ 'squad.member.from' | $t }}:</div>
+                <div>{{ member.from | date:'MMM d YYYY' }}</div>
+            </div>
+            <div class="flex" *ngIf="member.to">
+                <div class="text-light-grey-darker mr-2">{{ 'squad.member.to' | $t }}:</div>
+                <div>{{ member.to | date:'MMM d YYYY' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
