@@ -91,7 +91,6 @@ export class SeasonSquadComponent implements OnInit, OnDestroy {
     this.seasonSquadService.getSquadBySeasonId(season.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(response => {
-        console.log(response)
         this.goalkeepers.set(response.squad.goalkeeper);
         this.defenders.set(response.squad.defender);
         this.midfielders.set(response.squad.midfielder);

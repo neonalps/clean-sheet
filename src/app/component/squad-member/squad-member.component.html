@@ -1,4 +1,4 @@
-@let nationalities = getNationalities();
+@let playerNationalities = nationalities();
 <div [ngClass]="containerClass">
     <div class="basis-1/10 flex justify-content-center align-items-center">
         {{ member.shirt }}
@@ -13,9 +13,9 @@
             <div>
                 {{ member.player.firstName }} <span class="bold">{{ member.player.lastName }}</span>
             </div>
-            <ng-container *ngIf="nationalities && nationalities.length > 0">
+            <ng-container *ngIf="playerNationalities && playerNationalities.length > 0">
                 <div class="ml-1">
-                    <ng-container *ngFor="let country of nationalities">
+                    <ng-container *ngFor="let country of playerNationalities">
                         <span [title]="country.title">{{ country.flag }}</span>
                     </ng-container>
                 </div>

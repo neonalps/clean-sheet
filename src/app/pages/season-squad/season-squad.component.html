@@ -1,4 +1,4 @@
-<section class="px-3">
+<section class="px-3 pb-8">
     @let memberContainerClass = 'bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg mt-3 pointer flex align-items-center';
     <div>
         <div class="border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
@@ -6,7 +6,11 @@
         </div>
         <div class="dashboard-item-content">
             <ng-container *ngIf="isLoading(); else loadedGoalkeepers">
-                loading...
+                <div class="py-2">
+                    <div class="skeleton-box-medium" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                </div>
             </ng-container>
             <ng-template #loadedGoalkeepers>
                 @for (goalkeeper of goalkeepers(); track goalkeeper.id) {
@@ -21,7 +25,13 @@
         </div>
         <div class="dashboard-item-content">
             <ng-container *ngIf="isLoading(); else loadedDefenders">
-                loading...
+                <div class="py-2">
+                    <div class="skeleton-box-medium" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                </div>
             </ng-container>
             <ng-template #loadedDefenders>
                 @for (defender of defenders(); track defender.id) {
@@ -36,7 +46,13 @@
         </div>
         <div class="dashboard-item-content">
             <ng-container *ngIf="isLoading(); else loadedMidfielders">
-                loading...
+                <div class="py-2">
+                    <div class="skeleton-box-medium" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                </div>
             </ng-container>
             <ng-template #loadedMidfielders>
                 @for (midfielder of midfielders(); track midfielder.id) {
@@ -51,7 +67,12 @@
         </div>
         <div class="dashboard-item-content">
             <ng-container *ngIf="isLoading(); else loadedForwards">
-                loading...
+                <div class="py-2">
+                    <div class="skeleton-box-medium" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                    <div class="skeleton-box-medium mt-2" style="width: 100%;"></div>
+                </div>
             </ng-container>
             <ng-template #loadedForwards>
                 @for (forward of forwards(); track forward.id) {
