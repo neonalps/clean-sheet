@@ -1,13 +1,13 @@
 <div class="px-2">
     <app-stepper (onStepSelected)="onStepSelected($event)" [activeStep$]="pushStep$">
-        <app-stepper-item [stepId]="'general'" [displayName]="'General'">
-            general
+        <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
+            {{ 'game.modify.general' | $t }}
         </app-stepper-item>
-        <app-stepper-item [stepId]="'lineups'" [displayName]="'Lineups'">
-            lineups
+        <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
+            {{ 'game.modify.lineups' | $t }}
         </app-stepper-item>
-        <app-stepper-item [stepId]="'events'" [displayName]="'Events'">
-            events
+        <app-stepper-item [stepId]="'events'" [displayName]="'game.modify.events' | $t">
+            {{ 'game.modify.events' | $t }}
         </app-stepper-item>
     </app-stepper>
     <div class="px-2 mt-3 text-right pointer" (click)="onNextClicked()">next</div>

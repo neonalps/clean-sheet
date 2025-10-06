@@ -1434,6 +1434,26 @@
     border-bottom-color: var(--light);
 }
 
+.border-b-light-grey {
+    border-bottom-color: var(--light-grey);
+}
+
+.border-b-light-grey-darker {
+    border-bottom-color: var(--light-grey-darker);
+}
+
+.border-b-dark-grey {
+    border-bottom-color: var(--dark-grey);
+}
+
+.border-b-dark-grey-darker {
+    border-bottom-color: var(--dark-grey-darker);
+}
+
+.border-b-dark-grey-lighter {
+    border-bottom-color: var(--dark-grey-lighter);
+}
+
 .border-1 {
     border-width: 1px;
 }

@@ -11,6 +11,7 @@ import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 export type UserProviderInput = {
   id: string;
@@ -104,7 +105,7 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [StepperComponent, StepperItemComponent],
+  imports: [StepperComponent, StepperItemComponent, I18nPipe],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
@@ -134,11 +135,11 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onNextClicked() {
-    console.log('next');
+    this.onStepSelected('lineups');
   }
 
   onStepSelected(stepId: string) {
-    console.log('selected step', stepId);
+    this.pushStep$.next(stepId);
   }
 
   private initializeModel(game: DetailedGame | null) {

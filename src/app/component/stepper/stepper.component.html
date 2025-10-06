@@ -1,9 +1,9 @@
 <div #stepperContainer class="stepper-header bg-color-dark-grey flex align-items-center justify-content-between p-1">
     @for (step of steps; track step.stepId) {
-        <div class="bg-color-dark-grey-darker px-4 py-2" [ngClass]="{ 'text-light-grey': !step.active(), 'pointer hover:text-light-grey-darker': step.selectable() }">{{ step.displayName }}</div>
+        <div class="bg-color-dark-grey-darker px-4 py-2 rounded-md" [ngClass]="{ 'text-light-grey': !step.active(), 'pointer hover:text-light-grey-darker': step.selectable() }">{{ step.displayName }}</div>
         <div *ngIf="!$last" class="transition-colors border-b-1 border-b-solid w-full mx-2" [ngClass]="{ 'border-b-light-grey-darker': !step.completed(), 'border-b-light-grey': step.completed() }"></div>
     }
 </div>
-<div class="stepper-body mt-4 px-2">
+<div class="stepper-body p-2">
     <ng-content></ng-content>
 </div>
