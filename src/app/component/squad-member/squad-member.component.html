@@ -32,4 +32,7 @@
             </div>
         </div>
     </div>
+    <div class="basis-1/10 flex align-items-center justify-content-center" *ngIf="member.loan === true">
+        <div class="text-sm text-light-grey">{{ 'squad.member.loan' | $t}}</div>
+    </div>
 </div>

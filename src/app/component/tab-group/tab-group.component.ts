@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterContentInit, Component, ContentChildren, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild } from '@angular/core';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { TabGroupItemHeaderComponent, TabItemInfo } from "../tab-group-item-header/tab-group-item-header.component";
+import { TabGroupItemHeaderComponent, TabItemInfo } from "@src/app/component/tab-group-item-header/tab-group-item-header.component";
 
 @Component({
   selector: 'app-tab-group',

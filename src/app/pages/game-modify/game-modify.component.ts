@@ -8,7 +8,9 @@ import { GameVenue } from '@src/app/model/venue';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { StepperComponent } from "@src/app/component/stepper/stepper.component";
+import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 
 export type UserProviderInput = {
   id: string;
@@ -102,13 +104,14 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [],
+  imports: [StepperComponent, StepperItemComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
   readonly model = signal<ModifyGameModel>({});
+  readonly pushStep$ = new BehaviorSubject<string | null>(null);
   
   readonly firstStageComplete: Signal<boolean> = computed(() => {
     const current = this.model();
@@ -128,6 +131,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onStepSelected(stepId: string) {
+    console.log('selected step', stepId);
   }
 
   private initializeModel(game: DetailedGame | null) {

@@ -1,1 +1,13 @@
-<div>first stage is {{ firstStageComplete() ? '' : 'not' }} complete</div>
+<div class="px-2">
+    <app-stepper (onStepSelected)="onStepSelected($event)" [activeStep$]="pushStep$">
+        <app-stepper-item [stepId]="'general'" [displayName]="'General'">
+            general
+        </app-stepper-item>
+        <app-stepper-item [stepId]="'lineups'" [displayName]="'Lineups'">
+            lineups
+        </app-stepper-item>
+        <app-stepper-item [stepId]="'events'" [displayName]="'Events'">
+            events
+        </app-stepper-item>
+    </app-stepper>
+</div>
