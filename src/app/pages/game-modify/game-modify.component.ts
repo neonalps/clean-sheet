@@ -133,6 +133,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onNextClicked() {
+    console.log('next');
+  }
+
   onStepSelected(stepId: string) {
     console.log('selected step', stepId);
   }
