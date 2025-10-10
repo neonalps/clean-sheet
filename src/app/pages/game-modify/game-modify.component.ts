@@ -9,7 +9,7 @@ import { GameResolver } from '@src/app/module/game/resolver';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { StepperComponent } from "@src/app/component/stepper/stepper.component";
+import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
@@ -112,7 +112,12 @@ export type ModifyGameModel = {
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
   readonly model = signal<ModifyGameModel>({});
-  readonly pushStep$ = new BehaviorSubject<string | null>(null);
+  
+  readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([
+    { stepId: 'general', active: true, completed: false, disabled: false, },
+    { stepId: 'lineups', active: false, completed: false, disabled: true, },
+    { stepId: 'events', active: false, completed: false, disabled: true, },
+  ]);
   
   readonly firstStageComplete: Signal<boolean> = computed(() => {
     const current = this.model();
@@ -135,11 +140,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onNextClicked() {
-    this.onStepSelected('lineups');
-  }
-
-  onStepSelected(stepId: string) {
-    this.pushStep$.next(stepId);
+    this.modifyGameSteps$.next([
+      { stepId: 'general', active: false, completed: true, disabled: false, },
+      { stepId: 'lineups', active: true, completed: false, disabled: false, },
+    ]);
   }
 
   private initializeModel(game: DetailedGame | null) {

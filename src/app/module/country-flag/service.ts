@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { TranslationService } from "@src/app/module/i18n/translation.service";
 import { isDefined, isNotDefined } from "@src/app/util/common";
 
@@ -12,7 +12,7 @@ export type CountryFlag = {
 })
 export class CountryFlagService {
 
-    constructor(private readonly translationService: TranslationService) {}
+    private readonly translationService = inject(TranslationService);
 
     private static flags: Map<string, string> = new Map([
         ['at', '🇦🇹'],

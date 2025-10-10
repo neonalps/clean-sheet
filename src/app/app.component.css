@@ -1,3 +1,10 @@
 .app-wrapper {
     overflow-x: clip;
 }
+
+@media (min-width: 800px) {
+  .app-wrapper {
+    margin: 0 auto;
+    max-width: min(50%, 640px);
+  }
+}

@@ -1,7 +1,7 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
-import { SelectOption } from '@src/app/component/select/option';
+import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { SquadMemberComponent } from '@src/app/component/squad-member/squad-member.component';
 import { Season } from '@src/app/model/season';
 import { SquadMember } from '@src/app/model/squad';
@@ -10,12 +10,13 @@ import { SeasonSquadService } from '@src/app/module/season-squad/service';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined } from '@src/app/util/common';
 import { PersonId } from '@src/app/util/domain-types';
-import { navigateToPerson, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
-import { BehaviorSubject, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
+import { navigateToPerson, navigateToSeasonSquad, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
+import { BehaviorSubject, combineLatest, delay, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
+import { SeasonSelectComponent } from "@src/app/component/season-select/season-select.component";
 
 @Component({
   selector: 'app-season-squad',
-  imports: [CommonModule, I18nPipe, SquadMemberComponent],
+  imports: [CommonModule, I18nPipe, SquadMemberComponent, SeasonSelectComponent],
   templateUrl: './season-squad.component.html',
   styleUrl: './season-squad.component.css'
 })
@@ -23,6 +24,7 @@ export class SeasonSquadComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
   selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
+  squadLoaded$ = new Subject<void>();
 
   readonly isLoading = signal(true);
   readonly selectedSeason = signal<Season | null>(null);
@@ -56,6 +58,17 @@ export class SeasonSquadComponent implements OnInit, OnDestroy {
       filter((event): event is Scroll => event instanceof Scroll),
       map((event: Scroll) => event.position || undefined),
     );
+
+    combineLatest([
+      routerScrollingPosition,
+      this.squadLoaded$,
+    ]).pipe(delay(1), takeUntil(this.destroy$)).subscribe(([scrollPosition]) => {
+      if (scrollPosition === undefined) {
+        return;
+      }
+
+      this.viewportScroller.scrollToPosition([scrollPosition[0], scrollPosition[1]]);
+    })
   }
 
   ngOnInit(): void {
@@ -97,12 +110,22 @@ export class SeasonSquadComponent implements OnInit, OnDestroy {
         this.forwards.set(response.squad.forward);
 
         this.isLoading.set(false);
+
+        this.squadLoaded$.next();
       });
   }
 
   onMemberClicked(personId: PersonId) {
     navigateToPerson(this.router, personId);
   }
+
+  onSeasonSelected(seasonId: OptionId) {
+      if (seasonId === this.selectedSeason()?.id) {
+        return;
+      }
+  
+      navigateToSeasonSquad(this.router, Number(seasonId));
+    }
 
   private getSeasonIdRouteParam() {
     return this.route.snapshot.paramMap.get(PATH_PARAM_SEASON_ID) as string;

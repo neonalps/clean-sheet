@@ -1,6 +1,14 @@
 <section class="px-3 pb-8">
+    <div class="page-title mb-2 ml-1">{{ 'menu.squad' | $t }}</div>
     @let memberContainerClass = 'bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg mt-3 pointer flex align-items-center';
-    <div>
+    <ng-container *ngIf="seasons$ !== null && selectedSeason() !== null">
+        <div class="sticky top-0 z-1 bg-color-dark py-1">
+            <div class="flex justify-content-center">
+                <app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" />
+            </div>
+        </div>
+    </ng-container>
+    <div class="mt-4">
         <div class="border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
             {{ 'squad.position.goalkeepers' | $t }}
         </div>

@@ -14,6 +14,10 @@ export function navigateToSeasonGames(router: Router, seasonId: SeasonId): void 
     router.navigate(["/season", seasonId, "games"]);
 }
 
+export function navigateToSeasonSquad(router: Router, seasonId: SeasonId): void {
+    router.navigate(["/season", seasonId, "squad"]);
+}
+
 export function navigateToClub(router: Router, clubId: ClubId): void {
     router.navigate(["/club", clubId]);
 }

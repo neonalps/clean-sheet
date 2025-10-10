@@ -1,5 +1,5 @@
 <div class="px-2">
-    <app-stepper (onStepSelected)="onStepSelected($event)" [activeStep$]="pushStep$">
+    <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             {{ 'game.modify.general' | $t }}
         </app-stepper-item>

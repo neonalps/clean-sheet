@@ -14,15 +14,16 @@
                 </div>
             </ng-container>
             <ng-container content>
-                <div class="mt-5 ml-2" *ngIf="competitionFiltersVisible()">
+                <div class="mt-3 ml-2" *ngIf="competitionFiltersVisible()">
                     <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterChanged($event)" />
                 </div>
-                <div class="mt-5 ml-2 mb-4" *ngIf="homeAwayFiltersVisible()">
+                <div class="mt-3 ml-2" *ngIf="homeAwayFiltersVisible()">
                     <app-chip-group [chipGroup$]="homeAwayChips$" (onSelected)="onHomeAwayFilterChanged($event)" />
                 </div>
-                <div class="mt-5 ml-2 mb-4" *ngIf="tendencyFiltersVisible()">
+                <div class="mt-3 ml-2" *ngIf="tendencyFiltersVisible()">
                     <app-chip-group [chipGroup$]="tendencyChips$" (onSelected)="onTendencyFilterChanged($event)" />
                 </div>
+                <div class="mb-2"></div>
             </ng-container>
         </app-collapsible>
     </div>
