@@ -1,10 +1,12 @@
 <div class="px-2">
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
-            {{ 'game.modify.general' | $t }}
+            <div>
+                <app-lineup-selector />
+            </div>
         </app-stepper-item>
         <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
-            {{ 'game.modify.lineups' | $t }}
+            lineups
         </app-stepper-item>
         <app-stepper-item [stepId]="'events'" [displayName]="'game.modify.events' | $t">
             {{ 'game.modify.events' | $t }}

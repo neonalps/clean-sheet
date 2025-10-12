@@ -1,0 +1,13 @@
+<div>
+    <section>
+        <div class="bold text-base mb-2">Starting lineup</div>
+        <div #startingLineup>
+            
+        </div>
+    </section>
+    <section>
+        <div>
+            <app-select [optionsSource]="getAddPersonOptions()" [isLoading]="isSearchingForPerson()" [showSearch]="true" [loadingStyle]="'skeleton'" (onSearch)="onAddPersonSearchChanged($event)" (onSelected)="onAddPersonSelected($event)" />
+        </div>
+    </section>
+</div>

@@ -1,4 +1,4 @@
-export type UiIconType = 'standard' | 'player' | 'club' | 'competition';
+export type UiIconType = 'standard' | 'person' | 'club' | 'competition';
 
 export interface UiIconDescriptor {
     type: UiIconType;

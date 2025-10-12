@@ -324,7 +324,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   private convertResultItemTypeToIconType(entity: ExternalSearchEntity): UiIconType {
     switch (entity) {
       case ExternalSearchEntity.Person:
-        return 'player';
+        return 'person';
       case ExternalSearchEntity.Club:
         return 'club';
       case ExternalSearchEntity.Competition:

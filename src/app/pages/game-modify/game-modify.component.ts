@@ -12,6 +12,7 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { LineupSelectorComponent } from "@src/app/component/lineup-selector/lineup-selector.component";
 
 export type UserProviderInput = {
   id: string;
@@ -105,14 +106,14 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [StepperComponent, StepperItemComponent, I18nPipe],
+  imports: [StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
   readonly model = signal<ModifyGameModel>({});
-  
+
   readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([
     { stepId: 'general', active: true, completed: false, disabled: false, },
     { stepId: 'lineups', active: false, completed: false, disabled: true, },
@@ -248,7 +249,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
       if (item.player.avatar) {
         personEntity.icon = {
-          type: 'player',
+          type: 'person',
           content: item.player.avatar,
         }
       }
@@ -285,7 +286,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
       if (item.person.avatar) {
         personEntity.icon = {
-          type: 'player',
+          type: 'person',
           content: item.person.avatar,
         }
       }
