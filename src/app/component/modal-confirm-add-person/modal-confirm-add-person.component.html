@@ -1,0 +1,16 @@
+<app-modal>
+    <div header>{{ 'person.create.question' | $t }}</div>
+    <div content>
+        <div>{{ createPersonText() }}</div>
+    </div>
+    <div footer>
+        <div class="flex justify-content-center">
+            <div class="w-full">
+                <div class="flex align-items-center justify-content-between mt-12">
+                    <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="onCancel()" />
+                    <app-button class="mx-4" [buttonType]="'success'" [text]="'action.create' | $t" (onClicked)="onConfirm()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</app-modal>

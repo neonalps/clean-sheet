@@ -1,0 +1,62 @@
+<app-modal>
+    @let currentShirt = currentSelectedShirt();
+    <div header>{{ 'shirt.select' | $t }}</div>
+    <div content>
+        <section>
+            <div class="flex align-items-center justify-content-between mb-6">
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">1 - 9</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">10 - 19</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">20 - 29</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">30 - 39</div>
+                </div>
+            </div>
+            <div class="flex align-items-center justify-content-between mb-6">
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">40 - 49</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">50 - 59</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">60 - 69</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">70 - 79</div>
+                </div>
+            </div>
+            <div class="flex align-items-center justify-content-between">
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">80 - 89</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">90 - 99</div>
+                </div>
+                <div class="width-4-5rem"></div>
+                <div class="width-4-5rem"></div>
+            </div>
+        </section>
+        <section>
+            <div class="flex align-items-center justify-content-between mt-10">
+                <div class="width-4-5rem">
+                    <div class="py-3 center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 1, 'bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors': !isUnavailable(1), 'bg-color-light-grey-darker pointer-events-none': isUnavailable(1) }" (click)="selectShirt(1)">1</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 2 }" (click)="selectShirt(2)">2</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 3 }" (click)="selectShirt(3)">3</div>
+                </div>
+                <div class="width-4-5rem">
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 4 }" (click)="selectShirt(4)">4</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</app-modal>

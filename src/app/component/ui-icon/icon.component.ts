@@ -21,6 +21,7 @@ import { LoadingComponent } from '@src/app/component/loading/loading.component';
 import { ChevronLeftComponent } from "@src/app/icon/chevron-left/chevron-left.component";
 import { SaveIconComponent } from "@src/app/icon/save/save.component";
 import { FilterIconComponent } from '@src/app/icon/filter/filter.component';
+import { DragHandleIconComponent } from "@src/app/icon/drag-handle/drag-handle.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -45,7 +46,8 @@ import { FilterIconComponent } from '@src/app/icon/filter/filter.component';
     ImportIconComponent,
     ProfileIconComponent,
     ChevronLeftComponent,
-    SaveIconComponent
+    SaveIconComponent,
+    DragHandleIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

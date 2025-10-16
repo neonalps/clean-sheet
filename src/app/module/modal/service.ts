@@ -1,4 +1,6 @@
 import { Injectable, signal } from "@angular/core";
+import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
+import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
 import { assertUnreachable } from "@src/app/util/common";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
@@ -9,8 +11,10 @@ interface ModalEvent {
 }
 
 export enum Modal {
+    ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
-    Stats = 'stats'
+    Shirt = 'shirt',
+    Stats = 'stats',
 }
 
 @Injectable({
@@ -21,13 +25,23 @@ export class ModalService {
     readonly active$ = new BehaviorSubject<boolean>(false);
     readonly modalType = signal<Modal | null>(null);
 
+    readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
+    readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
     private modalEvent$?: Subject<ModalEvent>;
 
+    showConfirmAddPersonModal(payload: ConfirmAddPersonModalPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.ConfirmAddPerson, payload);
+    }
+
     showDeleteModal(payload: void): Observable<ModalEvent> {
         return this.showModal(Modal.Delete, payload);
+    }
+
+    showShirtModal(payload: ShirtModalPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.Shirt, payload);
     }
 
     showStatsModal(payload: StatsModalPayload): Observable<ModalEvent> {
@@ -86,8 +100,14 @@ export class ModalService {
 
     private publishPayload(type: Modal, payload: unknown) {
         switch (type) {
+            case Modal.ConfirmAddPerson:
+                this.confirmAddPersonModalPayload$.next(payload as ConfirmAddPersonModalPayload);
+                break;
             case Modal.Delete:
                 this.deleteModalPayload$.next();
+                break;
+            case Modal.Shirt:
+                this.shirtModalPayload$.next(payload as ShirtModalPayload);
                 break;
             case Modal.Stats:
                 this.statsModalPayload$.next(payload as StatsModalPayload);

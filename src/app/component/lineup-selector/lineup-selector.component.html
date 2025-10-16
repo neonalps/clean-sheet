@@ -1,13 +1,57 @@
+@let options = addPersonOptions();
 <div>
     <section>
-        <div class="bold text-base mb-2">Starting lineup</div>
-        <div #startingLineup>
-            
+        <div class="flex align-items-center">
+            <div class="flex-grow bold text-base mb-2">Starting lineup</div>
+            <div class="basis-1/12 flex align-items-center justify-content-center pointer" *ngIf="!isAdding()" (click)="triggerAddPerson()">
+                <div class="width-sm p-2">+</div>
+            </div>
         </div>
-    </section>
-    <section>
-        <div>
-            <app-select [optionsSource]="getAddPersonOptions()" [isLoading]="isSearchingForPerson()" [showSearch]="true" [loadingStyle]="'skeleton'" (onSearch)="onAddPersonSearchChanged($event)" (onSelected)="onAddPersonSelected($event)" />
+        <div #startingLineup>
+            <section>
+                @for (lineupItem of lineupItems$ | async; track lineupItem.person.personId) {
+                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" />
+                }
+            </section>
+            <section *ngIf="isAdding()">
+                <div class="relative">
+                    <div class="bg-color-dark-grey-lighter flex align-items-center justify-content-center mb-2 rounded-md py-1">
+                        <div class="flex-grow px-2 py-1">
+                            <input #searchPerson type="text" class="bg-color-dark-grey-lighter py-1 text-light w-full border-t-none border-l-none border-r-none border-b-1 border-b-solid border-b-light-grey focus:border-b-light transition-colors" (input)="onSearchInput($event)" />
+                        </div>
+                        <div class="basis-1/12 pointer px-2 py-1 text-xs" (click)="triggerCancelAddPerson()">Cancel</div>
+                    </div>
+                    <div>
+                        <div *ngIf="options != null">
+                            <ng-container *ngIf="!isSearchingForPerson(); else optionsLoading">
+                                <div class="flex align-items-center justify-content-between py-1">
+                                    <div>
+                                        <span class="text-sm p-1 mr-2">add new player:</span><span class="bold">{{ currentSearchValue() }}</span>
+                                    </div>
+                                    <div (click)="onAddNewPerson()">
+                                        <div>add new person</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <ng-container *ngIf="options.length > 0; else emptyOptions">
+                                        @for (item of options; track item.id) {
+                                            <div class="p-2 mb-2 last:mb-0 pointer" (click)="onPersonSelected(item)">{{ item.name }}</div>
+                                        }
+                                    </ng-container>
+                                    <ng-template #emptyOptions>
+                                        no results
+                                    </ng-template>
+                                </div>
+                            </ng-container>
+                            <ng-template #optionsLoading>
+                                <div class="loading-container-medium">
+                                    <app-loading />
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </section>
 </div>

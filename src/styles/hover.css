@@ -61,6 +61,26 @@
         color: var(--light-grey-darker);
     }
 
+    .hover\:text-danger:hover {
+        color: var(--danger);
+    }
+
+    .hover\:text-danger-lighter-10:hover {
+        color: var(--danger-lighter-10);
+    }
+
+    .hover\:text-danger-lighter-20:hover {
+        color: var(--danger-lighter-20);
+    }
+
+    .hover\:text-danger-lighter-30:hover {
+        color: var(--danger-lighter-30);
+    }
+
+    .hover\:text-danger-lighter-40:hover {
+        color: var(--danger-lighter-40);
+    }
+
     .hover\:border-light-grey-darker:hover {
         border-color: var(--light-grey-darker);
     }

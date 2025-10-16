@@ -1,1 +1,19 @@
-<p>lineup-selector-person-item works!</p>
+<div class="bg-color-dark-grey-lighter flex align-items-center justify-content-center mb-2 rounded-md py-1 user-select-none" draggable="true">
+    <div class="basis-1/12 flex align-items-center justify-content-center cursor-move">
+        <div class="width-sm relative top-2">
+            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'drag' }" />
+        </div>
+    </div>
+    <div class="basis-1/12 flex align-items-center justify-content-center">
+        <div class="bg-color-dark-grey-darker p-1 pointer hover:bg-color-mid-grey transition-colors rounded-md width-sm center" (click)="onPersonShirtClicked.next(item.person.personId)"><span [ngClass]="{ 'invisible': item.shirt === 0 }">{{ item.shirt }}</span></div>
+    </div>
+    <div class="basis-1/8 mr-1 flex align-items-center justify-content-center" *ngIf="item.person.avatar">
+        <div class="width-2-25rem">
+            <app-ui-icon [descriptor]="{ 'type': 'person', 'content': item.person.avatar }" />
+        </div>
+    </div>
+    <div class="flex-grow">
+        {{ getPersonName() }}
+    </div>
+    <div class="basis-1/10 text-xs text-warn px-2 py-1 pointer hover:text-danger-lighter-30 transition-colors" (click)="triggerRemove()" >Remove</div>
+</div>
