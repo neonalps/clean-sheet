@@ -2,40 +2,42 @@
 <div>
     <section>
         <div class="flex align-items-center">
-            <div class="flex-grow bold text-base mb-2">Starting lineup</div>
-            <div class="basis-1/12 flex align-items-center justify-content-center" [ngClass]="{ 'pointer': !isAdding(), 'invisible': isAdding() }" (click)="triggerAddPerson()">
-                <div class="width-sm p-2">+</div>
+            <div class="flex-grow bold text-base my-2">{{ 'lineup.starting' | $t }}</div>
+            <div class="flex align-items-center justify-content-center" [ngClass]="{ 'pointer': !isAdding(), 'invisible': isAdding() }" (click)="triggerAddPerson()">
+                <div class="text-sm hover:text-light-grey transition-colors">{{ 'lineup.addPerson' | $t }}</div>
             </div>
         </div>
         <div #startingLineup>
-            <section>
+            <section #startingSection (dragover)="onDropOver($event)">
                 @for (lineupItem of lineupItems$ | async; track lineupItem.person.personId) {
-                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" />
+                    <app-lineup-selector-person-item class="draggable" draggable="true" [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (dragend)="onDragEnd($event)" (dragstart)="onDragStart($event)" />
                 }
             </section>
             <section *ngIf="isAdding()">
                 <div class="relative">
                     <div class="bg-color-dark-grey-lighter flex align-items-center justify-content-center mb-2 rounded-md py-1">
                         <div class="flex-grow px-2 py-1">
-                            <input #searchPerson type="text" class="bg-color-dark-grey-lighter py-1 text-light w-full border-t-none border-l-none border-r-none border-b-1 border-b-solid border-b-light-grey focus:border-b-light transition-colors" (input)="onSearchInput($event)" />
+                            <input #searchPerson type="text" class="bg-color-dark-grey-lighter py-1 text-base text-light w-full border-t-none border-l-none border-r-none border-b-1 border-b-solid border-b-light-grey focus:border-b-light transition-colors" (input)="onSearchInput($event)" />
                         </div>
-                        <div class="basis-1/12 pointer px-2 py-1 text-xs" (click)="triggerCancelAddPerson()">Cancel</div>
+                        <div class="basis-1/12 pointer px-2 py-1 text-xs hover:text-light-grey transition-colors" (click)="triggerCancelAddPerson()">{{ 'action.cancel' | $t }}</div>
                     </div>
                     <div>
                         <div *ngIf="options != null">
                             <ng-container *ngIf="!isSearchingForPerson(); else optionsLoading">
-                                <div class="flex align-items-center justify-content-between py-1">
-                                    <div>
-                                        <span class="text-sm p-1 mr-2">add new player:</span><span class="bold">{{ currentSearchValue() }}</span>
-                                    </div>
-                                    <div (click)="onAddNewPerson()">
-                                        <div>add new person</div>
+                                <div class="flex align-items-center justify-content-between mb-4">
+                                    <div class="hover:bg-color-dark-grey-lighter transition-colors pointer p-1 rounded-md" (click)="onAddNewPerson()">
+                                        <span class="text-sm p-1 mr-2">{{ 'lineup.createNewPerson' | $t }}:</span><span class="bold">{{ currentSearchValue() }}</span>
                                     </div>
                                 </div>
                                 <div>
                                     <ng-container *ngIf="options.length > 0; else emptyOptions">
                                         @for (item of options; track item.id) {
-                                            <div class="p-2 mb-2 last:mb-0 pointer" (click)="onPersonSelected(item)">{{ item.name }}</div>
+                                            <div class="p-1 mb-3 last:mb-0 pointer flex align-items-center hover:bg-color-dark-grey-lighter transition-colors rounded-md" (click)="onPersonSelected(item)">
+                                                <div class="width-2rem mr-2" *ngIf="item.icon">
+                                                    <app-ui-icon [descriptor]="item.icon"></app-ui-icon>
+                                                </div>
+                                                <div>{{ item.name }}</div>
+                                            </div>
                                         }
                                     </ng-container>
                                     <ng-template #emptyOptions>

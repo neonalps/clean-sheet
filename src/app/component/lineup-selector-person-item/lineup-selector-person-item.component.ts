@@ -4,6 +4,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CommonModule } from '@angular/common';
 import { isDefined } from '@src/app/util/common';
 import { PersonId } from '@src/app/util/domain-types';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 export type LineupItem = {
   person: UiPerson;
@@ -12,7 +13,7 @@ export type LineupItem = {
 
 @Component({
   selector: 'app-lineup-selector-person-item',
-  imports: [CommonModule, UiIconComponent],
+  imports: [CommonModule, UiIconComponent, I18nPipe],
   templateUrl: './lineup-selector-person-item.component.html',
   styleUrl: './lineup-selector-person-item.component.css'
 })

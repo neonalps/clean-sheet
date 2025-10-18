@@ -12,16 +12,20 @@ import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { ShirtModalPayload } from '@src/app/component/modal-select-shirt/modal-select-shirt.component';
 import { ModalService } from '@src/app/module/modal/service';
 import { getPersonName } from '@src/app/util/domain';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { getDragAfterElement } from '@src/app/util/drag';
 
 @Component({
   selector: 'app-lineup-selector',
-  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent],
+  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent],
   templateUrl: './lineup-selector.component.html',
   styleUrl: './lineup-selector.component.css'
 })
 export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   @ViewChild('searchPerson', { static: false }) searchElement!: ElementRef;
+  @ViewChild('startingSection', { static: false }) startingSection!: ElementRef;
 
   readonly currentSearchValue = signal<string | null>(null);
   readonly isAdding = signal(false);
@@ -86,6 +90,25 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   focusSearch(): void {
     setTimeout(() => this.searchElement.nativeElement.focus());
+  }
+
+  onDropOver(event: DragEvent) {
+    event.preventDefault();
+
+    const afterElement = getDragAfterElement(this.startingSection.nativeElement.querySelectorAll('.draggable:not(.dragging)'), event.clientY);
+
+    console.log('drop over', event);
+    console.log('element after is', afterElement)
+  }
+
+  onDragEnd(event: Event) {
+    const element = getHtmlInputElementFromEvent(event);
+    element.classList.remove('dragging');
+  }
+
+  onDragStart(event: Event) {
+    const element = getHtmlInputElementFromEvent(event);
+    element.classList.add('dragging');
   }
 
   onLineupPersonRemoved(personId: PersonId) {
