@@ -155,6 +155,7 @@
     "period.penaltyShootOut": "Penalty shoot out",
     "person.create.question": "Create person?",
     "person.create.detail": "Do you want to create the new person {name}?",
+    "person.search.empty": "No person could be found",
     "player.goalsAgainstClubs": "Goals against clubs",
     "player.stats": "Player stats",
     "reason.dangerousPlay": "Dangerous play",

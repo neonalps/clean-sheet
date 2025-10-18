@@ -32,6 +32,7 @@ export class LineupSelectorPersonItemComponent implements OnInit {
 
   readonly contextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
   readonly personName = signal<string>('');
+  readonly isDragging = signal(false);
 
   private readonly translationService = inject(TranslationService);
 
@@ -56,6 +57,14 @@ export class LineupSelectorPersonItemComponent implements OnInit {
     } else if (action === 'setCaptain') {
       this.onSetCaptain.next(personId); 
     }
+  }
+
+  onDragStart() {
+    this.isDragging.set(true);
+  }
+
+  onDragEnd() {
+    this.isDragging.set(false);
   }
 
 }

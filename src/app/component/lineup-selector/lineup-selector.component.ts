@@ -15,10 +15,12 @@ import { getPersonName } from '@src/app/util/domain';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { EmptyStateComponent } from "@src/app/component/empty-state/empty-state.component";
+import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with-ball.component";
 
 @Component({
   selector: 'app-lineup-selector',
-  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList],
+  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent],
   templateUrl: './lineup-selector.component.html',
   styleUrl: './lineup-selector.component.css'
 })

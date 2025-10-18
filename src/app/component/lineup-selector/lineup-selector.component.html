@@ -24,7 +24,7 @@
                     <div>
                         <div *ngIf="options != null">
                             <ng-container *ngIf="!isSearchingForPerson(); else optionsLoading">
-                                <div class="flex align-items-center justify-content-between mb-4">
+                                <div class="flex align-items-center justify-content-between my-4">
                                     <div class="hover:bg-color-dark-grey-lighter transition-colors pointer p-1 rounded-md" (click)="onAddNewPerson()">
                                         <span class="text-sm p-1 mr-2">{{ 'lineup.createNewPerson' | $t }}:</span><span class="bold">{{ currentSearchValue() }}</span>
                                     </div>
@@ -41,7 +41,14 @@
                                         }
                                     </ng-container>
                                     <ng-template #emptyOptions>
-                                        no results
+                                        <div class="empty-state text-light-grey">
+                                            <app-empty-state>
+                                                <div class="w-1/8" icon>
+                                                    <app-field-with-ball />
+                                                </div>
+                                                <div text>{{ 'person.search.empty' | $t }}</div>
+                                            </app-empty-state>
+                                        </div>
                                     </ng-template>
                                 </div>
                             </ng-container>
