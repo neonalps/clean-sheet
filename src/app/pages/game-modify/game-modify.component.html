@@ -2,11 +2,15 @@
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             <div>
-                <app-lineup-selector [titleText]="'lineup.starting' | $t" />
+                <app-lineup-selector [titleText]="'lineup.starting' | $t" [hasCaptain]="true" [hasShirt]="true" />
             </div>
 
             <div class="mt-4">
-                <app-lineup-selector [titleText]="'lineup.substitutes' | $t" />
+                <app-lineup-selector [titleText]="'lineup.substitutes' | $t" [hasCaptain]="false" [hasShirt]="true" />
+            </div>
+
+            <div class="mt-4">
+                <app-lineup-selector [titleText]="'lineup.managers' | $t" [hasCaptain]="false" [hasShirt]="false" />
             </div>
         </app-stepper-item>
         <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">

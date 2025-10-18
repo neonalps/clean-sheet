@@ -10,7 +10,7 @@
         <div #startingLineup>
             <section #startingSection cdkDropList (cdkDropListDropped)="drop($event)">
                 @for (lineupItem of lineupItems$ | async; track lineupItem.person.personId) {
-                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" />
+                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" [hasCaptain]="hasCaptain" [hasShirt]="hasShirt" />
                 }
             </section>
             <section *ngIf="isAdding()">

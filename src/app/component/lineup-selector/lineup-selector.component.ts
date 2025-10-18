@@ -27,6 +27,10 @@ import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with
 export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   @Input() titleText!: string;
+  
+  @Input() hasCaptain = true;
+  @Input() hasShirt = true;
+  @Input() maximumPeople: number | undefined;
 
   @ViewChild('searchPerson', { static: false }) searchElement!: ElementRef;
   @ViewChild('startingSection', { static: false }) startingSection!: ElementRef;
@@ -119,7 +123,9 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
     this.resetAdd();
 
-    this.personShirtClicked(selectedPersonId);
+    if (this.hasShirt) {
+      this.personShirtClicked(selectedPersonId);
+    }
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -128,6 +134,10 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   personShirtClicked(personId: PersonId) {
+    if (!this.hasShirt) {
+      return;
+    }
+
     const lineupItem = this.lineupItems.find(item => item.person.personId === personId);
     if (!lineupItem) {
       return;
@@ -144,6 +154,10 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   onPersonShirtSelected(payload: ShirtModalPayload) {
+    if (!this.hasShirt) {
+      return;
+    }
+
     const lineupItem = this.lineupItems.find(item => item.person.personId === payload.personId);
     if (!lineupItem || lineupItem.shirt === payload.shirt) {
       return;
@@ -155,6 +169,10 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   onPersonSetCaptain(personId: PersonId) {
+    if (!this.hasCaptain) {
+      return;
+    }
+
     const lineupItem = this.lineupItems.find(item => item.person.personId === personId);
     if (!lineupItem || lineupItem.isCaptain === true) {
       return;

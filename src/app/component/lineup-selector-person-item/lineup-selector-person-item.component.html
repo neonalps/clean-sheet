@@ -1,10 +1,10 @@
-<div cdkDrag (cdkDragStarted)="onDragStart()" (cdkDragEnded)="onDragEnd()" class="bg-color-dark-grey-lighter flex align-items-center justify-content-center mb-2 rounded-md py-1 user-select-none" [ngClass]="{ 'overflow-hidden': isDragging() }">
+<div cdkDrag class="bg-color-dark-grey-lighter flex align-items-center justify-content-center mb-2 rounded-md py-1 user-select-none">
     <div class="basis-1/12 flex align-items-center justify-content-center cursor-move">
         <div class="width-sm relative top-2">
             <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'drag' }" />
         </div>
     </div>
-    <div class="basis-1/12 flex align-items-center justify-content-center">
+    <div class="basis-1/12 flex align-items-center justify-content-center" *ngIf="hasShirt">
         <div class="bg-color-dark-grey-darker p-1 pointer hover:bg-color-mid-grey transition-colors rounded-md width-1-75rem center" (click)="onPersonShirtClicked.next(item.person.personId)"><span [ngClass]="{ 'invisible': item.shirt === 0 }">{{ item.shirt }}</span></div>
     </div>
     <div class="flex align-items-center justify-content-center ml-1" *ngIf="item.person.avatar">
@@ -14,7 +14,7 @@
     </div>
     <div class="flex-grow ml-1 flex align-items-center">
         <div>{{ personName() }}</div>
-        <div *ngIf="item.isCaptain" class="captain ml-2 rounded bold text-sm">C</div>
+        <div *ngIf="hasCaptain && item.isCaptain" class="captain ml-2 rounded bold text-sm">C</div>
     </div>
     <div class="mr-1 relative top-1">
         <app-context-menu [menuOptions]="contextMenuOptions" (onMenuItemSelected)="onContextMenuItemSelected($event)" />

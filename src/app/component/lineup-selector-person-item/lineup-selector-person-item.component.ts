@@ -2,7 +2,6 @@ import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '
 import { UiPerson } from '@src/app/model/game';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CommonModule } from '@angular/common';
-import { isDefined } from '@src/app/util/common';
 import { PersonId } from '@src/app/util/domain-types';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { ContextMenuComponent, ContextMenuSection } from '@src/app/component/context-menu/context-menu.component';
@@ -25,6 +24,8 @@ export type LineupItem = {
 export class LineupSelectorPersonItemComponent implements OnInit {
 
   @Input() item!: LineupItem;
+  @Input() hasCaptain!: boolean;
+  @Input() hasShirt!: boolean;
 
   @Output() onSetCaptain = new EventEmitter<PersonId>();
   @Output() onPersonShirtClicked = new EventEmitter<PersonId>();
@@ -41,7 +42,7 @@ export class LineupSelectorPersonItemComponent implements OnInit {
 
     const menuOptions: ContextMenuSection[] = [];
 
-    if (this.item.isCaptain !== true) {
+    if (this.hasCaptain && this.item.isCaptain !== true) {
       menuOptions.push({ items: [ { id: 'setCaptain', text: this.translationService.translate('lineup.captain'), iconDescriptor: { 'type': 'standard', 'content': 'captain', 'skipRelativePosition': true } } ] });
     }
 
@@ -57,14 +58,6 @@ export class LineupSelectorPersonItemComponent implements OnInit {
     } else if (action === 'setCaptain') {
       this.onSetCaptain.next(personId); 
     }
-  }
-
-  onDragStart() {
-    this.isDragging.set(true);
-  }
-
-  onDragEnd() {
-    this.isDragging.set(false);
   }
 
 }
