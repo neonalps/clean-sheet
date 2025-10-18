@@ -14,11 +14,11 @@ import { ModalService } from '@src/app/module/modal/service';
 import { getPersonName } from '@src/app/util/domain';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { getDragAfterElement } from '@src/app/util/drag';
+import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-lineup-selector',
-  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent],
+  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList],
   templateUrl: './lineup-selector.component.html',
   styleUrl: './lineup-selector.component.css'
 })
@@ -92,25 +92,6 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     setTimeout(() => this.searchElement.nativeElement.focus());
   }
 
-  onDropOver(event: DragEvent) {
-    event.preventDefault();
-
-    const afterElement = getDragAfterElement(this.startingSection.nativeElement.querySelectorAll('.draggable:not(.dragging)'), event.clientY);
-
-    console.log('drop over', event);
-    console.log('element after is', afterElement)
-  }
-
-  onDragEnd(event: Event) {
-    const element = getHtmlInputElementFromEvent(event);
-    element.classList.remove('dragging');
-  }
-
-  onDragStart(event: Event) {
-    const element = getHtmlInputElementFromEvent(event);
-    element.classList.add('dragging');
-  }
-
   onLineupPersonRemoved(personId: PersonId) {
     const idxToRemove = this.lineupItems.findIndex(item => item.person.personId === personId);
     if (idxToRemove >= 0) {
@@ -135,6 +116,11 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     this.resetAdd();
 
     this.personShirtClicked(selectedPersonId);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+     moveItemInArray(this.lineupItems, event.previousIndex, event.currentIndex);
+     this.lineupItems$.next(this.lineupItems);
   }
 
   personShirtClicked(personId: PersonId) {

@@ -8,9 +8,9 @@
             </div>
         </div>
         <div #startingLineup>
-            <section #startingSection (dragover)="onDropOver($event)">
+            <section #startingSection cdkDropList (cdkDropListDropped)="drop($event)">
                 @for (lineupItem of lineupItems$ | async; track lineupItem.person.personId) {
-                    <app-lineup-selector-person-item class="draggable" draggable="true" [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (dragend)="onDragEnd($event)" (dragstart)="onDragStart($event)" />
+                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" />
                 }
             </section>
             <section *ngIf="isAdding()">
