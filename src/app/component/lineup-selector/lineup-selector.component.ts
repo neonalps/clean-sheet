@@ -11,6 +11,7 @@ import { SelectOption } from '@src/app/component/select/option';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { ShirtModalPayload } from '@src/app/component/modal-select-shirt/modal-select-shirt.component';
 import { ModalService } from '@src/app/module/modal/service';
+import { getPersonName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-lineup-selector',
@@ -29,10 +30,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   readonly lineupItems$ = new BehaviorSubject<LineupItem[]>([]);
 
-  private readonly lineupItems: LineupItem[] = [
-    { shirt: 1, person: { personId: 2211, firstName: 'Oliver', lastName: 'Christensen', avatar: 'http://localhost:8020/p/2211.png' } },
-    { shirt: 2, person: { personId: 2265, firstName: 'Jeyland', lastName: 'Mitchell', avatar: 'http://localhost:8020/p/2265.png' } },
-  ];
+  private readonly lineupItems: LineupItem[] = [];
 
   private readonly destroy$ = new Subject<void>();
   private readonly personSearch$ = new Subject<string>();
@@ -99,10 +97,12 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   onPersonSelected(option: SelectOption) {
+    const selectedPersonId = Number(option.id);
+
     this.lineupItems.push({
       shirt: 0,
       person: {
-        personId: Number(option.id),
+        personId: selectedPersonId,
         firstName: option.name,
         lastName: '',
         avatar: option.icon?.content,
@@ -110,6 +110,8 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     });
 
     this.resetAdd();
+
+    this.personShirtClicked(selectedPersonId);
   }
 
   personShirtClicked(personId: PersonId) {
@@ -118,7 +120,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.modalService.showShirtModal({ personId: lineupItem.person.personId, shirt: lineupItem.shirt, unavailable: this.collectShirts() })
+    this.modalService.showShirtModal({ personId: lineupItem.person.personId, personName: getPersonName(lineupItem.person), avatar: lineupItem.person.avatar, shirt: lineupItem.shirt, unavailable: this.collectShirts() })
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: event => {
           if (event.type === 'confirm') {

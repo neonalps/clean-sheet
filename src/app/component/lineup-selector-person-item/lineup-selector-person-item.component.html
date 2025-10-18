@@ -5,7 +5,7 @@
         </div>
     </div>
     <div class="basis-1/12 flex align-items-center justify-content-center">
-        <div class="bg-color-dark-grey-darker p-1 pointer hover:bg-color-mid-grey transition-colors rounded-md width-sm center" (click)="onPersonShirtClicked.next(item.person.personId)"><span [ngClass]="{ 'invisible': item.shirt === 0 }">{{ item.shirt }}</span></div>
+        <div class="bg-color-dark-grey-darker p-1 pointer hover:bg-color-mid-grey transition-colors rounded-md width-1-75rem center" (click)="onPersonShirtClicked.next(item.person.personId)"><span [ngClass]="{ 'invisible': item.shirt === 0 }">{{ item.shirt }}</span></div>
     </div>
     <div class="basis-1/8 mr-1 flex align-items-center justify-content-center" *ngIf="item.person.avatar">
         <div class="width-2-25rem">

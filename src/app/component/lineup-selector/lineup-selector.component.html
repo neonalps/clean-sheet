@@ -3,7 +3,7 @@
     <section>
         <div class="flex align-items-center">
             <div class="flex-grow bold text-base mb-2">Starting lineup</div>
-            <div class="basis-1/12 flex align-items-center justify-content-center pointer" *ngIf="!isAdding()" (click)="triggerAddPerson()">
+            <div class="basis-1/12 flex align-items-center justify-content-center" [ngClass]="{ 'pointer': !isAdding(), 'invisible': isAdding() }" (click)="triggerAddPerson()">
                 <div class="width-sm p-2">+</div>
             </div>
         </div>

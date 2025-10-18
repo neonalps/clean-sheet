@@ -1,6 +1,12 @@
 @switch (descriptor.type) {
   @case ('standard') {
     @switch (descriptor.content) {
+        @case ('arrow-left') {
+            <app-arrow-left [color]="descriptor.color" />
+        }
+        @case ('arrow-right') {
+            <app-arrow-right [color]="descriptor.color" />
+        }
         @case ('birthday-cake') {
             <app-birthday-cake [color]="descriptor.color" />
         }

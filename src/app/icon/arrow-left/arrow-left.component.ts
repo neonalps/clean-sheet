@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-arrow-left',
@@ -8,6 +9,10 @@ import { Component, Input } from '@angular/core';
 })
 export class ArrowLeftComponent {
 
-  @Input() color = "white";
+  @Input() color?: string;
+  
+  getColor(): string {
+    return this.color || KEYWORD_CURRENT_COLOR;
+  }
 
 }

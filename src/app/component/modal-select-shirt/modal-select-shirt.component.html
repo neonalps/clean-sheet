@@ -1,62 +1,77 @@
 <app-modal>
+    @let currentAvatar = currentPersonAvatar();
     @let currentShirt = currentSelectedShirt();
+    @let stage = currentStage();
     <div header>{{ 'shirt.select' | $t }}</div>
     <div content>
         <section>
+            <div class="flex align-items-center mb-5">
+                <div class="mr-2">
+                    <div class="width-2-25rem" *ngIf="currentAvatar">
+                        <app-ui-icon [descriptor]="{ 'type': 'person', 'content': currentAvatar }" />
+                    </div>
+                </div>
+                <div>
+                    {{ currentPersonName() }}
+                </div>
+            </div>
+        </section>
+        <section *ngIf="stage === 1">
             <div class="flex align-items-center justify-content-between mb-6">
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">1 - 9</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(0)">1 - 10</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">10 - 19</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(10)">11 - 20</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">20 - 29</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(20)">21 - 30</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">30 - 39</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(30)">31 - 40</div>
                 </div>
             </div>
             <div class="flex align-items-center justify-content-between mb-6">
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">40 - 49</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(40)">41 - 50</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">50 - 59</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(50)">51 - 60</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">60 - 69</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(60)">61 - 70</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">70 - 79</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(70)">71 - 80</div>
                 </div>
             </div>
             <div class="flex align-items-center justify-content-between">
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">80 - 89</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(80)">81 - 90</div>
                 </div>
                 <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md">90 - 99</div>
+                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" (click)="selectNumberGroup(90)">91 - 99</div>
                 </div>
                 <div class="width-4-5rem"></div>
                 <div class="width-4-5rem"></div>
             </div>
         </section>
-        <section>
-            <div class="flex align-items-center justify-content-between mt-10">
-                <div class="width-4-5rem">
-                    <div class="py-3 center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 1, 'bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors': !isUnavailable(1), 'bg-color-light-grey-darker pointer-events-none': isUnavailable(1) }" (click)="selectShirt(1)">1</div>
+        <section *ngIf="stage === 2">
+            <div class="flex align-items-center mb-4 pointer hover:text-light-grey transition-colors" (click)="selectStage(1)">
+                <div class="width-sm mr-1 relative top-3">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'arrow-left' }" />
                 </div>
-                <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 2 }" (click)="selectShirt(2)">2</div>
-                </div>
-                <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 3 }" (click)="selectShirt(3)">3</div>
-                </div>
-                <div class="width-4-5rem">
-                    <div class="py-3 bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === 4 }" (click)="selectShirt(4)">4</div>
-                </div>
+                <div>{{ 'nav.backToSelection' | $t}}</div>
             </div>
+            @for (row of stageTwoGrid(); track $index) {
+                <div class="flex align-items-center justify-content-between mb-6">
+                    @for (column of row.columns; track $index) {
+                        <div class="width-4-5rem">
+                            <div *ngIf="!column.empty" class="py-3 center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === column.shirt, 'bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors': !isUnavailable(column.shirt), 'bg-color-light-grey-darker pointer-events-none': isUnavailable(column.shirt) }" (click)="selectShirt(column.shirt)">{{ column.shirt }}</div>
+                        </div>
+                    }
+                </div>
+            }
         </section>
     </div>
 </app-modal>
