@@ -150,6 +150,23 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     this.lineupItems$.next(this.lineupItems);
   }
 
+  onPersonSetCaptain(personId: PersonId) {
+    const lineupItem = this.lineupItems.find(item => item.person.personId === personId);
+    if (!lineupItem || lineupItem.isCaptain === true) {
+      return;
+    }
+
+    this.lineupItems
+      .filter(item => item.isCaptain === true)
+      .forEach(item => {
+        item.isCaptain = false
+      });
+
+    lineupItem.isCaptain = true;
+
+    this.lineupItems$.next(this.lineupItems);
+  }
+
   onAddNewPerson() {
     this.modalService.showConfirmAddPersonModal({ personName: ensureNotNullish(this.currentSearchValue()) })
       .pipe(takeUntil(this.destroy$)).subscribe({

@@ -5,4 +5,5 @@ export interface UiIconDescriptor {
     content: string;
     color?: string;
     containerClasses?: string[];
+    skipRelativePosition?: boolean;
 }

@@ -12,7 +12,7 @@
                     @for (item of section.items; track item.id) {
                         <div class="flex align-items-center transition-colors hover:bg-color-dark-grey px-2 py-1 pointer mb-2 last:mb-0" (click)="itemSelected(item.id)" [ngClass]="{ 'text-danger': item.isDanger }">
                             <div class="basis-1/6 mr-1" *ngIf="item.iconDescriptor">
-                                <div class="width-xs relative top-2 left-2">
+                                <div class="width-xs" [ngClass]="{ 'relative top-2 left-2': !item.iconDescriptor.skipRelativePosition }">
                                     <app-ui-icon [descriptor]="item.iconDescriptor" />
                                 </div>
                             </div>
