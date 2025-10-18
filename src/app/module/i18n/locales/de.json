@@ -112,6 +112,8 @@
     "lineup.createNewPerson": "neue Person anlegen",
     "lineup.captain": "Kapitän",
     "lineup.managers": "Trainer",
+    "lineup.maximumPeopleReached": "Die maximale Anzahl an Personen wurde hinzugefügt",
+    "lineup.referees": "Schiedsrichter",
     "lineup.starting": "Startformation",
     "lineup.substitutes": "Ersatzspieler",
     "list.filterOptions": "Filter-Optionen",

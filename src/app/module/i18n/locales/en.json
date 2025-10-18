@@ -112,6 +112,8 @@
     "lineup.createNewPerson": "create new person",
     "lineup.captain": "Captain",
     "lineup.managers": "Managers",
+    "lineup.maximumPeopleReached": "The maximum number of people has been added",
+    "lineup.referees": "Referees",
     "lineup.starting": "Starting lineup",
     "lineup.substitutes": "Substitutes",
     "list.filterOptions": "Filter options",
