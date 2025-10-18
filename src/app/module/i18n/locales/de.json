@@ -112,6 +112,7 @@
     "lineup.createNewPerson": "neue Person anlegen",
     "lineup.captain": "Kapitän",
     "lineup.starting": "Startelf",
+    "lineup.substitutes": "Ersatzspieler",
     "list.filterOptions": "Filter-Optionen",
     "login.google": "Login mit Google",
     "matchdayDetails.failedToLoad": "Die Spieltag-Details konnten nicht geladen werden",

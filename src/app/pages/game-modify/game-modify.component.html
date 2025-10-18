@@ -2,7 +2,11 @@
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             <div>
-                <app-lineup-selector />
+                <app-lineup-selector [titleText]="'lineup.starting' | $t" />
+            </div>
+
+            <div class="mt-4">
+                <app-lineup-selector [titleText]="'lineup.substitutes' | $t" />
             </div>
         </app-stepper-item>
         <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">

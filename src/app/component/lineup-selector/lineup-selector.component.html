@@ -2,7 +2,7 @@
 <div>
     <section>
         <div class="flex align-items-center">
-            <div class="flex-grow bold text-base my-2">{{ 'lineup.starting' | $t }}</div>
+            <div class="flex-grow bold text-base my-2">{{ titleText }}</div>
             <div class="flex align-items-center justify-content-center" [ngClass]="{ 'pointer': !isAdding(), 'invisible': isAdding() }" (click)="triggerAddPerson()">
                 <div class="text-sm hover:text-light-grey transition-colors">{{ 'lineup.addPerson' | $t }}</div>
             </div>

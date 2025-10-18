@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { BehaviorSubject, debounceTime, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
@@ -25,6 +25,8 @@ import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with
   styleUrl: './lineup-selector.component.css'
 })
 export class LineupSelectorComponent implements OnInit, OnDestroy {
+
+  @Input() titleText!: string;
 
   @ViewChild('searchPerson', { static: false }) searchElement!: ElementRef;
   @ViewChild('startingSection', { static: false }) startingSection!: ElementRef;
