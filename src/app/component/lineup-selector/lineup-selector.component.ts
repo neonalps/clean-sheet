@@ -17,6 +17,9 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EmptyStateComponent } from "@src/app/component/empty-state/empty-state.component";
 import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with-ball.component";
+import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { PersonService } from '@src/app/module/person/service';
+import { ToastService } from '@src/app/module/toast/service';
 
 @Component({
   selector: 'app-lineup-selector',
@@ -28,6 +31,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   @Input() titleText!: string;
   
+  @Input() forMain: boolean | undefined;
   @Input() hasCaptain = true;
   @Input() hasShirt = true;
   @Input() maximumPeople: number | undefined;
@@ -49,6 +53,9 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly modalService = inject(ModalService);
+  private readonly personService = inject(PersonService);
+  private readonly toastService = inject(ToastService);
+  private readonly translationService = inject(TranslationService);
 
   ngOnInit(): void {
     this.lineupItems$.next(this.lineupItems);
@@ -118,7 +125,8 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
         firstName: option.name,
         lastName: '',
         avatar: option.icon?.content,
-      }
+      },
+      forMain: this.forMain ?? undefined,
     });
 
     this.resetAdd();
@@ -190,11 +198,29 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   onAddNewPerson() {
-    this.modalService.showConfirmAddPersonModal({ personName: ensureNotNullish(this.currentSearchValue()) })
+    const personName = ensureNotNullish(this.currentSearchValue());
+    this.modalService.showConfirmAddPersonModal({ personName: this.translationService.translate('person.create.detail', { name: personName }) })
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: event => {
           if (event.type === 'confirm') {
-            console.log('create the new person now!');
+            const personNameParts = personName
+              .split(' ')
+              .map(part => part.trim());
+
+            const personNamePartLength = personNameParts.length;
+
+            this.personService.create({ 
+              lastName: personNameParts[personNamePartLength - 1],
+              firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : undefined,
+             }).pipe(takeUntil(this.destroy$)).subscribe({
+              next: createdPerson => {
+                this.onPersonSelected({ id: createdPerson.id, name: getPersonName(createdPerson) });
+              },
+              error: err => {
+                console.error(`Failed to create person`, err);
+                this.toastService.addToast({ type: 'error', text: this.translationService.translate('person.create.error') });
+              }
+             })
           }
         }
     });

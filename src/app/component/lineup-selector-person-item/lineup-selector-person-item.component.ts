@@ -13,6 +13,7 @@ export type LineupItem = {
   person: UiPerson;
   shirt: number;
   isCaptain?: boolean;
+  forMain?: boolean;
 }
 
 @Component({

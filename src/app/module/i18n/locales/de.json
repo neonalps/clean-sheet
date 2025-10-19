@@ -155,7 +155,7 @@
     "period.extraTime": "Verlängerung",
     "period.penaltyShootOut": "Elfmeterschießen",
     "person.create.question": "Person anlegen?",
-    "person.create.detail": "Möchtest du die neue Person {name} anlegen?",
+    "person.create.detail": "Möchtest du die Person {name} anlegen?",
     "person.search.empty": "Es konnte keine Person gefunden werden",
     "player.goalsAgainstClubs": "Tore gegen Klubs",
     "player.stats": "Spieler-Statistiken",
