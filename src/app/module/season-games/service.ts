@@ -26,8 +26,8 @@ export class SeasonGamesService implements OnDestroy {
         }
     }
 
-    async getSeasonGames(seasonId: number): Promise<void> {
-        this.getOrCreateFetchHandle(seasonId).fetch();
+    async getSeasonGames(seasonId: number, forceFetch?: boolean): Promise<void> {
+        this.getOrCreateFetchHandle(seasonId).fetch(forceFetch);
     }
 
     getSeasonGamesObservable(): Observable<SeasonGamesUpdate> {

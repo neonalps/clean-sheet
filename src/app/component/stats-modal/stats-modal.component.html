@@ -1,75 +1,77 @@
 <app-modal>
     <div header>{{ 'player.stats' | $t }}</div>
     <div content>
-        @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
-            <div class="mb-6 last:mb-0">
-                <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
-                @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {
-                    <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(gamePlayed.game)">
-                        <div class="basis-1/12 flex align-items-center">
-                            <div class="width-xs relative top-1">
-                                <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': gamePlayed.game.competition.iconSmall! }" />
-                            </div>
-                        </div>
-                        <div class="basis-1/6 text-sm text-center">
-                            {{ gamePlayed.game.kickoff | date:'MMM d' }}
-                        </div>
-                        <div class="basis-2/5 flex text-sm">
-                            <div class="width-xs mr-2 relative top-1" *ngIf="gamePlayed.game.opponent.iconSmall">
-                                <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
-                            </div>
-                            <div>
-                                {{ gamePlayed.game.opponent.shortName }}
-                            </div>
-                        </div>
-                        <div class="basis-1/8 flex align-items-center">
-                            <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
-                        </div>
-                        <div class="basis-1/12 flex align-items-center justify-content-end">
-                            <div class="text-sm pr-3"><span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span></div>
-                        </div>
-                        <div class="flex-grow flex align-items-center">
-                            <div class="flex">  
-                                @for (goal of getNumberArray(gamePlayed.goalsScored); track $index) {
-                                    <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.goalsScored!)" [attr.title]="'game.goal' | $t">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
-                                    </div>
-                                }
-                            </div>
-                            <div class="flex">  
-                                @for (goal of getNumberArray(gamePlayed.ownGoals); track $index) {
-                                    <div class="width-xs relative top-1 text-danger" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.ownGoals!)" [attr.title]="'game.ownGoal' | $t">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
-                                    </div>
-                                }
-                            </div>
-                            <div class="flex">  
-                                @for (goal of getNumberArray(gamePlayed.assists); track $index) {
-                                    <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.assists!)" [attr.title]="'game.assist' | $t">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
-                                    </div>
-                                }
-                            </div>
-                            <div *ngIf="gamePlayed.yellowCard" [attr.title]="'game.yellowCard' | $t">
-                                <div class="width-xs">
-                                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+        <div appScrollNearEnd (nearEnd)="onScrollReached()">
+            @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
+                <div class="mb-6 last:mb-0">
+                    <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
+                    @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {
+                        <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(gamePlayed.game)">
+                            <div class="basis-1/12 flex align-items-center">
+                                <div class="width-xs relative top-1">
+                                    <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': gamePlayed.game.competition.iconSmall! }" />
                                 </div>
                             </div>
-                            <div *ngIf="gamePlayed.yellowRedCard" [attr.title]="'game.yellowRedCard' | $t">
-                                <div class="width-xs">
-                                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
+                            <div class="basis-1/6 text-sm text-center">
+                                {{ gamePlayed.game.kickoff | date:'MMM d' }}
+                            </div>
+                            <div class="basis-2/5 flex text-sm">
+                                <div class="width-xs mr-2 relative top-1" *ngIf="gamePlayed.game.opponent.iconSmall">
+                                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
+                                </div>
+                                <div>
+                                    {{ gamePlayed.game.opponent.shortName }}
                                 </div>
                             </div>
-                            <div *ngIf="gamePlayed.redCard" [attr.title]="'game.redCard' | $t">
-                                <div class="width-xs">
-                                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
+                            <div class="basis-1/8 flex align-items-center">
+                                <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
+                            </div>
+                            <div class="basis-1/12 flex align-items-center justify-content-end">
+                                <div class="text-sm pr-3"><span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span></div>
+                            </div>
+                            <div class="flex-grow flex align-items-center">
+                                <div class="flex">  
+                                    @for (goal of getNumberArray(gamePlayed.goalsScored); track $index) {
+                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.goalsScored!)" [attr.title]="'game.goal' | $t">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                                        </div>
+                                    }
+                                </div>
+                                <div class="flex">  
+                                    @for (goal of getNumberArray(gamePlayed.ownGoals); track $index) {
+                                        <div class="width-xs relative top-1 text-danger" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.ownGoals!)" [attr.title]="'game.ownGoal' | $t">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                                        </div>
+                                    }
+                                </div>
+                                <div class="flex">  
+                                    @for (goal of getNumberArray(gamePlayed.assists); track $index) {
+                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.assists!)" [attr.title]="'game.assist' | $t">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
+                                        </div>
+                                    }
+                                </div>
+                                <div *ngIf="gamePlayed.yellowCard" [attr.title]="'game.yellowCard' | $t">
+                                    <div class="width-xs">
+                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                                    </div>
+                                </div>
+                                <div *ngIf="gamePlayed.yellowRedCard" [attr.title]="'game.yellowRedCard' | $t">
+                                    <div class="width-xs">
+                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
+                                    </div>
+                                </div>
+                                <div *ngIf="gamePlayed.redCard" [attr.title]="'game.redCard' | $t">
+                                    <div class="width-xs">
+                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
+                    }
+                </div>
+            }
+        </div>
         <div class="mt-3 text-sm center pointer" *ngIf="isMoreAvailable()" (click)="triggerLoadMore()">
             load more
         </div>

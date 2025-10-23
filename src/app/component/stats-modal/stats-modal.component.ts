@@ -14,6 +14,8 @@ import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { isDefined } from '@src/app/util/common';
+import { ScrollPercentageDirective } from "@src/app/directive/scroll-percentage/scroll-percentage.directive";
+import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
 
 export type StatsModalPayload = {
   personId: PersonId;
@@ -27,7 +29,7 @@ type SeasonGamesPlayed = {
 
 @Component({
   selector: 'app-stats-modal',
-  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent],
+  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, ScrollNearEndDirective],
   templateUrl: './stats-modal.component.html',
   styleUrl: './stats-modal.component.css'
 })
@@ -35,9 +37,11 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   groupedGamesPlayed: SeasonGamesPlayed[] = [];
 
-  groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
-  isLoading = signal(true);
-  isMoreAvailable = signal(false);
+  readonly groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
+  readonly isLoading = signal(true);
+  readonly isMoreAvailable = signal(false);
+  private readonly modalPayload = signal<StatsModalPayload | null>(null);
+  private readonly nextPageKey = signal<string | null>(null);
 
   private readonly gamesPlayedService = inject(GamesPlayedService);
   private readonly modalService = inject(ModalService);
@@ -50,6 +54,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
         this.loadGamesPlayed(payload.personId, payload.filterOptions);
+        this.modalPayload.set(payload);
       });
   }
 
@@ -80,6 +85,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
         this.groupedGamesPlayed$.next(this.groupedGamesPlayed);
 
         this.isLoading.set(false);
+        this.nextPageKey.set(value.nextPageKey ?? null);
         this.isMoreAvailable.set(isDefined(value.nextPageKey));
       },
       error: (error) => {
@@ -130,12 +136,22 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     return modifiers;
   }
 
+  onScrollReached() {
+    console.log('scroll reacched');
+  }
+
   onGameClicked(game: BasicGame) {
     window.open(`${environment.frontendBaseUrl}/game/${game.id}`, '_blank');
   }
 
   triggerLoadMore() {
-    
+    const next = this.nextPageKey();
+    const payload = this.modalPayload();
+    if (next === null || payload === null) {
+      return;
+    }
+
+    this.loadGamesPlayed(payload.personId, { nextPageKey: next });
   }
 
 }

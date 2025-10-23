@@ -1,4 +1,5 @@
 export type GamePlayedFilterOptions = {
+  nextPageKey?: string;
   competitionId?: string;
   opponentId?: string;
   seasonId?: string;

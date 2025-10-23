@@ -20,10 +20,11 @@ import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PersonService } from '@src/app/module/person/service';
 import { ToastService } from '@src/app/module/toast/service';
+import { GoalWithBallComponent } from "@src/app/icon/goal-with-ball/goal-with-ball.component";
 
 @Component({
   selector: 'app-lineup-selector',
-  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent],
+  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent, GoalWithBallComponent],
   templateUrl: './lineup-selector.component.html',
   styleUrl: './lineup-selector.component.css'
 })

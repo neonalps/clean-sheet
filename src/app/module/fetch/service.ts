@@ -12,6 +12,10 @@ export enum FetchStrategy {
     Network = "network",
 }
 
+export type FetchOpts = {
+    force?: boolean;
+}
+
 type ResponseCacheEntry<T> = {
     name: string;
     retrievedAt: number;
@@ -37,7 +41,7 @@ export type FetchSubscription<T> = {
 }
 
 export type FetchHandle = {
-    fetch: () => void;
+    fetch: (force?: boolean) => void;
     unsubscribe: () => void;
 }
 
@@ -77,9 +81,9 @@ export class FetchService {
 
     private createFetchHandle(subscriptionSymbol: Symbol): FetchHandle {
         return {
-            fetch: () => {
+            fetch: (force?: boolean) => {
                 const subscription = this.getSubscriptionOrThrow(subscriptionSymbol);
-                this.processSubscription(subscription);
+                this.processSubscription(subscription, { force });
             },
             unsubscribe: () => {
                 this.subscriptions.delete(subscriptionSymbol);
@@ -87,15 +91,20 @@ export class FetchService {
         };
     }
 
-    private async processSubscription(subscription: FetchSubscription<unknown>): Promise<void> {
+    private async processSubscription(subscription: FetchSubscription<unknown>, opts: FetchOpts = {}): Promise<void> {
         console.log(`[${subscription.name}] starting processing subscription`);
+
+        const forceFetch = opts.force === true;
+        if (forceFetch) {
+            console.log('force fetch mode set');
+        }
 
         const currentUnix = getCurrentUnix();
 
         // for cacheAndNetwork, check if subscription has a cache entry
         let currentContentHash: string | undefined = undefined;
         let currentContent: unknown | undefined = undefined;
-        if (subscription.strategy === FetchStrategy.CacheAndNetwork) {
+        if (subscription.strategy === FetchStrategy.CacheAndNetwork && !forceFetch) {
             const cacheEntry = await this.cacheService.get<ResponseCacheEntry<unknown>>(FetchService.CACHE_KEY_REQUESTS, subscription.name);
             if (cacheEntry !== undefined) {
                 // cache entry exists, return the stored data immediately and only update it if newer data is available

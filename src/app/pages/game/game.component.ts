@@ -39,6 +39,7 @@ import { ModalService } from '@src/app/module/modal/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { GameMinuteFormatter } from '@src/app/module/game/minute-formatter';
+import { SeasonGamesService } from '@src/app/module/season-games/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -115,6 +116,7 @@ export class GameComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly scoreFormatter = inject(ScoreFormatter);
+  private readonly seasonGamesService = inject(SeasonGamesService);
   private readonly translationService = inject(TranslationService);
   private readonly toastService = inject(ToastService);
 
@@ -243,9 +245,13 @@ export class GameComponent implements OnDestroy {
             }
           });
       } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
+        const gameSeasonId = this.game.season.id;
         this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
           if (result.success) {
             this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });
+
+            // reload the games of the season to make sure the new game will be available
+            this.seasonGamesService.getSeasonGames(gameSeasonId, true);
           } else {
             this.toastService.addToast({ text: `${this.translationService.translate('gameImport.failure')}: "${result.error}"`, type: 'error' }, 10_000);
           }

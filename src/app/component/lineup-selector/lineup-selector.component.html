@@ -11,12 +11,24 @@
         </div>
         <div #startingLineup>
             <section #startingSection cdkDropList (cdkDropListDropped)="drop($event)">
-                @for (lineupItem of lineupItems; track lineupItem.person.personId) {
-                    <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" [hasCaptain]="hasCaptain" [hasShirt]="hasShirt" />
-                }
-                <div *ngIf="maximumPeopleReached" class="mt-6 text-sm">
-                    {{ 'lineup.maximumPeopleReached' | $t }}
-                </div>
+                <ng-container *ngIf="isAdding() || (lineupItems && (lineupItems.length > 0)); else emptyLineup">
+                    @for (lineupItem of lineupItems; track lineupItem.person.personId) {
+                        <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" [hasCaptain]="hasCaptain" [hasShirt]="hasShirt" />
+                    }
+                    <div *ngIf="maximumPeopleReached" class="mt-6 text-sm">
+                        {{ 'lineup.maximumPeopleReached' | $t }}
+                    </div>
+                </ng-container>
+                <ng-template #emptyLineup>
+                    <div class="flex align-items-center justify-content-center">
+                        <div class="text-xs">
+                            <app-empty-state>
+                                <div class="w-1/5 text-light-grey" icon><app-goal-with-ball /></div>
+                                <div text>{{ 'lineup.noPeople' | $t }}</div>
+                            </app-empty-state>
+                        </div>
+                    </div>
+                </ng-template>
             </section>
             <section *ngIf="isAdding()">
                 <div class="relative">
