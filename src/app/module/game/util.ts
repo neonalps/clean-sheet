@@ -243,6 +243,7 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
                     goalkeeper: psoGoalkeeperPlayer,
                     result: penaltyShootOutGameEvent.result,
                     forMain: psoTakenByPlayer.forMain,
+                    attemptIndex: 0,    // will be calculated later
                 } satisfies UiPenaltyShootOutGameEvent;
             case GameEventType.InjuryTime:
                 const injuryTimeGameEvent = event as InjuryTimeGameEvent;
@@ -259,7 +260,30 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
     const psoGameEvents: UiGameEvent[] = [];
     const firstPsoGameEventIndex = events.findIndex(item => item.type === GameEventType.PenaltyShootOut);
     if (firstPsoGameEventIndex >= 0) {
-        psoGameEvents.push(...(events.splice(firstPsoGameEventIndex) as UiPenaltyShootOutGameEvent[]));
+        psoGameEvents.push(...(events.splice(firstPsoGameEventIndex)));
+    }
+
+    let psoAttemptIndex = 0;
+    for (const psoGameEvent of psoGameEvents) {
+        // there could also be other game events in here, e.g. yellow and red cards during the penalty shoot out
+        if (psoGameEvent.type !== GameEventType.PenaltyShootOut) {
+            continue;
+        }
+
+        psoAttemptIndex += 1;
+        (psoGameEvent as UiPenaltyShootOutGameEvent).attemptIndex = psoAttemptIndex;
+    }
+
+    // mark the last PSO attempt (we don't want to show the visual gap in the UI there)
+    const lastPsoAttempt = psoGameEvents.find(item => {
+        if (item.type !== GameEventType.PenaltyShootOut) {
+            return;
+        }
+
+        return (item as UiPenaltyShootOutGameEvent).attemptIndex === psoAttemptIndex;
+    });
+    if (lastPsoAttempt) {
+        (lastPsoAttempt as UiPenaltyShootOutGameEvent).lastAttempt = true;
     }
 
     // remove FT events

@@ -359,6 +359,9 @@ export interface UiPenaltyShootOutGameEvent extends UiGameEvent {
     takenBy: UiGamePlayer;
     goalkeeper: UiGamePlayer;
     result: PsoResult;
+    /// ascending number indicating the attempt order, starting from 1 - used for displaying gaps after the first 10 attempts and from then on every second attempt
+    attemptIndex: number;
+    lastAttempt?: boolean;
 }
 
 export interface UiInjuryTimeGameEvent extends UiGameEvent {

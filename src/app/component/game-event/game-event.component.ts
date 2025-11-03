@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { GameEventType, UiGameEvent, UiPenaltyShootOutGameEvent } from '@src/app/model/game';
+import { GameEventType, UiGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent } from '@src/app/model/game';
 import { COLOR_DANGER_LIGHTER_30, COLOR_SUCCESS } from '@src/styles/constants';
 import { FootballComponent } from "@src/app/icon/football/football.component";
 
@@ -23,7 +23,18 @@ export class GameEventComponent {
   }
 
   showGameMinute(): boolean {
-    return !this.event.baseMinute.startsWith("FT") && !this.event.baseMinute.startsWith("AET") && !this.event.baseMinute.startsWith("APSO");
+    return !this.event.baseMinute.startsWith("FT") && !this.event.baseMinute.startsWith("AET") && !this.event.baseMinute.startsWith("APSO") && !this.event.baseMinute.startsWith("PSO");
+  }
+
+  showGap(): boolean {
+    if (!this.isPsoEvent()) {
+      return false;
+    }
+
+    const psoEvent = this.event as UiPenaltyShootOutGameEvent;
+
+    const attemptIndex = psoEvent.attemptIndex || 0;
+    return !psoEvent.lastAttempt && attemptIndex >= 10 && attemptIndex % 2 === 0;
   }
 
   private isPsoGoal(): boolean {

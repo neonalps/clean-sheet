@@ -1,4 +1,4 @@
-<div class="game-event flex">
+<div class="flex" [ngClass]="{ 'mb-5': showGap(), 'min-h-54': !isPsoEvent(), 'min-h-46': isPsoEvent() }">
     <div class="basis-1/10 game-event-minute text-sm flex flex-col align-items-center justify-content-center">
         <ng-container *ngIf="!isPsoEvent(); else pso">
             <ng-container *ngIf="showGameMinute()">
