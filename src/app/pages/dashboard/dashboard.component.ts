@@ -30,7 +30,7 @@ import { PlayerRankingComponent } from "@src/app/component/player-ranking/player
 export class DashboardComponent implements OnInit, OnDestroy {
 
   dashboard?: DashboardResponse;
-  isLoading = true;
+  isLoading = signal(true);
   mainClub: SmallClub = environment.mainClub;
   games = new Subject<DetailedGame[]>;
 
@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
       error: err => {
         // TODO show error
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(`Could not resolve dashboard`, err);
       }
     });
@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private onDashboardResolved(response: DashboardResponse) {
     this.dashboard = response;
-    this.isLoading = false;
+    this.isLoading.set(false);
 
     if (this.dashboard.performanceTrend?.games) {
       this.games.next(this.dashboard.performanceTrend.games);

@@ -15,6 +15,7 @@ import { isDefined } from '@src/app/util/common';
 export class GameScoreComponent {
 
   @Input() game!: BasicGame;
+  @Input() hideExtendedPlayText = false;
 
   private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);

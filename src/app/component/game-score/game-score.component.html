@@ -1,4 +1,4 @@
 <div>
     <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="getResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
-    <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
+    <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay() && !hideExtendedPlayText">{{ getExtendedPlayText() }}</div>
 </div>

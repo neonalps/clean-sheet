@@ -14,5 +14,6 @@ export class GameSmallComponent {
 
   @Input() game!: BasicGame;
   @Input() showGameDate = false;
+  @Input() hideExtendedPlayText = false;
 
 }

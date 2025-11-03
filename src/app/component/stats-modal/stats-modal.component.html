@@ -1,7 +1,7 @@
 <app-modal>
     <div header>{{ 'player.stats' | $t }}</div>
     <div content>
-        <div appScrollNearEnd (nearEnd)="onScrollReached()">
+        <div appScrollNearEnd (nearEnd)="onScrollReached()" id="stats-modal-scroll-container">
             @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
                 <div class="mb-6 last:mb-0">
                     <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
