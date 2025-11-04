@@ -1,9 +1,9 @@
+@let missReason = getMissText();
 <app-game-event [event]="event">
     <div info>
-        <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm">{{ event.score }}</div>
+        <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm" *ngIf="!missReason">{{ event.score }}</div>
     </div>
     <div person>
-        @let missReason = getMissText();
         <div class="game-event-scored-by text-sm">{{ getTakenByName() }}</div>
         <div *ngIf="missReason" class="text-xs text-light-grey">
             {{ missReason }}
