@@ -4,9 +4,9 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
-import { isDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { getAbsolutePercentageString, isDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -29,14 +29,14 @@ import { ExternalLinksComponent } from "@src/app/component/external-links/extern
 import { BasicGame } from '@src/app/model/game';
 import { FilterableGameListComponent } from "@src/app/component/filterable-game-list/filterable-game-list.component";
 
-export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards';
+export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
 export type UiStatsItem = {
   itemType: StatsItemType;
   iconClasses?: string[];
   iconDescriptor?: UiIconDescriptor;
   titleText?: string;
-  value: number;
+  value: string;
 }
 
 @Component({
@@ -102,6 +102,8 @@ export class PersonComponent implements OnDestroy {
       this.refereeListVisible.set(refereeGames.length > 0)
 
       this.performance$.next(playerStats);
+
+      console.log('player stats', playerStats);
     }
   }
 
@@ -155,7 +157,11 @@ export class PersonComponent implements OnDestroy {
     } 
 
     if (itemType === 'gamesPlayed') {
-      filterOptions.gamesPlayed = '+1';
+      filterOptions.minutesPlayed = '+0';
+    }
+
+    if (itemType === 'cleanSheets') {
+      filterOptions.goalsConceded = '0';
     }
 
     if (itemType === 'yellowCards') {
@@ -168,6 +174,22 @@ export class PersonComponent implements OnDestroy {
 
     if (itemType === 'redCards') {
       filterOptions.redCard = true;
+    }
+
+    if (itemType === 'regulationPenaltiesFaced') {
+      filterOptions.regulationPenaltiesFaced = '+1';
+    }
+
+    if (itemType === 'regulationPenaltiesTaken') {
+      filterOptions.regulationPenaltiesTaken = '+1';
+    }
+
+    if (itemType === 'psoPenaltiesFaced') {
+      filterOptions.psoPenaltiesFaced = '+1';
+    }
+
+    if (itemType === 'psoPenaltiesTaken') {
+      filterOptions.psoPenaltiesTaken = '+1';
     }
 
     this.showStatsModal(filterOptions);
@@ -210,22 +232,62 @@ export class PersonComponent implements OnDestroy {
   }
 
   private getPlayerTotalStats(stats: PlayerBaseStats): ReadonlyArray<UiStatsItem[]> {
-    return [
-      [
-        { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: this.translationService.translate('stats.games', { plural: stats.gamesPlayed }), value: stats.gamesPlayed },
-        { itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: stats.goalsScored }), value: stats.goalsScored },
-        { itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: stats.assists }), value: stats.assists },
-      ],
-      /*[
-        { iconDescriptor: { type: 'standard', content: 'penalties-taken' }, titleText: 'Elfmeter angetreten', value: stats.regulationPenaltiesTaken },
-        { iconDescriptor: { type: 'standard', content: 'penalties-scored' }, titleText: 'Elfmeter getroffen', value: stats.regulationPenaltiesScored },
-      ],*/
-      [
-        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: this.translationService.translate('stats.yellowCards', { plural: stats.yellowCards }), value: stats.yellowCards, iconClasses: ['relative', 'left-5'] },
-        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: this.translationService.translate('stats.yellowRedCards', { plural: stats.yellowRedCards }), value: stats.yellowRedCards, iconClasses: ['relative', 'left-3'] },
-        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: this.translationService.translate('stats.redCards', { plural: stats.redCards }), value: stats.redCards, iconClasses: ['relative', 'left-5'] },
-      ],
-    ]
+    const items: Array<UiStatsItem[]> = [];
+
+    // if the person has clean sheets we assume it's a goalkeeper, so we only display goals scored and assists if they actually have some
+    const hasCleanSheets = stats.cleanSheets > 0;
+
+    const baseItems: UiStatsItem[] = [
+      { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: this.translationService.translate('stats.games', { plural: stats.gamesPlayed }), value: `${stats.gamesPlayed}` }
+    ];
+
+    if (hasCleanSheets) {
+      baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: stats.cleanSheets }), value: `${stats.cleanSheets}` });
+    }
+
+    if (!hasCleanSheets || stats.goalsScored > 0) {
+      baseItems.push({ itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: stats.goalsScored }), value: `${stats.goalsScored}` });
+    }
+
+    if (!hasCleanSheets || stats.assists > 0) {
+      baseItems.push({ itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: stats.assists }), value: `${stats.assists}` });
+    }
+
+    items.push(baseItems);
+
+    items.push([
+        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: this.translationService.translate('stats.yellowCards', { plural: stats.yellowCards }), value: `${stats.yellowCards}`, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: this.translationService.translate('stats.yellowRedCards', { plural: stats.yellowRedCards }), value: `${stats.yellowRedCards}`, iconClasses: ['relative', 'left-3'] },
+        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: this.translationService.translate('stats.redCards', { plural: stats.redCards }), value: `${stats.redCards}`, iconClasses: ['relative', 'left-5'] },
+    ]);
+
+    const penaltiesFacedItems: UiStatsItem[] = [];
+    if (stats.regulationPenaltiesFaced > 0) {
+      penaltiesFacedItems.push({ itemType: 'regulationPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `Regulation penalties faced`, value: `${stats.regulationPenaltiesSaved} / ${stats.regulationPenaltiesFaced} (${getAbsolutePercentageString(stats.regulationPenaltiesSaved, stats.regulationPenaltiesFaced)})` });
+    }
+
+    if (stats.psoPenaltiesFaced > 0) {
+      penaltiesFacedItems.push({ itemType: 'psoPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `PSO penalties faced`, value: `${stats.psoPenaltiesSaved} / ${stats.psoPenaltiesFaced} (${getAbsolutePercentageString(stats.psoPenaltiesSaved, stats.psoPenaltiesFaced)})` });
+    }
+
+    if (penaltiesFacedItems.length > 0) {
+      items.push(penaltiesFacedItems);
+    }
+
+    const penaltiesTakenItems: UiStatsItem[] = [];
+    if (stats.regulationPenaltiesTaken > 0) {
+      penaltiesTakenItems.push({ itemType: 'regulationPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `Regulation penalties taken`, value: `${stats.regulationPenaltiesScored} / ${stats.regulationPenaltiesTaken} (${getAbsolutePercentageString(stats.regulationPenaltiesScored, stats.regulationPenaltiesTaken)})` });
+    }
+
+    if (stats.psoPenaltiesTaken > 0) {
+      penaltiesTakenItems.push({ itemType: 'psoPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `PSO penalties taken`, value: `${stats.psoPenaltiesScored} / ${stats.psoPenaltiesTaken} (${getAbsolutePercentageString(stats.psoPenaltiesScored, stats.psoPenaltiesTaken)})` });
+    }
+
+    if (penaltiesTakenItems.length > 0) {
+      items.push(penaltiesTakenItems);
+    }
+
+    return items;
   }
 
   private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>): ReadonlyArray<CompetitionStats> {

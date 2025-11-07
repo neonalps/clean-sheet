@@ -58,7 +58,7 @@
             </div>
             <div *ngIf="playerTotalStatsRows" class="pb-4">
                 @for (totalStatsRow of playerTotalStatsRows; track $index) {
-                    <div class="flex mt-8">
+                    <div class="flex justify-content-evenly mt-8">
                         @for (statsItem of totalStatsRow; track $index) {
                             <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(statsItem.itemType)">
                                 <div class="flex align-items-center mb-3 min-h-22">

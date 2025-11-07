@@ -14,8 +14,8 @@ import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { isDefined } from '@src/app/util/common';
-import { ScrollPercentageDirective } from "@src/app/directive/scroll-percentage/scroll-percentage.directive";
 import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
+import { CheckboxSliderComponent } from "../checkbox-slider/checkbox-slider.component";
 
 export type StatsModalPayload = {
   personId: PersonId;
@@ -29,7 +29,7 @@ type SeasonGamesPlayed = {
 
 @Component({
   selector: 'app-stats-modal',
-  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, ScrollNearEndDirective],
+  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, ScrollNearEndDirective, CheckboxSliderComponent],
   templateUrl: './stats-modal.component.html',
   styleUrl: './stats-modal.component.css'
 })
@@ -40,6 +40,8 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   readonly groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
   readonly isLoading = signal(true);
   readonly isMoreAvailable = signal(false);
+  readonly showSubstituteGames = signal(false);
+  readonly includeSubstituteGames = signal(false);
   private readonly modalPayload = signal<StatsModalPayload | null>(null);
   private readonly nextPageKey = signal<string | null>(null);
 
@@ -54,6 +56,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
         this.loadGamesPlayed(payload.personId, payload.filterOptions);
+        this.showSubstituteGames.set(payload.filterOptions?.minutesPlayed === '+0');
         this.modalPayload.set(payload);
       });
   }
@@ -61,6 +64,10 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onIncludeSubstituteGamesChange(newValue: boolean) {
+    this.includeSubstituteGames.set(newValue);
   }
 
   private loadGamesPlayed(personId: PersonId, filterOptions?: GamePlayedFilterOptions) {

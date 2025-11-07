@@ -205,6 +205,8 @@
     "squad.position.defenders": "Verteidiger",
     "squad.position.midfielders": "Mittelfeldspieler",
     "squad.position.forwards": "Angreifer",
+    "stats.cleanSheets.singular": "Weiße Weste",
+    "stats.cleanSheets.plural": "Weiße Westen",
     "stats.games.singular": "Spiel",
     "stats.games.plural": "Spiele",
     "stats.goals.singular": "Tor",

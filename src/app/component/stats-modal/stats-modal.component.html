@@ -1,6 +1,9 @@
 <app-modal>
     <div header>{{ 'player.stats' | $t }}</div>
     <div content>
+        <div *ngIf="showSubstituteGames() === true" class="mb-3">
+            <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="true" (valueChange)="onIncludeSubstituteGamesChange($event)" />    
+        </div>
         <div appScrollNearEnd (nearEnd)="onScrollReached()" id="stats-modal-scroll-container">
             @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
                 <div class="mb-6 last:mb-0">

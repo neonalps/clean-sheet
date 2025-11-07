@@ -86,3 +86,19 @@ export function ensureNotNullish<T>(value: T | undefined | null, errorMessage?: 
   }
   return value;
 }
+
+export function getAbsolutePercentageString(dividend: number, divisor: number): string {
+    return `${getAbsolutePercentage(dividend, divisor)}%`;
+}
+
+export function getAbsolutePercentage(dividend: number, divisor: number): number {
+    if (dividend === 0) {
+        return 0;
+    }
+
+    if (divisor === 0) {
+        throw new Error(`Cannot divide by zero`);
+    }
+
+    return Math.round(dividend / divisor * 100);
+}

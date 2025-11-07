@@ -208,6 +208,8 @@
     "squad.position.defenders": "Defenders",
     "squad.position.midfielders": "Midfielders",
     "squad.position.forwards": "Forwards",
+    "stats.cleanSheets.singular": "Clean sheet",
+    "stats.cleanSheets.plural": "Clean sheets",
     "stats.games.singular": "Game",
     "stats.games.plural": "Games",
     "stats.goals.singular": "Goal",
