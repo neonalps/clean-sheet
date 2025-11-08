@@ -1,8 +1,23 @@
+@let icon = modalIcon();
 <app-modal>
-    <div header>{{ 'player.stats' | $t }}</div>
+    <div header>
+        <div class="flex align-items-center">
+            <div class="mr-2" *ngIf="icon">
+                <div class="width-md">
+                    <app-ui-icon [descriptor]="icon" />
+                </div>
+            </div>
+            <div>{{ modalTitle() }}</div>
+        </div>
+    </div>
     <div content>
-        <div *ngIf="showSubstituteGames() === true" class="mb-3">
-            <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="true" (valueChange)="onIncludeSubstituteGamesChange($event)" />    
+        <div *ngIf="showSubstituteGames() === true" class="mb-6">
+            <div class="inline-flex p-2 bg-color-dark-grey-darker rounded-md">
+                <div class="mr-3">{{ 'stats.showSubstituteGames' | $t }}</div>
+                <div class="relative top-1">
+                    <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="false" (valueChange)="onIncludeSubstituteGamesChange($event)" />
+                </div>
+            </div>
         </div>
         <div appScrollNearEnd (nearEnd)="onScrollReached()" id="stats-modal-scroll-container">
             @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {

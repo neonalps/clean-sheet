@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, Signal, signal } from '@angular/core';
 import { ModalComponent } from "@src/app/component/modal/modal.component";
 import { GamesPlayedService, GetPlayerGamesPlayedResponse } from '@src/app/module/games-played/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { groupBy } from '@src/app/util/array';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
+import { BasicGame, GameStatus, ScoreTuple, UiPerson } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { PersonId } from '@src/app/util/domain-types';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
@@ -15,10 +15,12 @@ import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { isDefined } from '@src/app/util/common';
 import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
-import { CheckboxSliderComponent } from "../checkbox-slider/checkbox-slider.component";
+import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
+import { getPersonName } from '@src/app/util/domain';
+import { UiIconDescriptor } from '@src/app/model/icon';
 
 export type StatsModalPayload = {
-  personId: PersonId;
+  person: UiPerson;
   filterOptions?: GamePlayedFilterOptions;
 };
 
@@ -40,6 +42,8 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   readonly groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
   readonly isLoading = signal(true);
   readonly isMoreAvailable = signal(false);
+  readonly modalIcon = signal<UiIconDescriptor | null>(null);
+  readonly modalTitle = signal('');
   readonly showSubstituteGames = signal(false);
   readonly includeSubstituteGames = signal(false);
   private readonly modalPayload = signal<StatsModalPayload | null>(null);
@@ -55,7 +59,9 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     this.modalService.statsModalPayload$
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
-        this.loadGamesPlayed(payload.personId, payload.filterOptions);
+        this.modalTitle.set(getPersonName(payload.person));
+        this.modalIcon.set(payload.person.avatar ? { type: 'person', content: payload.person.avatar } : null);
+        this.loadGamesPlayed(payload.person.personId, payload.filterOptions);
         this.showSubstituteGames.set(payload.filterOptions?.minutesPlayed === '+0');
         this.modalPayload.set(payload);
       });
@@ -158,7 +164,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loadGamesPlayed(payload.personId, { nextPageKey: next });
+    this.loadGamesPlayed(payload.person.personId, { nextPageKey: next });
   }
 
 }

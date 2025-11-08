@@ -209,7 +209,12 @@ export class PersonComponent implements OnDestroy {
 
   private showStatsModal(filterOptions?: GamePlayedFilterOptions) {
     this.modalService.showStatsModal({
-      personId: this.person.person.id,
+      person: {
+        personId: this.person.person.id,
+        firstName: this.person.person.firstName,
+        lastName: this.person.person.lastName,
+        avatar: this.person.person.avatar,
+      },
       filterOptions: filterOptions,
     }).pipe(takeUntil(this.destroy$)).subscribe({
       complete: () => {
