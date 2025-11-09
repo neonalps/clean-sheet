@@ -48,13 +48,8 @@
         </div>
 
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="shouldDisplayPlayerStatistics()">
-            <div class="uppercase pl-2 flex align-items-center mb-1">
-                <div class="mr-2">
-                    <div class="width-2rem relative top-2">
-                        <app-icon-graph [color]="colorLight" />
-                    </div>
-                </div>
-                <div class="text-light text-base">{{ 'player.stats' | $t }}</div>
+            <div class="pl-3 flex align-items-center mb-1">
+                <div class="bold text-light text-lg">{{ getStatsForMainText() }}</div>
             </div>
             <div *ngIf="playerTotalStatsRows" class="pb-4">
                 @for (totalStatsRow of playerTotalStatsRows; track $index) {

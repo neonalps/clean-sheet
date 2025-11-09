@@ -10,7 +10,6 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { GraphIconComponent } from '@src/app/icon/graph/graph.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { getUiPlayerStats } from '@src/app/module/stats/util';
 import { StatsGoalsAgainstClubsComponent } from "@src/app/component/stats-goals-against-clubs/stats-goals-against-clubs.component";
@@ -28,6 +27,8 @@ import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ExternalLinksComponent } from "@src/app/component/external-links/external-links.component";
 import { BasicGame } from '@src/app/model/game';
 import { FilterableGameListComponent } from "@src/app/component/filterable-game-list/filterable-game-list.component";
+import { SmallClub } from '@src/app/model/club';
+import { environment } from '@src/environments/environment';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -41,7 +42,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, GraphIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -60,6 +61,8 @@ export class PersonComponent implements OnDestroy {
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
   readonly refereeListVisible = signal(false);
+
+  private readonly mainClub: SmallClub = environment.mainClub;
 
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
@@ -139,6 +142,14 @@ export class PersonComponent implements OnDestroy {
   getNationalities(): CountryFlag[] {
     const nationalities = this.person.person.nationalities;
     return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
+  }
+
+  getStatsAgainstMainText(): string {
+    return this.translationService.translate(`stats.againstMain`, { main: this.mainClub.shortName });
+  }
+
+  getStatsForMainText(): string {
+    return this.translationService.translate(`stats.forMain`, { main: this.mainClub.shortName });
   }
 
   onFilterOptionsSelected(filterOptions: GamePlayedFilterOptions) {
