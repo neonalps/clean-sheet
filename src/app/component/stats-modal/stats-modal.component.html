@@ -91,7 +91,7 @@
             }
         </div>
         <div class="mt-3 text-sm center pointer" *ngIf="isMoreAvailable()" (click)="triggerLoadMore()">
-            load more
+            {{ 'load.more' | $t }}
         </div>
     </div>
 </app-modal>
