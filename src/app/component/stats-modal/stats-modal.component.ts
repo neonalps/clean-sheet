@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, Signal, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ModalComponent } from "@src/app/component/modal/modal.component";
 import { GamesPlayedService, GetPlayerGamesPlayedResponse } from '@src/app/module/games-played/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -13,7 +13,7 @@ import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
-import { isDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { getPersonName } from '@src/app/util/domain';
@@ -46,6 +46,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   readonly modalTitle = signal('');
   readonly showSubstituteGames = signal(false);
   readonly includeSubstituteGames = signal(false);
+
   private readonly modalPayload = signal<StatsModalPayload | null>(null);
   private readonly nextPageKey = signal<string | null>(null);
 
@@ -72,8 +73,12 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onIncludeSubstituteGamesChange(newValue: boolean) {
-    this.includeSubstituteGames.set(newValue);
+  onIncludeSubstituteGamesChange(includeSubstituteGames: boolean) {
+    this.includeSubstituteGames.set(includeSubstituteGames);
+
+    const personId = ensureNotNullish(this.modalPayload()?.person.personId);
+    this.groupedGamesPlayed = [];
+    this.loadGamesPlayed(personId, includeSubstituteGames ? { gamesPlayed: '1' } : { minutesPlayed: '+0' });
   }
 
   private loadGamesPlayed(personId: PersonId, filterOptions?: GamePlayedFilterOptions) {
