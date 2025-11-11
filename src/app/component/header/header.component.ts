@@ -318,6 +318,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       { value: 'club', selected: false, displayText: this.translationService.translate('chip.clubs'), },
       { value: 'competition', selected: false, displayText: this.translationService.translate('chip.competitions'), },
       { value: 'season', selected: false, displayText: this.translationService.translate('chip.seasons'), },
+      { value: 'venue', selected: false, displayText: this.translationService.translate('chip.venues'), },
     ], mode: 'single' });
   }
 
