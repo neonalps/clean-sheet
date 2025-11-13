@@ -69,6 +69,13 @@
                                         </div>
                                     }
                                 </div>
+                                <div class="flex">  
+                                    @for (goal of getNumberArray(getPenaltiesSaved(gamePlayed)); track $index) {
+                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, getPenaltiesSaved(gamePlayed))" [attr.title]="'game.penaltySaved' | $t">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'glove' }" />
+                                        </div>
+                                    }
+                                </div>
                                 <div *ngIf="gamePlayed.yellowCard" [attr.title]="'game.yellowCard' | $t">
                                     <div class="width-xs">
                                         <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />

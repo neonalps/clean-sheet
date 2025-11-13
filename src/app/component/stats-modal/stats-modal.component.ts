@@ -13,7 +13,7 @@ import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
-import { ensureNotNullish, isDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
 import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { getPersonName } from '@src/app/util/domain';
@@ -160,6 +160,14 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   onGameClicked(game: BasicGame) {
     window.open(`${environment.frontendBaseUrl}/game/${game.id}`, '_blank');
+  }
+
+  getPenaltiesSaved(item: GetPlayerGamesPlayedResponse): number {
+    if (isNotDefined(item.regulationPenaltiesFaced)) {
+      return 0;
+    }
+
+    return item.regulationPenaltiesFaced[1];
   }
 
   triggerLoadMore() {

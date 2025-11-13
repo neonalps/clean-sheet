@@ -279,11 +279,11 @@ export class PersonComponent implements OnDestroy {
 
     const penaltiesFacedItems: UiStatsItem[] = [];
     if (stats.regulationPenaltiesFaced > 0) {
-      penaltiesFacedItems.push({ itemType: 'regulationPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `Regulation penalties faced`, value: `${stats.regulationPenaltiesSaved} / ${stats.regulationPenaltiesFaced} (${getAbsolutePercentageString(stats.regulationPenaltiesSaved, stats.regulationPenaltiesFaced)})` });
+      penaltiesFacedItems.push({ itemType: 'regulationPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'glove' }, titleText: this.translationService.translate('stats.regulationPenaltiesSaved'), value: `${stats.regulationPenaltiesSaved} / ${stats.regulationPenaltiesFaced} (${getAbsolutePercentageString(stats.regulationPenaltiesSaved, stats.regulationPenaltiesFaced)})` });
     }
 
     if (stats.psoPenaltiesFaced > 0) {
-      penaltiesFacedItems.push({ itemType: 'psoPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `PSO penalties faced`, value: `${stats.psoPenaltiesSaved} / ${stats.psoPenaltiesFaced} (${getAbsolutePercentageString(stats.psoPenaltiesSaved, stats.psoPenaltiesFaced)})` });
+      penaltiesFacedItems.push({ itemType: 'psoPenaltiesFaced', iconDescriptor: { type: 'standard', content: 'glove' }, titleText: this.translationService.translate('stats.psoPenaltiesSaved'), value: `${stats.psoPenaltiesSaved} / ${stats.psoPenaltiesFaced} (${getAbsolutePercentageString(stats.psoPenaltiesSaved, stats.psoPenaltiesFaced)})` });
     }
 
     if (penaltiesFacedItems.length > 0) {
@@ -292,11 +292,11 @@ export class PersonComponent implements OnDestroy {
 
     const penaltiesTakenItems: UiStatsItem[] = [];
     if (stats.regulationPenaltiesTaken > 0) {
-      penaltiesTakenItems.push({ itemType: 'regulationPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `Regulation penalties taken`, value: `${stats.regulationPenaltiesScored} / ${stats.regulationPenaltiesTaken} (${getAbsolutePercentageString(stats.regulationPenaltiesScored, stats.regulationPenaltiesTaken)})` });
+      penaltiesTakenItems.push({ itemType: 'regulationPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'goal' }, titleText: this.translationService.translate('stats.regulationPenaltiesScored'), value: `${stats.regulationPenaltiesScored} / ${stats.regulationPenaltiesTaken} (${getAbsolutePercentageString(stats.regulationPenaltiesScored, stats.regulationPenaltiesTaken)})` });
     }
 
     if (stats.psoPenaltiesTaken > 0) {
-      penaltiesTakenItems.push({ itemType: 'psoPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: `PSO penalties taken`, value: `${stats.psoPenaltiesScored} / ${stats.psoPenaltiesTaken} (${getAbsolutePercentageString(stats.psoPenaltiesScored, stats.psoPenaltiesTaken)})` });
+      penaltiesTakenItems.push({ itemType: 'psoPenaltiesTaken', iconDescriptor: { type: 'standard', content: 'goal' }, titleText: this.translationService.translate('stats.psoPenaltiesScored'), value: `${stats.psoPenaltiesScored} / ${stats.psoPenaltiesTaken} (${getAbsolutePercentageString(stats.psoPenaltiesScored, stats.psoPenaltiesTaken)})` });
     }
 
     if (penaltiesTakenItems.length > 0) {
