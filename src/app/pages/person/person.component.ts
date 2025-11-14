@@ -258,7 +258,7 @@ export class PersonComponent implements OnDestroy {
     ];
 
     if (hasCleanSheets) {
-      baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: stats.cleanSheets }), value: `${stats.cleanSheets}` });
+      baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'goalkeeper-goal' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: stats.cleanSheets }), value: `${stats.cleanSheets}` });
     }
 
     if (!hasCleanSheets || stats.goalsScored > 0) {

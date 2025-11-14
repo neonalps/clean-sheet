@@ -25,6 +25,7 @@ import { DragHandleIconComponent } from "@src/app/icon/drag-handle/drag-handle.c
 import { ArrowLeftComponent } from "@src/app/icon/arrow-left/arrow-left.component";
 import { ArrowRightComponent } from "@src/app/icon/arrow-right/arrow-right.component";
 import { GoalkeeperGloveComponent } from "@src/app/icon/goalkeeper-glove/goalkeeper-glove.component";
+import { GoalkeeperGoalComponent } from "@src/app/icon/goalkeeper-goal/goalkeeper-goal.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -53,7 +54,8 @@ import { GoalkeeperGloveComponent } from "@src/app/icon/goalkeeper-glove/goalkee
     DragHandleIconComponent,
     ArrowLeftComponent,
     ArrowRightComponent,
-    GoalkeeperGloveComponent
+    GoalkeeperGloveComponent,
+    GoalkeeperGoalComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

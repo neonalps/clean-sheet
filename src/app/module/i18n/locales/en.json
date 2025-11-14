@@ -172,6 +172,7 @@
     "reason.foul": "Foul",
     "reason.unallowedFieldEntering": "Entering the field without permission",
     "reason.handball": "Handball",
+    "reason.insult": "Insult",
     "reason.other": "Other",
     "reason.saved": "Saved",
     "reason.seriousFoulPlay": "Serious foul play",
