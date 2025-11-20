@@ -76,13 +76,22 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   onIncludeSubstituteGamesChange(includeSubstituteGames: boolean) {
     this.includeSubstituteGames.set(includeSubstituteGames);
 
-    const personId = ensureNotNullish(this.modalPayload()?.person.personId);
+    const currentPayload = ensureNotNullish(this.modalPayload());
+
+    const requestPayload = { ...currentPayload.filterOptions };
+    if (includeSubstituteGames && requestPayload) {
+      requestPayload.gamesPlayed = '1';
+      delete requestPayload?.minutesPlayed;
+    }
+
+    const personId = currentPayload.person.personId;
     this.groupedGamesPlayed = [];
-    this.loadGamesPlayed(personId, includeSubstituteGames ? { gamesPlayed: '1' } : { minutesPlayed: '+0' });
+    this.loadGamesPlayed(personId, requestPayload);
   }
 
   private loadGamesPlayed(personId: PersonId, filterOptions?: GamePlayedFilterOptions) {
     this.isLoading.set(true);
+    console.log('loading with filter options', filterOptions);
     this.gamesPlayedService.getForPlayer(personId, filterOptions).pipe(takeUntil(this.destroy$)).subscribe({
       next: (value) => {
         console.log(value);
