@@ -256,6 +256,7 @@
     "varDecisionReason.handball": "Handball",
     "varDecisionReason.noHandball": "No handball",
     "varDecisionReason.offside": "Offside",
+    "varDecisionReason.outsidePenaltyArea": "Outside penalty area",
     "varDecisionReason.noOffside": "No offside",
     "varDecisionReason.seriousFoulPlay": "Serious foul play",
     "victoryGame.austrianBundesliga": "In this game {main} won the Austrian Bundesliga for the {titleCount} time",

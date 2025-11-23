@@ -255,6 +255,7 @@
     "varDecisionReason.handball": "Handspiel",
     "varDecisionReason.noHandball": "Kein Handspiel",
     "varDecisionReason.offside": "Abseits",
+    "varDecisionReason.outsidePenaltyArea": "Außerhalb des Strafraums",
     "varDecisionReason.noOffside": "Kein Abseits",
     "varDecisionReason.seriousFoulPlay": "Schweres Foulspiel",
     "victoryGame.austrianBundesliga": "In diesem Spiel hat {main} die Österreichische Bundesliga zum {titleCount}. Mal gewonnen",
