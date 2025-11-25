@@ -41,6 +41,7 @@ import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { GameMinuteFormatter } from '@src/app/module/game/minute-formatter';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { CheckboxStarComponent } from "@src/app/component/checkbox-star/checkbox-star.component";
+import { CheckboxEyeComponent } from "@src/app/component/checkbox-eye/checkbox-eye.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -65,7 +66,8 @@ export type GameRouteState = {
     RoundInformationComponent,
     ContextMenuComponent,
     UiIconComponent,
-    CheckboxStarComponent
+    CheckboxStarComponent,
+    CheckboxEyeComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -92,7 +94,8 @@ export class GameComponent implements OnDestroy {
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
 
-  readonly starChecked = signal(true);
+  readonly attendChecked = signal(false);
+  readonly starChecked = signal(false);
 
   mainClub: SmallClub = environment.mainClub;
   mainWonOnAwayGoals: boolean | null = null;
@@ -275,6 +278,11 @@ export class GameComponent implements OnDestroy {
 
   onPersonSelected(personId: PersonId): void {
     navigateToPerson(this.router, personId);
+  }
+
+  onAttendToggle() {
+    console.log('toggle that eye');
+    this.attendChecked.set(!this.attendChecked());
   }
 
   onStarToggle() {

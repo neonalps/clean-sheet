@@ -1,7 +1,13 @@
+@let currentColor = color();
 @let text = displayText();
 <div class="inline-flex align-items-center" [ngClass]="{ 'pointer': !disabled() }" (click)="onClicked()">
     <div class="width-xs relative top-1">
-        <app-star-icon [fillColor]="checked() ? color() : undefined" />
+        <ng-container *ngIf="checked(); else other">
+            <app-eye-icon [color]="currentColor" />
+        </ng-container>
+        <ng-template #other>
+            <app-eye-slash-icon [color]="currentColor" />
+        </ng-template>
     </div>
     <div *ngIf="text" class="ml-3 text-sm user-select-none">{{ text }}</div>
 </div>
