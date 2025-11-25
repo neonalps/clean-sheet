@@ -1,4 +1,5 @@
 export const KEYWORD_CURRENT_COLOR = 'currentColor';
+export const KEYWORD_TRANSPARENT = 'transparent';
 
 export const COLOR_DARK = "#191919";
 export const COLOR_LIGHT = "#f4f4f4";

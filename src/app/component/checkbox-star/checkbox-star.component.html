@@ -1,0 +1,7 @@
+@let text = displayText();
+<div class="inline-flex align-items-center" [ngClass]="{ 'pointer': !disabled() }" (click)="onClicked()">
+    <div class="width-xs relative top-1">
+        <app-star-icon [fillColor]="checked() ? color() : undefined" />
+    </div>
+    <div *ngIf="text" class="ml-3 text-sm">{{ text }}</div>
+</div>

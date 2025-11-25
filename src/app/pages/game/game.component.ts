@@ -40,6 +40,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { GameMinuteFormatter } from '@src/app/module/game/minute-formatter';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
+import { CheckboxStarComponent } from "@src/app/component/checkbox-star/checkbox-star.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -63,7 +64,8 @@ export type GameRouteState = {
     GamePerformanceTrendComponent,
     RoundInformationComponent,
     ContextMenuComponent,
-    UiIconComponent
+    UiIconComponent,
+    CheckboxStarComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -89,6 +91,8 @@ export class GameComponent implements OnDestroy {
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
+
+  readonly starChecked = signal(true);
 
   mainClub: SmallClub = environment.mainClub;
   mainWonOnAwayGoals: boolean | null = null;
@@ -271,6 +275,11 @@ export class GameComponent implements OnDestroy {
 
   onPersonSelected(personId: PersonId): void {
     navigateToPerson(this.router, personId);
+  }
+
+  onStarToggle() {
+    console.log('toggle that star');
+    this.starChecked.set(!this.starChecked());
   }
 
   onVenueSelected(venueId: VenueId): void {

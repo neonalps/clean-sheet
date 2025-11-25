@@ -113,6 +113,12 @@
         </div>
     </div>
 
+    <div class="game-section p-2 rounded-lg mt-3 mx-3">
+        <div class="pl-1 pt-1">
+            <app-checkbox-star [checked]="starChecked()" (click)="onStarToggle()" [displayText]="'game.starGame' | $t" />
+        </div>
+    </div>
+
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="mainWonOnAwayGoals !== null">
         <div class="flex align-items-center justify-content-center p-2">
             <div class="text-sm">{{ getAwayGoalsText() }}</div>
