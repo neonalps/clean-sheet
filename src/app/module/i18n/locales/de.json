@@ -234,7 +234,7 @@
     "stats.yellowRedCards.plural": "Gelbe-Rote Karten",
     "stats.redCards.singular": "Rote Karte",
     "stats.redCards.plural": "Rote Karten",
-    "stats.showSubstituteGames": "Zeige auch Spiele als Ersatzspieler",
+    "stats.showSubstituteGames": "Zeige auch Spiele als Ersatzspieler ohne Einsatz",
     "tendency.all": "Alle Ausgänge",
     "tendency.draw": "Remis",
     "tendency.loss": "Niederlage",

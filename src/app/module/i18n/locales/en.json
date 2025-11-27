@@ -235,7 +235,7 @@
     "stats.yellowRedCards.plural": "Yellow-red cards",
     "stats.redCards.singular": "Red card",
     "stats.redCards.plural": "Red cards",
-    "stats.showSubstituteGames": "Also show games as substitute",
+    "stats.showSubstituteGames": "Also show games as substitute without appearance",
     "tendency.all": "All outcomes",
     "tendency.draw": "Draw",
     "tendency.loss": "Loss",
