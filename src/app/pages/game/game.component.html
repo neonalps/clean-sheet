@@ -113,15 +113,6 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3">
-        <div class="pl-1 pt-1 mb-4">
-            <app-checkbox-star [checked]="starChecked()" (click)="onStarToggle()" [displayText]="'game.starGame' | $t" />
-        </div>
-        <div class="pl-1 pt-1">
-            <app-checkbox-eye [checked]="attendChecked()" (click)="onAttendToggle()" [displayText]="'game.attendGame' | $t" />
-        </div>
-    </div>
-
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="mainWonOnAwayGoals !== null">
         <div class="flex align-items-center justify-content-center p-2">
             <div class="text-sm">{{ getAwayGoalsText() }}</div>
@@ -143,6 +134,15 @@
                 <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" [hideTable]="!isMatchdayTableVisible" />
             </app-tab-item>
         </app-tab-group>
+    </div>
+
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible">
+        <div class="pl-1 pt-1 mb-3">
+            <app-checkbox-star [checked]="starChecked()" (click)="onStarToggle()" [displayText]="(starChecked() ? 'game.didStar' : 'game.didNotStar') | $t" />
+        </div>
+        <div class="pl-1 pt-1">
+            <app-checkbox-eye [checked]="attendChecked()" (click)="onAttendToggle()" [displayText]="(attendChecked() ? 'game.didAttend' : 'game.didNotAttend') | $t" />
+        </div>
     </div>
 
     <div class="game-section p-2 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">

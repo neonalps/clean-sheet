@@ -5,9 +5,9 @@ import { SmallClub } from '@src/app/model/club';
 import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
-import { isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, filter, map, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -109,6 +109,9 @@ export class GameComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
+  
+  private readonly starGameUpdate$ = new Subject<boolean>();
+  private readonly attendGameUpdate$ = new Subject<boolean>(); 
 
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly viewportScroller = inject(ViewportScroller);
@@ -165,7 +168,41 @@ export class GameComponent implements OnDestroy {
       setTimeout(() => {
         this.viewportScroller.scrollToPosition(routerScrollPositionValue);
       }, 0);
-    });    
+    });
+
+    this.starGameUpdate$
+      .pipe(
+        debounceTime(400),
+        switchMap(updatedValue => {
+          const gameId = ensureNotNullish(this.game).id;
+          if (updatedValue) {
+            return this.gameService.star(gameId);
+          } else {
+            return this.gameService.unstar(gameId);
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        error: (err) => console.error(`failed to update game star status`, err),
+      });
+
+    this.attendGameUpdate$
+      .pipe(
+        debounceTime(400),
+        switchMap(updatedValue => {
+          const gameId = ensureNotNullish(this.game).id;
+          if (updatedValue) {
+            return this.gameService.attend(gameId);
+          } else {
+            return this.gameService.unattend(gameId);
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        error: (err) => console.error(`failed to update game attend status`, err),
+      });
   }
 
   ngOnDestroy(): void {
@@ -207,7 +244,7 @@ export class GameComponent implements OnDestroy {
     if (isDefined(this.game.previousLeg)) {
       this.resolvePreviousLeg(this.game.previousLeg, this.game.season.id);
     } else {
-      // if there is no previous leg to resolvem we can finish loading now
+      // if there is no previous leg to resolve we can finish loading now
       this.isLoading = false;
     }
 
@@ -281,13 +318,19 @@ export class GameComponent implements OnDestroy {
   }
 
   onAttendToggle() {
-    console.log('toggle that eye');
-    this.attendChecked.set(!this.attendChecked());
+    const toggledValue = !this.attendChecked();
+
+    this.attendGameUpdate$.next(toggledValue);
+
+    this.attendChecked.set(toggledValue);
   }
 
   onStarToggle() {
-    console.log('toggle that star');
-    this.starChecked.set(!this.starChecked());
+    const toggledValue = !this.starChecked();
+
+    this.starGameUpdate$.next(toggledValue);
+
+    this.starChecked.set(toggledValue);
   }
 
   onVenueSelected(venueId: VenueId): void {

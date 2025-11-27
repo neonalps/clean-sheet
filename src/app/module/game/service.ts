@@ -23,4 +23,20 @@ export class GameService {
   import(gameId: GameId): Observable<ImportGameResponse> {
       return this.http.post<ImportGameResponse>(`${environment.apiBaseUrl}/v1/ops/import-game`, { gameId });
   }
+
+  star(gameId: GameId): Observable<void> {
+    return this.http.post<void>(`${environment.apiBaseUrl}/v1/games/${gameId}/star`, {});
+  }
+
+  unstar(gameId: GameId): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/v1/games/${gameId}/star`, {});
+  }
+
+  attend(gameId: GameId): Observable<void> {
+    return this.http.post<void>(`${environment.apiBaseUrl}/v1/games/${gameId}/attend`, {});
+  }
+
+  unattend(gameId: GameId): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/v1/games/${gameId}/attend`, {});
+  }
 }

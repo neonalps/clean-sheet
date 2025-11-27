@@ -12,6 +12,11 @@ export enum FetchStrategy {
     Network = "network",
 }
 
+export enum FetchScope {
+    Account = "account",
+    Global = "global",
+}
+
 export type FetchOpts = {
     force?: boolean;
 }
@@ -37,6 +42,8 @@ export type FetchSubscription<T> = {
     // if no network is available the stale data will still be returned
     bestBeforeSeconds: number;
     strategy: FetchStrategy;
+    // indicates whether the received response is valid globally or per account
+    scope: FetchScope;
     onUpdate?: (update: T) => void;
 }
 

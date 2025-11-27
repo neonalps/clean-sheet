@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Season } from "@src/app/model/season";
-import { FetchHandle, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
+import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
 import { Observable, BehaviorSubject } from "rxjs";
 
 @Injectable({
@@ -23,6 +23,7 @@ export class SeasonService {
             },
             bestBeforeSeconds: 12 * 60 * 60,        // 12 hours
             strategy: FetchStrategy.CacheAndNetwork,
+            scope: FetchScope.Global,
             onUpdate: (update: Season[]) => this.onSeasonsUpdate(update), 
         });
 

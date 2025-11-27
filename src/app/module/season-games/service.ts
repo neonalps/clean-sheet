@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { DetailedGame } from "@src/app/model/game";
-import { FetchHandle, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
+import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
 import { assertDefined } from "@src/app/util/common";
 import { Observable, Subject } from "rxjs";
 
@@ -56,6 +56,7 @@ export class SeasonGamesService implements OnDestroy {
             },
             bestBeforeSeconds: 60,
             strategy: FetchStrategy.CacheAndNetwork,
+            scope: FetchScope.Global,
             onUpdate: (update: DetailedGame[]) => this.onSeasonGamesUpdate(seasonId, update), 
         });
         this.fetchHandles.set(seasonId, fetchHandle);
