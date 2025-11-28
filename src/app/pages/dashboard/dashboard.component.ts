@@ -20,6 +20,7 @@ import { Chip } from '@src/app/component/chip/chip.component';
 import { processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PlayerRankingComponent } from "@src/app/component/player-ranking/player-ranking.component";
+import { AccountGameInformationService } from '@src/app/module/account/game-information';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,12 +42,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly topScorersLoading$ = new BehaviorSubject(true);
   readonly topScorersRanking$ = new BehaviorSubject<PlayerCompetitionItem[]>([]);
 
+  private readonly accountGameInformationService = inject(AccountGameInformationService);
   private readonly authService = inject(AuthService);
+  private readonly dashboardResolver = inject(DashboardResolver);
+  private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
-
-  constructor(private readonly dashboardResolver: DashboardResolver, private readonly router: Router) {}
 
   ngOnInit(): void {
     this.resolveDashboard();
@@ -58,6 +60,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       this.loginName.set(profile.firstName);
+
+      this.accountGameInformationService.init();
     });
   }
 

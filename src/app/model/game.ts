@@ -1,4 +1,4 @@
-import { DateString } from "../util/domain-types";
+import { DateString, GameId } from "../util/domain-types";
 import { BasicClub, ClubInput, SmallClub } from "./club";
 import { CompetitionInput, SmallCompetition } from "./competition";
 import { GameResult } from "./external-search";

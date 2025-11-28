@@ -1,4 +1,4 @@
-import { DateString } from "@src/app/util/domain-types";
+import { DateString, GameId } from "@src/app/util/domain-types";
 import { AccountRole, ProfileSettings } from "./auth";
 
 export enum Language {
@@ -46,4 +46,9 @@ export interface UpdateAccountProfile {
     dateFormat: DateFormat;
     scoreFormat: ScoreFormat;
     gameMinuteFormat: GameMinuteFormat;
+}
+
+export interface AccountGameInformationResponse {
+    attended: GameId[];
+    stars: GameId[];
 }

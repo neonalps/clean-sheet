@@ -42,6 +42,7 @@ import { GameMinuteFormatter } from '@src/app/module/game/minute-formatter';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { CheckboxStarComponent } from "@src/app/component/checkbox-star/checkbox-star.component";
 import { CheckboxEyeComponent } from "@src/app/component/checkbox-eye/checkbox-eye.component";
+import { AccountGameInformationService } from '@src/app/module/account/game-information';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -116,6 +117,7 @@ export class GameComponent implements OnDestroy {
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly viewportScroller = inject(ViewportScroller);
 
+  private readonly accountGameInformationService = inject(AccountGameInformationService);
   private readonly authService = inject(AuthService);
   private readonly clubResolver = inject(ClubResolver);
   private readonly gameService = inject(GameService);
@@ -247,6 +249,9 @@ export class GameComponent implements OnDestroy {
       // if there is no previous leg to resolve we can finish loading now
       this.isLoading = false;
     }
+
+    this.starChecked.set(this.accountGameInformationService.isStarred(this.game.id));
+    this.attendChecked.set(this.accountGameInformationService.isAttended(this.game.id));
 
     // if it is an upcoming game, fetch the last games to display the record
     if (game.status === GameStatus.Scheduled) {
