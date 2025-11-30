@@ -421,7 +421,7 @@ export class GameComponent implements OnDestroy {
     const needsTranslation = isNaN(Number(this.game!.round));
     const competitionRound = needsTranslation ? [`{`, API_FIELD_TRANSLATION_PREFIX, 'competitionRound.', this.game!.round, `}`].join('') : this.game!.round;
     const round = processTranslationPlaceholders(competitionRound, this.translationService);
-    parts.push(`${isNaN(Number(round)) ? '' : this.translationService.translate('competitionRound.round')} ${round}`);
+    parts.push(`${isNaN(Number(round)) ? '' : this.translationService.translate('competitionRound.round')}\u00a0${round}`);
 
     return parts.join(' · ');
   }
