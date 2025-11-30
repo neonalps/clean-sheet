@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { environment } from '@src/environments/environment';
 import { CacheableResponse } from "@src/app/model/cacheable-response";
 import { CacheService } from "@src/app/module/cache/service";
 import { getCurrentUnix, getDateFromUnixTimestamp } from "@src/app/util/date";
 import { take } from "rxjs";
-import { isNotDefined } from "@src/app/util/common";
+import { AccountCacheService } from "@src/app/module/cache/account";
 
 export enum FetchStrategy {
     CacheAndNetwork = "cacheAndNetwork",
@@ -61,7 +61,9 @@ export class FetchService {
 
     private subscriptions: Map<Symbol, FetchSubscription<any>> = new Map();
 
-    constructor(private readonly cacheService: CacheService, private readonly http: HttpClient) {}
+    private readonly accountCacheService = inject(AccountCacheService);
+    private readonly cacheService = inject(CacheService);
+    private readonly http = inject(HttpClient);
 
     subscribe<T>(subscription: FetchSubscription<T>): FetchHandle {
         const subscriptionSymbol = Symbol();
@@ -72,10 +74,7 @@ export class FetchService {
 
     async getFromCache<T>(requestName: string): Promise<T | undefined> {
         const cacheEntry = await this.cacheService.get<ResponseCacheEntry<T>>(FetchService.CACHE_KEY_REQUESTS, requestName);
-        if (isNotDefined(cacheEntry)) {
-            return;
-        }
-        return cacheEntry.content;
+        return cacheEntry?.content;
     }
 
     private getSubscriptionOrThrow(subscriptionSymbol: Symbol): FetchSubscription<unknown> {
@@ -115,9 +114,7 @@ export class FetchService {
             const cacheEntry = await this.cacheService.get<ResponseCacheEntry<unknown>>(FetchService.CACHE_KEY_REQUESTS, subscription.name);
             if (cacheEntry !== undefined) {
                 // cache entry exists, return the stored data immediately and only update it if newer data is available
-                if (subscription.onUpdate !== undefined) {
-                    subscription.onUpdate(cacheEntry.content);
-                }
+                subscription.onUpdate?.(cacheEntry.content);
 
                 currentContentHash = cacheEntry.hash;
                 currentContent = cacheEntry.content;

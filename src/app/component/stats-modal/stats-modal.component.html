@@ -12,7 +12,7 @@
     </div>
     <div content>
         <div *ngIf="showSubstituteGames() === true" class="mb-6">
-            <div class="inline-flex p-2 bg-color-dark-grey-darker rounded-md">
+            <div class="inline-flex p-2 bg-color-dark-grey-darker rounded-md align-items-center">
                 <div class="mr-3 text-sm">{{ 'stats.showSubstituteGames' | $t }}</div>
                 <div class="relative top-1">
                     <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="false" (valueChange)="onIncludeSubstituteGamesChange($event)" />
