@@ -55,7 +55,7 @@
                 @for (totalStatsRow of playerTotalStatsRows; track $index) {
                     <div class="flex justify-content-evenly mt-8">
                         @for (statsItem of totalStatsRow; track $index) {
-                            <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(statsItem.itemType)">
+                            <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(statsItem.itemType, true)">
                                 <div class="flex align-items-center mb-3 min-h-22">
                                     <div *ngIf="statsItem.iconDescriptor" [attr.title]="statsItem.titleText">
                                         <div class="width-1-25rem text-light" [ngClass]="statsItem.iconClasses ?? []">
@@ -67,6 +67,33 @@
                                     <span>{{ statsItem.value }}</span>
                                 </div>
                                 <div class="flex-grow flex align-items-center mt-2 text-xs center text-light-grey-darker">{{ statsItem.titleText }}</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="opponentStatsVisible()">
+            <div class="pl-3 flex align-items-center mb-1">
+                <div class="bold text-light text-lg">{{ getStatsAgainstMainText() }}</div>
+            </div>
+            <div *ngIf="opponentTotalStatsRows" class="pb-4">
+                @for (opponentStatsRow of opponentTotalStatsRows; track $index) {
+                    <div class="flex justify-content-evenly mt-8">
+                        @for (opponentStatsItem of opponentStatsRow; track $index) {
+                            <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(opponentStatsItem.itemType, false)">
+                                <div class="flex align-items-center mb-3 min-h-22">
+                                    <div *ngIf="opponentStatsItem.iconDescriptor" [attr.title]="opponentStatsItem.titleText">
+                                        <div class="width-1-25rem text-light" [ngClass]="opponentStatsItem.iconClasses ?? []">
+                                            <app-ui-icon [descriptor]="opponentStatsItem.iconDescriptor" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span>{{ opponentStatsItem.value }}</span>
+                                </div>
+                                <div class="flex-grow flex align-items-center mt-2 text-xs center text-light-grey-darker">{{ opponentStatsItem.titleText }}</div>
                             </div>
                         }
                     </div>

@@ -55,11 +55,13 @@ export class PersonComponent implements OnDestroy {
   isLoading = true;
   colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
+  opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
   refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
+  readonly opponentStatsVisible = signal(false);
   readonly refereeListVisible = signal(false);
 
   private readonly mainClub: SmallClub = environment.mainClub;
@@ -96,9 +98,11 @@ export class PersonComponent implements OnDestroy {
       const playerStats = getUiPlayerStats(person.stats.performance);
       this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
       this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition);
+      this.opponentTotalStatsRows = isDefined(person.stats.opponent) ? this.getPlayerTotalStats(person.stats.opponent) : [];
 
       this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
       this.goalsAgainstClubsVisible.set(person.stats.goalsAgainstClubs !== undefined && person.stats.goalsAgainstClubs.length > 0);
+      this.opponentStatsVisible.set(this.opponentTotalStatsRows.length > 0);
 
       const refereeGames = person.stats.refereeGames ?? [];
       this.refereeGames$.next(refereeGames);
@@ -156,8 +160,12 @@ export class PersonComponent implements OnDestroy {
     this.showStatsModal(filterOptions);
   }
 
-  onStatsItemClicked(itemType: StatsItemType) {
+  onStatsItemClicked(itemType: StatsItemType, forMain?: boolean) {
     const filterOptions: GamePlayedFilterOptions = {};
+
+    if (isDefined(forMain)) {
+      filterOptions.forMain = forMain;
+    }
 
     if (itemType === 'goalsScored') {
       filterOptions.goalsScored = '+1';
@@ -251,30 +259,36 @@ export class PersonComponent implements OnDestroy {
     const items: Array<UiStatsItem[]> = [];
 
     // if the person has clean sheets we assume it's a goalkeeper, so we only display goals scored and assists if they actually have some
-    const hasCleanSheets = stats.cleanSheets > 0;
+    const cleanSheets = stats.cleanSheets ?? 0;
+    const hasCleanSheets = cleanSheets > 0;
 
     const baseItems: UiStatsItem[] = [
       { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: this.translationService.translate('stats.games', { plural: stats.gamesPlayed }), value: `${stats.gamesPlayed}` }
     ];
 
     if (hasCleanSheets) {
-      baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'goalkeeper-goal' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: stats.cleanSheets }), value: `${stats.cleanSheets}` });
+      baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'goalkeeper-goal' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: cleanSheets }), value: `${cleanSheets}` });
     }
 
-    if (!hasCleanSheets || stats.goalsScored > 0) {
-      baseItems.push({ itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: stats.goalsScored }), value: `${stats.goalsScored}` });
+    const goalsScored = stats.goalsScored ?? 0;
+    if (!hasCleanSheets || goalsScored > 0) {
+      baseItems.push({ itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: goalsScored }), value: `${goalsScored}` });
     }
 
-    if (!hasCleanSheets || stats.assists > 0) {
-      baseItems.push({ itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: stats.assists }), value: `${stats.assists}` });
+    const assists = stats.assists ?? 0;
+    if (!hasCleanSheets || assists > 0) {
+      baseItems.push({ itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: assists }), value: `${assists}` });
     }
 
     items.push(baseItems);
 
+    const yellowCards = stats.yellowCards ?? 0;
+    const yellowRedCards = stats.yellowRedCards ?? 0;
+    const redCards = stats.redCards ?? 0;
     items.push([
-        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: this.translationService.translate('stats.yellowCards', { plural: stats.yellowCards }), value: `${stats.yellowCards}`, iconClasses: ['relative', 'left-5'] },
-        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: this.translationService.translate('stats.yellowRedCards', { plural: stats.yellowRedCards }), value: `${stats.yellowRedCards}`, iconClasses: ['relative', 'left-3'] },
-        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: this.translationService.translate('stats.redCards', { plural: stats.redCards }), value: `${stats.redCards}`, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowCards', iconDescriptor: { type: 'standard', content: 'yellow-card' }, titleText: this.translationService.translate('stats.yellowCards', { plural: yellowCards }), value: `${yellowCards}`, iconClasses: ['relative', 'left-5'] },
+        { itemType: 'yellowRedCards', iconDescriptor: { type: 'standard', content: 'yellow-red-card' }, titleText: this.translationService.translate('stats.yellowRedCards', { plural: yellowRedCards }), value: `${yellowRedCards}`, iconClasses: ['relative', 'left-3'] },
+        { itemType: 'redCards', iconDescriptor: { type: 'standard', content: 'red-card' }, titleText: this.translationService.translate('stats.redCards', { plural: redCards }), value: `${redCards}`, iconClasses: ['relative', 'left-5'] },
     ]);
 
     const penaltiesFacedItems: UiStatsItem[] = [];

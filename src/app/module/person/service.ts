@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { ExternalProviderLinkDto } from "@src/app/model/external-provider";
 import { BasicGame } from "@src/app/model/game";
 import { DetailedPerson, Person } from "@src/app/model/person";
-import { GoalsAgainstClubStatsItemDto, PlayerSeasonStatsItemDto } from "@src/app/model/stats";
+import { GoalsAgainstClubStatsItemDto, PlayerBaseStats, PlayerSeasonStatsItemDto } from "@src/app/model/stats";
 import { DateString } from "@src/app/util/domain-types";
 import { environment } from "@src/environments/environment";
 import { Observable } from "rxjs";
@@ -23,6 +23,7 @@ export type GetPersonByIdResponse = {
     performance: Array<PlayerSeasonStatsItemDto>;
     goalsAgainstClubs: Array<GoalsAgainstClubStatsItemDto>;
     refereeGames?: Array<BasicGame>;
+    opponent?: PlayerBaseStats;
   },
   externalLinks?: ReadonlyArray<ExternalProviderLinkDto>;
 }
