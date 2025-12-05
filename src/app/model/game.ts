@@ -214,6 +214,7 @@ export interface CardGameEvent extends GameEvent {
     affectedManager?: number;
     notOnPitch?: boolean;
     reason: string;
+    var?: boolean;
 }
 
 export interface SubstitutionGameEvent extends GameEvent {
@@ -334,6 +335,7 @@ export interface UiCardGameEvent extends UiGameEvent {
     affectedManager?: UiGameManager;
     notOnPitch: boolean;
     reason: string;
+    var?: boolean;
 }
 
 export interface UiSubstitutionGameEvent extends UiGameEvent {
@@ -426,6 +428,7 @@ export interface CreateRedCardGameEvent extends CreateGameEvent {
     affectedManager?: PersonInput;
     reason?: ExpulsionReason;
     notOnPitch?: boolean;
+    var?: boolean;
 }
 
 export interface CreateSubstitutionGameEvent extends CreateGameEvent {

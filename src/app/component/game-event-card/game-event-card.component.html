@@ -10,9 +10,16 @@
         </div>
     </div>
     <div person>
-        <div class="game-event-scored-by text-sm">{{ getPersonName() }}</div>
-        <div *ngIf="event.reason" class="text-xs text-light-grey">
-            {{ getReason() }}
+        <div class="flex align-items-center">
+            <div class="flex-grow">
+                <div class="game-event-scored-by text-sm">{{ getPersonName() }}</div>
+                <div *ngIf="event.reason" class="text-xs text-light-grey">
+                    {{ getReason() }}
+                </div>
+            </div>
+            <div *ngIf="isVarEvent()" class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">
+                VAR
+            </div>
         </div>
     </div>
 </app-game-event>   

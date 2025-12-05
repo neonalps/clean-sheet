@@ -31,4 +31,8 @@ export class GameEventCardComponent {
     return this.translationService.translate(`reason.${this.event.reason}`);
   }
 
+  isVarEvent(): boolean {
+    return this.event.var === true;
+  }
+
 }
