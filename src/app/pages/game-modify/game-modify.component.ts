@@ -13,6 +13,7 @@ import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { LineupSelectorComponent } from "@src/app/component/lineup-selector/lineup-selector.component";
+import { GameEventEditorComponent } from "@src/app/component/game-event-editor/game-event-editor.component";
 
 export type UserProviderInput = {
   id: string;
@@ -106,7 +107,7 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent],
+  imports: [StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })

@@ -1,0 +1,39 @@
+<div class="px-3 py-2 bg-color-dark-grey-darker rounded">
+    <div class="flex align-items-center">
+        <div class="basis-1/10 flex align-items-center justify-content-center">
+            <div class="cursor-move width-sm relative top-2 left-neg-10 text-light-grey-darker hover:text-light-grey transition-colors">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'drag' }" />
+            </div>
+        </div>
+        <div class="flex-grow flex">
+            <div class="basis-1/5 mr-4">
+                <div class="form-row">
+                    <div class="form-row-title">{{ 'gameEvent.minute' | $t }}</div>
+                    <div class="form-row-content">
+                        <input type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (input)="onGameMinuteChange($event)" />
+                    </div>
+                </div>
+            </div>
+            <div class="flex-grow">
+                <div class="form-row">
+                    <div class="form-row-title">{{ 'gameEvent.type' | $t }}</div>
+                    <div class="form-row-content">
+                        <app-select [optionsSource]="getGameEventTypeOptions()" [showSearch]="false" [selectedOption]="pushGameEventType$" (onSelected)="onGameEventTypeSelected($event)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="basis-1/12 flex align-items-center justify-content-center">
+            <div class="width-sm relative top-4 left-8 text-light-grey-darker hover:text-light-grey pointer transition-colors" (click)="removeClicked()">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
+            </div>
+        </div>
+    </div>
+    <div class="flex align-items-center">
+        @switch (currentGameEventType()) {
+            @case ('goal') {
+                <div>goal</div>
+            }
+        }
+    </div>
+</div>

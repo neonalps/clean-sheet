@@ -65,6 +65,14 @@
         color: var(--light-grey-darker);
     }
 
+    .hover\:text-dark-grey:hover {
+        color: var(--dark-grey);
+    }
+
+    .hover\:text-dark-grey-lighter:hover {
+        color: var(--dark-grey-lighter);
+    }
+
     .hover\:text-danger:hover {
         color: var(--danger);
     }

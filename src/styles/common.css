@@ -997,6 +997,10 @@
     line-height: 2rem;
 }
 
+.line-height-1 {
+    line-height: 1rem;
+}
+
 .min-w-140 {
     min-width: 140px;
 }
@@ -1151,6 +1155,14 @@
 
 .left-8 {
     left: 8px;
+}
+
+.left-10 {
+    left: 10px;
+}
+
+.left-12 {
+    left: 12px;
 }
 
 .left-14 {

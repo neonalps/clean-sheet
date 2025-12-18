@@ -1,0 +1,12 @@
+<div>
+    <div>
+        @for (item of gameEvents; track $index) {
+            <div class="mb-2 last:mb-0">
+                <app-game-event-selector (onRemove)="onItemRemove(item)" />
+            </div>
+        }
+    </div>
+    <div class="flex align-items-center justify-content-center mt-2 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
+        <div>+ add new</div>
+    </div>
+</div>
