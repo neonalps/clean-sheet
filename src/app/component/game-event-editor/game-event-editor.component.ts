@@ -1,9 +1,11 @@
+import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { GameEventSelectorComponent } from "@src/app/component/game-event-selector/game-event-selector.component";
 
 @Component({
   selector: 'app-game-event-editor',
-  imports: [GameEventSelectorComponent],
+  imports: [CommonModule, CdkDropList, GameEventSelectorComponent],
   templateUrl: './game-event-editor.component.html',
   styleUrl: './game-event-editor.component.css'
 })
@@ -17,6 +19,11 @@ export class GameEventEditorComponent {
 
   onItemRemove(itemId: number) {
     this.gameEvents.splice(itemId, 1);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+     moveItemInArray(this.gameEvents, event.previousIndex, event.currentIndex);
+     console.log('now', this.gameEvents);
   }
 
 }

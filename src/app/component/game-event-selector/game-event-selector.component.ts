@@ -8,10 +8,11 @@ import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { GameEventType } from '@src/app/model/game';
+import { CdkDrag } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-game-event-selector',
-  imports: [CommonModule, I18nPipe, SelectComponent, UiIconComponent],
+  imports: [CommonModule, CdkDrag, I18nPipe, SelectComponent, UiIconComponent],
   templateUrl: './game-event-selector.component.html',
   styleUrl: './game-event-selector.component.css'
 })
