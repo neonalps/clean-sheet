@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-7" [ngClass]="{ 'align-items-center': currentGameEventType() }">
             <div class="basis-1/5 mr-4">
-                <div class="form-row">
+                <div class="form-row" [ngClass]="{ 'invisible': !isGameMinuteVisible() }">
                     <div class="form-row-title">{{ 'gameEvent.minute' | $t }}</div>
                     <div class="form-row-content">
                         <input type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (input)="onGameMinuteChange($event)" />
@@ -28,6 +28,10 @@
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.scoredBy' | $t }}</div>
                                     <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushGoalScoredBy$" (onSelected)="onGoalScoredBySelected($event)" />
+                                </div>
+                                <div class="mt-2">
+                                    <div class="form-row-title">{{ 'gameEvent.goalType' | $t }}</div>
+                                    <app-select [optionsSource]="getGoalTypeOptions()" [showSearch]="false" [selectedOption]="pushGoalType$" (onSelected)="onGoalTypeSelected($event)" />
                                 </div>
                                 <div class="mt-2">
                                     <div class="form-row-title">{{ 'gameEvent.assistBy' | $t }}</div>
@@ -53,27 +57,80 @@
                                 </div>
                             </div>
                         }
+                        @case ('substitution') {
+                            <div class="w-full mt-1">
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.playerOn' | $t }}</div>
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPlayerOn$" (onSelected)="onPlayerOnSelected($event)" />
+                                </div>
+                                <div class="mt-2">
+                                    <div class="form-row-title">{{ 'gameEvent.playerOff' | $t }}</div>
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPlayerOff$" (onSelected)="onPlayerOffSelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <input type="checkbox" id="is-injured" [checked]="injured()" />
+                                    <label class="ml-1 user-select-none" for="is-injured">{{ 'gameEvent.injured' | $t }}</label>
+                                </div>
+                            </div>
+                        }
                         @case ('yellowCard') {
                             <div class="w-full mt-2">
-                                <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
-                                <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowCardReason$" (onSelected)="onYellowCardReasonSelected($event)" />
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
+                                    <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowCardReason$" (onSelected)="onYellowCardReasonSelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" />
+                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                </div>
                             </div>
                         }
                         @case ('yellowRedCard') {
                             <div class="w-full mt-2">
-                                <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
-                                <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowRedCardReason$" (onSelected)="onYellowRedCardReasonSelected($event)" />
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
+                                    <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowRedCardReason$" (onSelected)="onYellowRedCardReasonSelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" />
+                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                </div>
                             </div>
                         }
                         @case ('redCard') {
-                            <div class="w-full">
-                                <app-select [optionsSource]="getExpulsionReasonOptions()" [showSearch]="false" [selectedOption]="pushRedCardReason$" (onSelected)="onRedCardReasonSelected($event)" />
+                            <div class="w-full mt-2">
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
+                                    <app-select [optionsSource]="getExpulsionReasonOptions()" [showSearch]="false" [selectedOption]="pushRedCardReason$" (onSelected)="onRedCardReasonSelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" />
+                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                </div>
                             </div>
                         }
                         @case ('penaltyMissed') {
                             <div class="w-full mt-2">
-                                <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
-                                <app-select [optionsSource]="getPenaltyMissedReasonOptions()" [showSearch]="false" [selectedOption]="pushPenaltyMissedReason$" (onSelected)="onPenaltyMissedReasonSelected($event)" />
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.takenBy' | $t }}</div>
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPenaltyTakenBy$" (onSelected)="onPenaltyTakenBySelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
+                                    <app-select [optionsSource]="getPenaltyMissedReasonOptions()" [showSearch]="false" [selectedOption]="pushPenaltyMissedReason$" (onSelected)="onPenaltyMissedReasonSelected($event)" />
+                                </div>
+                            </div>
+                        }
+                        @case ('pso') {
+                            <div class="w-full mt-2">
+                                <div>
+                                    <div class="form-row-title">{{ 'gameEvent.takenBy' | $t }}</div>
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPsoTakenBy$" (onSelected)="onPsoTakenBySelected($event)" />
+                                </div>
+                                <div class="mt-4">
+                                    <div class="form-row-title">{{ 'gameEvent.outcome' | $t }}</div>
+                                    <app-select [optionsSource]="getPsoOutcomeOptions()" [showSearch]="false" [selectedOption]="pushPsoOutcome$" (onSelected)="onPsoOutcomeSelected($event)" />
+                                </div>
                             </div>
                         }
                         @case ('varDecision') {

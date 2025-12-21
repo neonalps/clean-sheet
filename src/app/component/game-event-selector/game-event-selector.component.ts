@@ -19,13 +19,19 @@ export class GameEventSelectorComponent {
 
   readonly pushGameEventType$ = new Subject<SelectOption>();
   readonly pushGameMinute$ = new Subject<string>();
-  readonly pushGoalScoredBy$ = new Subject<SelectOption>();
   readonly pushGoalAssistBy$ = new Subject<SelectOption>();
+  readonly pushGoalScoredBy$ = new Subject<SelectOption>();
+  readonly pushGoalType$ = new Subject<SelectOption>();
   readonly pushInjuryTime$ = new Subject<string>();
   readonly pushYellowCardReason$ = new Subject<SelectOption>();
   readonly pushYellowRedCardReason$ = new Subject<SelectOption>();
   readonly pushRedCardReason$ = new Subject<SelectOption>();
   readonly pushPenaltyMissedReason$ = new Subject<SelectOption>();
+  readonly pushPenaltyTakenBy$ = new Subject<SelectOption>();
+  readonly pushPsoOutcome$ = new Subject<SelectOption>();
+  readonly pushPsoTakenBy$ = new Subject<SelectOption>();
+  readonly pushPlayerOff$ = new Subject<SelectOption>();
+  readonly pushPlayerOn$ = new Subject<SelectOption>();
   readonly pushVarDecision$ = new Subject<SelectOption>();
   readonly pushVarDecisionReason$ = new Subject<SelectOption>();
 
@@ -33,6 +39,8 @@ export class GameEventSelectorComponent {
   readonly directFreeKick = signal(false);
   readonly ownGoal = signal(false);
   readonly penalty = signal(false);
+  readonly injured = signal(false);
+  readonly notOnPitch = signal(false);
   readonly isDisabled = computed(() => {
     return this.currentGameEventType() === GameEventType.InjuryTime;
   });
@@ -75,8 +83,28 @@ export class GameEventSelectorComponent {
     ]);
   }
 
+  getGoalTypeOptions(): Observable<SelectOption[]> {
+    return of([
+      { id: 'left', name: this.translationService.translate(`goalType.left`) },
+      { id: 'right', name: this.translationService.translate(`goalType.right`) },
+      { id: 'head', name: this.translationService.translate(`goalType.head`) },
+      { id: 'other', name: this.translationService.translate(`goalType.other`) },
+    ]);
+  }
+
   getPenaltyMissedReasonOptions(): Observable<SelectOption[]> {
     return of([
+      { id: 'saved', name: this.translationService.translate(`penaltyOutcome.saved`) },
+      { id: 'wide', name: this.translationService.translate(`penaltyOutcome.wide`) },
+      { id: 'high', name: this.translationService.translate(`penaltyOutcome.high`) },
+      { id: 'crossbar', name: this.translationService.translate(`penaltyOutcome.crossbar`) },
+      { id: 'post', name: this.translationService.translate(`penaltyOutcome.post`) },
+    ]);
+  }
+
+  getPsoOutcomeOptions(): Observable<SelectOption[]> {
+    return of([
+      { id: 'scored', name: this.translationService.translate(`penaltyOutcome.scored`) },
       { id: 'saved', name: this.translationService.translate(`penaltyOutcome.saved`) },
       { id: 'wide', name: this.translationService.translate(`penaltyOutcome.wide`) },
       { id: 'high', name: this.translationService.translate(`penaltyOutcome.high`) },
@@ -117,6 +145,11 @@ export class GameEventSelectorComponent {
     return of([]);
   }
 
+  isGameMinuteVisible(): boolean {
+    const gameEventType = this.currentGameEventType();
+    return gameEventType === null || ![GameEventType.InjuryTime, GameEventType.PenaltyShootOut].includes(gameEventType);
+  }
+
   onGameEventTypeSelected(gameEventType: OptionId) {
     this.currentGameEventType.set(gameEventType as GameEventType);
   }
@@ -131,6 +164,10 @@ export class GameEventSelectorComponent {
   }
 
   onGoalAssistBySelected(assistBy: OptionId) {
+    
+  }
+
+  onGoalTypeSelected(goalType: OptionId) {
     
   }
 
@@ -156,6 +193,26 @@ export class GameEventSelectorComponent {
   }
 
   onPenaltyMissedReasonSelected(reason: OptionId) {
+    
+  }
+
+  onPenaltyTakenBySelected(takenBy: OptionId) {
+    
+  }
+
+  onPsoOutcomeSelected(takenBy: OptionId) {
+    
+  }
+
+  onPsoTakenBySelected(takenBy: OptionId) {
+    
+  }
+
+  onPlayerOffSelected(reason: OptionId) {
+    
+  }
+
+  onPlayerOnSelected(reason: OptionId) {
     
   }
 
