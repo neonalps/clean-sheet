@@ -12,6 +12,7 @@ export class CheckboxSliderComponent {
 
   @Input() checked = false;
   @Input() showText = false;
+  @Input() overrideText: string | undefined;
   @Output() readonly valueChange = new EventEmitter<boolean>();
 
   @ViewChild('check', { static: false }) checkbox!: ElementRef;

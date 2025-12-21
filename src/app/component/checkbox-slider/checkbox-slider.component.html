@@ -5,5 +5,5 @@
             <span class="slider round"></span>
         </label>
     </div>
-    <div *ngIf="showText" class="ml-3 pointer" (click)="onTextClicked()">{{ (checked ? 'toggle.yes' : 'toggle.no') | $t }}</div>
+    <div *ngIf="showText || overrideText" class="ml-3 pointer" (click)="onTextClicked()">{{ overrideText ?? ((checked ? 'toggle.yes' : 'toggle.no') | $t) }}</div>
 </div>
