@@ -147,6 +147,7 @@
     "gameEvent.scoredBy": "Scored by",
     "gameEvent.takenBy": "Taken by",
     "gameEvent.type": "Type",
+    "gameEventEditor.addNew": "add new",
     "gameEventType.goal": "Goal",
     "gameEventType.substitution": "Substitution",
     "gameEventType.yellowCard": "Yellow card",

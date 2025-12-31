@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { Observable, of, Subject } from 'rxjs';
@@ -7,8 +7,10 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { GameEventType } from '@src/app/model/game';
+import { GameEventType, GoalType } from '@src/app/model/game';
 import { CdkDrag } from '@angular/cdk/drag-drop';
+import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorInputPerson } from '@src/app/module/game-event-editor/types';
+import { PersonId } from '@src/app/util/domain-types';
 
 @Component({
   selector: 'app-game-event-selector',
@@ -16,7 +18,10 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
   templateUrl: './game-event-selector.component.html',
   styleUrl: './game-event-selector.component.css'
 })
-export class GameEventSelectorComponent {
+export class GameEventSelectorComponent implements OnInit {
+
+  readonly editorGameEvent = input.required<EditorGameEvent>();
+  readonly editorInputPersons = input.required<Array<EditorInputPerson>>();
 
   readonly pushGameEventType$ = new Subject<SelectOption>();
   readonly pushGameMinute$ = new Subject<string>();
@@ -36,7 +41,10 @@ export class GameEventSelectorComponent {
   readonly pushVarDecision$ = new Subject<SelectOption>();
   readonly pushVarDecisionReason$ = new Subject<SelectOption>();
 
+  private currentGameEvent!: EditorGameEvent;
+  private currentGamePersons: Array<SelectOption> = [];
   readonly currentGameEventType = signal<GameEventType | null>(null);
+  readonly currentGameMinute = signal<string>('');
   readonly directFreeKick = signal(false);
   readonly ownGoal = signal(false);
   readonly penalty = signal(false);
@@ -46,9 +54,16 @@ export class GameEventSelectorComponent {
     return this.currentGameEventType() === GameEventType.InjuryTime;
   });
 
-  @Output() readonly onRemove = new EventEmitter<number>();
+  readonly onUpdate = output<EditorGameEvent>();
+  readonly onRemove = output<void>();
 
   private readonly translationService = inject(TranslationService);
+  
+  ngOnInit(): void {
+    this.currentGameEvent = this.editorGameEvent();
+
+    this.currentGamePersons = this.editorInputPersons().map(item => ({ id: item.personId, name: item.name }));
+  }
 
   getGameEventTypeOptions(): Observable<SelectOption[]> {
     return of([
@@ -143,7 +158,7 @@ export class GameEventSelectorComponent {
   }
 
   getGamePlayerOptions(): Observable<SelectOption[]> {
-    return of([]);
+    return of(this.currentGamePersons);
   }
 
   isGameMinuteVisible(): boolean {
@@ -151,30 +166,63 @@ export class GameEventSelectorComponent {
     return gameEventType === null || ![GameEventType.InjuryTime, GameEventType.PenaltyShootOut].includes(gameEventType);
   }
 
-  onGameEventTypeSelected(gameEventType: OptionId) {
-    this.currentGameEventType.set(gameEventType as GameEventType);
+  onGameEventTypeSelected(type: OptionId) {
+    const gameEventType = type as GameEventType;
+    this.currentGameEventType.set(gameEventType);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      type: gameEventType,
+    }
   }
 
-  onGameMinuteChange(event: Event): void {
+  onGameMinuteChanged(event: Event): void {
     const minuteValue = getHtmlInputElementFromEvent(event).value;
-    
+    this.currentGameMinute.set(minuteValue);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      minute: minuteValue,
+    }
+
+    this.publishCurrentGameEvent();
   }
 
   onGoalScoredBySelected(scoredBy: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      scoredBy: scoredBy as PersonId,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onGoalAssistBySelected(assistBy: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      assistBy: assistBy as PersonId,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onGoalTypeSelected(goalType: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      goalType: goalType as GoalType,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onInjuryTimeChange(event: Event): void {
+  onInjuryTimeChanged(event: Event): void {
     const injuryTimeValue = getHtmlInputElementFromEvent(event).value;
-    
+    this.publishInjuryTimeEventUpdate(Number(injuryTimeValue));
+  }
+
+  onPenaltyValueChanged(event: Event) {
+    const penaltyValue = getHtmlInputElementFromEvent(event).checked;
+    console.log('penalty is now', penaltyValue)
   }
 
   onOwnGoalValueChange(newValue: boolean) {
@@ -226,7 +274,26 @@ export class GameEventSelectorComponent {
   }
 
   removeClicked() {
-    this.onRemove.next(1);
+    this.onRemove.emit();
+  }
+
+  private publishCurrentGameEvent() {
+    this.onUpdate.emit(this.currentGameEvent);
+  }
+
+  private publishInjuryTimeEventUpdate(additionalMinutes: number) {
+    const injuryTimeEvent: EditorInjuryTimeGameEvent = {
+      ...this.editorGameEvent(),
+      type: GameEventType.InjuryTime,
+      minute: this.currentGameMinute(),
+      additionalMinutes,
+    };
+
+    this.currentGameEvent = {
+      ...injuryTimeEvent,
+    }
+
+    this.publishCurrentGameEvent();
   }
 
 }

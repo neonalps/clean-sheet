@@ -10,7 +10,7 @@
                 <div class="form-row" [ngClass]="{ 'invisible': !isGameMinuteVisible() }">
                     <div class="form-row-title">{{ 'gameEvent.minute' | $t }}</div>
                     <div class="form-row-content">
-                        <input type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (input)="onGameMinuteChange($event)" />
+                        <input type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (blur)="onGameMinuteChanged($event)" />
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                                 <div class="mt-4">
                                     <div class="flex">
                                         <div class="flex-1">
-                                            <input type="checkbox" id="is-penalty" [checked]="penalty()" />
+                                            <input type="checkbox" id="is-penalty" [checked]="penalty()" (input)="onPenaltyValueChanged($event)" />
                                             <label class="ml-1 user-select-none" for="is-penalty">{{ 'game.penalty' | $t }}</label>
                                         </div>
                                         <div class="flex-1">
@@ -146,7 +146,7 @@
                             </div>
                         }
                         @case ('injuryTime') {
-                            <input type="text" name="injuryTime" class="input-text w-1/4 bg-color-transparent line-height-1 text-right" autocomplete="off" [value]="pushInjuryTime$ | async" (input)="onInjuryTimeChange($event)" />
+                            <input type="text" name="injuryTime" class="input-text w-1/4 bg-color-transparent line-height-1 text-right" autocomplete="off" [value]="pushInjuryTime$ | async" (blur)="onInjuryTimeChanged($event)" />
                             <div class="ml-2">{{ 'duration.minutes' | $t }}</div>
                         }
                     }

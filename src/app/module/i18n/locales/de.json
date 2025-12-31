@@ -146,6 +146,7 @@
     "gameEvent.scoredBy": "Erzielt von",
     "gameEvent.takenBy": "Getreten von",
     "gameEvent.type": "Typ",
+    "gameEventEditor.addNewEvent": "neues hinzufügen",
     "gameEventType.goal": "Tor",
     "gameEventType.substitution": "Wechsel",
     "gameEventType.yellowCard": "Gelbe Karte",
