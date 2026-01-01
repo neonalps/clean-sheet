@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
 import { GameService } from '@src/app/module/game/service';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
+import { SeasonGamesService } from '@src/app/module/season-games/service';
 
 type UiGame = {
   kickoff: Date;
@@ -64,6 +65,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   private readonly externalSearchService = inject(ExternalSearchService);
   private readonly gameService = inject(GameService);
   private readonly router = inject(Router);
+  private readonly seasonGamesService = inject(SeasonGamesService);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
 
@@ -393,8 +395,12 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       this.isSubmitting.set(true);
 
       this.gameService.create(this.gameToCreate!).pipe(take(1)).subscribe({
-        next: createdGame => {
+        next: async createdGame => {
           this.toastService.addToast({ type: 'success', text: this.translationService.translate('game.wasCreated') });
+
+          // reload the games of the season to make sure the new game will be available
+          await this.seasonGamesService.getSeasonGames(createdGame.season.id, true);
+
           navigateToSeasonGames(this.router, createdGame.season.id);
         },
         error: error => {

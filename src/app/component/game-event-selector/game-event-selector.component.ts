@@ -7,9 +7,9 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { GameEventType, GoalType } from '@src/app/model/game';
+import { BookableOffence, ExpulsionReason, GameEventType, GoalType, PenaltyMissedReason, PsoResult, VarDecision, VarDecisionReason } from '@src/app/model/game';
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorInputPerson } from '@src/app/module/game-event-editor/types';
+import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorInputPerson, EditorPenaltyMissedGameEvent, EditorPsoGameEvent, EditorRedCardGameEvent, EditorSubstitutionGameEvent, EditorVarDecisionGameEvent, EditorYellowCardGameEvent, EditorYellowRedCardGameEvent } from '@src/app/module/game-event-editor/types';
 import { PersonId } from '@src/app/util/domain-types';
 
 @Component({
@@ -23,6 +23,7 @@ export class GameEventSelectorComponent implements OnInit {
   readonly editorGameEvent = input.required<EditorGameEvent>();
   readonly editorInputPersons = input.required<Array<EditorInputPerson>>();
 
+  readonly pushAffectedPerson$ = new Subject<SelectOption>();
   readonly pushGameEventType$ = new Subject<SelectOption>();
   readonly pushGameMinute$ = new Subject<string>();
   readonly pushGoalAssistBy$ = new Subject<SelectOption>();
@@ -222,55 +223,170 @@ export class GameEventSelectorComponent implements OnInit {
 
   onPenaltyValueChanged(event: Event) {
     const penaltyValue = getHtmlInputElementFromEvent(event).checked;
-    console.log('penalty is now', penaltyValue)
+    this.penalty.set(penaltyValue);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      penalty: penaltyValue,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onOwnGoalValueChange(newValue: boolean) {
+  onOwnGoalValueChange(event: Event) {
+    const ownGoalValue = getHtmlInputElementFromEvent(event).checked;
+    this.ownGoal.set(ownGoalValue);
 
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      ownGoal: ownGoalValue,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
+  }
+
+  onDirectFreeKickValueChange(event: Event) {
+    const directFreeKickValue = getHtmlInputElementFromEvent(event).checked;
+    this.directFreeKick.set(directFreeKickValue);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      directFreeKick: directFreeKickValue,
+    } as EditorGoalGameEvent;
+
+    this.publishCurrentGameEvent();
+  }
+
+  onNotOnPitchValueChange(event: Event) {
+    const notOnPitchValue = getHtmlInputElementFromEvent(event).checked;
+    this.notOnPitch.set(notOnPitchValue);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      notOnPitch: notOnPitchValue,
+    } as EditorYellowCardGameEvent | EditorYellowRedCardGameEvent | EditorRedCardGameEvent;
+
+    this.publishCurrentGameEvent();
+  }
+
+  onInjuredValueChange(event: Event) {
+    const injuredValue = getHtmlInputElementFromEvent(event).checked;
+    this.injured.set(injuredValue);
+
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      injured: injuredValue,
+    } as EditorSubstitutionGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onYellowCardReasonSelected(reason: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      reason: reason as BookableOffence,
+    } as EditorYellowCardGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onYellowRedCardReasonSelected(reason: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      reason: reason as BookableOffence,
+    } as EditorYellowRedCardGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onRedCardReasonSelected(reason: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      reason: reason as ExpulsionReason,
+    } as EditorRedCardGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onPenaltyMissedReasonSelected(reason: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      reason: reason as PenaltyMissedReason,
+    } as EditorPenaltyMissedGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onPenaltyTakenBySelected(takenBy: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      takenBy: takenBy,
+    } as EditorPenaltyMissedGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onPsoOutcomeSelected(takenBy: OptionId) {
-    
+  onPsoOutcomeSelected(outcome: OptionId) {
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      result: outcome as PsoResult,
+    } as EditorPsoGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onPsoTakenBySelected(takenBy: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      takenBy: takenBy,
+    } as EditorPsoGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onPlayerOffSelected(reason: OptionId) {
-    
+  onAffectedPersonSelected(affectedPerson: OptionId) {
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      affectedPerson: affectedPerson,
+    } as EditorYellowCardGameEvent | EditorYellowRedCardGameEvent | EditorRedCardGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onPlayerOnSelected(reason: OptionId) {
-    
+  onPlayerOffSelected(playerOff: OptionId) {
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      playerOff: playerOff,
+    } as EditorSubstitutionGameEvent;
+
+    this.publishCurrentGameEvent();
+  }
+
+  onPlayerOnSelected(playerOn: OptionId) {
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      playerOn: playerOn,
+    } as EditorSubstitutionGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   onVarDecisionSelected(decision: OptionId) {
-    
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      decision: decision as VarDecision,
+    } as EditorVarDecisionGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
-  onVarDecisionReasonSelected(decisionReason: OptionId) {
-    
+  onVarDecisionReasonSelected(reason: OptionId) {
+    this.currentGameEvent = {
+      ...this.currentGameEvent,
+      reason: reason as VarDecisionReason,
+    } as EditorVarDecisionGameEvent;
+
+    this.publishCurrentGameEvent();
   }
 
   removeClicked() {

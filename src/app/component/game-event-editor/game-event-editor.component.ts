@@ -19,8 +19,10 @@ export class GameEventEditorComponent implements OnInit {
 
   readonly gamePersons: EditorInputPerson[] = [
     { personId: 1, name: 'Kjell Scherpen' },
-    { personId: 10, name: 'William Böving' },
+    { personId: 6, name: 'Tomi Horvat' },
     { personId: 9, name: 'Otar Kiteishvili' },
+    { personId: 263, name: 'Maurice Malone' },
+    { personId: 11, name: 'Seedy Jatta' },
   ]
 
   private readonly gameEvents: Array<EditorGameEvent> = [];
@@ -61,7 +63,7 @@ export class GameEventEditorComponent implements OnInit {
     this.publishGameEvents();
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  onItemDrop(event: CdkDragDrop<string[]>) {
      moveItemInArray(this.gameEvents, event.previousIndex, event.currentIndex);
 
      this.publishGameEvents();

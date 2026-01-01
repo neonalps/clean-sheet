@@ -1,13 +1,13 @@
 @let currentGameEvents = gameEvents$ | async;
 <div>
-    <section cdkDropList (cdkDropListDropped)="drop($event)">
+    <section cdkDropList (cdkDropListDropped)="onItemDrop($event)">
         @for (item of currentGameEvents; track item.id) {
             <div class="mb-2 last:mb-0">
                 <app-game-event-selector [editorGameEvent]="item" [editorInputPersons]="gamePersons" (onUpdate)="onItemUpdate($event)" (onRemove)="onItemRemove(item.id)" />
             </div>
         }
     </section>
-    <div class="flex align-items-center justify-content-center mt-2 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
+    <div class="flex align-items-center justify-content-center mt-6 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
         <div>+ {{ 'gameEventEditor.addNewEvent' | $t }}</div>
     </div>
 </div>

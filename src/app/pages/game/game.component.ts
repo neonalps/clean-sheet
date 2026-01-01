@@ -6,7 +6,7 @@ import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, Scor
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToSeasonGames, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
@@ -282,19 +282,32 @@ export class GameComponent implements OnDestroy {
 
   onGameContextMenuItemSelected(itemId: string) {
     if (this.game) {
+      const gameId = this.game.id;
+      const gameSeasonId = this.game.season.id;
       if (itemId === GameComponent.KEY_GAME_EDIT) {
         navigateToModifyGame(this.router, this.game.id)
       } else if (itemId === GameComponent.KEY_GAME_DELETE) {
         this.modalService.showDeleteModal()
-          .pipe(takeUntil(this.destroy$)).subscribe({
-            next: event => {
-              if (event.type === 'confirm') {
-                // TODO actually delete game here
-              }
+          .pipe(
+            filter(event => event.type === 'confirm'),
+            switchMap(() => this.gameService.delete(gameId)),
+            takeUntil(this.destroy$)
+          ).subscribe({
+            next: () => {
+              this.toastService.addToast({ text: this.translationService.translate('gameDelete.success'), type: 'success' });
+
+              // reload the games of the season to make sure the new game will be available
+              this.seasonGamesService.getSeasonGames(gameSeasonId, true);
+
+              navigateToSeasonGames(this.router, gameSeasonId);
+            },
+            error: err => {
+              console.error(`failed to delete game with ID ${gameId}`, err);
+
+              this.toastService.addToast({ text: `${this.translationService.translate('gameDelete.failure')}`, type: 'error' });
             }
           });
       } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
-        const gameSeasonId = this.game.season.id;
         this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
           if (result.success) {
             this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });

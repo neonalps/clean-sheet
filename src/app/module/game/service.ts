@@ -16,6 +16,10 @@ export class GameService {
     return this.http.post<DetailedGame>(`${environment.apiBaseUrl}/v1/games`, game);
   }
 
+  delete(gameId: GameId): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/v1/games/${gameId}`);
+  }
+
   getById(gameId: GameId): Observable<DetailedGame> {
       return this.http.get<DetailedGame>(`${environment.apiBaseUrl}/v1/games/${gameId}`);
   }

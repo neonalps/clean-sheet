@@ -1,7 +1,7 @@
 <div class="px-2">
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
-            <app-game-event-editor />
+            
         </app-stepper-item>
         <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
             <div>
@@ -21,8 +21,8 @@
             </div>
         </app-stepper-item>
         <app-stepper-item [stepId]="'events'" [displayName]="'game.modify.events' | $t">
-            {{ 'game.modify.events' | $t }}
+            <app-game-event-editor />
         </app-stepper-item>
     </app-stepper>
-    <div class="px-2 mt-3 text-right pointer" (click)="onNextClicked()">next</div>
+    <div class="px-2 mt-3 text-right pointer" (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
 </div>
