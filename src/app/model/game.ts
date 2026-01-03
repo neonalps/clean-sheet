@@ -1,7 +1,6 @@
-import { DateString, GameId } from "../util/domain-types";
-import { BasicClub, ClubInput, SmallClub } from "./club";
+import { DateString, GameId } from "@src/app/util/domain-types";
+import { ClubInput, SmallClub } from "./club";
 import { CompetitionInput, SmallCompetition } from "./competition";
-import { GameResult } from "./external-search";
 import { DetailedPerson, Person, PersonInput } from "./person";
 import { Season } from "./season";
 import { GameVenue, VenueInput } from "./venue";
@@ -39,6 +38,23 @@ export interface CreateGame {
     managersOpponent: CreateGameManager[];
     events: CreateGameEvent[];
     referees: CreateGameReferee[];
+    leg?: number;
+    previousLeg?: GameInput;
+}
+
+export interface UpdateGame {
+    kickoff: DateString;
+    opponent: ClubInput;
+    competition: CompetitionInput;
+    competitionRound: string;
+    competitionStage?: string;
+    isHomeGame: boolean;
+    status: GameStatus;
+    venue: VenueInput;
+    attendance?: number;
+    isNeutralGround?: boolean;
+    isPractice?: boolean;
+    isSoldOut?: boolean;
     leg?: number;
     previousLeg?: GameInput;
 }

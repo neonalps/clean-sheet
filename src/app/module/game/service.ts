@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateGame, DetailedGame, ImportGameResponse } from '@src/app/model/game';
+import { CreateGame, DetailedGame, ImportGameResponse, UpdateGame } from '@src/app/model/game';
 import { GameId } from '@src/app/util/domain-types';
 import { environment } from "@src/environments/environment";
 import { Observable } from 'rxjs';
@@ -14,6 +14,10 @@ export class GameService {
 
   create(game: CreateGame): Observable<DetailedGame> {
     return this.http.post<DetailedGame>(`${environment.apiBaseUrl}/v1/games`, game);
+  }
+
+  update(gameId: GameId, update: UpdateGame): Observable<DetailedGame> {
+    return this.http.post<DetailedGame>(`${environment.apiBaseUrl}/v1/games/${gameId}`, update);
   }
 
   delete(gameId: GameId): Observable<void> {

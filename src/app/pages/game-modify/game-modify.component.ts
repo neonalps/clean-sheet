@@ -14,6 +14,8 @@ import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-it
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { LineupSelectorComponent } from "@src/app/component/lineup-selector/lineup-selector.component";
 import { GameEventEditorComponent } from "@src/app/component/game-event-editor/game-event-editor.component";
+import { ModifyGameService } from '@src/app/module/game/modify-service';
+import { CommonModule } from '@angular/common';
 
 export type UserProviderInput = {
   id: string;
@@ -107,19 +109,25 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent],
+  imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
-  readonly model = signal<ModifyGameModel>({});
-
-  readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([
+  private static readonly CREATE_GAME_STEPS: Array<StepConfig> = [
     { stepId: 'general', active: true, completed: false, disabled: false, },
     { stepId: 'lineups', active: false, completed: false, disabled: true, },
     { stepId: 'events', active: false, completed: false, disabled: true, },
-  ]);
+  ];
+
+  private static readonly UPDATE_GAME_STEPS: Array<StepConfig> = [
+    { stepId: 'general', active: true, completed: false, disabled: false, },
+  ];
+
+  readonly model = signal<ModifyGameModel>({});
+
+  readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([]);
   
   readonly firstStageComplete: Signal<boolean> = computed(() => {
     const current = this.model();
@@ -127,18 +135,31 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   });
 
   private readonly gameResolver = inject(GameResolver);
+  private readonly modifyGameService = inject(ModifyGameService);
   private readonly route = inject(ActivatedRoute);
 
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     const gameId = Number(this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID));
+    
+    // TODO remove
     this.gameResolver.getById(gameId).pipe(takeUntil(this.destroy$)).subscribe(game => this.initializeModel(game));
+
+    this.modifyGameService.editGame(gameId).pipe(takeUntil(this.destroy$)).subscribe(input => {
+      console.log('starting with input', input);
+
+      this.modifyGameSteps$.next(input.id ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  hasStep(stepId: string): boolean {
+    return this.modifyGameSteps$.getValue().some(item => item.stepId === stepId);
   }
 
   onNextClicked() {

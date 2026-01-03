@@ -32,10 +32,18 @@
             </app-select>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-row-title">{{ 'game.isHome' | $t }}</div>
-        <div class="form-row-content flex align-items-center">
-            <app-checkbox-slider [checked]="isHomeGame()" [showText]="true" (valueChange)="onIsHomeValueChange($event)" />    
+    <div class="form-row flex">
+        <div class="basis-1/2">
+            <div class="form-row-title">{{ 'game.isHome' | $t }}</div>
+            <div class="form-row-content flex align-items-center">
+                <app-checkbox-slider [checked]="isHomeGame()" [showText]="true" (valueChange)="onIsHomeValueChange($event)" />    
+            </div>
+        </div>
+        <div class="basis-1/2">
+            <div class="form-row-title">{{ 'game.isSoldOut' | $t }}</div>
+            <div class="form-row-content flex align-items-center">
+                <app-checkbox-slider [checked]="isSoldOut()" [showText]="true" (valueChange)="onIsSoldOutValueChange($event)" />    
+            </div>
         </div>
     </div>
     <div class="form-row">
@@ -56,6 +64,12 @@
                     <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
                 </div>
             </app-select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.attendance' | $t }}</div>
+        <div class="form-row-content">
+            <input type="text" name="gameAttendance" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushAttendance$ | async" (blur)="onAttendanceChanged($event)" />
         </div>
     </div>
     <div class="form-row mt-4 flex justify-content-end">

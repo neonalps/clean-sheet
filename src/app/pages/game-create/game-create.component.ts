@@ -5,7 +5,7 @@ import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { combineLatest, debounceTime, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { DatetimePickerComponent } from "@src/app/component/datetime-picker/datetime-picker.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ButtonComponent } from "@src/app/component/button/button.component";
@@ -24,6 +24,7 @@ import { GameService } from '@src/app/module/game/service';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
 import { SeasonGamesService } from '@src/app/module/season-games/service';
+import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 
 type UiGame = {
   kickoff: Date;
@@ -32,7 +33,9 @@ type UiGame = {
   opponentId: ClubId;
   venueId: VenueId;
   isHomeGame: boolean;
+  isSoldOut: boolean;
   gameStatus: GameStatus;
+  attendance?: number;
 }
 
 @Component({
@@ -48,6 +51,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   isSearchingForCompetitionRound = false;
   isSearchingForVenue = false;
   isHomeGame = signal(true);
+  isSoldOut = signal(false);
   
   colorLight = COLOR_LIGHT;
   canSubmit = signal(false);
@@ -55,6 +59,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   readonly pushSelectedVenue$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
+  readonly pushAttendance$ = new Subject<number>();
 
   private readonly clubSearch$ = new Subject<string>();
   private readonly competitionSearch$ = new Subject<string>();
@@ -75,9 +80,11 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   private readonly selectedCompetitionRound$ = new Subject<string>();
   private readonly selectedGameState$ = new Subject<string>();
   private readonly selectedIsHomeGame$: Observable<boolean>;
+  private readonly selectedIsSoldOut$: Observable<boolean>;
   private readonly selectedKickoff$ = new Subject<Date | undefined>();
   private readonly selectedOpponentId$ = new Subject<number>();
   private readonly selectedVenueId$ = new Subject<number>();
+  private readonly selectedAttendance$ = new BehaviorSubject<number | null>(null);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -86,6 +93,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.selectedIsHomeGame$ = toObservable(this.isHomeGame);
+    this.selectedIsSoldOut$ = toObservable(this.isSoldOut);
   }
 
   ngOnInit(): void {
@@ -98,6 +106,8 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       this.selectedIsHomeGame$,
       merge(this.pushGameState$.pipe(map(item => item.id.toString() as GameStatus)), this.selectedGameState$.pipe(map(item => item as GameStatus))),
       merge(this.pushSelectedVenue$.pipe(map(item => Number(item.id))), this.selectedVenueId$),
+      this.selectedIsSoldOut$,
+      this.selectedAttendance$,
     ]).pipe(takeUntil(this.destroy$)).subscribe(gameInformation => {
       if (gameInformation[0] === undefined) {
         this.canSubmit.set(false);
@@ -113,6 +123,8 @@ export class GameCreateComponent implements OnInit, OnDestroy {
         isHomeGame: gameInformation[4],
         gameStatus: gameInformation[5],
         venueId: gameInformation[6],
+        isSoldOut: gameInformation[7],
+        attendance: gameInformation[8] ?? undefined,
       };
 
       this.gameToCreate = {
@@ -129,6 +141,8 @@ export class GameCreateComponent implements OnInit, OnDestroy {
           venueId: uiGame.venueId,
         },
         isHomeGame: uiGame.isHomeGame,
+        isSoldOut: uiGame.isSoldOut,
+        attendance: uiGame.attendance,
         lineupMain: [],
         lineupOpponent: [],
         events: [],
@@ -374,6 +388,15 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       }
 
       this.pushSelectedVenue(this.selectedOpponent);
+    }
+
+    onIsSoldOutValueChange(newValue: boolean) {
+      this.isSoldOut.set(newValue);
+    }
+
+    onAttendanceChanged(event: Event) {
+      const newAttendanceValue = getHtmlInputElementFromEvent(event).value;
+      this.selectedAttendance$.next(Number(newAttendanceValue));
     }
 
     private pushSelectedVenue(opponent: BasicClub) {
