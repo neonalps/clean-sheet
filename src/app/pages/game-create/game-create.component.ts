@@ -12,10 +12,10 @@ import { ButtonComponent } from "@src/app/component/button/button.component";
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { BasicClub } from '@src/app/model/club';
-import { ClubId, CompetitionId, VenueId } from '@src/app/util/domain-types';
+import { ClubId, CompetitionId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { environment } from '@src/environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { CreateGame, GameStatus } from '@src/app/model/game';
+import { CreateGame, GameStatus, RefereeRole } from '@src/app/model/game';
 import { ToastService } from '@src/app/module/toast/service';
 import { CommonModule } from '@angular/common';
 import { navigateToSeasonGames } from '@src/app/util/router';
@@ -36,6 +36,7 @@ type UiGame = {
   isSoldOut: boolean;
   gameStatus: GameStatus;
   attendance?: number;
+  refereeId?: PersonId;
 }
 
 @Component({
@@ -46,10 +47,11 @@ type UiGame = {
 })
 export class GameCreateComponent implements OnInit, OnDestroy {
 
-  isSearchingForClub = false;
-  isSearchingForCompetition = false;
-  isSearchingForCompetitionRound = false;
-  isSearchingForVenue = false;
+  isSearchingForClub = signal(false);
+  isSearchingForCompetition = signal(false);
+  isSearchingForCompetitionRound = signal(false);
+  isSearchingForVenue = signal(false);
+  isSearchingForReferee = signal(false);
   isHomeGame = signal(true);
   isSoldOut = signal(false);
   
@@ -58,6 +60,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   isSubmitting = signal(false);
 
   readonly pushSelectedVenue$ = new Subject<SelectOption>();
+  readonly pushSelectedReferee$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
   readonly pushAttendance$ = new Subject<number>();
 
@@ -65,6 +68,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
   private readonly competitionSearch$ = new Subject<string>();
   private readonly competitionRoundSearch$ = new Subject<string>();
   private readonly venueSearch$ = new Subject<string>();
+  private readonly refereeSearch$ = new Subject<string>();
 
   private readonly clubResolver = inject(ClubResolver);
   private readonly externalSearchService = inject(ExternalSearchService);
@@ -76,14 +80,15 @@ export class GameCreateComponent implements OnInit, OnDestroy {
 
   private readonly mainClub: BasicClub = environment.mainClub;
 
-  private readonly selectedCompetitionId$ = new Subject<number>();
+  private readonly selectedCompetitionId$ = new Subject<CompetitionId>();
   private readonly selectedCompetitionRound$ = new Subject<string>();
   private readonly selectedGameState$ = new Subject<string>();
   private readonly selectedIsHomeGame$: Observable<boolean>;
   private readonly selectedIsSoldOut$: Observable<boolean>;
   private readonly selectedKickoff$ = new Subject<Date | undefined>();
-  private readonly selectedOpponentId$ = new Subject<number>();
-  private readonly selectedVenueId$ = new Subject<number>();
+  private readonly selectedOpponentId$ = new Subject<ClubId>();
+  private readonly selectedVenueId$ = new Subject<VenueId>();
+  private readonly selectedRefereeId$ = new BehaviorSubject<PersonId | null>(null);
   private readonly selectedAttendance$ = new BehaviorSubject<number | null>(null);
 
   private readonly destroy$ = new Subject<void>();
@@ -108,12 +113,15 @@ export class GameCreateComponent implements OnInit, OnDestroy {
       merge(this.pushSelectedVenue$.pipe(map(item => Number(item.id))), this.selectedVenueId$),
       this.selectedIsSoldOut$,
       this.selectedAttendance$,
+      this.selectedRefereeId$,
     ]).pipe(takeUntil(this.destroy$)).subscribe(gameInformation => {
       if (gameInformation[0] === undefined) {
         this.canSubmit.set(false);
         this.gameToCreate = null;
         return;
       }
+
+      console.log('current combined', gameInformation)
 
       const uiGame: UiGame = {
         kickoff: gameInformation[0],
@@ -125,6 +133,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
         venueId: gameInformation[6],
         isSoldOut: gameInformation[7],
         attendance: gameInformation[8] ?? undefined,
+        refereeId: gameInformation[9] ?? undefined,
       };
 
       this.gameToCreate = {
@@ -148,7 +157,7 @@ export class GameCreateComponent implements OnInit, OnDestroy {
         events: [],
         managersMain: [],
         managersOpponent: [],
-        referees: [],
+        referees: uiGame.refereeId ? [{ role: RefereeRole.Referee, person: { personId: uiGame.refereeId }, sortOrder: 0 }] : [],
       }
 
       this.canSubmit.set(true);
@@ -217,11 +226,11 @@ export class GameCreateComponent implements OnInit, OnDestroy {
             return this.getDefaultClubOptions();  
           }
   
-          this.isSearchingForClub = true;
+          this.isSearchingForClub.set(true);
           return this.externalSearchService.search(value, [ExternalSearchEntity.Club]);
         }),
         map(response => {
-          this.isSearchingForClub = false;
+          this.isSearchingForClub.set(false);
           if ('items' in response) {
             return response.items.map(item => convertExternalSearchItemToSelectOption(item));
           }
@@ -255,11 +264,49 @@ export class GameCreateComponent implements OnInit, OnDestroy {
             return this.getDefaultVenueOptions();  
           }
   
-          this.isSearchingForVenue = true;
+          this.isSearchingForVenue.set(true);
           return this.externalSearchService.search(value, [ExternalSearchEntity.Venue]);
         }),
         map(response => {
-          this.isSearchingForVenue = false;
+          this.isSearchingForVenue.set(false);
+          if ('items' in response) {
+            return response.items.map(item => convertExternalSearchItemToSelectOption(item));
+          }
+  
+          return response;
+        }),
+      );
+    }
+
+    private getDefaultRefereeOptions(): Observable<SelectOption[]> {
+      return of([]);
+    }
+
+    getRefereeOptions(): Observable<SelectOption[]> {
+      return merge(this.getDefaultVenueOptions(), this.searchForReferee());
+    }
+
+    onRefereeSearchChanged(value: string) {
+      this.refereeSearch$.next(value);
+    }
+
+    onRefereeSelected(id: OptionId) {
+      this.selectedRefereeId$.next(Number(id));
+    }
+
+    private searchForReferee(): Observable<SelectOption[]> {
+      return this.refereeSearch$.pipe(
+        debounceTime(250),
+        switchMap(value => {
+          if (value.trim().length === 0) {
+            return this.getDefaultRefereeOptions();  
+          }
+  
+          this.isSearchingForReferee.set(true);
+          return this.externalSearchService.search(value, [ExternalSearchEntity.Person]);
+        }),
+        map(response => {
+          this.isSearchingForReferee.set(false);
           if ('items' in response) {
             return response.items.map(item => convertExternalSearchItemToSelectOption(item));
           }
@@ -293,11 +340,11 @@ export class GameCreateComponent implements OnInit, OnDestroy {
             return this.getDefaultCompetitionOptions();  
           }
   
-          this.isSearchingForCompetition = true;
+          this.isSearchingForCompetition.set(true);
           return this.externalSearchService.search(value, [ExternalSearchEntity.Competition]);
         }),
         map(response => {
-          this.isSearchingForCompetition = false;
+          this.isSearchingForCompetition.set(false);
           if ('items' in response) {
             return response.items.map(item => convertExternalSearchItemToSelectOption(item));
           }

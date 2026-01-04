@@ -15,7 +15,7 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.competition' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getCompetitionOptions()" [isLoading]="isSearchingForCompetition" [showSearch]="true" [loadingStyle]="'skeleton'" (onSearch)="onCompetitionSearchChanged($event)" (onSelected)="onCompetitionSelected($event)">
+            <app-select [optionsSource]="getCompetitionOptions()" [isLoading]="isSearchingForCompetition()" [showSearch]="true" [loadingStyle]="'skeleton'" (onSearch)="onCompetitionSearchChanged($event)" (onSelected)="onCompetitionSelected($event)">
                 <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
                     <app-empty-search-option [emptyText]="'search.noCompetitionFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
                 </div>
@@ -49,7 +49,7 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.opponent' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getClubOptions()" [isLoading]="isSearchingForClub" [loadingStyle]="'skeleton'" [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onOpponentSelected($event)">
+            <app-select [optionsSource]="getClubOptions()" [isLoading]="isSearchingForClub()" [loadingStyle]="'skeleton'" [showSearch]="true" (onSearch)="onClubSearchChanged($event)" (onSelected)="onOpponentSelected($event)">
                 <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
                     <app-empty-search-option [emptyText]="'search.noClubFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
                 </div>
@@ -59,9 +59,19 @@
     <div class="form-row">
         <div class="form-row-title">{{ 'game.venue' | $t }}</div>
         <div class="form-row-content">
-            <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenue$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
+            <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenue$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
                 <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
                     <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
+                </div>
+            </app-select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-row-title">{{ 'game.referee' | $t }}</div>
+        <div class="form-row-content">
+            <app-select [optionsSource]="getRefereeOptions()" [isLoading]="isSearchingForReferee()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedReferee$" [showSearch]="true" (onSearch)="onRefereeSearchChanged($event)" (onSelected)="onRefereeSelected($event)">
+                <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
+                    <app-empty-search-option [emptyText]="'search.noPersonFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
                 </div>
             </app-select>
         </div>

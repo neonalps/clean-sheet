@@ -149,7 +149,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.modifyGameService.editGame(gameId).pipe(takeUntil(this.destroy$)).subscribe(input => {
       console.log('starting with input', input);
 
-      this.modifyGameSteps$.next(input.id ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+      this.modifyGameSteps$.next(input.id && input.status === GameStatus.Finished ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
     });
   }
 
