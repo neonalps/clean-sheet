@@ -14,6 +14,14 @@ export function getCurrentUnix(): number {
     return getUnixTimestampFromDate(new Date());
 }
 
+export function getLocalDateTimeString(value: Date): string {
+    const localDate = new Date(value);
+    localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+
+    // remove the "Z" from the ISO string
+    return localDate.toISOString().slice(0, -1);
+}
+
 export function isToday(input: Date): boolean {
     const today = new Date();
 

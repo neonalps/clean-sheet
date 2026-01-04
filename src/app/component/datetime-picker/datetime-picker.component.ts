@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, OnDestroy, OnInit, output, ViewChild } from '@angular/core';
 import { CalendarIconComponent } from '@src/app/icon/calendar-icon/calendar-icon.component';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
+import { getLocalDateTimeString } from '@src/app/util/date';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-datetime-picker',
@@ -9,11 +11,27 @@ import { getHtmlInputElementFromEvent } from '@src/app/util/common';
   templateUrl: './datetime-picker.component.html',
   styleUrl: './datetime-picker.component.css'
 })
-export class DatetimePickerComponent {
+export class DatetimePickerComponent implements OnInit, OnDestroy {
 
   @ViewChild('picker', { static: false }) datePickerElement!: ElementRef;
 
-  @Output() onDateSelected = new EventEmitter<Date | undefined>();
+  readonly input = input<Observable<Date | undefined>>();
+  readonly onDateSelected = output<Date | undefined>();
+
+  private readonly destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.input()?.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      const valueToSet = value ? getLocalDateTimeString(value) : undefined;
+      console.log('to set', valueToSet);
+      this.datePickerElement.nativeElement.value = valueToSet;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   showPicker() {
     (this.datePickerElement.nativeElement as HTMLInputElement).showPicker();
@@ -21,7 +39,7 @@ export class DatetimePickerComponent {
 
   onSelected(event: Event) {
     const inputValue = getHtmlInputElementFromEvent(event).value;
-    this.onDateSelected.next(inputValue.trim().length > 0 ? new Date(inputValue) : undefined);
+    this.onDateSelected.emit(inputValue.trim().length > 0 ? new Date(inputValue) : undefined);
   }
 
 }

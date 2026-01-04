@@ -53,6 +53,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   
   colorLight = COLOR_LIGHT;
 
+  readonly pushKickoff$ = new Subject<Date | undefined>();
   readonly pushSelectedVenue$ = new Subject<SelectOption>();
   readonly pushSelectedReferee$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
@@ -119,7 +120,6 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       });
 
       this.input()?.pipe(
-        tap(val => console.log('received val', val)),
         filter(baseGame => isDefined(baseGame.kickoff)),
         takeUntil(this.destroy$)
       ).subscribe(baseGame => {
@@ -132,6 +132,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           console.log('pushing game state', item)
           this.pushGameState$.next(item);
         });
+
+        // kickoff
+        this.pushKickoff$.next(baseGame.kickoff);
       });
     }
   

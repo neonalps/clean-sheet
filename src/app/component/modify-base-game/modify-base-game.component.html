@@ -1,7 +1,7 @@
 <div class="form-row">
     <div class="form-row-title">{{ 'game.date' | $t }}</div>
     <div class="form-row-content flex">
-        <app-datetime-picker (onDateSelected)="onKickoffSelected($event)" />
+        <app-datetime-picker [input]="pushKickoff$" (onDateSelected)="onKickoffSelected($event)" />
     </div>
 </div>
 <div class="form-row">
