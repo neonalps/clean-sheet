@@ -1,7 +1,9 @@
 <div class="px-2">
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item *ngIf="hasStep('general')" [stepId]="'general'" [displayName]="'game.modify.general' | $t">
-            
+            <div class="mt-4">
+                <app-modify-base-game [input]="baseGameInformation$" (onUpdate)="onBaseGameInformationUpdate($event)" />
+            </div>
         </app-stepper-item>
         <app-stepper-item *ngIf="hasStep('lineups')" [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
             <div>
@@ -24,5 +26,5 @@
             <app-game-event-editor />
         </app-stepper-item>
     </app-stepper>
-    <div class="px-2 mt-3 text-right pointer" (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
+    <div class="px-2 mt-4 text-right pointer" (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
 </div>

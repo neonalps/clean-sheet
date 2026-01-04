@@ -16,6 +16,8 @@ import { LineupSelectorComponent } from "@src/app/component/lineup-selector/line
 import { GameEventEditorComponent } from "@src/app/component/game-event-editor/game-event-editor.component";
 import { ModifyGameService } from '@src/app/module/game/modify-service';
 import { CommonModule } from '@angular/common';
+import { BaseGameInformation, ModifyBaseGameComponent } from "@src/app/component/modify-base-game/modify-base-game.component";
+import { toObservable } from '@angular/core/rxjs-interop';
 
 export type UserProviderInput = {
   id: string;
@@ -109,7 +111,7 @@ export type ModifyGameModel = {
 
 @Component({
   selector: 'app-game-modify',
-  imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent],
+  imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent, ModifyBaseGameComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
@@ -126,6 +128,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   ];
 
   readonly model = signal<ModifyGameModel>({});
+  
+  private readonly baseGameInformation = signal<Partial<BaseGameInformation>>({});
+  readonly baseGameInformation$ = toObservable(this.baseGameInformation);
 
   readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([]);
   
@@ -150,6 +155,11 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       console.log('starting with input', input);
 
       this.modifyGameSteps$.next(input.id && input.status === GameStatus.Finished ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+
+      this.baseGameInformation.set({
+        gameStatus: input.status,
+        kickoff: input.kickoff ? new Date(input.kickoff) : undefined,
+      })
     });
   }
 
@@ -159,7 +169,8 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   hasStep(stepId: string): boolean {
-    return this.modifyGameSteps$.getValue().some(item => item.stepId === stepId);
+    return true;
+    // return this.modifyGameSteps$.getValue().some(item => item.stepId === stepId);
   }
 
   onNextClicked() {
@@ -167,6 +178,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       { stepId: 'general', active: false, completed: true, disabled: false, },
       { stepId: 'lineups', active: true, completed: false, disabled: false, },
     ]);
+  }
+
+  onBaseGameInformationUpdate(baseGame: BaseGameInformation) {
+    console.log('received base game information', baseGame);
   }
 
   private initializeModel(game: DetailedGame | null) {
