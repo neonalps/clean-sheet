@@ -5,7 +5,7 @@ import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { BehaviorSubject, combineLatest, debounceTime, filter, map, merge, Observable, of, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, filter, map, merge, Observable, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { DatetimePickerComponent } from "@src/app/component/datetime-picker/datetime-picker.component";
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
@@ -18,18 +18,27 @@ import { CommonModule } from '@angular/common';
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
 import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
+import { UiIconDescriptor } from '@src/app/model/icon';
 
 export type BaseGameInformation = {
   kickoff: Date;
   competitionId: CompetitionId;
-  competitionRound: string;
+  competitionName?: string;
+  competitionIcon?: UiIconDescriptor;
+  competitionRound?: string;
   opponentId: ClubId;
+  opponentName?: string;
+  opponentIcon?: UiIconDescriptor;
   venueId: VenueId;
+  venueName?: string;
+  venueIcon?: UiIconDescriptor;
   isHomeGame: boolean;
   isSoldOut: boolean;
   gameStatus: GameStatus;
   attendance?: number;
   refereeId?: PersonId;
+  refereeName?: string;
+  refereeIcon?: UiIconDescriptor;
 }
 
 @Component({
@@ -54,6 +63,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   colorLight = COLOR_LIGHT;
 
   readonly pushKickoff$ = new Subject<Date | undefined>();
+  readonly pushSelectedOpponent$ = new Subject<SelectOption>();
+  readonly pushSelectedCompetition$ = new Subject<SelectOption>();
+  readonly pushSelectedCompetitionRound$ = new Subject<SelectOption>();
   readonly pushSelectedVenue$ = new Subject<SelectOption>();
   readonly pushSelectedReferee$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
@@ -129,12 +141,42 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           map(items => items.filter(item => item.id === baseGame.gameStatus)),
           map(items => items[0])
         ).subscribe(item => {
-          console.log('pushing game state', item)
           this.pushGameState$.next(item);
         });
 
         // kickoff
         this.pushKickoff$.next(baseGame.kickoff);
+
+        // opponent
+        if (baseGame.opponentId && baseGame.opponentName) {
+          this.pushSelectedOpponent$.next({ id: baseGame.opponentId, name: baseGame.opponentName, icon: baseGame.opponentIcon });
+        }
+
+        // competition
+        if (baseGame.competitionId && baseGame.competitionName) {
+          this.pushSelectedCompetition$.next({ id: baseGame.competitionId, name: baseGame.competitionName, icon: baseGame.competitionIcon });
+        }
+
+        if (baseGame.competitionRound) {
+          this.pushSelectedCompetitionRound$.next({ id: baseGame.competitionRound, name: baseGame.competitionRound });
+        }
+
+        // venue
+        if (baseGame.venueId && baseGame.venueName) {
+          this.pushSelectedVenue$.next({ id: baseGame.venueId, name: baseGame.venueName });
+        }
+
+        if (baseGame.attendance) {
+          this.pushAttendance$.next(baseGame.attendance);
+        }
+
+        this.isHomeGame.set(baseGame.isHomeGame ?? false);
+        this.isSoldOut.set(baseGame.isSoldOut ?? false);
+
+        // referee
+        if (baseGame.refereeId && baseGame.refereeName) {
+          this.pushSelectedReferee$.next({ id: baseGame.refereeId, name: baseGame.refereeName, icon: baseGame.refereeIcon });
+        }
       });
     }
   

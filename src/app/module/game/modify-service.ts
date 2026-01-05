@@ -1,10 +1,11 @@
 import { inject, Injectable, OnDestroy, signal } from "@angular/core";
-import { ClubId, CompetitionId, DateString, GameId, VenueId } from "@src/app/util/domain-types";
+import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from "@src/app/util/domain-types";
 import { GameService } from "./service";
 import { map, Observable, of, Subject, tap } from "rxjs";
 import { UiIconDescriptor } from "@src/app/model/icon";
-import { DetailedGame, GameStatus, UpdateGame } from "@src/app/model/game";
+import { DetailedGame, GameStatus, RefereeRole, UpdateGame } from "@src/app/model/game";
 import { ensureNotNullish } from "@src/app/util/common";
+import { getPersonName } from "@src/app/util/domain";
 
 export type ModifyGameInput = {
     id?: GameId;
@@ -26,6 +27,9 @@ export type ModifyGameInput = {
     attendance?: number;
     leg?: number;
     previousLeg?: GameId;
+    refereeId?: PersonId;
+    refereeName?: string;
+    refereeIcon?: UiIconDescriptor;
 }
 
 @Injectable({
@@ -97,6 +101,9 @@ export class ModifyGameService implements OnDestroy {
       .pipe(
         map(response => {
           console.log('got response', response);
+
+          const referee = response.report.referees.find(item => item.role === RefereeRole.Referee);
+
           return {
             id: response.id,
             kickoff: response.kickoff,
@@ -113,13 +120,16 @@ export class ModifyGameService implements OnDestroy {
               type: 'competition',
               content: response.competition.iconSmall,
             } : undefined,
-            copmetitionRound: response.round,
+            competitionRound: response.round,
             competitionStage: response.stage,
             venueId: response.venue.id,
             venueName: response.venue.branding,
             attendance: response.attendance,
             isHomeGame: response.isHomeGame,
             isSoldOut: response.isSoldOut,
+            refereeId: referee?.id,
+            refereeName: referee ? getPersonName(referee.person) : undefined,
+            refereeIcon: referee ? { type: 'person', content: referee.person.avatar } : undefined,
           };
         }),
       );

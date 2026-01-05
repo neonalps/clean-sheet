@@ -22,9 +22,7 @@ export class DatetimePickerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.input()?.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      const valueToSet = value ? getLocalDateTimeString(value) : undefined;
-      console.log('to set', valueToSet);
-      this.datePickerElement.nativeElement.value = valueToSet;
+      this.datePickerElement.nativeElement.value = value ? getLocalDateTimeString(value) : undefined;
     });
   }
 

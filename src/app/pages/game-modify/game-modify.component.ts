@@ -159,6 +159,21 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       this.baseGameInformation.set({
         gameStatus: input.status,
         kickoff: input.kickoff ? new Date(input.kickoff) : undefined,
+        competitionId: input.competitionId,
+        competitionName: input.competitionName,
+        competitionIcon: input.competitionIcon,
+        competitionRound: input.competitionRound,
+        opponentId: input.opponentId,
+        opponentName: input.opponentName,
+        opponentIcon: input.opponentIcon,
+        venueId: input.venueId,
+        venueName: input.venueName,
+        isHomeGame: input.isHomeGame,
+        isSoldOut: input.isSoldOut,
+        attendance: input.attendance,
+        refereeId: input.refereeId,
+        refereeName: input.refereeName,
+        refereeIcon: input.refereeIcon,
       })
     });
   }
