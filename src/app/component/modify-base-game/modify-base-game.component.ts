@@ -57,7 +57,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   isSearchingForCompetitionRound = signal(false);
   isSearchingForVenue = signal(false);
   isSearchingForReferee = signal(false);
-  isHomeGame = signal(true);
+  isHomeGame = signal(false);
   isSoldOut = signal(false);
   
   colorLight = COLOR_LIGHT;
@@ -111,7 +111,10 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         this.selectedIsSoldOut$,
         this.selectedAttendance$,
         this.selectedRefereeId$,
-      ]).pipe(takeUntil(this.destroy$)).subscribe(gameInformation => {
+      ]).pipe(
+        debounceTime(50),
+        takeUntil(this.destroy$),
+      ).subscribe(gameInformation => {
         if (gameInformation[0] === undefined) {
           return;
         }
@@ -146,36 +149,48 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
         // kickoff
         this.pushKickoff$.next(baseGame.kickoff);
+        this.selectedKickoff$.next(baseGame.kickoff);
 
         // opponent
         if (baseGame.opponentId && baseGame.opponentName) {
           this.pushSelectedOpponent$.next({ id: baseGame.opponentId, name: baseGame.opponentName, icon: baseGame.opponentIcon });
+          this.selectedOpponentId$.next(baseGame.opponentId);
         }
 
         // competition
         if (baseGame.competitionId && baseGame.competitionName) {
           this.pushSelectedCompetition$.next({ id: baseGame.competitionId, name: baseGame.competitionName, icon: baseGame.competitionIcon });
+          this.selectedCompetitionId$.next(baseGame.competitionId);
         }
 
         if (baseGame.competitionRound) {
           this.pushSelectedCompetitionRound$.next({ id: baseGame.competitionRound, name: baseGame.competitionRound });
+          this.selectedCompetitionRound$.next(baseGame.competitionRound);
         }
 
         // venue
         if (baseGame.venueId && baseGame.venueName) {
           this.pushSelectedVenue$.next({ id: baseGame.venueId, name: baseGame.venueName });
+          // it seems like we don't need to set the selected venue ID as it is part of the combined latest above already
         }
 
         if (baseGame.attendance) {
           this.pushAttendance$.next(baseGame.attendance);
+          this.selectedAttendance$.next(baseGame.attendance);
         }
 
-        this.isHomeGame.set(baseGame.isHomeGame ?? false);
-        this.isSoldOut.set(baseGame.isSoldOut ?? false);
+        const isHomeGameValue = baseGame.isHomeGame ?? false;
+        this.isHomeGame.set(isHomeGameValue);
+        this.selectedIsHomeGame$.next(isHomeGameValue);
+
+        const isSoldOutValue = baseGame.isSoldOut ?? false;
+        this.isSoldOut.set(isSoldOutValue);
+        this.selectedIsSoldOut$.next(isSoldOutValue);
 
         // referee
         if (baseGame.refereeId && baseGame.refereeName) {
           this.pushSelectedReferee$.next({ id: baseGame.refereeId, name: baseGame.refereeName, icon: baseGame.refereeIcon });
+          this.selectedRefereeId$.next(baseGame.refereeId);
         }
       });
     }
