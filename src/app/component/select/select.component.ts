@@ -47,7 +47,7 @@ export class SelectComponent implements OnInit {
   @Input() skeletonRowCount: number = 3;
 
   @Output() onSearch = new EventEmitter<string>();
-  @Output() onSelected = new EventEmitter<OptionId>();
+  @Output() onSelected = new EventEmitter<SelectOption>();
   @Output() onHasNext = new EventEmitter<boolean>();
   @Output() onHasBefore = new EventEmitter<boolean>();
 
@@ -112,7 +112,7 @@ export class SelectComponent implements OnInit {
     this.currentValue = selectedOption;
     this.displayIcon = this.currentValue.icon ?? null;
     this.displayText = this.currentValue.name;
-    this.onSelected.next(this.currentValue.id);
+    this.onSelected.next(this.currentValue);
     this.hideDropdown();
 
     if (isDefined(this.currentValue)) {

@@ -138,20 +138,20 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.selectedLastName$.next(getHtmlInputElementFromEvent(event).value);
   }
 
-  onLanguageSelected(id: OptionId) {
-    this.selectedLanguage$.next(id.toString());
+  onLanguageSelected(option: SelectOption) {
+    this.selectedLanguage$.next(option.id.toString());
   }
 
-  onDateFormatSelected(id: OptionId) {
-    this.selectedDateFormat$.next(id.toString());
+  onDateFormatSelected(option: SelectOption) {
+    this.selectedDateFormat$.next(option.id.toString());
   }
 
-  onGameMinuteFormatSelected(id: OptionId) {
-    this.selectedGameMinuteFormat$.next(id.toString());
+  onGameMinuteFormatSelected(option: SelectOption) {
+    this.selectedGameMinuteFormat$.next(option.id.toString());
   }
 
-  onScoreFormatSelected(id: OptionId) {
-    this.selectedScoreFormat$.next(id.toString());
+  onScoreFormatSelected(option: SelectOption) {
+    this.selectedScoreFormat$.next(option.id.toString());
   }
 
   canSave() {

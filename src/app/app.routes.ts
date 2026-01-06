@@ -6,7 +6,6 @@ import { PersonComponent } from './pages/person/person.component';
 import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ChatComponent } from './pages/chat/chat.component';
-import { GameCreateComponent } from './pages/game-create/game-create.component';
 import { LoginComponent } from './pages/login/login.component';
 import { OAuthHandlerComponent } from './component/oauth-handler/oauth-handler.component';
 import { LogoutComponent } from './component/logout/logout.component';
@@ -84,11 +83,6 @@ export const routes: Routes = [
         data: {
             role: AccountRole.Manager,
         }
-    },
-    { 
-        path: `create-game`, 
-        component: GameCreateComponent,
-        canActivate: [loggedInGuard],
     },
     { 
         path: `user-list`, 

@@ -129,7 +129,7 @@ export class ModifyGameService implements OnDestroy {
             isSoldOut: response.isSoldOut,
             refereeId: referee?.id,
             refereeName: referee ? getPersonName(referee.person) : undefined,
-            refereeIcon: referee ? { type: 'person', content: referee.person.avatar } : undefined,
+            refereeIcon: referee?.person.avatar ? { type: 'person', content: referee.person.avatar } : undefined,
           };
         }),
       );

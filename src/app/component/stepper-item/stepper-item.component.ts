@@ -15,5 +15,6 @@ export class StepperItemComponent {
   active = signal(false);
   completed = signal(false);
   disabled = signal(false);
+  hidden = signal(false);
 
 }

@@ -19,6 +19,7 @@ import { COLOR_LIGHT } from '@src/styles/constants';
 import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
 import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { UiIconDescriptor } from '@src/app/model/icon';
+import { BasicVenue } from '@src/app/model/venue';
 
 export type BaseGameInformation = {
   kickoff: Date;
@@ -84,14 +85,18 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   private readonly mainClub: BasicClub = environment.mainClub;
 
   private readonly selectedCompetitionId$ = new Subject<CompetitionId>();
+  private readonly selectedCompetitionName$ = new Subject<string>();
   private readonly selectedCompetitionRound$ = new Subject<string>();
   private readonly selectedGameState$ = new Subject<string>();
   private readonly selectedIsHomeGame$ = new BehaviorSubject<boolean>(false);
   private readonly selectedIsSoldOut$ = new BehaviorSubject<boolean>(false);
   private readonly selectedKickoff$ = new Subject<Date | undefined>();
   private readonly selectedOpponentId$ = new Subject<ClubId>();
+  private readonly selectedOpponentName$ = new Subject<string>();
   private readonly selectedVenueId$ = new Subject<VenueId>();
+  private readonly selectedVenueName$ = new Subject<string>();
   private readonly selectedRefereeId$ = new BehaviorSubject<PersonId | null>(null);
+  private readonly selectedRefereeName$ = new BehaviorSubject<string | null>(null);
   private readonly selectedAttendance$ = new BehaviorSubject<number | null>(null);
 
   private readonly destroy$ = new Subject<void>();
@@ -111,6 +116,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         this.selectedIsSoldOut$,
         this.selectedAttendance$,
         this.selectedRefereeId$,
+        this.selectedOpponentName$,
+        this.selectedCompetitionName$,
+        this.selectedRefereeName$,
       ]).pipe(
         debounceTime(50),
         takeUntil(this.destroy$),
@@ -130,6 +138,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           isSoldOut: gameInformation[7],
           attendance: gameInformation[8] ?? undefined,
           refereeId: gameInformation[9] ?? undefined,
+          opponentName: gameInformation[10],
+          competitionName: gameInformation[11],
+          refereeName: gameInformation[12] ?? undefined,
         });
   
       });
@@ -228,10 +239,12 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.clubSearch$.next(value);
     }
   
-    onOpponentSelected(id: OptionId) {
-      this.selectedOpponentId$.next(Number(id));
+    onOpponentSelected(option: SelectOption) {
+      const clubId: ClubId = Number(option.id);
+      this.selectedOpponentId$.next(clubId);
+      this.selectedOpponentName$.next(option.name);
   
-      this.clubResolver.getById(Number(id), false).pipe(take(1)).subscribe({
+      this.clubResolver.getById(clubId, false).pipe(take(1)).subscribe({
         next: (clubResponse) => {
           this.selectedOpponent = clubResponse.club;
           
@@ -283,8 +296,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.venueSearch$.next(value);
     }
 
-    onVenueSelected(id: OptionId) {
-      this.selectedVenueId$.next(Number(id));
+    onVenueSelected(option: SelectOption) {
+      this.selectedVenueId$.next(Number(option.id));
+      this.selectedVenueName$.next(option.name);
     }
 
     private searchForVenue(): Observable<SelectOption[]> {
@@ -321,8 +335,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.refereeSearch$.next(value);
     }
 
-    onRefereeSelected(id: OptionId) {
-      this.selectedRefereeId$.next(Number(id));
+    onRefereeSelected(option: SelectOption) {
+      this.selectedRefereeId$.next(Number(option.id));
+      this.selectedRefereeName$.next(option.name);
     }
 
     private searchForReferee(): Observable<SelectOption[]> {
@@ -359,8 +374,9 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.competitionSearch$.next(value);
     }
 
-    onCompetitionSelected(id: OptionId) {
-      this.selectedCompetitionId$.next(Number(id));
+    onCompetitionSelected(option: SelectOption) {
+      this.selectedCompetitionId$.next(Number(option.id));
+      this.selectedCompetitionName$.next(option.name);
     }
 
     private searchForCompetition(): Observable<SelectOption[]> {
@@ -393,8 +409,8 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       return merge(this.getDefaultGameStatusOptions());
     }
 
-    onGameStatusSelected(id: OptionId) {
-      this.selectedGameState$.next(id.toString());
+    onGameStatusSelected(option: SelectOption) {
+      this.selectedGameState$.next(option.id.toString());
     }
 
     private getDefaultGameStatusOptions(): Observable<SelectOption[]> {
@@ -411,8 +427,8 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.competitionRoundSearch$.next(value);
     }
 
-    onCompetetitionRoundSelected(id: OptionId) {
-      this.selectedCompetitionRound$.next(id.toString());
+    onCompetetitionRoundSelected(option: SelectOption) {
+      this.selectedCompetitionRound$.next(option.id.toString());
     }
 
     private searchForCompetitionRound(): Observable<SelectOption[]> {
@@ -460,6 +476,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
     onIsHomeValueChange(newValue: boolean) {
       this.isHomeGame.set(newValue);
+      this.selectedIsHomeGame$.next(newValue);
 
       if (!this.selectedOpponent) {
         return;
@@ -470,6 +487,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
     onIsSoldOutValueChange(newValue: boolean) {
       this.isSoldOut.set(newValue);
+      this.selectedIsSoldOut$.next(newValue);
     }
 
     onAttendanceChanged(event: Event) {
@@ -477,16 +495,16 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.selectedAttendance$.next(Number(newAttendanceValue));
     }
 
-    private pushSelectedVenue(opponent: BasicClub) {
+    private pushSelectedVenue(opponentHomeVenue?: BasicVenue) {
       if (this.isHomeGame()) {
         this.pushSelectedVenue$.next({
           id: this.mainClub.homeVenue!.id.toString(),
           name: this.mainClub.homeVenue!.name,
         });
-      } else if (opponent.homeVenue) {
+      } else if (opponentHomeVenue) {
         this.pushSelectedVenue$.next({
-          id: opponent.homeVenue.id.toString(),
-          name: opponent.homeVenue.shortName,
+          id: opponentHomeVenue.id.toString(),
+          name: opponentHomeVenue.shortName,
         });
       }
     }

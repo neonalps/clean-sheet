@@ -27,8 +27,8 @@ export class SeasonSelectComponent {
 
   constructor(private cdr: ChangeDetectorRef) {}
 
-  onSeasonSelected(selectedSeasonId: OptionId): void {
-    this.onSelected.emit(selectedSeasonId);
+  onSeasonSelected(option: SelectOption): void {
+    this.onSelected.emit(option.id);
   }
 
   onHasBefore(hasBefore: boolean): void {

@@ -8,6 +8,7 @@ export type StepConfig = {
   active?: boolean;
   completed?: boolean;
   disabled?: boolean;
+  hidden?: boolean;
   displayName?: string;
 }
 
@@ -57,6 +58,10 @@ export class StepperComponent implements AfterContentInit, OnDestroy {
 
           if (configUpdate.displayName !== undefined) {
             step.displayName = configUpdate.displayName;
+          }
+
+          if (configUpdate.hidden !== undefined) {
+            step.hidden.set(configUpdate.hidden);
           }
         });
       });

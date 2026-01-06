@@ -167,8 +167,8 @@ export class GameEventSelectorComponent implements OnInit {
     return gameEventType === null || ![GameEventType.InjuryTime, GameEventType.PenaltyShootOut].includes(gameEventType);
   }
 
-  onGameEventTypeSelected(type: OptionId) {
-    const gameEventType = type as GameEventType;
+  onGameEventTypeSelected(option: SelectOption) {
+    const gameEventType = option.id as GameEventType;
     this.currentGameEventType.set(gameEventType);
 
     this.currentGameEvent = {
@@ -189,28 +189,28 @@ export class GameEventSelectorComponent implements OnInit {
     this.publishCurrentGameEvent();
   }
 
-  onGoalScoredBySelected(scoredBy: OptionId) {
+  onGoalScoredBySelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      scoredBy: scoredBy as PersonId,
+      scoredBy: option.id as PersonId,
     } as EditorGoalGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onGoalAssistBySelected(assistBy: OptionId) {
+  onGoalAssistBySelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      assistBy: assistBy as PersonId,
+      assistBy: option.id as PersonId,
     } as EditorGoalGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onGoalTypeSelected(goalType: OptionId) {
+  onGoalTypeSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      goalType: goalType as GoalType,
+      goalType: option.id as GoalType,
     } as EditorGoalGameEvent;
 
     this.publishCurrentGameEvent();
@@ -281,109 +281,109 @@ export class GameEventSelectorComponent implements OnInit {
     this.publishCurrentGameEvent();
   }
 
-  onYellowCardReasonSelected(reason: OptionId) {
+  onYellowCardReasonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      reason: reason as BookableOffence,
+      reason: option.id as BookableOffence,
     } as EditorYellowCardGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onYellowRedCardReasonSelected(reason: OptionId) {
+  onYellowRedCardReasonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      reason: reason as BookableOffence,
+      reason: option.id as BookableOffence,
     } as EditorYellowRedCardGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onRedCardReasonSelected(reason: OptionId) {
+  onRedCardReasonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      reason: reason as ExpulsionReason,
+      reason: option.id as ExpulsionReason,
     } as EditorRedCardGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPenaltyMissedReasonSelected(reason: OptionId) {
+  onPenaltyMissedReasonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      reason: reason as PenaltyMissedReason,
+      reason: option.id as PenaltyMissedReason,
     } as EditorPenaltyMissedGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPenaltyTakenBySelected(takenBy: OptionId) {
+  onPenaltyTakenBySelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      takenBy: takenBy,
+      takenBy: option.id,
     } as EditorPenaltyMissedGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPsoOutcomeSelected(outcome: OptionId) {
+  onPsoOutcomeSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      result: outcome as PsoResult,
+      result: option.id as PsoResult,
     } as EditorPsoGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPsoTakenBySelected(takenBy: OptionId) {
+  onPsoTakenBySelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      takenBy: takenBy,
+      takenBy: option.id,
     } as EditorPsoGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onAffectedPersonSelected(affectedPerson: OptionId) {
+  onAffectedPersonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      affectedPerson: affectedPerson,
+      affectedPerson: option.id,
     } as EditorYellowCardGameEvent | EditorYellowRedCardGameEvent | EditorRedCardGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPlayerOffSelected(playerOff: OptionId) {
+  onPlayerOffSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      playerOff: playerOff,
+      playerOff: option.id,
     } as EditorSubstitutionGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onPlayerOnSelected(playerOn: OptionId) {
+  onPlayerOnSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      playerOn: playerOn,
+      playerOn: option.id,
     } as EditorSubstitutionGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onVarDecisionSelected(decision: OptionId) {
+  onVarDecisionSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      decision: decision as VarDecision,
+      decision: option.id as VarDecision,
     } as EditorVarDecisionGameEvent;
 
     this.publishCurrentGameEvent();
   }
 
-  onVarDecisionReasonSelected(reason: OptionId) {
+  onVarDecisionReasonSelected(option: SelectOption) {
     this.currentGameEvent = {
       ...this.currentGameEvent,
-      reason: reason as VarDecisionReason,
+      reason: option.id as VarDecisionReason,
     } as EditorVarDecisionGameEvent;
 
     this.publishCurrentGameEvent();

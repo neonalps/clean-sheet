@@ -118,13 +118,15 @@ export type ModifyGameModel = {
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
   private static readonly CREATE_GAME_STEPS: Array<StepConfig> = [
-    { stepId: 'general', active: true, completed: false, disabled: false, },
-    { stepId: 'lineups', active: false, completed: false, disabled: true, },
-    { stepId: 'events', active: false, completed: false, disabled: true, },
+    { stepId: 'general', active: true, completed: false, disabled: false, hidden: false },
+    { stepId: 'lineups', active: false, completed: false, disabled: true, hidden: false },
+    { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
   ];
 
   private static readonly UPDATE_GAME_STEPS: Array<StepConfig> = [
-    { stepId: 'general', active: true, completed: false, disabled: false, },
+    { stepId: 'general', active: true, completed: false, disabled: false, hidden: false },
+    { stepId: 'lineups', active: false, completed: false, disabled: true, hidden: true },
+    { stepId: 'events', active: false, completed: false, disabled: true, hidden: true },
   ];
 
   readonly model = signal<ModifyGameModel>({});

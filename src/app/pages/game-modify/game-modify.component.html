@@ -1,11 +1,11 @@
 <div class="px-2">
     <app-stepper [stepConfig$]="modifyGameSteps$">
-        <app-stepper-item *ngIf="hasStep('general')" [stepId]="'general'" [displayName]="'game.modify.general' | $t">
+        <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             <div class="mt-4">
                 <app-modify-base-game [input]="baseGameInformation$" (onUpdate)="onBaseGameInformationUpdate($event)" />
             </div>
         </app-stepper-item>
-        <app-stepper-item *ngIf="hasStep('lineups')" [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
+        <app-stepper-item [stepId]="'lineups'" [displayName]="'game.modify.lineups' | $t">
             <div>
                 <app-lineup-selector [titleText]="'lineup.starting' | $t" [maximumPeople]="11" [hasCaptain]="true" [hasShirt]="true" />
             </div>
@@ -22,7 +22,7 @@
                 <app-lineup-selector [titleText]="'lineup.referees' | $t" [hasCaptain]="false" [hasShirt]="false" />
             </div>
         </app-stepper-item>
-        <app-stepper-item *ngIf="hasStep('events')" [stepId]="'events'" [displayName]="'game.modify.events' | $t">
+        <app-stepper-item [stepId]="'events'" [displayName]="'game.modify.events' | $t">
             <app-game-event-editor />
         </app-stepper-item>
     </app-stepper>
