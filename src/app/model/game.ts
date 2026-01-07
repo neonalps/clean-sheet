@@ -57,6 +57,7 @@ export interface UpdateGame {
     isSoldOut?: boolean;
     leg?: number;
     previousLeg?: GameInput;
+    referees?: CreateGameReferee[];
 }
 
 export interface BasicGame {

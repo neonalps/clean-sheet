@@ -136,10 +136,6 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
     const events: UiGameEvent[] = game.report.events.map(event => {
         const minute = splitGameMinute(event.minute);
 
-        if (event.minute === '44') {
-            console.log('event', event);
-        }
-
         const baseEvent: UiGameEvent = {
             id: event.id,
             type: event.type,

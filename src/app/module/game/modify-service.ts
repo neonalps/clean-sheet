@@ -3,7 +3,7 @@ import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from "@s
 import { GameService } from "./service";
 import { map, Observable, of, Subject, tap } from "rxjs";
 import { UiIconDescriptor } from "@src/app/model/icon";
-import { DetailedGame, GameStatus, RefereeRole, UpdateGame } from "@src/app/model/game";
+import { CreateGameReferee, DetailedGame, GameStatus, RefereeRole, UpdateGame } from "@src/app/model/game";
 import { ensureNotNullish } from "@src/app/util/common";
 import { getPersonName } from "@src/app/util/domain";
 
@@ -64,6 +64,11 @@ export class ModifyGameService implements OnDestroy {
       );
   }
 
+  updateGameInput(updatedInput: ModifyGameInput) {
+    console.log('updated game input', updatedInput)
+    this.currentModifyInput.set(updatedInput);
+  }
+
   submitGame(): Observable<DetailedGame> {
     const currentInputValue = this.currentModifyInput();
     if (currentInputValue === null) {
@@ -74,14 +79,27 @@ export class ModifyGameService implements OnDestroy {
 
     const existingGameId = currentInputValue.id;
 
-    const modifyRequestObservable = existingGameId ? this.gameService.update(existingGameId, baseGameInformation) : this.gameService.create({
+    const referees: CreateGameReferee[] = [];
+    // at the minute we only support the main referee
+    if (currentInputValue.refereeId) {
+      referees.push({
+        person: { personId: currentInputValue.refereeId },
+        role: RefereeRole.Referee,
+        sortOrder: 0,
+      })
+    }
+
+    const modifyRequestObservable = existingGameId ? this.gameService.update(existingGameId, {
+      ...baseGameInformation,
+      referees: referees,
+    }) : this.gameService.create({
         ...baseGameInformation,
         // TODO change
         lineupMain: [],
         lineupOpponent: [],
         managersMain: [],
         managersOpponent: [],
-        referees: [],
+        referees: referees,
         events: [],
       });
 
@@ -127,7 +145,7 @@ export class ModifyGameService implements OnDestroy {
             attendance: response.attendance,
             isHomeGame: response.isHomeGame,
             isSoldOut: response.isSoldOut,
-            refereeId: referee?.id,
+            refereeId: referee?.person.id,
             refereeName: referee ? getPersonName(referee.person) : undefined,
             refereeIcon: referee?.person.avatar ? { type: 'person', content: referee.person.avatar } : undefined,
           };

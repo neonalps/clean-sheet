@@ -1,5 +1,5 @@
 import { Component, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { OptionId, SelectOption } from '@src/app/component/select/option';
+import { SelectOption } from '@src/app/component/select/option';
 import { SelectComponent } from "@src/app/component/select/select.component";
 import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
@@ -11,7 +11,7 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { BasicClub } from '@src/app/model/club';
-import { ClubId, CompetitionId, PersonId, VenueId } from '@src/app/util/domain-types';
+import { ClubId, CompetitionId, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { environment } from '@src/environments/environment';
 import { GameStatus } from '@src/app/model/game';
 import { CommonModule } from '@angular/common';
@@ -22,6 +22,7 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 import { BasicVenue } from '@src/app/model/venue';
 
 export type BaseGameInformation = {
+  id?: GameId;
   kickoff: Date;
   competitionId: CompetitionId;
   competitionName?: string;
@@ -35,7 +36,7 @@ export type BaseGameInformation = {
   venueIcon?: UiIconDescriptor;
   isHomeGame: boolean;
   isSoldOut: boolean;
-  gameStatus: GameStatus;
+  status: GameStatus;
   attendance?: number;
   refereeId?: PersonId;
   refereeName?: string;
@@ -62,6 +63,8 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   isSoldOut = signal(false);
   
   colorLight = COLOR_LIGHT;
+
+  readonly gameId = signal<GameId | undefined>(undefined);
 
   readonly pushKickoff$ = new Subject<Date | undefined>();
   readonly pushSelectedOpponent$ = new Subject<SelectOption>();
@@ -128,12 +131,13 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         }
   
         this.onUpdate.emit({
+          id: this.gameId(),
           kickoff: gameInformation[0],
           competitionId: gameInformation[1],
           competitionRound: gameInformation[2],
           opponentId: gameInformation[3],
           isHomeGame: gameInformation[4],
-          gameStatus: gameInformation[5],
+          status: gameInformation[5],
           venueId: gameInformation[6],
           isSoldOut: gameInformation[7],
           attendance: gameInformation[8] ?? undefined,
@@ -149,10 +153,12 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         filter(baseGame => isDefined(baseGame.kickoff)),
         takeUntil(this.destroy$)
       ).subscribe(baseGame => {
+        this.gameId.set(baseGame.id);
+
         // game status
         this.getGameStatusOptions().pipe(
           take(1),
-          map(items => items.filter(item => item.id === baseGame.gameStatus)),
+          map(items => items.filter(item => item.id === baseGame.status)),
           map(items => items[0])
         ).subscribe(item => {
           this.pushGameState$.next(item);

@@ -1,5 +1,5 @@
 <div class="px-2">
-    <div class="page-title mb-6 ml-1">{{ (isEditMode() ? 'pageTitle.editGame' : 'pageTitle.createGame') | $t }}</div>
+    <div class="page-title mb-5 ml-1">{{ (isEditMode() ? 'pageTitle.editGame' : 'pageTitle.createGame') | $t }}</div>
     <app-stepper [stepConfig$]="modifyGameSteps$">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             <div class="mt-4">
@@ -28,7 +28,7 @@
         </app-stepper-item>
     </app-stepper>
     <div class="px-2 my-8 flex justify-content-end">
-        <div class="mr-5">
+        <div class="mr-5" (click)="onSaveClicked()">
             save
         </div>
         <div>

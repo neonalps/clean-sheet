@@ -8,7 +8,7 @@ import { GameVenue } from '@src/app/model/venue';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -171,7 +171,8 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       this.modifyGameSteps$.next(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
 
       this.baseGameInformation.set({
-        gameStatus: input.status,
+        id: input.id,
+        status: input.status,
         kickoff: input.kickoff ? new Date(input.kickoff) : undefined,
         competitionId: input.competitionId,
         competitionName: input.competitionName,
@@ -197,9 +198,15 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  hasStep(stepId: string): boolean {
-    return true;
-    // return this.modifyGameSteps$.getValue().some(item => item.stepId === stepId);
+  onSaveClicked() {
+    this.modifyGameService.submitGame().pipe(take(1)).subscribe({
+      next: result => {
+        console.log('successfully submitted game', result);
+      },
+      error: err => {
+        console.error(`failed to submit game`, err);
+      }
+    })
   }
 
   onNextClicked() {
@@ -210,7 +217,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onBaseGameInformationUpdate(baseGame: BaseGameInformation) {
-    console.log('received base game information', baseGame);
+    this.modifyGameService.updateGameInput({
+      ...baseGame,
+      kickoff: baseGame.kickoff?.toISOString(),
+    });
   }
 
   private initializeModel(game: DetailedGame | null) {
