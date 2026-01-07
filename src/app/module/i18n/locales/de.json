@@ -215,6 +215,8 @@
     "menu.statistics": "Statistik",
     "menu.users": "Benutzer",
     "nav.backToSelection": "zurück zur Auswahl",
+    "pageTitle.createGame": "Spiel erstellen",
+    "pageTitle.editGame": "Spiel bearbeiten",
     "penaltyOutcome.crossbar": "Latte",
     "penaltyOutcome.high": "Drüber",
     "penaltyOutcome.post": "Stange",

@@ -18,6 +18,7 @@ import { ModifyGameService } from '@src/app/module/game/modify-service';
 import { CommonModule } from '@angular/common';
 import { BaseGameInformation, ModifyBaseGameComponent } from "@src/app/component/modify-base-game/modify-base-game.component";
 import { toObservable } from '@angular/core/rxjs-interop';
+import { isDefined } from '@src/app/util/common';
 
 export type UserProviderInput = {
   id: string;
@@ -130,9 +131,13 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   ];
 
   readonly model = signal<ModifyGameModel>({});
+
+  readonly isEditMode = signal(false);
   
   private readonly baseGameInformation = signal<Partial<BaseGameInformation>>({});
   readonly baseGameInformation$ = toObservable(this.baseGameInformation);
+
+  readonly onlyBaseInformationEditable = signal(false);
 
   readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([]);
   
@@ -148,7 +153,11 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    const gameId = Number(this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID));
+    const gameIdPathParam = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
+
+    this.isEditMode.set(isDefined(gameIdPathParam));
+
+    const gameId = Number(gameIdPathParam);
     
     // TODO remove
     this.gameResolver.getById(gameId).pipe(takeUntil(this.destroy$)).subscribe(game => this.initializeModel(game));
@@ -156,7 +165,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.modifyGameService.editGame(gameId).pipe(takeUntil(this.destroy$)).subscribe(input => {
       console.log('starting with input', input);
 
-      this.modifyGameSteps$.next(input.id && input.status === GameStatus.Finished ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+      const canOnlyEditBaseGameInformation = isDefined(input.id) && input.status === GameStatus.Finished;
+      this.onlyBaseInformationEditable.set(canOnlyEditBaseGameInformation);
+
+      this.modifyGameSteps$.next(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
 
       this.baseGameInformation.set({
         gameStatus: input.status,

@@ -522,6 +522,26 @@
     margin-bottom: 1rem;
 }
 
+.my-5 {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.my-6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.my-7 {
+    margin-top: 1.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.my-8 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
 .pl-1 {
     padding-left: .25rem;
 }

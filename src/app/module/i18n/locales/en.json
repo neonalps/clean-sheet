@@ -216,6 +216,8 @@
     "menu.statistics": "Statistics",
     "menu.users": "User",
     "nav.backToSelection": "back to selection",
+    "pageTitle.createGame": "Create game",
+    "pageTitle.editGame": "Edit game",
     "penaltyOutcome.crossbar": "Ceossbar",
     "penaltyOutcome.high": "High",
     "penaltyOutcome.post": "Post",
