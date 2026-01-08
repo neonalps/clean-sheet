@@ -54,8 +54,13 @@ export class GameEventEditorComponent implements OnInit, OnDestroy {
       this.currentGameLineup.set(lineup);
 
       this.gamePersonOptions.set([
-        ...lineup.mainStarting.map(item => ({ id: item.person.personId, name: getPersonName(item.person) })),
-      ]);
+        ...lineup.mainStarting,
+        ...lineup.mainSubstitutes,
+        ...lineup.opponentStarting,
+        ...lineup.opponenSubstitutes,
+        ...lineup.mainManagers,
+        ...lineup.opponentManagers,
+      ].map(item => ({ id: item.person.personId, name: getPersonName(item.person) })));
     });
   }
 
