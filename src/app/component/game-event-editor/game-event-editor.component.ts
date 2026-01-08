@@ -1,11 +1,16 @@
 import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { GameEventSelectorComponent } from "@src/app/component/game-event-selector/game-event-selector.component";
-import { EditorGameEvent, EditorInputPerson } from '@src/app/module/game-event-editor/types';
+import { EditorGameEvent } from '@src/app/module/game-event-editor/types';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { UuidSource } from '@src/app/util/uuid';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BaseGameInformation } from '@src/app/component/modify-base-game/modify-base-game.component';
+import { ModifyGameLineup } from '@src/app/component/modify-game-lineups/modify-game-lineups.component';
+import { getPersonName } from '@src/app/util/domain';
+import { SelectOption } from '@src/app/component/select/option';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-game-event-editor',
@@ -13,24 +18,50 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './game-event-editor.component.html',
   styleUrl: './game-event-editor.component.css'
 })
-export class GameEventEditorComponent implements OnInit {
+export class GameEventEditorComponent implements OnInit, OnDestroy {
+
+  readonly baseGame = input<Observable<Partial<BaseGameInformation>>>();
+  readonly gameLineup = input<Observable<ModifyGameLineup>>();
+
+  readonly onGameEventsUpdated = output<EditorGameEvent[]>();
 
   readonly gameEvents$ = new BehaviorSubject<Array<EditorGameEvent>>([]);
 
-  readonly gamePersons: EditorInputPerson[] = [
-    { personId: 1, name: 'Kjell Scherpen' },
-    { personId: 6, name: 'Tomi Horvat' },
-    { personId: 9, name: 'Otar Kiteishvili' },
-    { personId: 263, name: 'Maurice Malone' },
-    { personId: 11, name: 'Seedy Jatta' },
-  ]
+  readonly gamePersonOptions = signal<SelectOption[]>([]);
+  readonly gamePersonOptions$ = toObservable(this.gamePersonOptions);
+
+  private readonly currentBaseGame = signal<Partial<BaseGameInformation>>({});
+  private readonly currentGameLineup = signal<ModifyGameLineup>({
+    mainStarting: [],
+    mainSubstitutes: [],
+    mainManagers: [],
+    opponentStarting: [],
+    opponenSubstitutes: [],
+    opponentManagers: [],
+  });
 
   private readonly gameEvents: Array<EditorGameEvent> = [];
 
   private readonly uuidSource = inject(UuidSource);
 
+  private readonly destroy$ = new Subject<void>();
+
   ngOnInit(): void {
     this.addItem();
+
+    this.baseGame()?.pipe(takeUntil(this.destroy$)).subscribe(base => this.currentBaseGame.set(base));
+    this.gameLineup()?.pipe(takeUntil(this.destroy$)).subscribe(lineup => {
+      this.currentGameLineup.set(lineup);
+
+      this.gamePersonOptions.set([
+        ...lineup.mainStarting.map(item => ({ id: item.person.personId, name: getPersonName(item.person) })),
+      ]);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   addItem() {
@@ -70,8 +101,8 @@ export class GameEventEditorComponent implements OnInit {
   }
 
   private publishGameEvents() {
-    console.log('events', this.gameEvents);
     this.gameEvents$.next(this.gameEvents);
+    this.onGameEventsUpdated.emit(this.gameEvents);
   }
 
 }

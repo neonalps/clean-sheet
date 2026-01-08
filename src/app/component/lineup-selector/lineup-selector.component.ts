@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, Input, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
 import { BehaviorSubject, debounceTime, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
@@ -37,6 +37,8 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   @Input() hasShirt = true;
   @Input() maximumPeople: number | undefined;
 
+  readonly onLineupItemsUpdated = output<LineupItem[]>();
+
   @ViewChild('searchPerson', { static: false }) searchElement!: ElementRef;
   @ViewChild('startingSection', { static: false }) startingSection!: ElementRef;
 
@@ -73,7 +75,6 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
         return this.externalSearchService.search(value, [ExternalSearchEntity.Person]);
       }),
       map(response => {
-        console.log('raw response', response);
         this.isSearchingForPerson.set(false);
         if ('items' in response) {
           return response.items.map(item => convertExternalSearchItemToSelectOption(item));
@@ -83,8 +84,6 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroy$),
     ).subscribe(responseItems => {
-      console.log(`converted response`, responseItems);
-
       this.addPersonOptions.set(responseItems);
       this.isSearchingForPerson.set(false);
     });
@@ -112,7 +111,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     const idxToRemove = this.lineupItems.findIndex(item => item.person.personId === personId);
     if (idxToRemove >= 0) {
       this.lineupItems.splice(idxToRemove, 1);
-      this.lineupItems$.next(this.lineupItems);
+      this.publishLineupItems();
     }
   }
 
@@ -134,12 +133,14 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
     if (this.hasShirt) {
       this.personShirtClicked(selectedPersonId);
+    } else {
+      this.publishLineupItems();
     }
   }
 
   drop(event: CdkDragDrop<string[]>) {
      moveItemInArray(this.lineupItems, event.previousIndex, event.currentIndex);
-     this.lineupItems$.next(this.lineupItems);
+     this.publishLineupItems();
   }
 
   personShirtClicked(personId: PersonId) {
@@ -174,7 +175,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
     lineupItem.shirt = payload.shirt;
 
-    this.lineupItems$.next(this.lineupItems);
+    this.publishLineupItems();
   }
 
   onPersonSetCaptain(personId: PersonId) {
@@ -195,7 +196,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
     lineupItem.isCaptain = true;
 
-    this.lineupItems$.next(this.lineupItems);
+    this.publishLineupItems();
   }
 
   onAddNewPerson() {
@@ -240,6 +241,11 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
   private collectShirts(): Set<number> {
     return new Set(this.lineupItems.map(item => item.shirt));
+  }
+
+  private publishLineupItems() {
+    this.lineupItems$.next(this.lineupItems);
+    this.onLineupItemsUpdated.emit(this.lineupItems);
   }
 
 }

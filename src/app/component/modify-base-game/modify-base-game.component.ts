@@ -255,7 +255,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           this.selectedOpponent = clubResponse.club;
           
           // auto-fill the venue based on the information we received
-          this.pushSelectedVenue(this.selectedOpponent);
+          this.pushSelectedVenue(this.selectedOpponent.homeVenue);
         },
         error: (error) => {
           console.error(error);
@@ -488,7 +488,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.pushSelectedVenue(this.selectedOpponent);
+      this.pushSelectedVenue(this.selectedOpponent.homeVenue);
     }
 
     onIsSoldOutValueChange(newValue: boolean) {

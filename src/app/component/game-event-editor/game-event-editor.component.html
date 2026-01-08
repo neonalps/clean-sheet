@@ -3,7 +3,7 @@
     <section cdkDropList (cdkDropListDropped)="onItemDrop($event)">
         @for (item of currentGameEvents; track item.id) {
             <div class="mb-2 last:mb-0">
-                <app-game-event-selector [editorGameEvent]="item" [editorInputPersons]="gamePersons" (onUpdate)="onItemUpdate($event)" (onRemove)="onItemRemove(item.id)" />
+                <app-game-event-selector [editorGameEvent]="item" [lineupPersonOptions]="gamePersonOptions$" (onUpdate)="onItemUpdate($event)" (onRemove)="onItemRemove(item.id)" />
             </div>
         }
     </section>

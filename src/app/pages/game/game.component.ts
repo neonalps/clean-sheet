@@ -84,7 +84,7 @@ export class GameComponent implements OnDestroy {
   game: DetailedGame | null = null;
   uiGame!: UiGame;
   isLoading = true;
-  activeTab$ = new BehaviorSubject<string | null>(null);
+  readonly activeTab$ = new BehaviorSubject<string | null>(null);
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
   readonly isContextMenuVisible = signal(false);

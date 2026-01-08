@@ -6,6 +6,7 @@ import { UiIconDescriptor } from "@src/app/model/icon";
 import { CreateGameReferee, DetailedGame, GameStatus, RefereeRole, UpdateGame } from "@src/app/model/game";
 import { ensureNotNullish } from "@src/app/util/common";
 import { getPersonName } from "@src/app/util/domain";
+import { EditorGameEvent } from "../game-event-editor/types";
 
 export type ModifyGameInput = {
     id?: GameId;

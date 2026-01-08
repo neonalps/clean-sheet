@@ -1,15 +1,15 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { SelectComponent } from '@src/app/component/select/select.component';
-import { Observable, of, Subject } from 'rxjs';
-import { OptionId, SelectOption } from '@src/app/component/select/option';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
+import { SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { BookableOffence, ExpulsionReason, GameEventType, GoalType, PenaltyMissedReason, PsoResult, VarDecision, VarDecisionReason } from '@src/app/model/game';
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorInputPerson, EditorPenaltyMissedGameEvent, EditorPsoGameEvent, EditorRedCardGameEvent, EditorSubstitutionGameEvent, EditorVarDecisionGameEvent, EditorYellowCardGameEvent, EditorYellowRedCardGameEvent } from '@src/app/module/game-event-editor/types';
+import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorPenaltyMissedGameEvent, EditorPsoGameEvent, EditorRedCardGameEvent, EditorSubstitutionGameEvent, EditorVarDecisionGameEvent, EditorYellowCardGameEvent, EditorYellowRedCardGameEvent } from '@src/app/module/game-event-editor/types';
 import { PersonId } from '@src/app/util/domain-types';
 
 @Component({
@@ -18,10 +18,10 @@ import { PersonId } from '@src/app/util/domain-types';
   templateUrl: './game-event-selector.component.html',
   styleUrl: './game-event-selector.component.css'
 })
-export class GameEventSelectorComponent implements OnInit {
+export class GameEventSelectorComponent implements OnInit, OnDestroy {
 
   readonly editorGameEvent = input.required<EditorGameEvent>();
-  readonly editorInputPersons = input.required<Array<EditorInputPerson>>();
+  readonly lineupPersonOptions = input<Observable<SelectOption[]>>();
 
   readonly pushAffectedPerson$ = new Subject<SelectOption>();
   readonly pushGameEventType$ = new Subject<SelectOption>();
@@ -43,7 +43,8 @@ export class GameEventSelectorComponent implements OnInit {
   readonly pushVarDecisionReason$ = new Subject<SelectOption>();
 
   private currentGameEvent!: EditorGameEvent;
-  private currentGamePersons: Array<SelectOption> = [];
+  private currentGamePersons = signal<Array<SelectOption>>([]);
+
   readonly currentGameEventType = signal<GameEventType | null>(null);
   readonly currentGameMinute = signal<string>('');
   readonly directFreeKick = signal(false);
@@ -59,11 +60,18 @@ export class GameEventSelectorComponent implements OnInit {
   readonly onRemove = output<void>();
 
   private readonly translationService = inject(TranslationService);
+
+  private readonly destroy$ = new Subject<void>();
   
   ngOnInit(): void {
     this.currentGameEvent = this.editorGameEvent();
 
-    this.currentGamePersons = this.editorInputPersons().map(item => ({ id: item.personId, name: item.name }));
+    this.lineupPersonOptions()?.pipe(takeUntil(this.destroy$)).subscribe(personOptions => this.currentGamePersons.set(personOptions));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getGameEventTypeOptions(): Observable<SelectOption[]> {
@@ -159,7 +167,7 @@ export class GameEventSelectorComponent implements OnInit {
   }
 
   getGamePlayerOptions(): Observable<SelectOption[]> {
-    return of(this.currentGamePersons);
+    return of(this.currentGamePersons());
   }
 
   isGameMinuteVisible(): boolean {

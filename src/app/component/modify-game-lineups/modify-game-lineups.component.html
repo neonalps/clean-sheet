@@ -1,0 +1,28 @@
+<app-tab-group [activeTab]="activeTab$" [horizontalScroll]="true">
+    <app-tab-item [tabId]="'main'" [tabTitle]="mainTabTitle()" [tabIcon]="mainTabIcon() ?? { 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
+        <div>
+            <app-lineup-selector [titleText]="'lineup.starting' | $t" [maximumPeople]="11" [hasCaptain]="true" [hasShirt]="true" (onLineupItemsUpdated)="onMainStartingUpdated($event)" />
+        </div>
+
+        <div class="mt-8">
+            <app-lineup-selector [titleText]="'lineup.substitutes' | $t" [hasCaptain]="false" [hasShirt]="true" (onLineupItemsUpdated)="onMainSubtitutesUpdated($event)" />
+        </div>
+
+        <div class="mt-8">
+            <app-lineup-selector [titleText]="'lineup.managers' | $t" [hasCaptain]="false" [hasShirt]="false" (onLineupItemsUpdated)="onMainManagersUpdated($event)" />
+        </div>
+    </app-tab-item>
+    <app-tab-item [tabId]="'opponent'" [tabTitle]="opponentTabTitle()" [tabIcon]="opponentTabIcon() ?? { 'type': 'standard', 'content': 'football' }">
+        <div>
+            <app-lineup-selector [titleText]="'lineup.starting' | $t" [maximumPeople]="11" [hasCaptain]="true" [hasShirt]="true" (onLineupItemsUpdated)="onOpponentStartingUpdated($event)" />
+        </div>
+
+        <div class="mt-8">
+            <app-lineup-selector [titleText]="'lineup.substitutes' | $t" [hasCaptain]="false" [hasShirt]="true" (onLineupItemsUpdated)="onOpponentSubtitutesUpdated($event)" />
+        </div>
+
+        <div class="mt-8">
+            <app-lineup-selector [titleText]="'lineup.managers' | $t" [hasCaptain]="false" [hasShirt]="false" (onLineupItemsUpdated)="onOpponentManagersUpdated($event)" />
+        </div>
+    </app-tab-item>
+</app-tab-group>

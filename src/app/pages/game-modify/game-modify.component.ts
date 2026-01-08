@@ -8,17 +8,18 @@ import { GameVenue } from '@src/app/model/venue';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { LineupSelectorComponent } from "@src/app/component/lineup-selector/lineup-selector.component";
 import { GameEventEditorComponent } from "@src/app/component/game-event-editor/game-event-editor.component";
 import { ModifyGameService } from '@src/app/module/game/modify-service';
 import { CommonModule } from '@angular/common';
 import { BaseGameInformation, ModifyBaseGameComponent } from "@src/app/component/modify-base-game/modify-base-game.component";
 import { toObservable } from '@angular/core/rxjs-interop';
-import { isDefined } from '@src/app/util/common';
+import { assertUnreachable, isDefined } from '@src/app/util/common';
+import { ModifyGameLineup, ModifyGameLineupsComponent } from "@src/app/component/modify-game-lineups/modify-game-lineups.component";
+import { EditorGameEvent } from '@src/app/module/game-event-editor/types';
 
 export type UserProviderInput = {
   id: string;
@@ -110,9 +111,11 @@ export type ModifyGameModel = {
   tacticalFormationOpponent?: TacticalFormation;
 }
 
+type ModifyGameStep = 'general' | 'lineups' | 'events';
+
 @Component({
   selector: 'app-game-modify',
-  imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, LineupSelectorComponent, GameEventEditorComponent, ModifyBaseGameComponent],
+  imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, GameEventEditorComponent, ModifyBaseGameComponent, ModifyGameLineupsComponent],
   templateUrl: './game-modify.component.html',
   styleUrl: './game-modify.component.css'
 })
@@ -131,6 +134,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   ];
 
   readonly model = signal<ModifyGameModel>({});
+  readonly currentStep = signal<ModifyGameStep>('general');
+  readonly gameLineup = signal<ModifyGameLineup | null>(null);
+
+  readonly gameLineup$ = toObservable(this.gameLineup).pipe(filter(item => item !== null));
 
   readonly isEditMode = signal(false);
   
@@ -198,6 +205,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onGameLineupUpdate(lineup: ModifyGameLineup) {
+    this.gameLineup.set(lineup);
+  }
+
   onSaveClicked() {
     this.modifyGameService.submitGame().pipe(take(1)).subscribe({
       next: result => {
@@ -210,10 +221,30 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onNextClicked() {
-    this.modifyGameSteps$.next([
-      { stepId: 'general', active: false, completed: true, disabled: false, },
-      { stepId: 'lineups', active: true, completed: false, disabled: false, },
-    ]);
+    const step = this.currentStep();
+    switch (step) {
+      case 'general':
+        this.modifyGameSteps$.next([
+          { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
+          { stepId: 'lineups', active: true, completed: false, disabled: false, hidden: false },
+          { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
+        ]);
+        this.currentStep.set('lineups');
+        break;
+      case 'lineups':
+        this.modifyGameSteps$.next([
+          { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
+          { stepId: 'lineups', active: false, completed: true, disabled: false, hidden: false },
+          { stepId: 'events', active: true, completed: false, disabled: true, hidden: false },
+        ]);
+        this.currentStep.set('events');
+        break;
+      case 'events':
+        console.log('save now');
+        break;
+      default:
+        assertUnreachable(step);
+    }
   }
 
   onBaseGameInformationUpdate(baseGame: BaseGameInformation) {
@@ -221,6 +252,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       ...baseGame,
       kickoff: baseGame.kickoff?.toISOString(),
     });
+  }
+
+  onGameEventsUpdate(gameEvents: EditorGameEvent[]) {
   }
 
   private initializeModel(game: DetailedGame | null) {
