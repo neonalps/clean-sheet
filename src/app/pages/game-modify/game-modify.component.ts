@@ -164,12 +164,11 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
     this.isEditMode.set(isDefined(gameIdPathParam));
 
-    const gameId = Number(gameIdPathParam);
-    
-    // TODO remove
-    this.gameResolver.getById(gameId).pipe(takeUntil(this.destroy$)).subscribe(game => this.initializeModel(game));
+    const gameId = gameIdPathParam ? Number(gameIdPathParam) : null;
 
-    this.modifyGameService.editGame(gameId).pipe(takeUntil(this.destroy$)).subscribe(input => {
+    const modifyGameInputObservable = this.isEditMode() ? this.modifyGameService.editGame(Number(gameIdPathParam)) : this.modifyGameService.newGame();
+
+    modifyGameInputObservable.pipe(takeUntil(this.destroy$)).subscribe(input => {
       console.log('starting with input', input);
 
       const canOnlyEditBaseGameInformation = isDefined(input.id) && input.status === GameStatus.Finished;
@@ -207,6 +206,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
   onGameLineupUpdate(lineup: ModifyGameLineup) {
     this.gameLineup.set(lineup);
+    this.modifyGameService.updateGameInput({
+      lineup: lineup,
+    });
   }
 
   onSaveClicked() {
@@ -248,6 +250,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onBaseGameInformationUpdate(baseGame: BaseGameInformation) {
+    this.baseGameInformation.set(baseGame);
     this.modifyGameService.updateGameInput({
       ...baseGame,
       kickoff: baseGame.kickoff?.toISOString(),
@@ -255,6 +258,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   }
 
   onGameEventsUpdate(gameEvents: EditorGameEvent[]) {
+    this.modifyGameService.updateGameInput({
+      events: gameEvents,
+    })
   }
 
   private initializeModel(game: DetailedGame | null) {

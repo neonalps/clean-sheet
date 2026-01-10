@@ -1,12 +1,14 @@
 import { inject, Injectable, OnDestroy, signal } from "@angular/core";
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from "@src/app/util/domain-types";
 import { GameService } from "./service";
-import { map, Observable, of, Subject, tap } from "rxjs";
+import { animationFrameScheduler, map, Observable, of, Subject, tap } from "rxjs";
 import { UiIconDescriptor } from "@src/app/model/icon";
-import { CreateGameReferee, DetailedGame, GameStatus, RefereeRole, UpdateGame } from "@src/app/model/game";
-import { ensureNotNullish } from "@src/app/util/common";
+import { CreateGameEvent, CreateGameManager, CreateGamePlayer, CreateGameReferee, CreateGoalGameEvent, CreateInjuryTimeGameEvent, CreatePenaltyMissedGameEvent, CreatePenaltyShootOutGameEvent, CreateRedCardGameEvent, CreateSubstitutionGameEvent, CreateVarDecisionGameEvent, CreateYellowCardGameEvent, CreateYellowRedCardGameEvent, DetailedGame, GameEventType, GameStatus, ManagingRole, RefereeRole, UpdateGame } from "@src/app/model/game";
+import { assertUnreachable, ensureNotNullish, isDefined } from "@src/app/util/common";
 import { getPersonName } from "@src/app/util/domain";
-import { EditorGameEvent } from "../game-event-editor/types";
+import { ModifyGameLineup } from "@src/app/component/modify-game-lineups/modify-game-lineups.component";
+import { EditorGameEvent, EditorGoalGameEvent, EditorInjuryTimeGameEvent, EditorPenaltyMissedGameEvent, EditorPsoGameEvent, EditorRedCardGameEvent, EditorSubstitutionGameEvent, EditorVarDecisionGameEvent, EditorYellowCardGameEvent, EditorYellowRedCardGameEvent } from "../game-event-editor/types";
+import { LineupItem } from "@src/app/component/lineup-selector-person-item/lineup-selector-person-item.component";
 
 export type ModifyGameInput = {
     id?: GameId;
@@ -31,6 +33,8 @@ export type ModifyGameInput = {
     refereeId?: PersonId;
     refereeName?: string;
     refereeIcon?: UiIconDescriptor;
+    lineup?: ModifyGameLineup;
+    events?: EditorGameEvent[];
 }
 
 @Injectable({
@@ -66,8 +70,10 @@ export class ModifyGameService implements OnDestroy {
   }
 
   updateGameInput(updatedInput: ModifyGameInput) {
-    console.log('updated game input', updatedInput)
-    this.currentModifyInput.set(updatedInput);
+    this.currentModifyInput.set({
+      ...this.currentModifyInput(),
+      ...updatedInput,
+    });
   }
 
   submitGame(): Observable<DetailedGame> {
@@ -76,7 +82,9 @@ export class ModifyGameService implements OnDestroy {
       throw new Error(`Nothing to submit`);
     }
 
-    const baseGameInformation = this.toUpdateGame(currentInputValue);
+    console.log('to submit', currentInputValue);
+
+    const gameInformation = this.toUpdateGame(currentInputValue);
 
     const existingGameId = currentInputValue.id;
 
@@ -91,17 +99,17 @@ export class ModifyGameService implements OnDestroy {
     }
 
     const modifyRequestObservable = existingGameId ? this.gameService.update(existingGameId, {
-      ...baseGameInformation,
+      ...gameInformation,
       referees: referees,
     }) : this.gameService.create({
-        ...baseGameInformation,
-        // TODO change
-        lineupMain: [],
-        lineupOpponent: [],
-        managersMain: [],
-        managersOpponent: [],
+        ...gameInformation,
         referees: referees,
-        events: [],
+        lineupMain: gameInformation.lineupMain ?? [],
+        lineupOpponent: gameInformation.lineupOpponent ?? [],
+        managersMain: gameInformation.managersMain ?? [],
+        managersOpponent: gameInformation.managersOpponent ?? [],
+        events: gameInformation.events ?? [],
+        
       });
 
     return modifyRequestObservable.pipe(
@@ -155,6 +163,8 @@ export class ModifyGameService implements OnDestroy {
   }
 
   private toUpdateGame(input: ModifyGameInput): UpdateGame {
+    const lineupInformation = input.lineup ? this.convertGameLineup(input.lineup) : null;
+
     return {
       kickoff: ensureNotNullish(input.kickoff),
       opponent: {
@@ -174,7 +184,179 @@ export class ModifyGameService implements OnDestroy {
       },
       leg: input.leg,
       previousLeg: input.previousLeg ? { gameId: input.previousLeg } : undefined,
+      lineupMain: lineupInformation?.lineupMain,
+      lineupOpponent: lineupInformation?.lineupOpponent,
+      managersMain: lineupInformation?.managersMain,
+      managersOpponent: lineupInformation?.managersOpponent,
+      events: input.events && lineupInformation ?  this.convertGameEvents(input.events, lineupInformation) : undefined,
+    };
+  }
+
+  private convertGameLineup(lineup: ModifyGameLineup): Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'> {
+    return {
+      lineupMain: [
+        ...lineup.mainStarting.map((item, idx) => this.convertPlayerLineupItem(item, idx, true, true)),
+        ...lineup.mainSubstitutes.map((item, idx) => this.convertPlayerLineupItem(item, idx + 11, true, false)),
+      ],
+      lineupOpponent: [
+        ...lineup.opponentStarting.map((item, idx) => this.convertPlayerLineupItem(item, idx + 100, false, true)),
+        ...lineup.opponenSubstitutes.map((item, idx) => this.convertPlayerLineupItem(item, idx + 111, false, false)),
+      ],
+      managersMain: lineup.mainManagers.map((item, idx) => this.convertManagerLineupItem(item, idx, true)),
+      managersOpponent: lineup.opponentManagers.map((item, idx) => this.convertManagerLineupItem(item, idx, false)),
     }
+  }
+
+  private convertPlayerLineupItem(item: LineupItem, sortOrder: number, forMain: boolean, isStarting: boolean): CreateGamePlayer {
+    return {
+      sortOrder,
+      person: { personId: item.person.personId },
+      shirt: item.shirt,
+      isCaptain: item.isCaptain ?? false,
+      forMain,
+      isStarting,
+    }
+  }
+
+  private convertManagerLineupItem(item: LineupItem, sortOrder: number, forMain: boolean): CreateGameManager {
+    return {
+      sortOrder,
+      person: { personId: item.person.personId },
+      forMain,
+      role: ManagingRole.HeadCoach,
+    }
+  }
+
+  private convertGameEvents(events: EditorGameEvent[], lineupInformation: Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'>): CreateGameEvent[] {
+    return events.map((item, idx) => {
+      const gameEventType = ensureNotNullish(item.type);
+
+      const baseEvent = {
+        minute: item.minute,
+        type: gameEventType,
+        sortOrder: idx,
+      };
+
+      return {
+
+        ...baseEvent,
+      }
+    });
+  }
+
+  private convertGameEvent(gameEventType: GameEventType, item: EditorGameEvent, baseEvent: CreateGameEvent, lineupInformation: Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'>) {
+    switch (gameEventType) {
+      case GameEventType.Goal:
+        const goalItem = item as EditorGoalGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.Goal,
+          scoredBy: { personId: goalItem.scoredBy },
+          assistBy: goalItem.assistBy ? { personId: goalItem.assistBy } : undefined,
+          goalType: goalItem.goalType,
+          ownGoal: goalItem.ownGoal,
+          directFreeKick: goalItem.directFreeKick,
+          penalty: goalItem.penalty,
+          bicycleKick: false,   // TODO add?
+        } satisfies CreateGoalGameEvent;
+      case GameEventType.Substitution:
+        const substitutionItem = item as EditorSubstitutionGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.Substitution,
+          playerOn: { personId: substitutionItem.playerOn },
+          playerOff: { personId: substitutionItem.playerOff },
+          injured: substitutionItem.injured,
+        } satisfies CreateSubstitutionGameEvent;
+      case GameEventType.YellowCard:
+        const yellowCardItem = item as EditorYellowCardGameEvent;
+        const affectedYellowCardPerson = ensureNotNullish(yellowCardItem.affectedPerson);
+        const isYellowCardPlayer = this.isPersonPlayer(affectedYellowCardPerson, lineupInformation);
+        return {
+          ...baseEvent,
+          type: GameEventType.YellowCard,
+          affectedPlayer: isYellowCardPlayer ? { personId: affectedYellowCardPerson } : undefined,
+          affectedManager: !isYellowCardPlayer ? { personId: affectedYellowCardPerson } : undefined,
+          reason: yellowCardItem.reason,
+          notOnPitch: yellowCardItem.notOnPitch,
+        } satisfies CreateYellowCardGameEvent;
+      case GameEventType.YellowRedCard:
+        const yellowRedCardItem = item as EditorYellowRedCardGameEvent;
+        const affectedYellowRedCardPerson = ensureNotNullish(yellowRedCardItem.affectedPerson);
+        const isYellowRedCardPlayer = this.isPersonPlayer(affectedYellowRedCardPerson, lineupInformation);
+        return {
+          ...baseEvent,
+          type: GameEventType.YellowRedCard,
+          affectedPlayer: isYellowRedCardPlayer ? { personId: affectedYellowRedCardPerson } : undefined,
+          affectedManager: !isYellowRedCardPlayer ? { personId: affectedYellowRedCardPerson } : undefined,
+          reason: yellowRedCardItem.reason,
+          notOnPitch: yellowRedCardItem.notOnPitch,
+        } satisfies CreateYellowRedCardGameEvent;
+      case GameEventType.RedCard:
+        const redCardItem = item as EditorRedCardGameEvent;
+        const affectedRedCardPerson = ensureNotNullish(redCardItem.affectedPerson);
+        const isRedCardPlayer = this.isPersonPlayer(affectedRedCardPerson, lineupInformation);
+        return {
+          ...baseEvent,
+          type: GameEventType.RedCard,
+          affectedPlayer: isRedCardPlayer ? { personId: affectedRedCardPerson } : undefined,
+          affectedManager: !isRedCardPlayer ? { personId: affectedRedCardPerson } : undefined,
+          reason: redCardItem.reason,
+          notOnPitch: redCardItem.notOnPitch,
+        } satisfies CreateRedCardGameEvent;
+      case GameEventType.PenaltyMissed:
+        const penaltyMissedItem = item as EditorPenaltyMissedGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.PenaltyMissed,
+          takenBy: { personId: penaltyMissedItem.takenBy },
+          reason: penaltyMissedItem.reason,
+        } satisfies CreatePenaltyMissedGameEvent;
+      case GameEventType.VarDecision:
+        const varDecisionItem = item as EditorVarDecisionGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.VarDecision,
+          affectedPlayer: { personId: varDecisionItem.affectedPerson },
+          reason: varDecisionItem.reason,
+          decision: varDecisionItem.decision,
+        } satisfies CreateVarDecisionGameEvent;
+      case GameEventType.InjuryTime:
+        const injuryTimeItem = item as EditorInjuryTimeGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.InjuryTime,
+          additionalMinutes: injuryTimeItem.additionalMinutes,
+        } satisfies CreateInjuryTimeGameEvent;
+      case GameEventType.PenaltyShootOut:
+        const penaltyShootOutItem = item as EditorPsoGameEvent;
+        return {
+          ...baseEvent,
+          type: GameEventType.PenaltyShootOut,
+          minute: 'PSO',
+          takenBy: { personId: penaltyShootOutItem.takenBy },
+          result: penaltyShootOutItem.result,
+        } satisfies CreatePenaltyShootOutGameEvent;
+      case GameEventType.ExtraTime:
+      case GameEventType.Period:
+        throw new Error(`not applicable here`);
+      default:
+        assertUnreachable(gameEventType);
+    }
+  }
+
+  private isPersonPlayer(personId: PersonId, lineupInformation: Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'>): boolean {
+    return [...lineupInformation.lineupMain ?? [], ...lineupInformation.lineupOpponent ?? []]
+      .map(item => item.person.personId)
+      .filter(item => isDefined(item))
+      .some(item => item === personId);
+  }
+
+  private isPersonManager(personId: PersonId, lineupInformation: Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'>): boolean {
+    return [...lineupInformation.managersMain ?? [], ...lineupInformation.managersOpponent ?? []]
+      .map(item => item.person.personId)
+      .filter(item => isDefined(item))
+      .some(item => item === personId);
   }
 
 }

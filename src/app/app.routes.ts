@@ -85,6 +85,14 @@ export const routes: Routes = [
         }
     },
     { 
+        path: `create-game`, 
+        component: ModifyGameComponent,
+        canActivate: [roleGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
+    },
+    { 
         path: `user-list`, 
         component: UserListComponent,
         canActivate: [loggedInGuard],

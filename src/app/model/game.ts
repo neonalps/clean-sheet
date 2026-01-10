@@ -58,6 +58,11 @@ export interface UpdateGame {
     leg?: number;
     previousLeg?: GameInput;
     referees?: CreateGameReferee[];
+    lineupMain?: CreateGamePlayer[];
+    lineupOpponent?: CreateGamePlayer[];
+    managersMain?: CreateGameManager[];
+    managersOpponent?: CreateGameManager[];
+    events?: CreateGameEvent[];
 }
 
 export interface BasicGame {

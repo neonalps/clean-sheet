@@ -20,11 +20,10 @@ import { FieldWithBallComponent } from "@src/app/icon/field-with-ball/field-with
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PersonService } from '@src/app/module/person/service';
 import { ToastService } from '@src/app/module/toast/service';
-import { GoalWithBallComponent } from "@src/app/icon/goal-with-ball/goal-with-ball.component";
 
 @Component({
   selector: 'app-lineup-selector',
-  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent, GoalWithBallComponent],
+  imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent],
   templateUrl: './lineup-selector.component.html',
   styleUrl: './lineup-selector.component.css'
 })
@@ -216,7 +215,8 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
               firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : undefined,
              }).pipe(takeUntil(this.destroy$)).subscribe({
               next: createdPerson => {
-                this.onPersonSelected({ id: createdPerson.id, name: getPersonName(createdPerson) });
+                // the timeout must be longer than the timeout set in the close method of ModalService
+                setTimeout(() => this.onPersonSelected({ id: createdPerson.id, name: getPersonName(createdPerson) }), 420);
               },
               error: err => {
                 console.error(`Failed to create person`, err);

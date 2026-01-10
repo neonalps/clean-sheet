@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { SelectComponent } from '@src/app/component/select/select.component';
-import { Observable, of, Subject, takeUntil } from 'rxjs';
+import { debounceTime, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
@@ -41,6 +41,8 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
   readonly pushPlayerOn$ = new Subject<SelectOption>();
   readonly pushVarDecision$ = new Subject<SelectOption>();
   readonly pushVarDecisionReason$ = new Subject<SelectOption>();
+
+  readonly gamePlayerSearch$ = new Subject<string>();
 
   private currentGameEvent!: EditorGameEvent;
   private currentGamePersons = signal<Array<SelectOption>>([]);
@@ -166,8 +168,25 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  getGamePlayerOptions(): Observable<SelectOption[]> {
+  getDefaultGamePlayerOptions(): Observable<SelectOption[]> {
     return of(this.currentGamePersons());
+  }
+
+  getGamePlayerOptions(): Observable<SelectOption[]> {
+    return merge(this.getDefaultGamePlayerOptions(), this.searchForGamePlayer());
+  }
+
+  onGamePlayerSearchChanged(searchValue: string) {
+    this.gamePlayerSearch$.next(searchValue);
+  }
+
+  private searchForGamePlayer(): Observable<SelectOption[]> {
+    return this.gamePlayerSearch$.pipe(
+      debounceTime(250),
+      map(value => {
+        return this.currentGamePersons().filter(item => item.name.toLocaleLowerCase().indexOf(value.trim().toLocaleLowerCase()) >= 0);
+      }),
+    );
   }
 
   isGameMinuteVisible(): boolean {

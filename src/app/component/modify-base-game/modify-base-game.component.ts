@@ -96,6 +96,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   private readonly selectedKickoff$ = new Subject<Date | undefined>();
   private readonly selectedOpponentId$ = new Subject<ClubId>();
   private readonly selectedOpponentName$ = new Subject<string>();
+  private readonly selectedOpponentIcon$ = new BehaviorSubject<UiIconDescriptor | null>(null);
   private readonly selectedVenueId$ = new Subject<VenueId>();
   private readonly selectedVenueName$ = new Subject<string>();
   private readonly selectedRefereeId$ = new BehaviorSubject<PersonId | null>(null);
@@ -122,6 +123,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         this.selectedOpponentName$,
         this.selectedCompetitionName$,
         this.selectedRefereeName$,
+        this.selectedOpponentIcon$,
       ]).pipe(
         debounceTime(50),
         takeUntil(this.destroy$),
@@ -145,13 +147,14 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           opponentName: gameInformation[10],
           competitionName: gameInformation[11],
           refereeName: gameInformation[12] ?? undefined,
+          opponentIcon: gameInformation[13] ?? undefined,
         });
   
       });
 
       this.input()?.pipe(
         filter(baseGame => isDefined(baseGame.kickoff)),
-        takeUntil(this.destroy$)
+        take(1),
       ).subscribe(baseGame => {
         this.gameId.set(baseGame.id);
 
@@ -249,6 +252,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       const clubId: ClubId = Number(option.id);
       this.selectedOpponentId$.next(clubId);
       this.selectedOpponentName$.next(option.name);
+      this.selectedOpponentIcon$.next(option.icon ?? null);
   
       this.clubResolver.getById(clubId, false).pipe(take(1)).subscribe({
         next: (clubResponse) => {

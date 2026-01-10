@@ -27,7 +27,7 @@
                             <div class="w-full mt-1">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.scoredBy' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushGoalScoredBy$" (onSelected)="onGoalScoredBySelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushGoalScoredBy$" (onSelected)="onGoalScoredBySelected($event)" (onSearch)="onGamePlayerSearchChanged($event)" />
                                 </div>
                                 <div class="mt-2">
                                     <div class="form-row-title">{{ 'gameEvent.goalType' | $t }}</div>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <div class="form-row-title">{{ 'gameEvent.assistBy' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushGoalAssistBy$" (onSelected)="onGoalAssistBySelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushGoalAssistBy$" (onSelected)="onGoalAssistBySelected($event)" (onSearch)="onGamePlayerSearchChanged($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="flex">
@@ -61,11 +61,11 @@
                             <div class="w-full mt-1">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.playerOn' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushPlayerOn$" (onSelected)="onPlayerOnSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPlayerOn$" (onSelected)="onPlayerOnSelected($event)" />
                                 </div>
                                 <div class="mt-2">
                                     <div class="form-row-title">{{ 'gameEvent.playerOff' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushPlayerOff$" (onSelected)="onPlayerOffSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPlayerOff$" (onSelected)="onPlayerOffSelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <input type="checkbox" id="is-injured" [checked]="injured()" (input)="onInjuredValueChange($event)" />
@@ -77,7 +77,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.affectedPerson' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
@@ -93,7 +93,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.affectedPerson' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
@@ -109,7 +109,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.affectedPerson' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
@@ -125,7 +125,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.takenBy' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushPenaltyTakenBy$" (onSelected)="onPenaltyTakenBySelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPenaltyTakenBy$" (onSelected)="onPenaltyTakenBySelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'gameEvent.reason' | $t }}</div>
@@ -137,7 +137,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.takenBy' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushPsoTakenBy$" (onSelected)="onPsoTakenBySelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPsoTakenBy$" (onSelected)="onPsoTakenBySelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'gameEvent.outcome' | $t }}</div>
@@ -149,7 +149,7 @@
                             <div class="w-full mt-2">
                                 <div>
                                     <div class="form-row-title">{{ 'gameEvent.affectedPerson' | $t }}</div>
-                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="false" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
+                                    <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushAffectedPerson$" (onSelected)="onAffectedPersonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
                                     <div class="form-row-title">{{ 'varDecision.decision' | $t }}</div>
