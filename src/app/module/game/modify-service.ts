@@ -1,7 +1,7 @@
 import { inject, Injectable, OnDestroy, signal } from "@angular/core";
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from "@src/app/util/domain-types";
 import { GameService } from "./service";
-import { animationFrameScheduler, map, Observable, of, Subject, tap } from "rxjs";
+import { map, Observable, of, Subject, tap } from "rxjs";
 import { UiIconDescriptor } from "@src/app/model/icon";
 import { CreateGameEvent, CreateGameManager, CreateGamePlayer, CreateGameReferee, CreateGoalGameEvent, CreateInjuryTimeGameEvent, CreatePenaltyMissedGameEvent, CreatePenaltyShootOutGameEvent, CreateRedCardGameEvent, CreateSubstitutionGameEvent, CreateVarDecisionGameEvent, CreateYellowCardGameEvent, CreateYellowRedCardGameEvent, DetailedGame, GameEventType, GameStatus, ManagingRole, RefereeRole, UpdateGame } from "@src/app/model/game";
 import { assertUnreachable, ensureNotNullish, isDefined } from "@src/app/util/common";
@@ -109,7 +109,6 @@ export class ModifyGameService implements OnDestroy {
         managersMain: gameInformation.managersMain ?? [],
         managersOpponent: gameInformation.managersOpponent ?? [],
         events: gameInformation.events ?? [],
-        
       });
 
     return modifyRequestObservable.pipe(
@@ -237,10 +236,7 @@ export class ModifyGameService implements OnDestroy {
         sortOrder: idx,
       };
 
-      return {
-
-        ...baseEvent,
-      }
+      return this.convertGameEvent(gameEventType, item, baseEvent, lineupInformation);
     });
   }
 
@@ -254,9 +250,9 @@ export class ModifyGameService implements OnDestroy {
           scoredBy: { personId: goalItem.scoredBy },
           assistBy: goalItem.assistBy ? { personId: goalItem.assistBy } : undefined,
           goalType: goalItem.goalType,
-          ownGoal: goalItem.ownGoal,
-          directFreeKick: goalItem.directFreeKick,
-          penalty: goalItem.penalty,
+          ownGoal: goalItem.ownGoal ?? false,
+          directFreeKick: goalItem.directFreeKick ?? false,
+          penalty: goalItem.penalty ?? false,
           bicycleKick: false,   // TODO add?
         } satisfies CreateGoalGameEvent;
       case GameEventType.Substitution:
