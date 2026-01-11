@@ -1,3 +1,8 @@
+@let penaltyElementId = isPenaltyElementId();
+@let ownGoalElementId = isOwnGoalElementId();
+@let directFreeKickElementId = isDirectFreeKickElementId();
+@let notOnPitchElementId = isNotOnPitchElementId();
+@let injuredElementId = isInjuredElementId();
 <div class="px-3 py-2 bg-color-dark-grey-darker rounded" cdkDrag>
     <div class="flex align-items-center">
         <div class="flex flex-1 align-items-center justify-content-center">
@@ -10,7 +15,7 @@
                 <div class="form-row" [ngClass]="{ 'invisible': !isGameMinuteVisible() }">
                     <div class="form-row-title">{{ 'gameEvent.minute' | $t }}</div>
                     <div class="form-row-content">
-                        <input type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (blur)="onGameMinuteChanged($event)" />
+                        <input #gameMinute type="text" name="gameMinute" class="input-text w-full bg-color-transparent line-height-1" autocomplete="off" [value]="pushGameMinute$ | async" (blur)="onGameMinuteChanged($event)" />
                     </div>
                 </div>
             </div>
@@ -40,18 +45,18 @@
                                 <div class="mt-4">
                                     <div class="flex">
                                         <div class="flex-1">
-                                            <input type="checkbox" id="is-penalty" [checked]="penalty()" (input)="onPenaltyValueChanged($event)" />
-                                            <label class="ml-1 user-select-none" for="is-penalty">{{ 'game.penalty' | $t }}</label>
+                                            <input type="checkbox" [attr.id]="penaltyElementId" [checked]="penalty()" (input)="onPenaltyValueChanged($event)" />
+                                            <label class="ml-1 user-select-none" [attr.for]="penaltyElementId">{{ 'game.penalty' | $t }}</label>
                                         </div>
                                         <div class="flex-1">
-                                            <input type="checkbox" id="is-own-goal" [checked]="ownGoal()" (input)="onOwnGoalValueChange($event)" />
-                                            <label class="ml-1 user-select-none" for="is-own-goal">{{ 'game.ownGoal' | $t }}</label>
+                                            <input type="checkbox" [attr.id]="ownGoalElementId" [checked]="ownGoal()" (input)="onOwnGoalValueChange($event)" />
+                                            <label class="ml-1 user-select-none" [attr.for]="ownGoalElementId">{{ 'game.ownGoal' | $t }}</label>
                                         </div>
                                     </div>
                                     <div class="flex mt-2">
                                         <div class="flex-1">
-                                            <input type="checkbox" id="is-direct-free-kick" [checked]="directFreeKick()" (input)="onDirectFreeKickValueChange($event)" />
-                                            <label class="ml-1 user-select-none" for="is-direct-free-kick">{{ 'game.directFreeKick' | $t }}</label>
+                                            <input type="checkbox" [attr.id]="directFreeKickElementId" [checked]="directFreeKick()" (input)="onDirectFreeKickValueChange($event)" />
+                                            <label class="ml-1 user-select-none" [attr.for]="directFreeKickElementId">{{ 'game.directFreeKick' | $t }}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -68,8 +73,8 @@
                                     <app-select [optionsSource]="getGamePlayerOptions()" [showSearch]="true" [selectedOption]="pushPlayerOff$" (onSelected)="onPlayerOffSelected($event)" (onSearch)="onGamePlayerSearchChanged($event)" />
                                 </div>
                                 <div class="mt-4">
-                                    <input type="checkbox" id="is-injured" [checked]="injured()" (input)="onInjuredValueChange($event)" />
-                                    <label class="ml-1 user-select-none" for="is-injured">{{ 'gameEvent.injured' | $t }}</label>
+                                    <input type="checkbox" [attr.id]="injuredElementId" [checked]="injured()" (input)="onInjuredValueChange($event)" />
+                                    <label class="ml-1 user-select-none" [attr.for]="injuredElementId">{{ 'gameEvent.injured' | $t }}</label>
                                 </div>
                             </div>
                         }
@@ -84,8 +89,8 @@
                                     <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowCardReason$" (onSelected)="onYellowCardReasonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
-                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
-                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                    <input type="checkbox" [attr.id]="notOnPitchElementId" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
+                                    <label class="ml-1 user-select-none" [attr.for]="notOnPitchElementId">{{ 'gameEvent.notOnPitch' | $t }}</label>
                                 </div>
                             </div>
                         }
@@ -100,8 +105,8 @@
                                     <app-select [optionsSource]="getBookableOffenceReasonOptions()" [showSearch]="false" [selectedOption]="pushYellowRedCardReason$" (onSelected)="onYellowRedCardReasonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
-                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
-                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                    <input type="checkbox" [attr.id]="notOnPitchElementId" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
+                                    <label class="ml-1 user-select-none" [attr.for]="notOnPitchElementId">{{ 'gameEvent.notOnPitch' | $t }}</label>
                                 </div>
                             </div>
                         }
@@ -116,8 +121,8 @@
                                     <app-select [optionsSource]="getExpulsionReasonOptions()" [showSearch]="false" [selectedOption]="pushRedCardReason$" (onSelected)="onRedCardReasonSelected($event)" />
                                 </div>
                                 <div class="mt-4">
-                                    <input type="checkbox" id="is-not-on-pitch" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
-                                    <label class="ml-1 user-select-none" for="is-not-on-pitch">{{ 'gameEvent.notOnPitch' | $t }}</label>
+                                    <input type="checkbox" [attr.id]="notOnPitchElementId" [checked]="notOnPitch()" (input)="onNotOnPitchValueChange($event)" />
+                                    <label class="ml-1 user-select-none" [attr.for]="notOnPitchElementId">{{ 'gameEvent.notOnPitch' | $t }}</label>
                                 </div>
                             </div>
                         }

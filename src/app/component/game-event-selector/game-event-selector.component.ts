@@ -1,7 +1,7 @@
-import { Component, computed, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { SelectComponent } from '@src/app/component/select/select.component';
-import { debounceTime, map, merge, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, map, merge, Observable, of, Subject, takeUntil } from 'rxjs';
 import { SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getHtmlInputElementFromEvent } from '@src/app/util/common';
@@ -19,6 +19,8 @@ import { PersonId } from '@src/app/util/domain-types';
   styleUrl: './game-event-selector.component.css'
 })
 export class GameEventSelectorComponent implements OnInit, OnDestroy {
+
+  @ViewChild('gameMinute', { static: false }) gameMinuteElement!: ElementRef;
 
   readonly editorGameEvent = input.required<EditorGameEvent>();
   readonly lineupPersonOptions = input<Observable<SelectOption[]>>();
@@ -58,6 +60,12 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
     return this.currentGameEventType() === GameEventType.InjuryTime;
   });
 
+  readonly isPenaltyElementId = signal<string>('penalty');
+  readonly isOwnGoalElementId = signal<string>('own-goal');
+  readonly isDirectFreeKickElementId = signal<string>('direct-free-kick');
+  readonly isNotOnPitchElementId = signal<string>('not-on-pitch');
+  readonly isInjuredElementId = signal<string>('injured');
+
   readonly onUpdate = output<EditorGameEvent>();
   readonly onRemove = output<void>();
 
@@ -67,13 +75,25 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.currentGameEvent = this.editorGameEvent();
+    
+    this.isPenaltyElementId.set(`penalty-${this.currentGameEvent.id}`);
+    this.isOwnGoalElementId.set(`own-goal-${this.currentGameEvent.id}`);
+    this.isDirectFreeKickElementId.set(`direct-free-kick-${this.currentGameEvent.id}`);
+    this.isInjuredElementId.set(`injured-${this.currentGameEvent.id}`);
+    this.isNotOnPitchElementId.set(`not-on-pitch-${this.currentGameEvent.id}`);
 
     this.lineupPersonOptions()?.pipe(takeUntil(this.destroy$)).subscribe(personOptions => this.currentGamePersons.set(personOptions));
+
+    setTimeout(() => this.focusGameMinute());
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  focusGameMinute() {
+    this.gameMinuteElement.nativeElement.focus();
   }
 
   getGameEventTypeOptions(): Observable<SelectOption[]> {
