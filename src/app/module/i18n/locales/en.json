@@ -137,6 +137,8 @@
     "game.redCard": "Red card",
     "games.all": "All games",
     "games.upcoming": "Upcoming games",
+    "gameCreate.success": "The game was successfully created",
+    "gameCreate.failure": "The game could not be created",
     "gameDelete.success": "The game was successfully deleted",
     "gameDelete.failure": "The game could not be deleted",
     "gameEvent.affectedPerson": "Person",

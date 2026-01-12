@@ -136,6 +136,8 @@
     "game.redCard": "Rote Karte",
     "games.all": "Alle Spiele",
     "games.upcoming": "Anstehende Spiele",
+    "gameCreate.success": "Das Spiel wurde erfolgreich angelegt",
+    "gameCreate.failure": "Das Spiel konnte nicht angelegt werden",
     "gameDelete.success": "Das Spiel wurde erfolgreich gelöscht",
     "gameDelete.failure": "Das Spiel konnte nicht gelöscht werden",
     "gameEvent.affectedPerson": "Person",

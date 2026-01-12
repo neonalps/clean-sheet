@@ -1,13 +1,12 @@
 import { Component, computed, inject, OnDestroy, OnInit, Signal, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
 import { SmallCompetition } from '@src/app/model/competition';
 import { DetailedGame, GameManager, GamePlayer, GameStatus, ManagingRole, RefereeRole, TacticalFormation } from '@src/app/model/game';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { GameVenue } from '@src/app/model/venue';
-import { GameResolver } from '@src/app/module/game/resolver';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
-import { PATH_PARAM_GAME_ID } from '@src/app/util/router';
+import { navigateToSeasonGames, PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
@@ -20,6 +19,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { assertUnreachable, isDefined } from '@src/app/util/common';
 import { ModifyGameLineup, ModifyGameLineupsComponent } from "@src/app/component/modify-game-lineups/modify-game-lineups.component";
 import { EditorGameEvent } from '@src/app/module/game-event-editor/types';
+import { ToastService } from '@src/app/module/toast/service';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { SeasonGamesService } from '@src/app/module/season-games/service';
 
 export type UserProviderInput = {
   id: string;
@@ -153,9 +155,12 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     return current.competition?.entity !== undefined;
   });
 
-  private readonly gameResolver = inject(GameResolver);
   private readonly modifyGameService = inject(ModifyGameService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly seasonGamesService = inject(SeasonGamesService);
+  private readonly toastService = inject(ToastService);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -215,9 +220,18 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.modifyGameService.submitGame().pipe(take(1)).subscribe({
       next: result => {
         console.log('successfully submitted game', result);
+
+        this.toastService.addToast({ text: this.translationService.translate('gameCreate.success'), type: 'success' });
+        
+        // reload the games of the season to make sure the new game will be available
+        this.seasonGamesService.getSeasonGames(result.season.id, true);
+
+        navigateToSeasonGames(this.router, result.season.id);
       },
       error: err => {
         console.error(`failed to submit game`, err);
+
+        this.toastService.addToast({ text: `${this.translationService.translate('gameCreate.failure')}`, type: 'error' });
       }
     })
   }
