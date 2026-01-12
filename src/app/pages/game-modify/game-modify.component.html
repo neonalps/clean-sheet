@@ -15,12 +15,19 @@
             <app-game-event-editor [baseGame]="baseGameInformation$" [gameLineup]="gameLineup$" (onGameEventsUpdated)="onGameEventsUpdate($event)" />
         </app-stepper-item>
     </app-stepper>
-    <div class="px-2 my-8 flex justify-content-end">
-        <div class="mr-5" (click)="onSaveClicked()">
-            save
+    <div class="px-2 my-8 flex justify-content-between" [ngClass]="{ 'justify-content-between': currentStep() !== 'general', 'justify-content-end': currentStep() === 'general' }">
+        <div *ngIf="currentStep() !== 'general'">
+            <div class="mr-5" (click)="onBackClicked()">
+                back
+            </div>
         </div>
-        <div>
-            <div (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
+        <div class="flex">
+            <div class="mr-5" (click)="onSaveClicked()">
+                save
+            </div>
+            <div>
+                <div (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
+            </div>
         </div>
     </div>
 </div>

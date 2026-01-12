@@ -222,6 +222,33 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     })
   }
 
+   onBackClicked() {
+    const step = this.currentStep();
+    switch (step) {
+      case 'general':
+        throw new Error(`Cannot go back`);
+        break;
+      case 'lineups':
+        this.modifyGameSteps$.next([
+          { stepId: 'general', active: true, completed: true, disabled: false, hidden: false },
+          { stepId: 'lineups', active: false, completed: false, disabled: false, hidden: false },
+          { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
+        ]);
+        this.currentStep.set('general');
+        break;
+      case 'events':
+        this.modifyGameSteps$.next([
+          { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
+          { stepId: 'lineups', active: true, completed: true, disabled: false, hidden: false },
+          { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
+        ]);
+        this.currentStep.set('lineups');
+        break;
+      default:
+        assertUnreachable(step);
+    }
+  }
+
   onNextClicked() {
     const step = this.currentStep();
     switch (step) {
