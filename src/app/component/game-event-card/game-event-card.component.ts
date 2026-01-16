@@ -4,10 +4,11 @@ import { UiCardGameEvent } from '@src/app/model/game';
 import { isDefined } from '@src/app/util/common';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-game-event-card',
-  imports: [CommonModule, GameEventComponent],
+  imports: [CommonModule, GameEventComponent, I18nPipe],
   templateUrl: './game-event-card.component.html',
   styleUrl: './game-event-card.component.css'
 })

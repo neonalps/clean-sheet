@@ -1338,6 +1338,10 @@
     max-height: 100%;
 }
 
+.max-h-47-vh {
+    max-height: 47vh;
+}
+
 .max-h-50-vh {
     max-height: 50vh;
 }

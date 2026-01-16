@@ -212,7 +212,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
 
             this.personService.create({ 
               lastName: personNameParts[personNamePartLength - 1],
-              firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : undefined,
+              firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : '',
              }).pipe(takeUntil(this.destroy$)).subscribe({
               next: createdPerson => {
                 // the timeout must be longer than the timeout set in the close method of ModalService

@@ -467,7 +467,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
     private getDefaultCompetitionRoundOptions(): Observable<SelectOption[]> {
       const options: SelectOption[] = [];
 
-      for (let i = 1; i <= 32; i++) {
+      for (let i = 1; i <= 36; i++) {
         options.push({
           id: i.toString(),
           name: i.toString(),

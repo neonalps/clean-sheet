@@ -60,8 +60,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       this.loginName.set(profile.firstName);
-
-      this.accountGameInformationService.init();
     });
   }
 
