@@ -4,7 +4,6 @@ import { UiCardGameEvent } from '@src/app/model/game';
 import { isDefined, lowercaseFirstLetter } from '@src/app/util/common';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-game-event-card',
