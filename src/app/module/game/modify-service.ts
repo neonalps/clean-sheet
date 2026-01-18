@@ -70,10 +70,12 @@ export class ModifyGameService implements OnDestroy {
   }
 
   updateGameInput(updatedInput: ModifyGameInput) {
-    this.currentModifyInput.set({
+    const newGameInputValue = {
       ...this.currentModifyInput(),
       ...updatedInput,
-    });
+    };
+
+    this.currentModifyInput.set(newGameInputValue);
   }
 
   submitGame(): Observable<DetailedGame> {

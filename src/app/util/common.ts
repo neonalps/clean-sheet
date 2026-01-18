@@ -102,3 +102,11 @@ export function getAbsolutePercentage(dividend: number, divisor: number): number
 
     return Math.round(dividend / divisor * 100);
 }
+
+export function lowercaseFirstLetter(input: string): string {
+    if (input.length === 0) {
+        return input;
+    }
+
+    return input[0].toLocaleLowerCase() + input.slice(1);
+}

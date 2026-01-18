@@ -22,6 +22,7 @@ export class GameEventEditorComponent implements OnInit, OnDestroy {
 
   readonly baseGame = input<Observable<Partial<BaseGameInformation>>>();
   readonly gameLineup = input<Observable<ModifyGameLineup>>();
+  readonly events = input<Observable<EditorGameEvent[]>>();
 
   readonly onGameEventsUpdated = output<EditorGameEvent[]>();
 
@@ -39,8 +40,7 @@ export class GameEventEditorComponent implements OnInit, OnDestroy {
     opponenSubstitutes: [],
     opponentManagers: [],
   });
-
-  private readonly gameEvents: Array<EditorGameEvent> = [];
+  private gameEvents: Array<EditorGameEvent> = [];
 
   private readonly uuidSource = inject(UuidSource);
 
@@ -61,6 +61,11 @@ export class GameEventEditorComponent implements OnInit, OnDestroy {
         ...lineup.mainManagers,
         ...lineup.opponentManagers,
       ].map(item => ({ id: item.person.personId, name: getPersonName(item.person) })));
+    });
+    this.events()?.pipe(takeUntil(this.destroy$)).subscribe(events => {
+      this.gameEvents = [
+        ...events,
+      ];
     });
   }
 

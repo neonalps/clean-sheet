@@ -216,6 +216,8 @@ export class GameComponent implements OnDestroy {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => this.gameMinuteFormatter.format(minute) });
 
+    console.log(this.uiGame.events);
+
     // context menu
     const topSectionItems: ContextMenuItem[] = [
       { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },

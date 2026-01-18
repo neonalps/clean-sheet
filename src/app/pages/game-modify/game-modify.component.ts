@@ -1,13 +1,10 @@
-import { Component, computed, inject, OnDestroy, OnInit, Signal, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SmallClub } from '@src/app/model/club';
-import { SmallCompetition } from '@src/app/model/competition';
-import { DetailedGame, GameManager, GamePlayer, GameStatus, ManagingRole, RefereeRole, TacticalFormation } from '@src/app/model/game';
+import { GameStatus, ManagingRole, RefereeRole, TacticalFormation } from '@src/app/model/game';
 import { UiIconDescriptor } from '@src/app/model/icon';
-import { GameVenue } from '@src/app/model/venue';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
 import { navigateToSeasonGames, PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -22,6 +19,7 @@ import { EditorGameEvent } from '@src/app/module/game-event-editor/types';
 import { ToastService } from '@src/app/module/toast/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
+import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 
 export type UserProviderInput = {
   id: string;
@@ -115,6 +113,15 @@ export type ModifyGameModel = {
 
 type ModifyGameStep = 'general' | 'lineups' | 'events';
 
+type CurrentModifyGameState = {
+  startedAt: DateString;
+  step: ModifyGameStep;
+  isEditMode: boolean;
+  base: Partial<BaseGameInformation>;
+  lineup?: ModifyGameLineup;
+  events?: EditorGameEvent[];
+}
+
 @Component({
   selector: 'app-game-modify',
   imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, GameEventEditorComponent, ModifyBaseGameComponent, ModifyGameLineupsComponent],
@@ -122,6 +129,8 @@ type ModifyGameStep = 'general' | 'lineups' | 'events';
   styleUrl: './game-modify.component.css'
 })
 export class ModifyGameComponent implements OnInit, OnDestroy {
+
+  private static readonly CACHE_KEY_MODIFY_GAME_STATE = "currentModifyGameState";
 
   private static readonly CREATE_GAME_STEPS: Array<StepConfig> = [
     { stepId: 'general', active: true, completed: false, disabled: false, hidden: false },
@@ -135,11 +144,13 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     { stepId: 'events', active: false, completed: false, disabled: true, hidden: true },
   ];
 
-  readonly model = signal<ModifyGameModel>({});
   readonly currentStep = signal<ModifyGameStep>('general');
-  readonly gameLineup = signal<ModifyGameLineup | null>(null);
 
+  readonly gameLineup = signal<ModifyGameLineup | null>(null);
   readonly gameLineup$ = toObservable(this.gameLineup).pipe(filter(item => item !== null));
+
+  readonly gameEvents = signal<EditorGameEvent[]>([]);
+  readonly gameEvents$ = toObservable(this.gameEvents);
 
   readonly isEditMode = signal(false);
   
@@ -149,12 +160,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   readonly onlyBaseInformationEditable = signal(false);
 
   readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([]);
-  
-  readonly firstStageComplete: Signal<boolean> = computed(() => {
-    const current = this.model();
-    return current.competition?.entity !== undefined;
-  });
 
+  private readonly currentCacheValue = signal<CurrentModifyGameState | null>(null);
+
+  private readonly localStorageProvider = inject(LocalStorageStorageProvider);
   private readonly modifyGameService = inject(ModifyGameService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -166,42 +175,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const gameIdPathParam = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
-
-    this.isEditMode.set(isDefined(gameIdPathParam));
-
-    const gameId = gameIdPathParam ? Number(gameIdPathParam) : null;
-
-    const modifyGameInputObservable = this.isEditMode() ? this.modifyGameService.editGame(Number(gameIdPathParam)) : this.modifyGameService.newGame();
-
-    modifyGameInputObservable.pipe(takeUntil(this.destroy$)).subscribe(input => {
-      console.log('starting with input', input);
-
-      const canOnlyEditBaseGameInformation = isDefined(input.id) && input.status === GameStatus.Finished;
-      this.onlyBaseInformationEditable.set(canOnlyEditBaseGameInformation);
-
-      this.modifyGameSteps$.next(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
-
-      this.baseGameInformation.set({
-        id: input.id,
-        status: input.status,
-        kickoff: input.kickoff ? new Date(input.kickoff) : undefined,
-        competitionId: input.competitionId,
-        competitionName: input.competitionName,
-        competitionIcon: input.competitionIcon,
-        competitionRound: input.competitionRound,
-        opponentId: input.opponentId,
-        opponentName: input.opponentName,
-        opponentIcon: input.opponentIcon,
-        venueId: input.venueId,
-        venueName: input.venueName,
-        isHomeGame: input.isHomeGame,
-        isSoldOut: input.isSoldOut,
-        attendance: input.attendance,
-        refereeId: input.refereeId,
-        refereeName: input.refereeName,
-        refereeIcon: input.refereeIcon,
-      })
-    });
+    this.initModifyGame(isDefined(gameIdPathParam) ? Number(gameIdPathParam) : null);
   }
 
   ngOnDestroy(): void {
@@ -209,9 +183,93 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  private initModifyGame(gameId: GameId | null) {
+    this.resolveCurrentGameModifyState(gameId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(state => {
+        console.log('state', state)
+        this.isEditMode.set(state.isEditMode);
+
+        const canOnlyEditBaseGameInformation = isDefined(state.base.id) && state.base.status === GameStatus.Finished;
+        this.onlyBaseInformationEditable.set(canOnlyEditBaseGameInformation);
+
+        this.modifyGameSteps$.next(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+
+        this.currentStep.set(state.step);
+        this.baseGameInformation.set(state.base);
+
+        // in edit mode we don't set state and events
+        if (state.isEditMode) {
+          this.gameLineup.set(state.lineup ?? null);
+          this.gameEvents.set(state.events ?? []);
+        }
+
+        this.storeCacheValue(state);
+      });
+  }
+
+  private updateCacheValue(update: Partial<Pick<CurrentModifyGameState, 'step' | 'base' | 'events' | 'lineup'>>) {
+    const current = this.currentCacheValue();
+    if (current === null) {
+      return;
+    }
+
+    const updated: CurrentModifyGameState = {
+      ...current,
+      ...update,
+    };
+    this.storeCacheValue(updated);
+  }
+
+  private storeCacheValue(state: CurrentModifyGameState) {
+    this.currentCacheValue.set(state);
+    this.localStorageProvider.set(ModifyGameComponent.CACHE_KEY_MODIFY_GAME_STATE, state);
+  }
+
+  private resolveCurrentGameModifyState(gameId: GameId | null): Observable<CurrentModifyGameState> {
+    // check the cache for an existing entry
+    const existingCacheValue = this.localStorageProvider.get<CurrentModifyGameState>(ModifyGameComponent.CACHE_KEY_MODIFY_GAME_STATE);
+
+    if (existingCacheValue && (gameId === null || existingCacheValue.base?.id === gameId)) {
+      // there is a cache value and it's the same game ID or a new game, so we can use the state from the cache
+      return of(existingCacheValue).pipe(map(value => {
+        return {
+          ...value,
+          base: {
+            ...value.base,
+            kickoff: value.base.kickoff ? new Date(value.base.kickoff) : undefined,
+          },
+        };
+      }));
+    } else {
+      const modifyGameInputObservable = gameId !== null ? this.modifyGameService.editGame(gameId) : this.modifyGameService.newGame();
+
+      return modifyGameInputObservable
+        .pipe(
+          takeUntil(this.destroy$),
+          map(input => {
+            return {
+              startedAt: new Date().toISOString(),
+              step: 'general',
+              isEditMode: gameId !== null,
+              base: {
+                ...input,
+                kickoff: input.kickoff ? new Date(input.kickoff) : undefined,
+              }
+            }
+          }),
+        );
+    }
+
+  }
+
   onGameLineupUpdate(lineup: ModifyGameLineup) {
     this.gameLineup.set(lineup);
     this.modifyGameService.updateGameInput({
+      lineup: lineup,
+    });
+
+    this.updateCacheValue({
       lineup: lineup,
     });
   }
@@ -220,6 +278,8 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     this.modifyGameService.submitGame().pipe(take(1)).subscribe({
       next: result => {
         console.log('successfully submitted game', result);
+
+        this.clearCache();
 
         this.toastService.addToast({ text: this.translationService.translate('gameCreate.success'), type: 'success' });
         
@@ -241,7 +301,6 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     switch (step) {
       case 'general':
         throw new Error(`Cannot go back`);
-        break;
       case 'lineups':
         this.modifyGameSteps$.next([
           { stepId: 'general', active: true, completed: true, disabled: false, hidden: false },
@@ -249,6 +308,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
         ]);
         this.currentStep.set('general');
+        this.updateCacheValue({
+          step: 'general',
+        });
         break;
       case 'events':
         this.modifyGameSteps$.next([
@@ -257,6 +319,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
         ]);
         this.currentStep.set('lineups');
+        this.updateCacheValue({
+          step: 'lineups',
+        });
         break;
       default:
         assertUnreachable(step);
@@ -273,6 +338,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
         ]);
         this.currentStep.set('lineups');
+        this.updateCacheValue({
+          step: 'lineups',
+        });
         break;
       case 'lineups':
         this.modifyGameSteps$.next([
@@ -281,6 +349,9 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
           { stepId: 'events', active: true, completed: false, disabled: true, hidden: false },
         ]);
         this.currentStep.set('events');
+        this.updateCacheValue({
+          step: 'events',
+        });
         break;
       case 'events':
         console.log('save now');
@@ -296,167 +367,25 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       ...baseGame,
       kickoff: baseGame.kickoff?.toISOString(),
     });
+    
+    this.updateCacheValue({
+      base: baseGame,
+    })
   }
 
   onGameEventsUpdate(gameEvents: EditorGameEvent[]) {
     this.modifyGameService.updateGameInput({
       events: gameEvents,
-    })
-  }
-
-  private initializeModel(game: DetailedGame | null) {
-    console.log(game?.report.main);
-
-    this.model.set({
-      id: game?.id,
-      kickoff: game?.kickoff,
-      status: game?.status,
-      opponent: this.mapOpponent(game?.opponent),
-      competition: this.mapCompetition(game?.competition),
-      competitionRound: game?.round,
-      competitionStage: game?.stage,
-      leg: game?.leg,
-      previousLeg: game?.previousLeg,
-      isHomeGame: game?.isHomeGame,
-      isNeutralGround: game?.isNeutralGround,
-      isSoldOut: game?.isSoldOut,
-      attendance: game?.attendance,
-      venue: this.mapVenue(game?.venue),
-      gamePlayersMain: this.mapGamePlayers(game?.report.main.lineup),
-      gamePlayersOpponent: this.mapGamePlayers(game?.report.opponent.lineup),
-      gameManagersMain: this.mapGameManagers(game?.report.main.managers),
-      gameManagersOpponent: this.mapGameManagers(game?.report.opponent.managers),
-      tacticalFormationMain: game?.report.main.tacticalFormation,
-      tacticalFormationOpponent: game?.report.opponent.tacticalFormation,
-      referees: game?.report.referees.map(referee => ({ person: { entity: { id: referee.id, displayText: [referee.person.firstName, referee.person.lastName].join(' ') } }, role: referee.role }))
     });
 
-    console.log('model', this.model());
-  }
-
-  private mapOpponent(opponent?: SmallClub): ClubInputModel {
-    if (!opponent) {
-      return {};
-    }
-
-    const clubEntity: ClubUiEntityModel = {
-      id: opponent.id,
-      displayText: opponent.name,
-    };
-
-    if (opponent.iconSmall) {
-      clubEntity.icon = {
-        type: 'club',
-        content: opponent.iconSmall,
-      }
-    }
-
-    return {
-      entity: clubEntity,
-    }
-  }
-
-  private mapCompetition(competition?: SmallCompetition): CompetitionInputModel {
-    if (!competition) {
-      return {};
-    }
-
-    const competitionEntity: CompetitionUiEntityModel = {
-      id: competition.id,
-      displayText: competition.name,
-    };
-
-    if (competition.iconSmall) {
-      competitionEntity.icon = {
-        type: 'competition',
-        content: competition.iconSmall,
-      }
-    }
-
-    return {
-      entity: competitionEntity,
-    }
-  }
-
-  private mapVenue(venue?: GameVenue): VenueInputModel {
-    if (!venue) {
-      return {};
-    }
-
-    const venueEntity: VenueUiEntityModel = {
-      id: venue.id,
-      displayText: venue.branding,
-    };
-
-    return {
-      entity: venueEntity,
-    }
-  }
-
-  private mapGamePlayers(gamePlayers?: GamePlayer[]): GamePlayerInputModel[] {
-    if (!gamePlayers) {
-      return [];
-    }
-
-    return gamePlayers.map(item => {
-      const personEntity: PersonUiEntityModel = {
-        id: item.player.id,
-        displayText: [item.player.firstName, item.player.lastName].join(' '),
-      };
-
-      if (item.player.avatar) {
-        personEntity.icon = {
-          type: 'person',
-          content: item.player.avatar,
-        }
-      }
-
-      const mappedItem: GamePlayerInputModel = {
-        person: {
-          entity: personEntity,
-        },
-        shirt: item.shirt,
-      };
-
-      if (item.positionGrid) {
-        mappedItem.positionGrid = item.positionGrid;
-      }
-      
-      if (item.captain === true) {
-        mappedItem.isCaptain = item.captain;
-      }
-
-      return mappedItem;
+    this.updateCacheValue({
+      events: gameEvents,
     });
   }
 
-  private mapGameManagers(gameManagers?: GameManager[]): GameManagerInputModel[] {
-    if (!gameManagers) {
-      return [];
-    }
-
-    return gameManagers.map(item => {
-      const personEntity: PersonUiEntityModel = {
-        id: item.person.id,
-        displayText: [item.person.firstName, item.person.lastName].join(' '),
-      };
-
-      if (item.person.avatar) {
-        personEntity.icon = {
-          type: 'person',
-          content: item.person.avatar,
-        }
-      }
-
-      const mappedItem: GameManagerInputModel = {
-        person: {
-          entity: personEntity,
-        },
-        role: item.role,
-      };
-
-      return mappedItem;
-    });
+  private clearCache() {
+    this.currentCacheValue.set(null);
+    this.localStorageProvider.remove(ModifyGameComponent.CACHE_KEY_MODIFY_GAME_STATE);
   }
 
 }
