@@ -42,6 +42,8 @@ export class GameLineupComponent {
     const usePositionGrid = starters.every(item => isDefined(item.positionGrid));
 
     switch (tacticalFormation) {
+      case '442-66':
+        return this.getLineup442Double6(starters, usePositionGrid);
       case '442-diamond':
         return this.getLineup442Diamond(starters, usePositionGrid);
       case '4231':
@@ -67,7 +69,48 @@ export class GameLineupComponent {
 
   personSelected(personId: PersonId): void {
     navigateToPerson(this.router, personId);
-  }  
+  }
+  
+  getLineup442Double6(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
+    return [
+      // strikers
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "41" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "42" : undefined) },
+        ],
+        additionalClasses: 'mt-10',
+      },
+      // midfielders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "31" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 7, usePositionGrid ? "32" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "33" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "34" : undefined) },
+        ],
+        additionalClasses: 'mt-18',
+      },
+      // defenders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 4, usePositionGrid ? "21" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 3, usePositionGrid ? "22" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
+        ],
+        additionalClasses: 'mt-18',
+      },
+      // gk
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
+        ],
+        additionalClasses: 'mt-18',
+      }
+    ];
+
+  }
 
   getLineup442Diamond(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
     return [
