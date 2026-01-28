@@ -4,8 +4,8 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
-import { getAbsolutePercentageString, isDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { PATH_PARAM_PERSON_ID } from '@src/app/util/router';
+import { ensureNotNullish, getAbsolutePercentageString, isDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
@@ -215,7 +215,7 @@ export class PersonComponent implements OnDestroy {
   }
 
   private loadPersonDetails() {
-    const personId = this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID);
+    const personId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID)));
     this.isLoading = true;
     if (isDefined(personId)) {
       this.resolvePerson(Number(personId));

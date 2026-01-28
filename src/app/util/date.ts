@@ -48,3 +48,11 @@ export function getAge(birthday: Date): number {
     }
     return age;
 }
+
+export function getPaddedDateString(input: Date): string {
+    return [
+        input.getFullYear(),
+        (input.getMonth() + 1).toString().padStart(2, '0'),
+        input.getDate().toString().padStart(2, '0'),
+    ].join('');
+}

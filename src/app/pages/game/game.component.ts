@@ -2,11 +2,11 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
-import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
-import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToSeasonGames, navigateToVenue, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
+import { navigateToClub, navigateToCompetition, navigateToGameWithoutDetails, navigateToModifyGame, navigateToPerson, navigateToSeasonGames, navigateToVenue, parseUrlSlug, PATH_PARAM_GAME_ID, replaceHash } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { LargeClubComponent } from "@src/app/component/large-club/large-club.component";
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
@@ -43,6 +43,9 @@ import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { CheckboxStarComponent } from "@src/app/component/checkbox-star/checkbox-star.component";
 import { CheckboxEyeComponent } from "@src/app/component/checkbox-eye/checkbox-eye.component";
 import { AccountGameInformationService } from '@src/app/module/account/game-information';
+import { Person } from '@src/app/model/person';
+import { getDisplayName } from '@src/app/util/domain';
+import { SmallCompetition } from '@src/app/model/competition';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -274,12 +277,12 @@ export class GameComponent implements OnDestroy {
     }
   }
 
-  onClubSelected(clubId: number): void {
-    navigateToClub(this.router, clubId);
+  onClubSelected(club: SmallClub): void {
+    navigateToClub(this.router, club);
   }
 
-  onCompetitionSelected(competitionId: CompetitionId) {
-    navigateToCompetition(this.router, competitionId);
+  onCompetitionSelected(competition: SmallCompetition) {
+    navigateToCompetition(this.router, competition);
   }
 
   onGameContextMenuItemSelected(itemId: string) {
@@ -330,11 +333,15 @@ export class GameComponent implements OnDestroy {
       return;
     }
 
-    this.onPersonSelected(referee.person.id);
+    this.onPersonSelected(referee.person);
   }
 
-  onPersonSelected(personId: PersonId): void {
-    navigateToPerson(this.router, personId);
+  onGamePlayerSelected(player: UiGamePlayer) {
+    this.onPersonSelected({ id: player.personId, firstName: player.firstName, lastName: player.lastName });
+  }
+
+  onPersonSelected(person: Person): void {
+    navigateToPerson(this.router, person.id, getDisplayName(person.firstName, person.lastName));
   }
 
   onAttendToggle() {
@@ -630,7 +637,7 @@ export class GameComponent implements OnDestroy {
       // no game passed in state (can happen if the user copied the link), we must resolve the game manually
       const seasonId: string | undefined = currentNav?.extras?.state?.['seasonId'] ?? undefined;
 
-      const gameId = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
+      const gameId: GameId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID)));
       if (isDefined(gameId)) {
         this.resolveGame(Number(gameId), seasonId !== undefined ? Number(seasonId) : undefined);
       } else {

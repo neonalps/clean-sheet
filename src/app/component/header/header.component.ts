@@ -287,10 +287,10 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   resultItemClicked(resultItem: ExternalSearchResultItemDto) {
     switch (resultItem.type) {
       case ExternalSearchEntity.Person:
-        navigateToPerson(this.router, resultItem.entityId);
+        navigateToPerson(this.router, resultItem.entityId, resultItem.title);
         break;
       case ExternalSearchEntity.Club:
-        navigateToClub(this.router, resultItem.entityId);
+        navigateToClub(this.router, { id: resultItem.entityId, name: resultItem.title } as SmallClub);
         break;
       case ExternalSearchEntity.Competition:
         throw new Error(`Competition not handled`);

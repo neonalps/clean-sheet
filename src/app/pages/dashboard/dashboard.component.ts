@@ -20,7 +20,8 @@ import { Chip } from '@src/app/component/chip/chip.component';
 import { processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PlayerRankingComponent } from "@src/app/component/player-ranking/player-ranking.component";
-import { AccountGameInformationService } from '@src/app/module/account/game-information';
+import { Person } from '@src/app/model/person';
+import { getDisplayName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-dashboard',
@@ -42,7 +43,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly topScorersLoading$ = new BehaviorSubject(true);
   readonly topScorersRanking$ = new BehaviorSubject<PlayerCompetitionItem[]>([]);
 
-  private readonly accountGameInformationService = inject(AccountGameInformationService);
   private readonly authService = inject(AuthService);
   private readonly dashboardResolver = inject(DashboardResolver);
   private readonly router = inject(Router);
@@ -79,8 +79,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onPlayerClicked(playerId: PersonId) {
-    navigateToPerson(this.router, playerId);
+  onPlayerClicked(person: Person) {
+    navigateToPerson(this.router, person.id, getDisplayName(person.firstName, person.lastName));
   }
 
   triggerNavigateToGame(game: BasicGame) {

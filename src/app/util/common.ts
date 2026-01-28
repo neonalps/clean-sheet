@@ -110,3 +110,14 @@ export function lowercaseFirstLetter(input: string): string {
 
     return input[0].toLocaleLowerCase() + input.slice(1);
 }
+
+export function normalizeForSearch(input: string): string {
+    return input.normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .replaceAll('ı', 'i')
+        .replaceAll('ł', 'l')
+        .replaceAll('ø', 'o')
+        .replaceAll('æ', 'ae')
+        .replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, '')
+        .toLocaleLowerCase();
+}

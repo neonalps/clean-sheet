@@ -50,7 +50,7 @@
                 <div class="center text-sm">
                     <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
                     <div class="mb-3 flex align-items-center justify-content-center">
-                        <div class="px-2 py-1 inline-flex align-items-center justify-content-center rounded-md transition-bg-color pointer hover:bg-color-dark-grey" (click)="onCompetitionSelected(game!.competition!.id)">
+                        <div class="px-2 py-1 inline-flex align-items-center justify-content-center rounded-md transition-bg-color pointer hover:bg-color-dark-grey" (click)="onCompetitionSelected(game!.competition!)">
                             <div>
                                 <div class="width-sm relative top-1 mr-2">
                                     <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': game!.competition!.iconSmall! }" />
@@ -69,11 +69,11 @@
         <div class="flex justify-content-center py-1">
             <div class="basis-3/7">
                 <div>
-                    <app-large-club [club]="homeTeam" (click)="onClubSelected(homeTeam.id)"/>
+                    <app-large-club [club]="homeTeam" (click)="onClubSelected(homeTeam)"/>
                 </div>
                 <div class="scoring-board mt-3 text-light-grey-darker text-sm text-right pr-1">
                     <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer" (click)="onGamePlayerSelected(scoringBoardItem.player)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>
@@ -91,11 +91,11 @@
             </div>
             <div class="basis-3/7">
                 <div>
-                    <app-large-club [club]="awayTeam" (click)="onClubSelected(awayTeam.id)" />
+                    <app-large-club [club]="awayTeam" (click)="onClubSelected(awayTeam)" />
                 </div>
                 <div class="scoring-board mt-3 text-light-grey-darker text-sm pl-1">
                     <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
-                        <div class="score-board-item hover:text-light-grey pointer" (click)="onPersonSelected(scoringBoardItem.player.personId)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
+                        <div class="score-board-item hover:text-light-grey pointer" (click)="onGamePlayerSelected(scoringBoardItem.player)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
                     </ng-container>
                 </div>
             </div>

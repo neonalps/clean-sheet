@@ -22,7 +22,7 @@
             </ng-container>
             <ng-template #loadedGoalkeepers>
                 @for (goalkeeper of goalkeepers(); track goalkeeper.id) {
-                    <app-squad-member [member]="goalkeeper" [containerClass]="memberContainerClass" (click)="onMemberClicked(goalkeeper.player.id)" />
+                    <app-squad-member [member]="goalkeeper" [containerClass]="memberContainerClass" (click)="onMemberClicked(goalkeeper.player)" />
                 }
             </ng-template>
         </div>
@@ -43,7 +43,7 @@
             </ng-container>
             <ng-template #loadedDefenders>
                 @for (defender of defenders(); track defender.id) {
-                    <app-squad-member [member]="defender" [containerClass]="memberContainerClass" (click)="onMemberClicked(defender.player.id)" />
+                    <app-squad-member [member]="defender" [containerClass]="memberContainerClass" (click)="onMemberClicked(defender.player)" />
                 }
             </ng-template>
         </div>
@@ -64,7 +64,7 @@
             </ng-container>
             <ng-template #loadedMidfielders>
                 @for (midfielder of midfielders(); track midfielder.id) {
-                    <app-squad-member [member]="midfielder" [containerClass]="memberContainerClass" (click)="onMemberClicked(midfielder.player.id)" />
+                    <app-squad-member [member]="midfielder" [containerClass]="memberContainerClass" (click)="onMemberClicked(midfielder.player)" />
                 }
             </ng-template>
         </div>
@@ -84,7 +84,7 @@
             </ng-container>
             <ng-template #loadedForwards>
                 @for (forward of forwards(); track forward.id) {
-                    <app-squad-member [member]="forward" [containerClass]="memberContainerClass" (click)="onMemberClicked(forward.player.id)" />
+                    <app-squad-member [member]="forward" [containerClass]="memberContainerClass" (click)="onMemberClicked(forward.player)" />
                 }
             </ng-template>
         </div>

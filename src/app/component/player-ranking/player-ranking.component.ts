@@ -4,7 +4,7 @@ import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.
 import { ChipGroupComponent, ChipGroupInput } from '@src/app/component/chip-group/chip-group.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { PlayerCompetitionItem } from '@src/app/model/dashboard';
-import { PersonId } from '@src/app/util/domain-types';
+import { Person } from '@src/app/model/person';
 
 @Component({
   selector: 'app-player-ranking',
@@ -25,7 +25,7 @@ export class PlayerRankingComponent implements OnInit, OnDestroy {
   @Input() skeletonRowCount = 5;
 
   @Output() onCompetitionFilterChanged = new EventEmitter<string>();
-  @Output() onPlayerSelected = new EventEmitter<PersonId>();
+  @Output() onPlayerSelected = new EventEmitter<Person>();
 
   readonly skeletonRows = [...Array(this.skeletonRowCount).keys()];
 
@@ -55,8 +55,8 @@ export class PlayerRankingComponent implements OnInit, OnDestroy {
     this.onCompetitionFilterChanged.next(value as string);
   }
 
-  onPlayerClicked(personId: PersonId) {
-    this.onPlayerSelected.next(personId);
+  onPlayerClicked(person: Person) {
+    this.onPlayerSelected.next(person);
   }
 
 }

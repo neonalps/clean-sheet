@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClubResolver } from '@src/app/module/club/resolver';
-import { isDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { ClubId } from '@src/app/util/domain-types';
-import { navigateToGameWithoutDetails, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
+import { navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
@@ -82,7 +82,7 @@ export class ClubComponent implements OnDestroy {
   }
 
   private loadClubDetails() {
-    const clubId = this.route.snapshot.paramMap.get(PATH_PARAM_CLUB_ID);
+    const clubId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_CLUB_ID)));
     this.isLoading = true;
     if (isDefined(clubId)) {
       this.resolveClub(Number(clubId));

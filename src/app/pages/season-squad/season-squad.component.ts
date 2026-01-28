@@ -13,6 +13,8 @@ import { PersonId } from '@src/app/util/domain-types';
 import { navigateToPerson, navigateToSeasonSquad, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, delay, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { SeasonSelectComponent } from "@src/app/component/season-select/season-select.component";
+import { Person } from '@src/app/model/person';
+import { getDisplayName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-season-squad',
@@ -115,8 +117,8 @@ export class SeasonSquadComponent implements OnInit, OnDestroy {
       });
   }
 
-  onMemberClicked(personId: PersonId) {
-    navigateToPerson(this.router, personId);
+  onMemberClicked(person: Person) {
+    navigateToPerson(this.router, person.id, getDisplayName(person.firstName, person.lastName));
   }
 
   onSeasonSelected(seasonId: OptionId) {

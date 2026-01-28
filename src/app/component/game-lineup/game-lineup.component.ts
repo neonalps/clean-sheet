@@ -9,6 +9,7 @@ import { findOrThrow } from '@src/app/util/array';
 import { Router } from '@angular/router';
 import { navigateToPerson } from '@src/app/util/router';
 import { PersonId } from '@src/app/util/domain-types';
+import { getDisplayName, getPersonName } from '@src/app/util/domain';
 
 export type UiLineupItem = {
   person: UiGamePlayer;
@@ -67,8 +68,8 @@ export class GameLineupComponent {
     return this.lineup.managers;
   }
 
-  personSelected(personId: PersonId): void {
-    navigateToPerson(this.router, personId);
+  personSelected(personId: PersonId, firstName: string | undefined, lastName: string | undefined): void {
+    navigateToPerson(this.router, personId, getDisplayName(firstName, lastName));
   }
   
   getLineup442Double6(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
