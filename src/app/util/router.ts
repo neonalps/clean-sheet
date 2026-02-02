@@ -98,6 +98,7 @@ function getGameUrlSlug(game: DetailedGame): string {
     return [
         getPaddedDateString(new Date(game.kickoff)),
         `Sturm Graz`,
+        'vs',
         game.opponent.shortName,
         // TODO add result
     ].join(' ');

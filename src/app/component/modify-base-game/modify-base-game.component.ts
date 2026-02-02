@@ -475,7 +475,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         });
       }
 
-      ['final', 'semifinal', 'quarterfinal', 'roundOf16', 'roundOf32'].forEach(koRound => {
+      ['final', 'semifinal', 'quarterfinal', 'roundOf16', 'roundOf32', 'playOff'].forEach(koRound => {
         options.push({
           id: koRound,
           name: this.translationService.translate(`competitionRound.${koRound}`),

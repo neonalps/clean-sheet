@@ -13,6 +13,7 @@
 <ng-template #loadedContent>
     @let nationalities = getNationalities();
     @let birthday = getBirthday();
+    @let deathday = getDeathday();
     @let avatar = getIconUrl();
     <div class="pb-8">
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
@@ -38,8 +39,18 @@
                                 <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'birthday-cake' }" />
                             </div>
                         </div>
-                        <div *ngIf="birthday">
-                            <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
+                        <div>
+                            <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} <span *ngIf="!deathday">({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span></span>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex align-items-center" *ngIf="deathday">
+                        <div class="birthday-icon-container mr-2">
+                            <div class="relative top-1 text-light-grey">
+                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'coffin' }" />
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-sm text-light-grey-darker">{{ deathday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
                         </div>
                     </div>
                     <app-external-links [externalLinks]="getExternalLinks()" />

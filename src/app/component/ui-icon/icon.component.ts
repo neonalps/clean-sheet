@@ -26,6 +26,7 @@ import { ArrowLeftComponent } from "@src/app/icon/arrow-left/arrow-left.componen
 import { ArrowRightComponent } from "@src/app/icon/arrow-right/arrow-right.component";
 import { GoalkeeperGloveComponent } from "@src/app/icon/goalkeeper-glove/goalkeeper-glove.component";
 import { GoalkeeperGoalComponent } from "@src/app/icon/goalkeeper-goal/goalkeeper-goal.component";
+import { CoffinComponent } from "@src/app/icon/coffin/coffin.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -55,7 +56,8 @@ import { GoalkeeperGoalComponent } from "@src/app/icon/goalkeeper-goal/goalkeepe
     ArrowLeftComponent,
     ArrowRightComponent,
     GoalkeeperGloveComponent,
-    GoalkeeperGoalComponent
+    GoalkeeperGoalComponent,
+    CoffinComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

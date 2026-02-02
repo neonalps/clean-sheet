@@ -4,7 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
-import { ensureNotNullish, getAbsolutePercentageString, isDefined, processTranslationPlaceholders } from '@src/app/util/common';
+import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
@@ -134,13 +134,23 @@ export class PersonComponent implements OnDestroy {
     return this.person.person.birthday;
   }
 
+  getDeathday() {
+    return this.person.person.deathday;
+  }
+
   getPersonAge() {
     const birthday = this.getBirthday();
     if (!birthday) {
       return null;
     }
 
-    return getAge(new Date(birthday));
+    const deathday = this.getDeathday();
+
+    if (isNotDefined(deathday)) {
+      return getAge(new Date(birthday));
+    } else {
+      return getAge(new Date(birthday), new Date(deathday));
+    }
   }
 
   getNationalities(): CountryFlag[] {

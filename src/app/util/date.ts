@@ -39,11 +39,10 @@ export function getNumberOfDaysBetween(first: Date, second: Date): number {
     return Math.round((first.getTime() - second.getTime()) / ONE_DAY_IN_MILLISECONDS);
 }
 
-export function getAge(birthday: Date): number {
-    const today = new Date();
-    let age = today.getFullYear() - birthday.getFullYear();
-    var m = today.getMonth() - birthday.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+export function getAge(date: Date, compareTo = new Date()): number {
+    let age = compareTo.getFullYear() - date.getFullYear();
+    var m = compareTo.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && compareTo.getDate() < date.getDate())) {
         age--;
     }
     return age;
