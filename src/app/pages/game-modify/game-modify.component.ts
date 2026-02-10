@@ -361,6 +361,10 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     }
   }
 
+  isNextAvailable(): boolean {
+    return this.currentStep() !== 'events';
+  }
+
   onBaseGameInformationUpdate(baseGame: BaseGameInformation) {
     this.baseGameInformation.set(baseGame);
     this.modifyGameService.updateGameInput({
