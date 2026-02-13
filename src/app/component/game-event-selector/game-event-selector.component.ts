@@ -151,7 +151,7 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
 
   getPsoOutcomeOptions(): Observable<SelectOption[]> {
     return of([
-      { id: 'scored', name: this.translationService.translate(`penaltyOutcome.scored`) },
+      { id: 'goal', name: this.translationService.translate(`penaltyOutcome.scored`) },
       { id: 'saved', name: this.translationService.translate(`penaltyOutcome.saved`) },
       { id: 'wide', name: this.translationService.translate(`penaltyOutcome.wide`) },
       { id: 'high', name: this.translationService.translate(`penaltyOutcome.high`) },

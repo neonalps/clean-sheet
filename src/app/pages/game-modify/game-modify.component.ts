@@ -173,12 +173,19 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  // Bound handler to allow removeEventListener to work correctly
+  private beforeUnloadHandler = this.onBeforeUnload.bind(this);
+
   ngOnInit(): void {
+    window.addEventListener('beforeunload', this.beforeUnloadHandler);
+
     const gameIdPathParam = this.route.snapshot.paramMap.get(PATH_PARAM_GAME_ID);
     this.initModifyGame(isDefined(gameIdPathParam) ? Number(gameIdPathParam) : null);
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -387,9 +394,21 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     });
   }
 
+  private isEditingInProcess(): boolean {
+    return this.currentCacheValue() !== null;
+  }
+
   private clearCache() {
     this.currentCacheValue.set(null);
     this.localStorageProvider.remove(ModifyGameComponent.CACHE_KEY_MODIFY_GAME_STATE);
+  }
+
+  private onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.isEditingInProcess()) {
+      // Displaying a confirmation dialog (browser may override the text)
+      event.preventDefault();
+      event.returnValue = '';
+    }
   }
 
 }
