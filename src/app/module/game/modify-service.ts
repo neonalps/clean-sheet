@@ -84,8 +84,6 @@ export class ModifyGameService implements OnDestroy {
       throw new Error(`Nothing to submit`);
     }
 
-    console.log('to submit', currentInputValue);
-
     const gameInformation = this.toUpdateGame(currentInputValue);
 
     const existingGameId = currentInputValue.id;
@@ -128,8 +126,6 @@ export class ModifyGameService implements OnDestroy {
     return this.gameService.getById(gameId)
       .pipe(
         map(response => {
-          console.log('got response', response);
-
           const referee = response.report.referees.find(item => item.role === RefereeRole.Referee);
 
           return {

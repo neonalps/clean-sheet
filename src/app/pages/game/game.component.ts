@@ -219,8 +219,6 @@ export class GameComponent implements OnDestroy {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => this.gameMinuteFormatter.format(minute) });
 
-    console.log(this.uiGame.events);
-
     // context menu
     const topSectionItems: ContextMenuItem[] = [
       { 'id': GameComponent.KEY_GAME_EDIT, 'text': this.translationService.translate('menu.editGame'), iconDescriptor: { 'type': 'standard', 'content': 'pen' } },
@@ -510,7 +508,7 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    const gameScore = getGameResult(this.game!);
+    const gameScore = getGameResult(this.game!, false);
     const previousLegScore = getGameResult(this.previousLeg);
 
     if (gameScore === null || previousLegScore === null) {
@@ -520,19 +518,36 @@ export class GameComponent implements OnDestroy {
     const aggregateMain = this.game!.isHomeGame ? gameScore[0] + previousLegScore[1] : gameScore[1] + previousLegScore[0];
     const aggregateOpponent = this.game!.isHomeGame ? gameScore[1] + previousLegScore[0] : gameScore[0] + previousLegScore[1];
 
-    if (aggregateMain === aggregateOpponent) {
-      // we assume the tie was won on away goals
-      const awayGoalsMain = this.game!.isHomeGame ? previousLegScore[1] : gameScore[0];
-      const awayGoalsOpponent = this.game!.isHomeGame ? gameScore[1] : previousLegScore[0];
+    let additionalMain = 0;
+    let additionalOpponent = 0;
 
-      if (awayGoalsMain > awayGoalsOpponent) {
-        this.mainWonOnAwayGoals = true;
-      } else if (awayGoalsOpponent > awayGoalsMain) {
-        this.mainWonOnAwayGoals = false;
+    if (aggregateMain === aggregateOpponent) {
+      // see if there was a PSO in this game
+      const gameScoreWithPotentialPso = ensureNotNullish(getGameResult(this.game!));
+      const potentialPsoDifferential = gameScoreWithPotentialPso[0] - gameScoreWithPotentialPso[1];
+
+      if (isDefined(this.game!.penaltyShootOut) && potentialPsoDifferential !== 0) {
+        if (potentialPsoDifferential > 0) {
+          additionalMain += .5;
+        } else {
+          additionalOpponent += .5;
+        }
+      } else {
+        const awayGoalsMain = this.game!.isHomeGame ? previousLegScore[1] : gameScore[0];
+        const awayGoalsOpponent = this.game!.isHomeGame ? gameScore[1] : previousLegScore[0];
+
+        // check for away goals win
+        if (awayGoalsMain > awayGoalsOpponent) {
+          this.mainWonOnAwayGoals = true;
+          additionalMain += .5;
+        } else if (awayGoalsOpponent > awayGoalsMain) {
+          this.mainWonOnAwayGoals = false;
+          additionalOpponent += .5;
+        }
       }
     }
 
-    return [aggregateMain + (this.mainWonOnAwayGoals === true ? .5 : 0), aggregateOpponent + (this.mainWonOnAwayGoals === false ? .5 : 0)];
+    return [aggregateMain + additionalMain, aggregateOpponent + additionalOpponent];
   }
 
   getAggregateScore(): string | null {

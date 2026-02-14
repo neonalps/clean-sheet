@@ -284,8 +284,6 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   onSaveClicked() {
     this.modifyGameService.submitGame().pipe(take(1)).subscribe({
       next: result => {
-        console.log('successfully submitted game', result);
-
         this.clearCache();
 
         this.toastService.addToast({ text: this.translationService.translate('gameCreate.success'), type: 'success' });
