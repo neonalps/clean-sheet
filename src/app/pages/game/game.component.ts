@@ -26,7 +26,7 @@ import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { Chip } from '@src/app/component/chip/chip.component';
-import { CompetitionId, GameId, PersonId, SeasonId, VenueId } from '@src/app/util/domain-types';
+import { GameId, SeasonId, VenueId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';

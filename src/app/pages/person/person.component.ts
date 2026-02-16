@@ -109,8 +109,6 @@ export class PersonComponent implements OnDestroy {
       this.refereeListVisible.set(refereeGames.length > 0)
 
       this.performance$.next(playerStats);
-
-      console.log('player stats', playerStats);
     }
   }
 
