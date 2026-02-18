@@ -159,7 +159,7 @@
                 <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
             </div>
         </div>
-        <div class="mt-5" *ngIf="this.game!.attendance">
+        <div class="mt-5" *ngIf="this.game!.attendance !== null && this.game!.attendance !== undefined">
             <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
                 <div class="mr-2">
                     <div class="width-xs relative top-2">
