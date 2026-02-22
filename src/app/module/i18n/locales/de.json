@@ -342,6 +342,7 @@
     "varDecisionReason.handball": "Handspiel",
     "varDecisionReason.noHandball": "Kein Handspiel",
     "varDecisionReason.offside": "Abseits",
+    "varDecisionReason.insidePenaltyArea": "Innerhalb des Strafraums",
     "varDecisionReason.outsidePenaltyArea": "Außerhalb des Strafraums",
     "varDecisionReason.noOffside": "Kein Abseits",
     "varDecisionReason.seriousFoulPlay": "Schweres Foulspiel",

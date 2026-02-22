@@ -343,6 +343,7 @@
     "varDecisionReason.handball": "Handball",
     "varDecisionReason.noHandball": "No handball",
     "varDecisionReason.offside": "Offside",
+    "varDecisionReason.insidePenaltyArea": "Inside penalty area",
     "varDecisionReason.outsidePenaltyArea": "Outside penalty area",
     "varDecisionReason.noOffside": "No offside",
     "varDecisionReason.seriousFoulPlay": "Serious foul play",
