@@ -1,8 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, signal, ViewChild } from '@angular/core';
-import { OptionId, SelectOption } from './option';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
-import { getHtmlInputElementFromEvent, isDefined, isNotDefined } from '@src/app/util/common';
+import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
 import { COLOR_LIGHT } from '@src/styles/constants';
@@ -20,20 +20,18 @@ export type LoadingStyle = 'skeleton' | 'spinner';
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })
-export class SelectComponent implements OnInit {
+export class SelectComponent implements OnInit, OnDestroy {
 
-  colorLight = COLOR_LIGHT;
-  isOpen = signal(false);
-  optionsWidth = signal('0');
+  readonly colorLight = COLOR_LIGHT;
+  readonly isOpen = signal(false);
+  readonly optionsWidth = signal('0');
 
-  private currentValue: SelectOption | null = null;
+  private readonly currentValue = signal<SelectOption | null>(null);
 
   @ViewChild('main', { static: false }) mainElement!: ElementRef;
   @ViewChild('search', { static: false }) searchElement!: ElementRef;
 
   @Input() optionsSource!: Observable<SelectOption[]>;
-  @Input() onBefore?: Observable<boolean>;
-  @Input() onNext?: Observable<boolean>;
   @Input() emptyText!: string;
   @Input() isLoading = false;
   @Input() showSearch: boolean = false;
@@ -48,88 +46,60 @@ export class SelectComponent implements OnInit {
 
   @Output() onSearch = new EventEmitter<string>();
   @Output() onSelected = new EventEmitter<SelectOption>();
-  @Output() onHasNext = new EventEmitter<boolean>();
-  @Output() onHasBefore = new EventEmitter<boolean>();
 
-  options: SelectOption[] | null = null;
+  readonly options = signal<SelectOption[] | null>(null);
 
-  displayIcon: UiIconDescriptor | null = null;
-  displayText: string | null = null;
+  readonly displayIcon = signal<UiIconDescriptor | null>(null);
+  readonly displayText = signal<string | null>(null);
 
-  emptyOptionsVisible = false;
+  readonly emptyOptionsVisible = signal(false);
 
-  skeletonRows = [...Array(this.skeletonRowCount).keys()];
+  readonly skeletonRows = [...Array(this.skeletonRowCount).keys()];
 
   private readonly destroy$ = new Subject<void>();
 
-  private selectedIdx: number | null = null;
-  private hasBefore = false;
-  private hasNext = false;
-  private currentSearchValue = "";
+  private readonly currentSearchValue = signal('');
 
   ngOnInit(): void {
-    this.displayText = this.emptyText;
+    this.displayText.set(this.emptyText);
 
     this.optionsSource.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.options = value;
+      this.options.set(value);
 
-      this.emptyOptionsVisible = this.currentSearchValue.trim().length > 0 && this.options.length === 0;
+      this.emptyOptionsVisible.set(this.currentSearchValue().trim().length > 0 && value.length === 0);
     });
 
-    this.selectedOption?.pipe(takeUntil(this.destroy$), filter(value => value !== null)).subscribe(value => {
+    this.selectedOption?.pipe(
+      filter(value => value !== null), 
+      takeUntil(this.destroy$)
+    ).subscribe(value => {
       this.onSelect(value);
-    })
-
-    this.onBefore?.pipe(takeUntil(this.destroy$)).subscribe(_ => {
-      if (!this.hasBefore) {
-        return;
-      }
-
-      this.onSelect((this.options as SelectOption[])[(this.selectedIdx as number) + 1]);
     });
+  }
 
-    this.onNext?.pipe(takeUntil(this.destroy$)).subscribe(_ => {
-      if (!this.hasNext) {
-          return;
-        }
-
-        this.onSelect((this.options as SelectOption[])[(this.selectedIdx as number) - 1]);
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSearchChange(event: Event): void {
     const searchValue = getHtmlInputElementFromEvent(event).value;
-    this.currentSearchValue = searchValue;
+    this.currentSearchValue.set(searchValue);
     this.onSearch.next(searchValue);
   }
 
   onSelect(selectedOption: SelectOption): void {
-    if (this.currentValue?.id === selectedOption.id) {
+    const currentValue = this.currentValue();
+    if (currentValue?.id === selectedOption.id) {
       this.hideDropdown();
       return;
     }
 
-    this.currentValue = selectedOption;
-    this.displayIcon = this.currentValue.icon ?? null;
-    this.displayText = this.currentValue.name;
-    this.onSelected.next(this.currentValue);
+    this.currentValue.set(selectedOption);
+    this.displayIcon.set(selectedOption.icon ?? null);
+    this.displayText.set(selectedOption.name);
+    this.onSelected.next(selectedOption);
     this.hideDropdown();
-
-    if (isDefined(this.currentValue)) {
-      this.selectedIdx = (this.options as SelectOption[]).findIndex(item => item.id === this.currentValue?.id);
-      if (isNotDefined(this.selectedIdx)) {
-        this.hasBefore = false;
-        this.hasNext = false;
-        this.onHasBefore.next(false);
-        this.onHasNext.next(false);
-        return;
-      }
-      
-      this.hasBefore = this.selectedIdx < ((this.options as SelectOption[]).length - 1);
-      this.hasNext = this.selectedIdx > 0;
-      this.onHasBefore.next(this.hasBefore);
-      this.onHasNext.next(this.hasNext);
-    }
   }
 
   getDynamicStyles() {
@@ -175,7 +145,7 @@ export class SelectComponent implements OnInit {
   }
 
   isSelected(option: SelectOption): boolean {
-    return this.currentValue?.id === option.id;
+    return this.currentValue()?.id === option.id;
   }
 
   handleOutsideClick() {

@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { Season } from '@src/app/model/season';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { CommonModule } from '@angular/common';
 import { ChevronRightComponent } from '@src/app/icon/chevron-right/chevron-right.component';
 import { ChevronLeftComponent } from '@src/app/icon/chevron-left/chevron-left.component';
+import { SeasonId } from '@src/app/util/domain-types';
 
 @Component({
   selector: 'app-season-select',
@@ -13,40 +14,76 @@ import { ChevronLeftComponent } from '@src/app/icon/chevron-left/chevron-left.co
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })
-export class SeasonSelectComponent {
+export class SeasonSelectComponent implements OnInit, OnDestroy {
 
-  @Input() seasons!: Observable<Season[]>;
-  @Input() selectedSeason$!: BehaviorSubject<SelectOption | null>;
-  @Output() onSelected = new EventEmitter<OptionId>();
+  readonly seasons = input.required<Observable<Season[]>>();
+  readonly selectedSeason$ = input<BehaviorSubject<SelectOption | null>>();
+  readonly onSelected = output<OptionId>();
 
-  hasBefore = false;
-  hasNext = false;
+  readonly hasBefore = signal(false);
+  readonly hasNext = signal(false);
 
-  beforeSubject = new Subject<boolean>();
-  nextSubject = new Subject<boolean>();
+  private readonly currentSeasonsValue = signal<Season[]>([]);
+  private readonly currentSelectedSeasonId = signal<SeasonId | null>(null);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  private readonly destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.seasons()?.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(seasonsValue => {
+      this.currentSeasonsValue.set(seasonsValue);
+    });
+
+    this.selectedSeason$()?.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(selectedSeasonValue => {
+      if (selectedSeasonValue === null) {
+        this.hasBefore.set(false);
+        this.hasNext.set(false);
+        return;
+      }
+
+      const currentSelectedSeasonId = Number(selectedSeasonValue.id);
+      this.currentSelectedSeasonId.set(currentSelectedSeasonId);
+
+      const currentSeasons = this.currentSeasonsValue();
+      const currentSeasonValueIndex = currentSeasons.findIndex(item => item.id === currentSelectedSeasonId);
+      // the seasons are ordered descendingly
+      this.hasBefore.set(currentSeasonValueIndex < (currentSeasons.length - 1));
+      this.hasNext.set(currentSeasonValueIndex > 0);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onSeasonSelected(option: SelectOption): void {
     this.onSelected.emit(option.id);
   }
 
-  onHasBefore(hasBefore: boolean): void {
-    this.hasBefore = hasBefore;
-    this.cdr.detectChanges();
-  }
-
-  onHasNext(hasNext: boolean): void {
-    this.hasNext = hasNext;
-    this.cdr.detectChanges();
-  }
-
   onBeforeClicked(): void {
-    this.beforeSubject.next(true);
+    this.moveSeasonIndex(1);
   }
 
   onNextClicked(): void {
-    this.nextSubject.next(true);
+    this.moveSeasonIndex(-1);
   }
+
+  private moveSeasonIndex(moveBy: number) {
+    const currentId = this.currentSelectedSeasonId();
+    if (currentId === null) {
+      return;
+    }
+
+    const currentSeasons = this.currentSeasonsValue();
+    const currentSeasonValueIndex = currentSeasons.findIndex(item => item.id === currentId);
+
+    const newSeasonValue = currentSeasons[currentSeasonValueIndex + moveBy];
+    this.onSeasonSelected(newSeasonValue);
+  }
+
 
 }

@@ -61,7 +61,6 @@ export class FetchService {
 
     private subscriptions: Map<Symbol, FetchSubscription<any>> = new Map();
 
-    private readonly accountCacheService = inject(AccountCacheService);
     private readonly cacheService = inject(CacheService);
     private readonly http = inject(HttpClient);
 

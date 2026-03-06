@@ -1,14 +1,17 @@
+@let optionsValue = options();
+@let displayIconValue = displayIcon();
+@let displayTextValue = displayText();
 <div class="select-container pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
     <div #main class="select-main p-2 flex justify-content-between transition-colors" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline && !isOpen(), 'select-outline-focus': showOutline && isOpen(), 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
         <div class="flex-grow-8 flex align-items-center justify-content-center">
-            <ng-container *ngIf="displayIcon">
+            <ng-container *ngIf="displayIconValue">
                 <div class="basis-1/10 mr-1">
                     <div class="width-1-75rem flex align-items-center">
-                        <app-ui-icon [descriptor]="displayIcon" />
+                        <app-ui-icon [descriptor]="displayIconValue" />
                     </div>
                 </div>
             </ng-container>
-            <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ displayText }}</div>
+            <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ displayTextValue }}</div>
         </div>
         <div class="flex align-items-center" *ngIf="hideChevron !== true">
             <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
@@ -47,8 +50,8 @@
             </ng-template>
         </ng-container>
         <ng-template #loadedOptions>
-            <ng-container *ngIf="options!.length > 0; else emptyOptions">
-                @for (option of options; track $index) {
+            <ng-container *ngIf="optionsValue !== null && optionsValue.length > 0; else emptyOptions">
+                @for (option of optionsValue; track option.id) {
                     <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
                         <ng-container *ngIf="option.icon">
                             <div class="basis-1/10 mr-1">
@@ -65,7 +68,7 @@
                 }
             </ng-container>
             <ng-template #emptyOptions>
-                <ng-content *ngIf="emptyOptionsVisible" select="[noOptions]"></ng-content>
+                <ng-content *ngIf="emptyOptionsVisible() === true" select="[noOptions]"></ng-content>
             </ng-template>
         </ng-template>
     </div>

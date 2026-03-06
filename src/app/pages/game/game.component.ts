@@ -101,6 +101,8 @@ export class GameComponent implements OnDestroy {
   readonly attendChecked = signal(false);
   readonly starChecked = signal(false);
 
+  readonly scheduledAt = signal<Date | null>(null);
+
   mainClub: SmallClub = environment.mainClub;
   mainWonOnAwayGoals: boolean | null = null;
   lineupTeamChips: Chip[] = [];
@@ -154,10 +156,10 @@ export class GameComponent implements OnDestroy {
       });
 
     const routerScrollPosition$ = this.router.events.pipe(
-      takeUntil(this.destroy$),
       filter((event): event is Scroll => event instanceof Scroll),
       map((event: Scroll) => event.position || undefined),
       filter((value: [number, number] | undefined) => value !== undefined),
+      takeUntil(this.destroy$),
     );
 
     const lastGamesAvailable$ = this.lastGamesAvailable.pipe(takeUntil(this.destroy$));
@@ -255,6 +257,9 @@ export class GameComponent implements OnDestroy {
 
     this.starChecked.set(this.accountGameInformationService.isStarred(this.game.id));
     this.attendChecked.set(this.accountGameInformationService.isAttended(this.game.id));
+
+    console.log('scheduled at', game.scheduled);
+    this.scheduledAt.set(isDefined(game.scheduled) ? new Date(game.scheduled) : null);
 
     // if it is an upcoming game, fetch the last games to display the record
     if (game.status === GameStatus.Scheduled) {

@@ -69,9 +69,9 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       });
 
     const routerScrollingPosition = this.router.events.pipe(
-      takeUntil(this.destroy$),
       filter((event): event is Scroll => event instanceof Scroll),
       map((event: Scroll) => event.position || undefined),
+      takeUntil(this.destroy$),
     );
 
     const upcomingGamesPosition = this.upcomingGamesPositionSubject.pipe(

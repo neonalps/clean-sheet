@@ -15,6 +15,7 @@ export class CountryFlagService {
     private readonly translationService = inject(TranslationService);
 
     private static flags: Map<string, string> = new Map([
+        ['ad', '🇦🇩'],
         ['al', '🇦🇱'],
         ['at', '🇦🇹'],
         ['au', '🇦🇺'],
@@ -39,6 +40,7 @@ export class CountryFlagService {
         ['fi', '🇫🇮'],
         ['fr', '🇫🇷'],
         ['gb-eng', '🏴󠁧󠁢󠁥󠁮󠁧󠁿'],
+        ['gb-nir', '🏴󠁧󠁢󠁥󠁮󠁧󠁿'],
         ['gb-sct', '🏴󠁧󠁢󠁳󠁣󠁴󠁿'],
         ['ge', '🇬🇪󠁧'],
         ['gh', '🇬🇭'],
@@ -65,6 +67,7 @@ export class CountryFlagService {
         ['se', '🇸🇪'],
         ['si', '🇸🇮'],
         ['sk', '🇸🇰'],
+        ['sm', '🇸🇲'],
         ['tn', '🇹🇳'],
         ['tr', '🇹🇷'],
         ['tz', '🇹🇿'],

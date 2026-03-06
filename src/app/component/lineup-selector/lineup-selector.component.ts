@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, inject, Input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
-import { BehaviorSubject, debounceTime, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
@@ -201,29 +201,29 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   onAddNewPerson() {
     const personName = ensureNotNullish(this.currentSearchValue());
     this.modalService.showConfirmAddPersonModal({ personName: this.translationService.translate('person.create.detail', { name: personName }) })
-      .pipe(takeUntil(this.destroy$)).subscribe({
-        next: event => {
-          if (event.type === 'confirm') {
-            const personNameParts = personName
-              .split(' ')
-              .map(part => part.trim());
+      .pipe(
+        filter(event => event.type === 'confirm'),
+        switchMap(() => {
+          const personNameParts = personName
+            .split(' ')
+            .map(part => part.trim());
 
-            const personNamePartLength = personNameParts.length;
+          const personNamePartLength = personNameParts.length;
 
-            this.personService.create({ 
-              lastName: personNameParts[personNamePartLength - 1],
-              firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : '',
-             }).pipe(takeUntil(this.destroy$)).subscribe({
-              next: createdPerson => {
-                // the timeout must be longer than the timeout set in the close method of ModalService
-                setTimeout(() => this.onPersonSelected({ id: createdPerson.id, name: getPersonName(createdPerson) }), 420);
-              },
-              error: err => {
-                console.error(`Failed to create person`, err);
-                this.toastService.addToast({ type: 'error', text: this.translationService.translate('person.create.error') });
-              }
-             })
-          }
+          return this.personService.create({ 
+            lastName: personNameParts[personNamePartLength - 1],
+            firstName: personNamePartLength > 1 ? personNameParts.slice(0, personNamePartLength - 1).join(' ') : '',
+            });
+        }),
+        takeUntil(this.destroy$),
+      ).subscribe({
+        next: createdPerson => {
+          // the timeout must be longer than the timeout set in the close method of ModalService
+          setTimeout(() => this.onPersonSelected({ id: createdPerson.id, name: getPersonName(createdPerson) }), 420);
+        },
+        error: err => {
+          console.error(`Failed to create person`, err);
+          this.toastService.addToast({ type: 'error', text: this.translationService.translate('person.create.error') });
         }
     });
   }

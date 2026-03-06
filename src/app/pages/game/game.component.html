@@ -119,6 +119,13 @@
         </div>
     </div>
 
+    @let scheduledAtValue = scheduledAt();
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="scheduledAtValue !== null">
+        <div class="flex align-items-center justify-content-center p-2">
+            <div class="text-sm">{{ scheduledAtValue | date }}</div>
+        </div>
+    </div>
+
     <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible" #scrolling>
         <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab$" [horizontalScroll]="true">
             <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">

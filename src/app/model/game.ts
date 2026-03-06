@@ -1,4 +1,4 @@
-import { DateString, GameId } from "@src/app/util/domain-types";
+import { DateString } from "@src/app/util/domain-types";
 import { ClubInput, SmallClub } from "./club";
 import { CompetitionInput, SmallCompetition } from "./competition";
 import { DetailedPerson, Person, PersonInput } from "./person";
@@ -67,7 +67,7 @@ export interface UpdateGame {
 
 export interface BasicGame {
     id: number;
-    kickoff: string;
+    kickoff: DateString;
     opponent: SmallClub;
     season: Season;
     competition: SmallCompetition;
@@ -86,7 +86,7 @@ export interface BasicGame {
     previousLeg?: number;
     isSoldOut?: boolean;
     isNeutralGround?: boolean;
-    scheduled?: Date;
+    scheduled?: DateString;
     titleWinningGame?: boolean;
     titleCount?: number;
     victoryGameText?: string;
