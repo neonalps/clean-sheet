@@ -154,7 +154,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
       this.input()?.pipe(
         filter(baseGame => isDefined(baseGame.kickoff)),
-        takeUntil(this.destroy$),
+        take(1),
       ).subscribe(baseGame => {
         console.log('received base input', baseGame)
         this.gameId.set(baseGame.id);

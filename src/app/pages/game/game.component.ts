@@ -258,7 +258,6 @@ export class GameComponent implements OnDestroy {
     this.starChecked.set(this.accountGameInformationService.isStarred(this.game.id));
     this.attendChecked.set(this.accountGameInformationService.isAttended(this.game.id));
 
-    console.log('scheduled at', game.scheduled);
     this.scheduledAt.set(isDefined(game.scheduled) ? new Date(game.scheduled) : null);
 
     // if it is an upcoming game, fetch the last games to display the record
