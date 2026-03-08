@@ -225,7 +225,9 @@ export class ModifyGameService implements OnDestroy {
   }
 
   private convertGameEvents(events: EditorGameEvent[], lineupInformation: Pick<UpdateGame, 'lineupMain' | 'lineupOpponent' | 'managersMain' | 'managersOpponent'>): CreateGameEvent[] {
-    return events.map((item, idx) => {
+    return events
+      .filter((item) => isDefined(item.type))
+      .map((item, idx) => {
       const gameEventType = ensureNotNullish(item.type);
 
       const baseEvent = {
