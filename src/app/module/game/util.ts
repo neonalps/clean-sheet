@@ -356,6 +356,14 @@ export function convertToUiGame(game: DetailedGame, localizers: { score: ScoreLo
         lineupOpponent.tacticalFormation = game.report.opponent.tacticalFormation;
     }
 
+    if (isDefined(game.report.main.startingFormationAverageAge)) {
+        lineupMain.averageStartingAge = game.report.main.startingFormationAverageAge;
+    }
+
+    if (isDefined(game.report.opponent.startingFormationAverageAge)) {
+        lineupOpponent.averageStartingAge = game.report.opponent.startingFormationAverageAge;
+    }
+
     const uiGameResult: UiGame = {
         lineup: {
             main: lineupMain,

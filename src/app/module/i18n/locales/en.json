@@ -189,6 +189,8 @@
     "language.german": "🇦🇹 Deutsch",
     "language.english": "🇬🇧 English",
     "lineup.addPerson": "Add person",
+    "lineup.averageAgeShort": "⌀ age",
+    "lineup.averageAgeLong": "Average age",
     "lineup.createNewPerson": "create new person",
     "lineup.captain": "Captain",
     "lineup.managers": "Managers",

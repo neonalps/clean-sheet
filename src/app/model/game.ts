@@ -156,6 +156,7 @@ export interface TeamGameReport {
     lineup: GamePlayer[];
     managers: GameManager[];
     tacticalFormation?: TacticalFormation;
+    startingFormationAverageAge?: string;
 }
 
 export enum RefereeRole {
@@ -319,6 +320,7 @@ export type UiTeamLineup = {
     players: UiGamePlayer[];
     managers: UiGameManager[];
     tacticalFormation?: TacticalFormation;
+    averageStartingAge?: string;
 }
 export type UiLineup = {
     main: UiTeamLineup,

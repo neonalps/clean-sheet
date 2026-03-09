@@ -189,6 +189,8 @@
     "language.german": "🇦🇹 Deutsch",
     "language.english": "🇬🇧 English",
     "lineup.addPerson": "Person hinzufügen",
+    "lineup.averageAgeShort": "⌀ Alter",
+    "lineup.averageAgeLong": "Durchschnittsalter",
     "lineup.createNewPerson": "neue Person anlegen",
     "lineup.captain": "Kapitän",
     "lineup.managers": "Trainer",
