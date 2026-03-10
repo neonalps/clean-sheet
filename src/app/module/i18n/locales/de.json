@@ -122,6 +122,7 @@
     "game.modify.next": "weiter",
     "game.modify.save": "speichern",
     "game.neutralGround": "Neutral",
+    "game.originallyScheduledAt": "Ursprünglich angesetzt",
     "game.opponent": "Gegner",
     "game.ownGoal": "Eigentor",
     "game.penalty": "Elfmeter",

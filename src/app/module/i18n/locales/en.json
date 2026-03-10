@@ -124,6 +124,7 @@
     "game.modify.save": "save",
     "game.neutral": "Neutral",
     "game.opponent": "Opponent",
+    "game.originallyScheduledAt": "Originally scheduled at",
     "game.ownGoal": "Own goal",
     "game.penalty": "Penalty",
     "game.penaltyMissed": "Penalty missed",

@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { BaseGameInformation } from '@src/app/component/modify-base-game/modify-base-game.component';
 import { LineupItem } from '@src/app/component/lineup-selector-person-item/lineup-selector-person-item.component';
+import { isDefined } from '@src/app/util/common';
 
 type TabId = 'main' | 'opponent';
 
@@ -30,6 +31,7 @@ export type ModifyGameLineup = {
 export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
 
   readonly input = input<Observable<Partial<BaseGameInformation>>>();
+  
   readonly onGameLineupUpdated = output<ModifyGameLineup>();
 
   readonly activeTab$ = new BehaviorSubject<TabId>('main');
@@ -39,6 +41,9 @@ export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
 
   readonly opponentTabTitle = signal('');
   readonly opponentTabIcon = signal<UiIconDescriptor | null>(null);
+
+  readonly unavailableMainShirts = signal<number[]>([]);
+  readonly unavailableOpponentShirts = signal<number[]>([]);
 
   private readonly mainClub = environment.mainClub;
 
@@ -76,6 +81,16 @@ export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
         opponenSubstitutes: combined[4],
         opponentManagers: combined[5],
       });
+
+      this.unavailableMainShirts.set([
+        ...this.collectAndFilterShirts(combined[0]),
+        ...this.collectAndFilterShirts(combined[1]),
+      ]);
+
+      this.unavailableOpponentShirts.set([
+        ...this.collectAndFilterShirts(combined[3]),
+        ...this.collectAndFilterShirts(combined[4]),
+      ]);
     });
 
     this.mainStarting.next([]);
@@ -113,6 +128,10 @@ export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
 
   onOpponentManagersUpdated(lineupItems: LineupItem[]) {
     this.opponentManagers.next(lineupItems);
+  }
+
+  private collectAndFilterShirts(items: LineupItem[]): number[] {
+    return items.map(item => item.shirt).filter(item => isDefined(item));
   }
 
 }

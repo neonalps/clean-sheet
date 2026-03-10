@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, Input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, input, Input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
 import { BehaviorSubject, debounceTime, filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
@@ -35,6 +35,8 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   @Input() hasCaptain = true;
   @Input() hasShirt = true;
   @Input() maximumPeople: number | undefined;
+
+  readonly unavailableShirts = input<number[]>();
 
   readonly onLineupItemsUpdated = output<LineupItem[]>();
 
@@ -152,7 +154,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.modalService.showShirtModal({ personId: lineupItem.person.personId, personName: getPersonName(lineupItem.person), avatar: lineupItem.person.avatar, shirt: lineupItem.shirt, unavailable: this.collectShirts() })
+    this.modalService.showShirtModal({ personId: lineupItem.person.personId, personName: getPersonName(lineupItem.person), avatar: lineupItem.person.avatar, shirt: lineupItem.shirt, unavailable: new Set(this.unavailableShirts() ?? []) })
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: event => {
           if (event.type === 'confirm') {
@@ -237,10 +239,6 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
     this.isAdding.set(false);
     this.addPersonOptions.set(null);
     this.currentSearchValue.set(null);
-  }
-
-  private collectShirts(): Set<number> {
-    return new Set(this.lineupItems.map(item => item.shirt));
   }
 
   private publishLineupItems() {
