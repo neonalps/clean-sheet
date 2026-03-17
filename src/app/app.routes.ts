@@ -17,6 +17,7 @@ import { AccountRole } from './model/auth';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { CompetitionComponent } from './pages/competition/competition.component';
 import { SeasonSquadComponent } from './pages/season-squad/season-squad.component';
+import { LoginWithTokenHandlerComponent } from './component/auth-handler/login-with-token-handler.component';
 
 export const routes: Routes = [
     { 
@@ -26,6 +27,10 @@ export const routes: Routes = [
     { 
         path: 'logout', 
         component: LogoutComponent,
+    },
+    { 
+        path: `auth/login-with-token`, 
+        component: LoginWithTokenHandlerComponent,
     },
     { 
         path: `oauth/:${PATH_PARAM_OAUTH_PROVIDER}`, 

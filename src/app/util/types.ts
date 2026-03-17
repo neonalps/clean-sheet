@@ -7,3 +7,5 @@ export type Flavor<T, FlavorT> = T & Flavoring<FlavorT>;
 export type OmitStrict<T, K extends keyof T> = Omit<T, K>;
 
 export type ReadonlyArrayNonEmpty<T> = readonly [T, ...T[]];
+
+export type Nullish<T> = T | null | undefined;

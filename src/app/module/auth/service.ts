@@ -28,6 +28,7 @@ export class AuthService {
 
     public static readonly STORAGE_KEY_AUTH = "auth";
 
+    public static readonly LOGIN_WITH_TOKEN_URL =`${environment.apiBaseUrl}/v1/auth/login-with-token`;
     public static readonly OAUTH_LOGIN_URL =`${environment.apiBaseUrl}/v1/auth/oauth`;
     public static readonly REFRESH_TOKEN_URL =`${environment.apiBaseUrl}/v1/auth/refresh-token`;
 
@@ -77,6 +78,16 @@ export class AuthService {
         this.authState.set(null);
         this.authIdentity$.next(null);
         this.profileSettings$.next(null);
+    }
+
+    public handleLoginWithToken(token: string): Observable<AuthResponse> {
+        assertHasText(token);
+
+        return this.http.post<AuthResponse>(AuthService.LOGIN_WITH_TOKEN_URL, { token }).pipe(
+            tap((authResponse: AuthResponse) => {
+                this.onSuccessfulLogin(authResponse);
+            }),
+        );
     }
 
     public handleOAuthLogin(provider: string, code: string): Observable<AuthResponse> {
