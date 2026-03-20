@@ -6,6 +6,7 @@ import { getNow } from '@src/app/util/date';
 import { TokenResponse } from '@src/app/model/auth';
 
 const excludedUrls: string[] = [
+  AuthService.LOGIN_WITH_TOKEN_URL,
   AuthService.OAUTH_LOGIN_URL,
   AuthService.REFRESH_TOKEN_URL,
 ];
