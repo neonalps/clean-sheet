@@ -57,7 +57,7 @@
 <div class="form-row">
     <div class="form-row-title">{{ 'game.venue' | $t }}</div>
     <div class="form-row-content">
-        <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenue$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
+        <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenueFlavor$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
             <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
                 <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football', 'color': colorLight }" />
             </div>

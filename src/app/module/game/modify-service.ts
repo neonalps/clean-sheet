@@ -1,5 +1,5 @@
 import { inject, Injectable, OnDestroy, signal } from "@angular/core";
-import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from "@src/app/util/domain-types";
+import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueFlavorId, VenueId } from "@src/app/util/domain-types";
 import { GameService } from "./service";
 import { map, Observable, of, Subject, tap } from "rxjs";
 import { UiIconDescriptor } from "@src/app/model/icon";
@@ -22,7 +22,7 @@ export type ModifyGameInput = {
     competitionName?: string;
     competitionRound?: string;
     competitionStage?: string;
-    venueId?: VenueId;
+    venueFlavorId?: VenueFlavorId;
     venueName?: string;
     isHomeGame?: boolean;
     isNeutralGround?: boolean;
@@ -177,7 +177,7 @@ export class ModifyGameService implements OnDestroy {
       status: ensureNotNullish(input.status),
       attendance: input.attendance,
       venue: {
-        venueId: ensureNotNullish(input.venueId),
+        venueFlavorId: ensureNotNullish(input.venueFlavorId),
       },
       leg: input.leg,
       previousLeg: input.previousLeg ? { gameId: input.previousLeg } : undefined,

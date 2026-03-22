@@ -1,13 +1,15 @@
+import { VenueFlavorId, VenueId } from "@src/app/util/domain-types";
 import { ExternalProvider } from "./external-provider";
 
 export interface GameVenue {
-    id: number;
+    id: VenueId;
+    flavorId: VenueFlavorId;
     branding: string;
     city: string;
 }
 
 export interface BasicVenue {
-    id: number;
+    id: VenueId;
     name: string;
     shortName: string;
     city: string;
@@ -19,7 +21,7 @@ export interface BasicVenue {
 }
 
 export interface VenueInput {
-    venueId?: number;
+    venueFlavorId?: VenueFlavorId;
     externalVenue?: ExternalVenue;
 }
 

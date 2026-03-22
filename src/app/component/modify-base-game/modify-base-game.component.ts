@@ -11,7 +11,7 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { BasicClub } from '@src/app/model/club';
-import { ClubId, CompetitionId, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
+import { ClubId, CompetitionId, GameId, PersonId, VenueFlavorId } from '@src/app/util/domain-types';
 import { environment } from '@src/environments/environment';
 import { GameStatus } from '@src/app/model/game';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,7 @@ export type BaseGameInformation = {
   opponentId: ClubId;
   opponentName?: string;
   opponentIcon?: UiIconDescriptor;
-  venueId: VenueId;
+  venueFlavorId: VenueFlavorId;
   venueName?: string;
   venueIcon?: UiIconDescriptor;
   isHomeGame: boolean;
@@ -70,7 +70,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   readonly pushSelectedOpponent$ = new Subject<SelectOption>();
   readonly pushSelectedCompetition$ = new Subject<SelectOption>();
   readonly pushSelectedCompetitionRound$ = new Subject<SelectOption>();
-  readonly pushSelectedVenue$ = new Subject<SelectOption>();
+  readonly pushSelectedVenueFlavor$ = new Subject<SelectOption>();
   readonly pushSelectedReferee$ = new Subject<SelectOption>();
   readonly pushGameState$ = new Subject<SelectOption>();
   readonly pushAttendance$ = new Subject<number>();
@@ -97,7 +97,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   private readonly selectedOpponentId$ = new Subject<ClubId>();
   private readonly selectedOpponentName$ = new Subject<string>();
   private readonly selectedOpponentIcon$ = new BehaviorSubject<UiIconDescriptor | null>(null);
-  private readonly selectedVenueId$ = new Subject<VenueId>();
+  private readonly selectedVenueFlavorId$ = new Subject<VenueFlavorId>();
   private readonly selectedVenueName$ = new Subject<string>();
   private readonly selectedRefereeId$ = new BehaviorSubject<PersonId | null>(null);
   private readonly selectedRefereeName$ = new BehaviorSubject<string | null>(null);
@@ -116,7 +116,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         this.selectedOpponentId$,
         this.selectedIsHomeGame$,
         merge(this.pushGameState$.pipe(map(item => item.id.toString() as GameStatus)), this.selectedGameState$.pipe(map(item => item as GameStatus))),
-        merge(this.pushSelectedVenue$.pipe(map(item => Number(item.id))), this.selectedVenueId$),
+        merge(this.pushSelectedVenueFlavor$.pipe(map(item => Number(item.id))), this.selectedVenueFlavorId$),
         this.selectedIsSoldOut$,
         this.selectedAttendance$,
         this.selectedRefereeId$,
@@ -140,7 +140,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
           opponentId: gameInformation[3],
           isHomeGame: gameInformation[4],
           status: gameInformation[5],
-          venueId: gameInformation[6],
+          venueFlavorId: gameInformation[6],
           isSoldOut: gameInformation[7],
           attendance: gameInformation[8] ?? undefined,
           refereeId: gameInformation[9] ?? undefined,
@@ -190,8 +190,8 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         }
 
         // venue
-        if (baseGame.venueId && baseGame.venueName) {
-          this.pushSelectedVenue$.next({ id: baseGame.venueId, name: baseGame.venueName });
+        if (baseGame.venueFlavorId && baseGame.venueName) {
+          this.pushSelectedVenueFlavor$.next({ id: baseGame.venueFlavorId, name: baseGame.venueName });
           // it seems like we don't need to set the selected venue ID as it is part of the combined latest above already
         }
 
@@ -308,7 +308,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
     }
 
     onVenueSelected(option: SelectOption) {
-      this.selectedVenueId$.next(Number(option.id));
+      this.selectedVenueFlavorId$.next(Number(option.id));
       this.selectedVenueName$.next(option.name);
     }
 
@@ -508,12 +508,12 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
     private pushSelectedVenue(opponentHomeVenue?: BasicVenue) {
       if (this.isHomeGame()) {
-        this.pushSelectedVenue$.next({
+        this.pushSelectedVenueFlavor$.next({
           id: this.mainClub.homeVenue!.id.toString(),
           name: this.mainClub.homeVenue!.name,
         });
       } else if (opponentHomeVenue) {
-        this.pushSelectedVenue$.next({
+        this.pushSelectedVenueFlavor$.next({
           id: opponentHomeVenue.id.toString(),
           name: opponentHomeVenue.shortName,
         });
