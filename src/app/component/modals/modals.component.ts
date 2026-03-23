@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { DeleteModalComponent } from '@src/app/component/delete-modal/delete-modal.component';
 import { ModalSelectShirtComponent } from '../modal-select-shirt/modal-select-shirt.component';
 import { ModalConfirmAddPersonComponent } from "../modal-confirm-add-person/modal-confirm-add-person.component";
+import { ModalGameListFilterComponent } from "../modal-game-list-filter/modal-game-list-filter.component";
 
 @Component({
   selector: 'app-modals',
-  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent],
+  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent, ModalGameListFilterComponent],
   templateUrl: './modals.component.html',
   styleUrl: './modals.component.css'
 })
@@ -40,6 +41,10 @@ export class ModalsComponent implements OnInit, OnDestroy {
 
   isDeleteModalActive() {
     return this.modalService.modalType() === Modal.Delete;
+  }
+
+  isFilterGameListModalActive() {
+    return this.modalService.modalType() === Modal.FilterGameList;
   }
 
   isShirtModalActive() {

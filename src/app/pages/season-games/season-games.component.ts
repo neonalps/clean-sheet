@@ -17,6 +17,7 @@ import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@sr
 import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
 import { environment } from '@src/environments/environment';
+import { ModalService } from '@src/app/module/modal/service';
 
 @Component({
   selector: 'app-season-games',
@@ -51,6 +52,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private readonly upcomingGamesPositionSubject = new Subject<[number, number] | undefined>();
 
+  private readonly modalService = inject(ModalService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly seasonService = inject(SeasonService);
@@ -187,6 +189,14 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   hasSeasonBefore(): boolean {
     return this.getSelectedSeasonIndex() > 0;
+  }
+
+  showFilterGameListModal(): void {
+    this.modalService.showFilterGameListModal({})
+      .pipe(
+        filter(event => event.type === 'confirm'),
+        takeUntil(this.destroy$)
+      ).subscribe();
   }
 
   private getSelectedSeasonIndex(): number {

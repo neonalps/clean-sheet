@@ -15,8 +15,10 @@
     <ng-template #loadedContent>
         <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
             <div class="sticky top-0 z-1 bg-color-dark py-1">
-                <div class="flex justify-content-center">
-                    <app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" />
+                <div class="flex align-items-center justify-content-between">
+                    <div class="basis-1/8"></div>
+                    <div><app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" /></div>
+                    <div class="basis-1/8 flex align-items-center justify-content-center pointer" (click)="showFilterGameListModal()">f</div>
                 </div>
             </div>
         </ng-container>

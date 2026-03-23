@@ -1,5 +1,6 @@
 import { Injectable, signal } from "@angular/core";
 import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
+import { FilterGameListModalPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
 import { assertUnreachable } from "@src/app/util/common";
@@ -13,6 +14,7 @@ interface ModalEvent {
 export enum Modal {
     ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
+    FilterGameList = 'filterGameList',
     Shirt = 'shirt',
     Stats = 'stats',
 }
@@ -27,6 +29,7 @@ export class ModalService {
 
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
+    readonly filterGameListPayload$ = new Subject<FilterGameListModalPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
@@ -38,6 +41,10 @@ export class ModalService {
 
     showDeleteModal(payload: void): Observable<ModalEvent> {
         return this.showModal(Modal.Delete, payload);
+    }
+
+    showFilterGameListModal(payload: FilterGameListModalPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.FilterGameList, payload);
     }
 
     showShirtModal(payload: ShirtModalPayload): Observable<ModalEvent> {
@@ -105,6 +112,9 @@ export class ModalService {
                 break;
             case Modal.Delete:
                 this.deleteModalPayload$.next();
+                break;
+            case Modal.FilterGameList:
+                this.filterGameListPayload$.next(payload as FilterGameListModalPayload);
                 break;
             case Modal.Shirt:
                 this.shirtModalPayload$.next(payload as ShirtModalPayload);
