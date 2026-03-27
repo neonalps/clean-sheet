@@ -1,9 +1,9 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { Season } from '@src/app/model/season';
 import { SeasonService } from '@src/app/module/season/service';
-import { assertDefined, isDefined, isNotDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
 import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
@@ -18,6 +18,15 @@ import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
 import { environment } from '@src/environments/environment';
 import { ModalService } from '@src/app/module/modal/service';
+import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
+import { FilterService, GameListFilterItem } from '@src/app/module/filter/service';
+
+export type VisibleSeasonGames = {
+  past: DetailedGame[];
+  upcoming: DetailedGame[];
+  filteredCount: number;
+  totalCount: number;
+}
 
 @Component({
   selector: 'app-season-games',
@@ -30,23 +39,28 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   private static readonly UPCOMING_GAMES_TOP_OFFSET_TRIGGER = 174;
 
   seasons$: Observable<Season[]> | null = null;
-  selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
+  readonly selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
 
-  private seasons: Season[] = [];
-  private seasonGames: Map<number, DetailedGame[]> = new Map();
+  private seasons = signal<Season[]>([]);
 
-  hasSeasonGames = false;
-  hasPastGames = false;
-  hasUpcomingGames = false;
+  readonly mainClub: SmallClub = environment.mainClub;
 
-  mainClub: SmallClub = environment.mainClub;
+  readonly colorDarkGreyLighter = COLOR_DARK_GREY_LIGHTER;
+  readonly selectedSeason = signal<Season | null>(null);
 
-  colorDarkGreyLighter = COLOR_DARK_GREY_LIGHTER;
-  isLoading = false;
-  selectedSeason: Season | null = null;
-  
-  pastSeasonGames: DetailedGame[] = [];
-  upcomingSeasonGames: DetailedGame[] = [];
+  readonly visiblePastSeasonGames = signal<DetailedGame[]>([]);
+  readonly visibleUpcomingSeasonGames = signal<DetailedGame[]>([]);
+
+  readonly visibleSeasonGames = signal<VisibleSeasonGames>({
+    past: [],
+    upcoming: [],
+    totalCount: 0,
+    filteredCount: 0,
+  });
+
+  readonly gameListFilters = signal<GameListFilterItem[]>([]);
+
+  private readonly seasonGames = signal<DetailedGame[]>([]);
 
   @ViewChild('upcomingGamesContainer') upcomingGamesRef!: ElementRef;
 
@@ -54,6 +68,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private readonly modalService = inject(ModalService);
   private readonly route = inject(ActivatedRoute);
+  private readonly filterService = inject(FilterService);
   private readonly router = inject(Router);
   private readonly seasonService = inject(SeasonService);
   private readonly seasonGamesService = inject(SeasonGamesService);
@@ -65,7 +80,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     this.router.events
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
-        if (value instanceof NavigationEnd && this.seasons.length > 0) { // trigger load only if we already have received the seasons
+        if (value instanceof NavigationEnd && this.seasons().length > 0) { // trigger load only if we already have received the seasons
           this.loadSeasonGames(this.getSeasonIdRouteParam());
         }
       });
@@ -115,10 +130,8 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isLoading = true;
-
     this.seasonService.getSeasonsObservable().pipe(takeUntil(this.destroy$)).subscribe(seasons => {
-      this.seasons = seasons;
+      this.seasons.set(seasons);
 
       if (seasons.length > 0) {
         this.seasons$ = of(seasons);
@@ -129,16 +142,8 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     this.seasonGamesService.getSeasonGamesObservable()
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
-      this.seasonGames.set(payload.seasonId, payload.games);
-
-      if (payload.seasonId === this.selectedSeason?.id) {
-        this.isLoading = false;
-        this.pastSeasonGames = payload.games.filter(game => !this.isUpcomingGame(game));
-        this.upcomingSeasonGames = payload.games.filter(game => this.isUpcomingGame(game));
-
-        this.hasPastGames = this.pastSeasonGames.length > 0;
-        this.hasUpcomingGames = this.upcomingSeasonGames.length > 0;
-        this.hasSeasonGames = this.hasPastGames || this.hasUpcomingGames;
+      if (payload.seasonId === this.selectedSeason()?.id) {
+        this.onSeasonGamesUpdate(payload.games);
 
         setTimeout(() => {
           const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
@@ -155,20 +160,20 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   }
 
   async loadSeasonGames(seasonParam: string): Promise<void> {
-    const season = seasonParam === 'current' ? this.seasons[0] : this.seasons.find(item => item.id === Number(seasonParam));
-    assertDefined(season, `failed to find season for param ${seasonParam}`);
-
-    this.selectedSeason = season as Season;
+    const storedSeasons = this.seasons();
+    const season = ensureNotNullish(seasonParam === 'current' ? storedSeasons[0] : storedSeasons.find(item => item.id === Number(seasonParam)));
+    
+    this.selectedSeason.set(season);
     this.selectedSeason$.next({
-      id: this.selectedSeason.id,
-      name: this.selectedSeason.name,
+      id: season.id,
+      name: season.name,
     });
     
-    await this.seasonGamesService.getSeasonGames(this.selectedSeason.id);
+    await this.seasonGamesService.getSeasonGames(season.id);
   }
 
   onSeasonSelected(seasonId: OptionId) {
-    if (seasonId === this.selectedSeason?.id) {
+    if (seasonId === this.selectedSeason()?.id) {
       return;
     }
 
@@ -184,7 +189,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   hasSeasonAfter(): boolean {
     const selectedSeasonIndex = this.getSelectedSeasonIndex();
-    return selectedSeasonIndex >= 0 && selectedSeasonIndex < (this.seasons.length - 1)
+    return selectedSeasonIndex >= 0 && selectedSeasonIndex < (this.seasons().length - 1)
   }
 
   hasSeasonBefore(): boolean {
@@ -192,20 +197,56 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   }
 
   showFilterGameListModal(): void {
-    this.modalService.showFilterGameListModal({})
-      .pipe(
+    this.modalService.showFilterGameListModal({
+      gameListFilterItems: [],
+    }).pipe(
         filter(event => event.type === 'confirm'),
-        takeUntil(this.destroy$)
-      ).subscribe();
+        map(event => ensureNotNullish(event.value) as FilterGameListPayload),
+        takeUntil(this.destroy$),
+    ).subscribe(value => {
+      this.gameListFilters.set([...value.gameListFilterItems]);
+      this.applyFilters();
+    });
+  }
+
+  private onSeasonGamesUpdate(games: DetailedGame[]) {
+    this.seasonGames.set([...games]);
+
+    this.applyFilters();
+  }
+
+  private applyFilters() {
+    const currentSeasonGames = this.seasonGames();
+    const currentGameListFilters = this.gameListFilters();
+
+    const filteredGames = this.filterService.applyGamesFilter(currentSeasonGames, currentGameListFilters);
+
+    const past: DetailedGame[] = [];
+    const upcoming: DetailedGame[] = [];
+
+    for (const game of filteredGames) {
+      if (this.isUpcomingGame(game)) {
+        upcoming.push(game);
+      } else {
+        past.push(game);
+      }
+    }
+
+    this.visibleSeasonGames.set({
+      past,
+      upcoming,
+      filteredCount: filteredGames.length,
+      totalCount: currentSeasonGames.length,
+    });
   }
 
   private getSelectedSeasonIndex(): number {
-    const selectedSeasonId = this.selectedSeason?.id;
+    const selectedSeasonId = this.selectedSeason()?.id;
     if (isNotDefined(selectedSeasonId)) {
       return -1;
     }
 
-    return this.seasons.findIndex(item => item.id === selectedSeasonId);
+    return this.seasons().findIndex(item => item.id === selectedSeasonId);
   }
 
   private getSeasonIdRouteParam() {

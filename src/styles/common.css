@@ -214,6 +214,10 @@
     flex-basis: 80%;
 }
 
+.basis-7\/8 {
+    flex-basis: 88.5%;
+}
+
 .basis-9\/10 {
     flex-basis: 90%;
 }

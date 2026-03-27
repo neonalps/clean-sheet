@@ -509,13 +509,13 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
     private pushSelectedVenue(opponentHomeVenue?: BasicVenue) {
       if (this.isHomeGame()) {
         this.pushSelectedVenueFlavor$.next({
-          id: this.mainClub.homeVenue!.id.toString(),
-          name: this.mainClub.homeVenue!.name,
+          id: this.mainClub.homeVenue!.flavors[2].id.toString(),
+          name: `${this.mainClub.homeVenue!.flavors[2].name} (${this.mainClub.homeVenue!.city})`,
         });
       } else if (opponentHomeVenue) {
         this.pushSelectedVenueFlavor$.next({
-          id: opponentHomeVenue.id.toString(),
-          name: opponentHomeVenue.shortName,
+          id: opponentHomeVenue.flavors[opponentHomeVenue.flavors.length - 1].id.toString(),
+          name: `${opponentHomeVenue.flavors[opponentHomeVenue.flavors.length - 1].name} (${opponentHomeVenue.city})`,
         });
       }
     }

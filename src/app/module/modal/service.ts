@@ -1,6 +1,6 @@
 import { Injectable, signal } from "@angular/core";
 import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
-import { FilterGameListModalPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
+import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
 import { assertUnreachable } from "@src/app/util/common";
@@ -29,7 +29,7 @@ export class ModalService {
 
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
-    readonly filterGameListPayload$ = new Subject<FilterGameListModalPayload>();
+    readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
@@ -43,7 +43,7 @@ export class ModalService {
         return this.showModal(Modal.Delete, payload);
     }
 
-    showFilterGameListModal(payload: FilterGameListModalPayload): Observable<ModalEvent> {
+    showFilterGameListModal(payload: FilterGameListPayload): Observable<ModalEvent> {
         return this.showModal(Modal.FilterGameList, payload);
     }
 
@@ -114,7 +114,7 @@ export class ModalService {
                 this.deleteModalPayload$.next();
                 break;
             case Modal.FilterGameList:
-                this.filterGameListPayload$.next(payload as FilterGameListModalPayload);
+                this.filterGameListPayload$.next(payload as FilterGameListPayload);
                 break;
             case Modal.Shirt:
                 this.shirtModalPayload$.next(payload as ShirtModalPayload);

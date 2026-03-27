@@ -18,6 +18,12 @@ export interface BasicVenue {
     capacity?: number;
     latitude?: number;
     longitude?: number;
+    flavors: VenueFlavor[];
+}
+
+export interface VenueFlavor {
+    id: VenueFlavorId;
+    name: string;
 }
 
 export interface VenueInput {

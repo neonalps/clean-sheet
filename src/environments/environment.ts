@@ -16,7 +16,25 @@ export const environment = {
             city: 'Graz',
             countryCode: 'at',
             capacity: 16764,
-        }
+            flavors: [
+                {
+                    id: 49,
+                    name: 'Merkur Arena',
+                },
+                {
+                    id: 118,
+                    name: 'Arnold-Schwarzenegger-Stadion',
+                },
+                {
+                    id: 119,
+                    name: 'Stadion Liebenau',
+                },
+                {
+                    id: 117,
+                    name: 'UPC-Arena',
+                }
+            ],
+        },
     },
     oauth: {
         google: {

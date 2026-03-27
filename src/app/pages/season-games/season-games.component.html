@@ -1,6 +1,9 @@
+@let selectedSeasonValue = selectedSeason();
+@let visibleSeasonGamesValue = visibleSeasonGames();
+@let hasSeasonGames = visibleSeasonGamesValue.past.length > 0 || visibleSeasonGamesValue.upcoming.length > 0;
 <section class="px-3">
     <div class="page-title mb-2 ml-1">{{ 'menu.games' | $t }}</div>
-    <ng-container *ngIf="selectedSeason === null; else loadedContent">
+    <ng-container *ngIf="selectedSeasonValue === null; else loadedContent">
         <div>
             <div class="skeleton-box-medium" style="height: 4rem; width: 100%;"></div>
             <div class="skeleton-box-medium mt-3" style="height: 4rem; width: 100%;"></div>
@@ -13,7 +16,7 @@
         </div>
     </ng-container>
     <ng-template #loadedContent>
-        <ng-container *ngIf="seasons$ !== null && this.selectedSeason?.id !== null">
+        <ng-container *ngIf="seasons$ !== null && selectedSeasonValue?.id !== null">
             <div class="sticky top-0 z-1 bg-color-dark py-1">
                 <div class="flex align-items-center justify-content-between">
                     <div class="basis-1/8"></div>
@@ -25,16 +28,16 @@
 
         <ng-container *ngIf="hasSeasonGames; else emptySeasonGames">
             <div #scrolling class="mb-8">
-                <div *ngIf="hasPastGames">
-                    <ng-container *ngFor="let game of pastSeasonGames">
-                        <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
-                    </ng-container>
+                <div *ngIf="visibleSeasonGamesValue.past.length > 0">
+                    @for (pastSeasonGame of visibleSeasonGamesValue.past; track pastSeasonGame.id) {
+                        <app-game-overview [game]="pastSeasonGame" [mainClub]="mainClub" (click)="triggerNavigateToGame(pastSeasonGame)" />
+                    }
                 </div>
-                <div *ngIf="hasUpcomingGames" #upcomingGamesContainer>
+                <div *ngIf="visibleSeasonGamesValue.upcoming.length > 0" #upcomingGamesContainer>
                     <div class="text-sm text-light-grey mt-6">{{ 'games.upcoming' | $t }}</div>
-                    <ng-container *ngFor="let game of upcomingSeasonGames">
-                        <app-game-overview [game]="game" [mainClub]="mainClub" (click)="triggerNavigateToGame(game)" />
-                    </ng-container>
+                    @for (upcomingGame of visibleSeasonGamesValue.upcoming; track upcomingGame.id) {
+                        <app-game-overview [game]="upcomingGame" [mainClub]="mainClub" (click)="triggerNavigateToGame(upcomingGame)" />
+                    }
                 </div>
             </div>
         </ng-container>

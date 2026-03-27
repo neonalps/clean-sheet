@@ -1,14 +1,29 @@
+@let currentFilterItemsValue = currentFilterItems();
 <app-modal>
     <div header>{{ 'modal.filterGames' | $t }}</div>
     <div content>
-        <div>filters here</div>
+        <ng-container *ngIf="currentFilterItemsValue.length > 0; else emptyList">
+            <div>
+                @for (item of currentFilterItemsValue; track item.id) {
+                    <div class="mb-2 last:mb-0">
+                        <app-filter-item [filterItem]="item" [availableFilterTypeOptions]="getGameListFilterTypeOptions()" (onFilterItemChanged)="onFilterItemChange($event)" (onFilterItemRemoved)="onFilterItemRemove($event)" />
+                    </div>
+                }
+            </div>
+            <div class="flex align-items-center justify-content-center mt-4 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
+                <div>+ {{ 'filterGameList.addNewFilter' | $t }}</div>
+            </div>
+        </ng-container>
+        <ng-template #emptyList>
+            so empty
+        </ng-template>
     </div>
     <div footer>
         <div class="flex justify-content-center">
             <div class="w-full">
                 <div class="flex align-items-center justify-content-between mt-12">
                     <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="onCancel()" />
-                    <app-button class="mx-4" [buttonType]="'success'" [text]="'action.filter' | $t" (onClicked)="onConfirm()" />
+                    <app-button class="mx-4" [buttonType]="'success'" [text]="'action.apply' | $t" (onClicked)="onConfirm()" />
                 </div>
             </div>
         </div>

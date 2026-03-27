@@ -1,0 +1,18 @@
+<div class="p-2 bg-color-dark-grey-darker rounded-md">
+    <div class="flex">
+        <div class="basis-7/8">
+            <div class="form-row">
+                <div class="form-row-title">{{ 'filter.type' | $t }}</div>
+                <div class="form-row-content">
+                    <app-select [optionsSource]="getFilterTypeOptions()" [selectedOption]="pushSelectedFilterType$" [showSearch]="false" (onSelected)="onFilterTypeSelected($event)" />
+                </div>
+            </div>
+        </div>
+        <div class="basis-1/8 flex align-items-center justify-content-center">
+            <div class="width-sm relative top-4 left-4 text-light-grey-darker hover:text-light-grey pointer transition-colors" (click)="removeItem()">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
+            </div>
+        </div>
+    </div>
+    
+</div>
