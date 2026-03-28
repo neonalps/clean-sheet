@@ -1,3 +1,4 @@
+@let isLoadingValue = isLoading();
 @let selectedSeasonValue = selectedSeason();
 @let visibleSeasonGamesValue = visibleSeasonGames();
 @let hasSeasonGames = visibleSeasonGamesValue.past.length > 0 || visibleSeasonGamesValue.upcoming.length > 0;
@@ -21,7 +22,18 @@
                 <div class="flex align-items-center justify-content-between">
                     <div class="basis-1/8"></div>
                     <div><app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" /></div>
-                    <div class="basis-1/8 flex align-items-center justify-content-center pointer" (click)="showFilterGameListModal()">f</div>
+                    <div class="basis-1/8 flex align-items-center justify-content-center pointer" [ngClass]="{ 'text-light': !isLoadingValue && visibleSeasonGamesValue.filteredCount !== undefined }" (click)="showFilterGameListModal()">f</div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="visibleSeasonGamesValue.filteredCount !== undefined">
+            <div class="bg-color-sky-700 mt-4 p-2 text-light-grey rounded-md flex text-sm justify-content-between align-items-center">
+                <div>
+                    {{ 'currently showing ' + visibleSeasonGamesValue.filteredCount + ' of ' + visibleSeasonGamesValue.totalCount + ' games' }}
+                </div>
+                <div>
+                    <span class="pointer hover:text-light transition-colors" (click)="resetFilters()">reset filters</span>
                 </div>
             </div>
         </ng-container>
@@ -42,7 +54,7 @@
             </div>
         </ng-container>
         <ng-template #emptySeasonGames>
-            <div class="empty-state">
+            <div class="empty-state" *ngIf="visibleSeasonGamesValue.filteredCount !== 0">
                 <app-empty-state>
                     <div class="w-1/4" icon><app-field-with-ball [color]="colorDarkGreyLighter" /></div>
                     <div class="center mt-4" text>{{ 'seasonGames.empty' | $t }}</div>

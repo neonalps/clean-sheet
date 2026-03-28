@@ -3,7 +3,7 @@ import { SelectComponent } from "@src/app/component/select/select.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { Observable, of, Subject } from 'rxjs';
 import { SelectOption } from '@src/app/component/select/option';
-import { ensureNotNullish } from '@src/app/util/common';
+import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { GenericFilterItem } from '@src/app/module/filter/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
@@ -35,6 +35,13 @@ export class FilterItemComponent implements OnInit, OnDestroy {
     this.currentFilterItemId.set(filterItemInput.id);
     this.currentFilterItemType.set(filterItemInput.type);
     this.currentFilterItemValue.set(filterItemInput.value);
+
+    const availableOptions = this.availableFilterTypeOptions();
+
+    if (isDefined(filterItemInput.type)) {
+      const selectedValue = ensureNotNullish(availableOptions.find(option => option.id === filterItemInput.type));
+      setTimeout(() => this.pushSelectedFilterType$.next(selectedValue), 0);
+    }
   }
 
   ngOnDestroy(): void {

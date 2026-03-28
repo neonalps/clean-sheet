@@ -24,8 +24,6 @@ export type GameListFilterItem = FilterItem<GameListFilterType>;
 export class FilterService {
     
     applyGamesFilter(games: DetailedGame[], filters: GameListFilterItem[]): DetailedGame[] {
-        console.log('should apply filters', filters);
-
         let filteredResult = games;
 
         for (const filter of filters) {

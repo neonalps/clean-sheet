@@ -24,8 +24,9 @@ import { FilterService, GameListFilterItem } from '@src/app/module/filter/servic
 export type VisibleSeasonGames = {
   past: DetailedGame[];
   upcoming: DetailedGame[];
-  filteredCount: number;
+  filteredCount: number | undefined;
   totalCount: number;
+  appliedFilters: number;
 }
 
 @Component({
@@ -40,6 +41,8 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
   readonly selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
+
+  readonly isLoading = signal(true);
 
   private seasons = signal<Season[]>([]);
 
@@ -56,6 +59,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     upcoming: [],
     totalCount: 0,
     filteredCount: 0,
+    appliedFilters: 0,
   });
 
   readonly gameListFilters = signal<GameListFilterItem[]>([]);
@@ -143,7 +147,9 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
       if (payload.seasonId === this.selectedSeason()?.id) {
+        this.isLoading.set(true);
         this.onSeasonGamesUpdate(payload.games);
+        this.isLoading.set(false);
 
         setTimeout(() => {
           const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
@@ -198,7 +204,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   showFilterGameListModal(): void {
     this.modalService.showFilterGameListModal({
-      gameListFilterItems: [],
+      gameListFilterItems: this.gameListFilters(),
     }).pipe(
         filter(event => event.type === 'confirm'),
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
@@ -207,6 +213,11 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       this.gameListFilters.set([...value.gameListFilterItems]);
       this.applyFilters();
     });
+  }
+
+  resetFilters(): void {
+    this.gameListFilters.set([]);
+    this.applyFilters();
   }
 
   private onSeasonGamesUpdate(games: DetailedGame[]) {
@@ -235,9 +246,12 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     this.visibleSeasonGames.set({
       past,
       upcoming,
-      filteredCount: filteredGames.length,
+      filteredCount: currentGameListFilters.length > 0 ? filteredGames.length : undefined,
       totalCount: currentSeasonGames.length,
+      appliedFilters: currentGameListFilters.length,
     });
+
+    console.log(this.visibleSeasonGames());
   }
 
   private getSelectedSeasonIndex(): number {

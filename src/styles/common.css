@@ -1450,6 +1450,10 @@
     background-color: var(--success);
 }
 
+.bg-color-sky-700 {
+    background-color: lab(41.6013 -9.10804 -42.5647);
+}
+
 .text-danger {
     color: var(--danger);
 }
