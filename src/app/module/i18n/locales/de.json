@@ -89,6 +89,8 @@
     "filter.comeFromBehindWin": "Sieg nach Rückstand",
     "filter.competition": "Bewerb",
     "filter.lossAfterLead": "Niederlage nach Führung",
+    "filter.lossInInjuryTime": "Niederlage in Nachspielzeit",
+    "filter.winInInjuryTime": "Sieg in Nachspielzeit",
     "filter.type": "Filter-Typ",
     "filterGameList.addNewFilter": "Filter hinzufügen",
     "game.aggregate": "Gesamtstand",

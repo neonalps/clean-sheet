@@ -13,6 +13,8 @@ export enum GameListFilterType {
   Competition = 'competition',
   ComeFromBehindWin = 'comeFromBehindWin',
   LossAfterLead = 'lossAfterLead',
+  LossInInjuryTime = 'lossInInjuryTime',
+  WinInInjuryTime = 'winInInjuryTime',
 };
 
 export type GenericFilterItem = FilterItem<string>;
@@ -34,6 +36,12 @@ export class FilterService {
                     break;
                 case GameListFilterType.LossAfterLead:
                     filteredResult = filteredResult.filter(item => this.isLossAfterLead(item));
+                    break;
+                case GameListFilterType.WinInInjuryTime:
+                    filteredResult = filteredResult.filter(item => this.isInjuryTimeWin(item));
+                    break;
+                case GameListFilterType.LossInInjuryTime:
+                    filteredResult = filteredResult.filter(item => this.isInjuryTimeLoss(item));
                     break;
                 case GameListFilterType.Competition:
                     throw new Error(`Not implemented yet`);

@@ -50,7 +50,9 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     return [
       { id: GameListFilterType.Competition, name: this.translationService.translate(`filter.competition`) },
       { id: GameListFilterType.ComeFromBehindWin, name: this.translationService.translate(`filter.comeFromBehindWin`) },
+      { id: GameListFilterType.WinInInjuryTime, name: this.translationService.translate(`filter.winInInjuryTime`) },
       { id: GameListFilterType.LossAfterLead, name: this.translationService.translate(`filter.lossAfterLead`) },
+      { id: GameListFilterType.LossInInjuryTime, name: this.translationService.translate(`filter.lossInInjuryTime`) },
     ]
   }
 

@@ -250,8 +250,6 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       totalCount: currentSeasonGames.length,
       appliedFilters: currentGameListFilters.length,
     });
-
-    console.log(this.visibleSeasonGames());
   }
 
   private getSelectedSeasonIndex(): number {

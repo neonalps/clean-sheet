@@ -90,6 +90,8 @@
     "filter.comeFromBehindWin": "Come from behind win",
     "filter.competition": "Competition",
     "filter.lossAfterLead": "Loss after lead",
+    "filter.lossInInjuryTime": "Loss in injury time",
+    "filter.winInInjuryTime": "Win in injury time",
     "filter.type": "Filter type",
     "filterGameList.addNewFilter": "Add filter",
     "game.aggregate": "Aggregate",
