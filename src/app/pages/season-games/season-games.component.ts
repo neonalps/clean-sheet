@@ -20,6 +20,7 @@ import { environment } from '@src/environments/environment';
 import { ModalService } from '@src/app/module/modal/service';
 import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
 import { FilterService, GameListFilterItem } from '@src/app/module/filter/service';
+import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 
 export type VisibleSeasonGames = {
   past: DetailedGame[];
@@ -38,6 +39,7 @@ export type VisibleSeasonGames = {
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private static readonly UPCOMING_GAMES_TOP_OFFSET_TRIGGER = 174;
+  private static readonly STORAGE_KEY_SEASON_GAME_LIST_FILTER = 'filterSeasonGameList';
 
   seasons$: Observable<Season[]> | null = null;
   readonly selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
@@ -70,6 +72,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   private readonly upcomingGamesPositionSubject = new Subject<[number, number] | undefined>();
 
+  private readonly localStorageService = inject(LocalStorageStorageProvider);
   private readonly modalService = inject(ModalService);
   private readonly route = inject(ActivatedRoute);
   private readonly filterService = inject(FilterService);
@@ -158,6 +161,11 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
         }, 0);
       }
     });
+
+    const optionalStoredFilters = this.localStorageService.get<GameListFilterItem[]>(SeasonGamesComponent.STORAGE_KEY_SEASON_GAME_LIST_FILTER);
+    if (isDefined(optionalStoredFilters)) {
+      this.setAndApplyGameFilters(optionalStoredFilters);
+    }
   }
 
   ngOnDestroy(): void {
@@ -210,14 +218,21 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
-      this.gameListFilters.set([...value.gameListFilterItems]);
-      this.applyFilters();
+      const updatedGameListFilters = [...value.gameListFilterItems];
+      this.setAndApplyGameFilters(updatedGameListFilters);
     });
   }
 
   resetFilters(): void {
     this.gameListFilters.set([]);
     this.applyFilters();
+    this.localStorageService.remove(SeasonGamesComponent.STORAGE_KEY_SEASON_GAME_LIST_FILTER);
+  }
+
+  private setAndApplyGameFilters(filters: GameListFilterItem[]): void {
+    this.gameListFilters.set(filters);
+    this.applyFilters();
+    this.localStorageService.set(SeasonGamesComponent.STORAGE_KEY_SEASON_GAME_LIST_FILTER, filters);
   }
 
   private onSeasonGamesUpdate(games: DetailedGame[]) {
