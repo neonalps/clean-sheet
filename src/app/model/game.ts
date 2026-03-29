@@ -1,6 +1,6 @@
 import { DateString } from "@src/app/util/domain-types";
 import { ClubInput, SmallClub } from "./club";
-import { CompetitionInput, SmallCompetition } from "./competition";
+import { Competition, CompetitionInput, SmallCompetition } from "./competition";
 import { DetailedPerson, Person, PersonInput } from "./person";
 import { Season } from "./season";
 import { GameVenue, VenueInput } from "./venue";
@@ -70,7 +70,7 @@ export interface BasicGame {
     kickoff: DateString;
     opponent: SmallClub;
     season: Season;
-    competition: SmallCompetition;
+    competition: Competition;
     round: string;
     stage?: string;
     isHomeGame: boolean;

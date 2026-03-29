@@ -12,6 +12,7 @@ type FilterItem<T extends string> = {
 export enum GameListFilterType {
   Competition = 'competition',
   ComeFromBehindWin = 'comeFromBehindWin',
+  InternationalGame = 'internationalGame',
   LossAfterLead = 'lossAfterLead',
   LossInInjuryTime = 'lossInInjuryTime',
   WinInInjuryTime = 'winInInjuryTime',
@@ -43,6 +44,9 @@ export class FilterService {
                 case GameListFilterType.LossInInjuryTime:
                     filteredResult = filteredResult.filter(item => this.isInjuryTimeLoss(item));
                     break;
+                case GameListFilterType.InternationalGame:
+                    filteredResult = filteredResult.filter(item => this.isInternationalGame(item));
+                    break;
                 case GameListFilterType.Competition:
                     throw new Error(`Not implemented yet`);
                 default:
@@ -67,6 +71,10 @@ export class FilterService {
 
     private winInPso(game: DetailedGame): boolean {
         return isDefined(game.penaltyShootOut) && (game.penaltyShootOut[0] > game.penaltyShootOut[1]);
+    }
+
+    private isInternationalGame(game: DetailedGame): boolean {
+        return !game.competition.isDomestic;
     }
 
     private isInCompetition(game: DetailedGame, competitionIds: CompetitionId[]): boolean {

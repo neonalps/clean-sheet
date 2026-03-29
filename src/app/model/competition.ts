@@ -9,6 +9,17 @@ export interface SmallCompetition {
     parent?: SmallCompetition;
 }
 
+export interface Competition {
+    id: number;
+    name: string;
+    shortName: string;
+    isDomestic: boolean;
+    parent?: Competition;
+    iconSmall?: string;
+    iconLarge?: string;
+    combineStatisticsWithParent?: boolean;
+}
+
 export interface CompetitionInput {
     competitionId?: number;
     externalCompetition?: ExternalCompetition;

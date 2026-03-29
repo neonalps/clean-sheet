@@ -13,14 +13,10 @@ export class ScrollNearEndDirective {
    */
   @Input() threshold: number = 120;
 
-  constructor(private el: ElementRef) {
-    console.log('init directive')
-  }
+  constructor(private el: ElementRef) {}
 
   @HostListener('window:scroll', ['$event.target'])
   windowScrollEvent() {
-    console.log('window.scroll');
-
     // height of whole window page
     const heightOfWholePage = window.document.documentElement.scrollHeight;
 

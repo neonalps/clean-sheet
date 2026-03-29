@@ -89,6 +89,7 @@
     "duration.minutes": "minutes",
     "filter.comeFromBehindWin": "Come from behind win",
     "filter.competition": "Competition",
+    "filter.internationalGame": "International game",
     "filter.lossAfterLead": "Loss after lead",
     "filter.lossInInjuryTime": "Loss in injury time",
     "filter.winInInjuryTime": "Win in injury time",
