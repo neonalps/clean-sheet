@@ -519,8 +519,10 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    const aggregateMain = this.game!.isHomeGame ? gameScore[0] + previousLegScore[1] : gameScore[1] + previousLegScore[0];
-    const aggregateOpponent = this.game!.isHomeGame ? gameScore[1] + previousLegScore[0] : gameScore[0] + previousLegScore[1];
+    const isHomeGame = this.game!.isHomeGame;
+
+    const aggregateMain = isHomeGame ? gameScore[0] + previousLegScore[1] : gameScore[1] + previousLegScore[0];
+    const aggregateOpponent = isHomeGame ? gameScore[1] + previousLegScore[0] : gameScore[0] + previousLegScore[1];
 
     let additionalMain = 0;
     let additionalOpponent = 0;
@@ -528,7 +530,7 @@ export class GameComponent implements OnDestroy {
     if (aggregateMain === aggregateOpponent) {
       // see if there was a PSO in this game
       const gameScoreWithPotentialPso = ensureNotNullish(getGameResult(this.game!));
-      const potentialPsoDifferential = gameScoreWithPotentialPso[0] - gameScoreWithPotentialPso[1];
+      const potentialPsoDifferential = isHomeGame ? (gameScoreWithPotentialPso[0] - gameScoreWithPotentialPso[1]) : (gameScoreWithPotentialPso[1] - gameScoreWithPotentialPso[0]);
 
       if (isDefined(this.game!.penaltyShootOut) && potentialPsoDifferential !== 0) {
         if (potentialPsoDifferential > 0) {
@@ -650,7 +652,6 @@ export class GameComponent implements OnDestroy {
 
     const game = currentNav?.extras?.state?.['game'];
     if (isDefined(game)) {
-      console.log('resolved via game details')
       this.onGameResolved(game);
     } else {
       // no game passed in state (can happen if the user copied the link), we must resolve the game manually
