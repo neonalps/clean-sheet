@@ -361,7 +361,9 @@
     "varDecisionReason.seriousFoulPlay": "Schweres Foulspiel",
     "victoryGame.austrianBundesliga": "In diesem Spiel hat {main} die Österreichische Bundesliga zum {titleCount}. Mal gewonnen",
     "victoryGame.austrianCup": "In diesem Spiel hat {main} den Österreichischen Cup zum {titleCount}. Mal gewonnen",
+    "victoryGame.austrianSuperCup": "In diesem Spiel hat {main} den Österreichischen Supercup zum {titleCount}. Mal gewonnen",
     "victoryGame.championsLeague": "In diesem Spiel hat {main} die Champions League zum {titleCount}. Mal gewonnen",
     "victoryGame.europaLeague": "In diesem Spiel hat {main} die Europa League zum {titleCount}. Mal gewonnen",
-    "victoryGame.conferenceLeague": "In diesem Spiel hat {main} die Conference League zum {titleCount}. Mal gewonnen"
+    "victoryGame.conferenceLeague": "In diesem Spiel hat {main} die Conference League zum {titleCount}. Mal gewonnen",
+    "victoryGame.uefaCup": "In diesem Spiel hat {main} den UEFA Cup zum {titleCount}. Mal gewonnen"
 }

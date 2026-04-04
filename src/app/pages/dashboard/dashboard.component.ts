@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
-import { DashboardResponse, PlayerCompetitionItem } from '@src/app/model/dashboard';
+import { DashboardResponse, RankedPersonItem } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
 import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly loginName = signal<string | null>(null);
 
   readonly topScorersLoading$ = new BehaviorSubject(true);
-  readonly topScorersRanking$ = new BehaviorSubject<PlayerCompetitionItem[]>([]);
+  readonly topScorersRanking$ = new BehaviorSubject<RankedPersonItem[]>([]);
 
   private readonly authService = inject(AuthService);
   private readonly dashboardResolver = inject(DashboardResolver);
@@ -146,7 +146,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateTopScorers(ranking: PlayerCompetitionItem[]) {
+  private updateTopScorers(ranking: RankedPersonItem[]) {
     this.topScorersRanking$.next(ranking);
   }
 

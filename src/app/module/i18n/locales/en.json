@@ -362,7 +362,9 @@
     "varDecisionReason.seriousFoulPlay": "Serious foul play",
     "victoryGame.austrianBundesliga": "In this game {main} won the Austrian Bundesliga for the {titleCount} time",
     "victoryGame.austrianCup": "In this game {main} won the Austrian Cup for the {titleCount} time",
+    "victoryGame.austrianSuperCup": "In this game {main} won the Austrian Super Cup for the {titleCount} time",
     "victoryGame.championsLeague": "In this game {main} won the Champions League for the {titleCount} time",
     "victoryGame.europaLeague": "In this game {main} won the Europa League for the {titleCount} time",
-    "victoryGame.conferenceLeague": "In this game {main} won the Conference League for the {titleCount} time"
+    "victoryGame.conferenceLeague": "In this game {main} won the Conference League for the {titleCount} time",
+    "victoryGame.uefaCup": "In this game {main} won the UEFA Cup for the {titleCount} time"
 }

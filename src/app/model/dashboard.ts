@@ -3,15 +3,15 @@ import { BasicGame } from "./game";
 import { Person } from "./person";
 import { PerformanceTrend } from "./stats";
 
-export interface PlayerCompetitionItem {
+export interface RankedPersonItem {
     rank: number;
-    player: Person;
+    person: Person;
     value: number;
 }
 
 export interface PlayerCompetitionStats {
     competitions: SmallCompetition[];
-    ranking: PlayerCompetitionItem[];
+    ranking: RankedPersonItem[];
 }
 
 export interface DashboardResponse {

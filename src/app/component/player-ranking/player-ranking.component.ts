@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } fro
 import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.component';
 import { ChipGroupComponent, ChipGroupInput } from '@src/app/component/chip-group/chip-group.component';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { PlayerCompetitionItem } from '@src/app/model/dashboard';
+import { RankedPersonItem } from '@src/app/model/dashboard';
 import { Person } from '@src/app/model/person';
 
 @Component({
@@ -15,11 +15,11 @@ import { Person } from '@src/app/model/person';
 export class PlayerRankingComponent implements OnInit, OnDestroy {
 
   readonly isLoading = signal(true);
-  readonly rankingElements = signal<PlayerCompetitionItem[]>([]);
+  readonly rankingElements = signal<RankedPersonItem[]>([]);
 
   readonly competitionChipsVisible = signal(false);
 
-  @Input() ranking!: Observable<PlayerCompetitionItem[]>;
+  @Input() ranking!: Observable<RankedPersonItem[]>;
   @Input() loading!: Observable<boolean>;
   @Input() competitionChips$!: Observable<ChipGroupInput>;
   @Input() skeletonRowCount = 5;

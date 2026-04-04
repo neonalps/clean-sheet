@@ -14,14 +14,14 @@
 <ng-template #loadedContent>
     <div>
         @for (rankingElement of rankingElements(); track $index) {
-            <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md p-1" (click)="onPlayerClicked(rankingElement.player)">
-                <div class="basis-1/8 flex align-items-center mr-2" *ngIf="rankingElement.player.avatar">
+            <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md p-1" (click)="onPlayerClicked(rankingElement.person)">
+                <div class="basis-1/8 flex align-items-center mr-2" *ngIf="rankingElement.person.avatar">
                     <div class="width-md">
-                        <app-player-icon [iconUrl]="rankingElement.player.avatar" [iconBgColorClass]="'transparent'" />
+                        <app-player-icon [iconUrl]="rankingElement.person.avatar" [iconBgColorClass]="'transparent'" />
                     </div>
                 </div>
                 <div class="flex-grow flex align-items-center">
-                    {{ rankingElement.player.firstName }} {{ rankingElement.player.lastName }}
+                    {{ rankingElement.person.firstName }} {{ rankingElement.person.lastName }}
                 </div>
                 <div class="basis-1/8 flex align-items-center justify-content-end">
                     <div class="right mr-2">

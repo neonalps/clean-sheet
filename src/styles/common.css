@@ -1771,6 +1771,10 @@
     scrollbar-gutter: stable;
 }
 
+.scrollbar-dark-grey {
+    scrollbar-color: var(--dark-grey) var(--dark-grey-lighter-2);
+}
+
 .gap-y-4 {
     row-gap: 1rem;
 }
