@@ -1,5 +1,6 @@
 import { Flavor } from "./types";
 
+export type ArrayItemsString = Flavor<string, 'ArrayItemsString'>;
 export type DateString = Flavor<string, 'DateString'>;
 export type CompetitionId = Flavor<number, 'CompetitionId'>;
 export type ClubId = Flavor<number, 'ClubId'>;

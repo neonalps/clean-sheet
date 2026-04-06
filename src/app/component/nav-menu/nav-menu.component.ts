@@ -84,8 +84,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         i18nKey: 'menu.statistics',
         items: [
           {
-            target: '/chat',
-            i18nKey: 'menu.chat',
+            target: '/stats/appearances',
+            i18nKey: 'menu.stats.appearances',
           }
         ]
       },

@@ -17,6 +17,7 @@ export class CountryFlagService {
     private static flags: Map<string, string> = new Map([
         ['ad', '🇦🇩'],
         ['al', '🇦🇱'],
+        ['ar', '🇦🇷'],
         ['at', '🇦🇹'],
         ['au', '🇦🇺'],
         ['az', '🇦🇿'],

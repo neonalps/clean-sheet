@@ -18,6 +18,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { CompetitionComponent } from './pages/competition/competition.component';
 import { SeasonSquadComponent } from './pages/season-squad/season-squad.component';
 import { LoginWithTokenHandlerComponent } from './component/auth-handler/login-with-token-handler.component';
+import { RankingAppearancesComponent } from './pages/ranking-appearances/ranking-appearances.component';
 
 export const routes: Routes = [
     { 
@@ -74,6 +75,11 @@ export const routes: Routes = [
     { 
         path: `competition/:${PATH_PARAM_VENUE_ID}`, 
         component: CompetitionComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `stats/appearances`, 
+        component: RankingAppearancesComponent,
         canActivate: [loggedInGuard],
     },
     { 

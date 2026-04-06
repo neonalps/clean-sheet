@@ -108,6 +108,8 @@ export class PersonComponent implements OnDestroy {
       this.refereeGames$.next(refereeGames);
       this.refereeListVisible.set(refereeGames.length > 0)
 
+      console.log('shirts', person.stats.shirtDistribution)
+
       this.performance$.next(playerStats);
     }
   }
