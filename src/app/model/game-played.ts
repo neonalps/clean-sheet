@@ -15,6 +15,7 @@ export type GamePlayedFilterOptions = {
   yellowCard?: boolean;
   yellowRedCard?: boolean;
   redCard?: boolean;
+  shirt?: string;
   regulationPenaltiesTaken?: string;
   regulationPenaltiesScored?: string;
   regulationPenaltiesFaced?: string;

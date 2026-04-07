@@ -14,7 +14,6 @@ import { GamePerformanceTrendComponent } from "@src/app/component/game-performan
 import { FootballShoeComponent } from "@src/app/icon/football-shoe/football-shoe.component";
 import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
 import { AuthService } from '@src/app/module/auth/service';
-import { PersonId } from '@src/app/util/domain-types';
 import { ChipGroupInput } from '@src/app/component/chip-group/chip-group.component';
 import { Chip } from '@src/app/component/chip/chip.component';
 import { processTranslationPlaceholders } from '@src/app/util/common';

@@ -14,7 +14,6 @@ import { ModalService } from '@src/app/module/modal/service';
 import { environment } from "@src/environments/environment";
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
-import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scroll-near-end.directive";
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { getPersonName } from '@src/app/util/domain';
 import { UiIconDescriptor } from '@src/app/model/icon';
@@ -31,7 +30,7 @@ type SeasonGamesPlayed = {
 
 @Component({
   selector: 'app-stats-modal',
-  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, ScrollNearEndDirective, CheckboxSliderComponent],
+  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, CheckboxSliderComponent],
   templateUrl: './stats-modal.component.html',
   styleUrl: './stats-modal.component.css'
 })
@@ -91,10 +90,8 @@ export class StatsModalComponent implements OnInit, OnDestroy {
 
   private loadGamesPlayed(personId: PersonId, filterOptions?: GamePlayedFilterOptions) {
     this.isLoading.set(true);
-    console.log('loading with filter options', filterOptions);
     this.gamesPlayedService.getForPlayer(personId, filterOptions).pipe(takeUntil(this.destroy$)).subscribe({
       next: (value) => {
-        console.log(value);
         const groupedResponse = groupBy(value.items, item => item.game.season.name);
         
         for (const seasonName of groupedResponse.keys()) {
@@ -161,10 +158,6 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     }
 
     return modifiers;
-  }
-
-  onScrollReached() {
-    console.log('scroll reacched');
   }
 
   onGameClicked(game: BasicGame) {

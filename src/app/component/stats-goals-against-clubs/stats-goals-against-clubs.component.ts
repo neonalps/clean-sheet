@@ -3,10 +3,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GoalsAgainstClubStatsItemDto } from '@src/app/model/stats';
 import { SmallClubComponent } from "@src/app/component/small-club/small-club.component";
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+import { ProgressBarComponent } from "@src/app/component/progress-bar/progress-bar.component";
 
 @Component({
   selector: 'app-stats-goals-against-clubs',
-  imports: [CommonModule, SmallClubComponent],
+  imports: [CommonModule, SmallClubComponent, ProgressBarComponent],
   templateUrl: './stats-goals-against-clubs.component.html',
   styleUrl: './stats-goals-against-clubs.component.css'
 })
@@ -17,9 +18,8 @@ export class StatsGoalsAgainstClubsComponent {
 
   @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
-  getItemWidth(goalsScored: number): string {
-    const percentage = Math.round(goalsScored / this.determineMaxGoals() * 100);
-    return `${percentage}%`;
+  getItemPercentage(goalsScored: number): number {
+    return Math.round(goalsScored / this.determineMaxGoals() * 100);
   }
 
   itemClicked(item: GoalsAgainstClubStatsItemDto) {

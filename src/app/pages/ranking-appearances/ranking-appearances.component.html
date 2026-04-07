@@ -1,0 +1,6 @@
+<section class="px-3 pb-8">
+    <div class="page-title mb-5 ml-1">{{ 'menu.stats.appearances' | $t }}</div>
+    <div>
+        <app-paginated-ranked-person-list [listItems]="appearanceStats()" (nearEndReached)="onNearEndReached()" />
+    </div>
+</section>

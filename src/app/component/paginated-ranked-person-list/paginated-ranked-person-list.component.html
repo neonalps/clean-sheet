@@ -1,0 +1,20 @@
+<div appScrollNearEnd (nearEnd)="onNearEndReached()">
+    @for (item of listItems(); track item.person.id) {
+        <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md min-h-32">
+            <div class="basis-1/8 flex align-items-center justify-content-end">
+                <div class="pr-3">{{ item.rank }}</div>
+            </div>
+            <div class="basis-3/4 flex align-items-center">
+                <div class="flex align-items-center">
+                    <div class="width-2-25rem mr-3">
+                        <app-player-icon [iconUrl]="item.person.avatar" [iconBgColorClass]="'transparent'" />
+                    </div>
+                    <div>{{ item.person.firstName }} {{ item.person.lastName }}</div>
+                </div>
+            </div>
+            <div class="basis-1/8 flex align-items-center justify-content-end">
+                <div class=pr-3>{{ item.value }}</div>
+            </div>
+        </div>
+    }
+</div>

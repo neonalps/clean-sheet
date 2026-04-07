@@ -136,6 +136,17 @@
             </div>
         </ng-container>
 
+        <ng-container *ngIf="person.stats?.shirtDistribution">
+            <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
+                <div class="flex align-items-center mb-3">
+                    <div class="bold text-light text-md">{{ 'jersey.worn' | $t }}</div>
+                </div>
+                <div>
+                    <app-shirt-distribution [wornJerseys]="person.stats?.shirtDistribution ?? []" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+                </div>
+            </div>
+        </ng-container>
+
         <ng-container *ngIf="refereeListVisible()">
             <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mt-3 ">
                 <app-filterable-game-list [games$]="refereeGames$" />

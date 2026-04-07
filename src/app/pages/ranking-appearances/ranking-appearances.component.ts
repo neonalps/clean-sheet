@@ -4,10 +4,13 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerAppearanceStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
 import { Subject, takeUntil } from 'rxjs';
+import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
+import { isNotDefined } from '@src/app/util/common';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-ranking-appearances',
-  imports: [],
+  imports: [PaginatedRankedPersonListComponent, I18nPipe],
   templateUrl: './ranking-appearances.component.html',
   styleUrl: './ranking-appearances.component.css'
 })
@@ -15,7 +18,10 @@ export class RankingAppearancesComponent implements OnInit, OnDestroy {
 
   readonly forMain = input(true);
 
+  readonly isLoading = signal(false);
   readonly appearanceStats = signal<RankedPersonItem[]>([]);
+
+  private readonly hasReachedEnd = signal(false);
 
   private readonly nextPageKey = signal<string | null>(null);
 
@@ -34,8 +40,17 @@ export class RankingAppearancesComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onNearEndReached(): void {
+    this.loadData();
+  }
+
   private loadData(): void {
-    this.statsService.getPlayerAppearanceStats({
+    if (this.hasReachedEnd() === true || this.isLoading() === true) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.statsService.getPlayerAppearanceStats(this.nextPageKey(), {
       forMain: this.forMain(),
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: appearanceStats => this.onAppearanceStatsResult(appearanceStats),
@@ -51,7 +66,10 @@ export class RankingAppearancesComponent implements OnInit, OnDestroy {
     this.appearanceStats.set(updatedAppearanceResultValue);
     this.nextPageKey.set(result.nextPageKey ?? null);
 
-    console.log('new stats', updatedAppearanceResultValue);
+    if (isNotDefined(result.nextPageKey)) {
+      this.hasReachedEnd.set(true);
+    }
+    this.isLoading.set(false);
   }
 
 }

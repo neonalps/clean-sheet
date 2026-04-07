@@ -29,6 +29,7 @@ import { BasicGame } from '@src/app/model/game';
 import { FilterableGameListComponent } from "@src/app/component/filterable-game-list/filterable-game-list.component";
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
+import { ShirtDistributionComponent } from "@src/app/component/shirt-distribution/shirt-distribution.component";
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -42,7 +43,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -106,9 +107,7 @@ export class PersonComponent implements OnDestroy {
 
       const refereeGames = person.stats.refereeGames ?? [];
       this.refereeGames$.next(refereeGames);
-      this.refereeListVisible.set(refereeGames.length > 0)
-
-      console.log('shirts', person.stats.shirtDistribution)
+      this.refereeListVisible.set(refereeGames.length > 0);
 
       this.performance$.next(playerStats);
     }
