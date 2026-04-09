@@ -36,7 +36,7 @@ export class SeasonGamesService implements OnDestroy {
 
     getSeasonGamesFromCache(seasonId: number): Promise<DetailedGame[] | undefined> {
         return this.fetchService.getFromCache(this.getGetSeasonGamesRequestName(seasonId));
-    } 
+    }
 
     private getOrCreateFetchHandle(seasonId: number): FetchHandle {
         const existingHandle = this.fetchHandles.get(seasonId);

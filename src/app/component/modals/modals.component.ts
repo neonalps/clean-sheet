@@ -4,13 +4,14 @@ import { StatsModalComponent } from "@src/app/component/stats-modal/stats-modal.
 import { Subject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DeleteModalComponent } from '@src/app/component/delete-modal/delete-modal.component';
-import { ModalSelectShirtComponent } from '../modal-select-shirt/modal-select-shirt.component';
-import { ModalConfirmAddPersonComponent } from "../modal-confirm-add-person/modal-confirm-add-person.component";
-import { ModalGameListFilterComponent } from "../modal-game-list-filter/modal-game-list-filter.component";
+import { ModalSelectShirtComponent } from '@src/app/component/modal-select-shirt/modal-select-shirt.component';
+import { ModalConfirmAddPersonComponent } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
+import { ModalGameListFilterComponent } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
+import { ModalCompetitionFilterComponent } from "@src/app/component/modal-competition-filter/modal-competition-filter.component";
 
 @Component({
   selector: 'app-modals',
-  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent, ModalGameListFilterComponent],
+  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent, ModalGameListFilterComponent, ModalCompetitionFilterComponent],
   templateUrl: './modals.component.html',
   styleUrl: './modals.component.css'
 })
@@ -35,7 +36,11 @@ export class ModalsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  isConfigmAddPersonModalActive() {
+  isCompetitionFilterModalActive() {
+    return this.modalService.modalType() === Modal.CompetitionFilter;
+  }
+
+  isConfirmAddPersonModalActive() {
     return this.modalService.modalType() === Modal.ConfirmAddPerson;
   }
 

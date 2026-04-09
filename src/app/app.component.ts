@@ -12,6 +12,7 @@ import { AuthService } from './module/auth/service';
 import { TranslationService } from './module/i18n/translation.service';
 import { isDefined } from './util/common';
 import { AppLoadService } from './module/app-load/service';
+import { CompetitionService } from './module/competition/service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private readonly appLoadService = inject(AppLoadService);
   private readonly authService = inject(AuthService);
+  private readonly competitionService = inject(CompetitionService);
   private readonly seasonService = inject(SeasonService);
   private readonly menuService = inject(MenuService);
   private readonly modalService = inject(ModalService);
@@ -34,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authService.init();
     this.seasonService.init();
+    this.competitionService.init();
     this.translationService.init(this.authService.profileSettings$.pipe(filter(value => isDefined(value)), map(value => value.language)));
     this.appLoadService.processEntry();
 

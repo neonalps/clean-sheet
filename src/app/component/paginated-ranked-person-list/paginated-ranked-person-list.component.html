@@ -1,7 +1,7 @@
 <div appScrollNearEnd (nearEnd)="onNearEndReached()">
     @for (item of listItems(); track item.person.id) {
         <div class="flex align-items-center mb-2 py-1 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md min-h-32">
-            <div class="basis-1/8 flex align-items-center justify-content-end">
+            <div class="basis-1/8 flex align-items-center justify-content-end mr-1">
                 <div class="pr-3">{{ item.rank }}</div>
             </div>
             <div class="basis-3/4 flex align-items-center">

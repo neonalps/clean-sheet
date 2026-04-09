@@ -1,7 +1,8 @@
+import { CompetitionId } from "@src/app/util/domain-types";
 import { ExternalProvider } from "./external-provider";
 
 export interface SmallCompetition {
-    id: number;
+    id: CompetitionId;
     name: string;
     shortName: string;
     iconSmall?: string;
@@ -10,7 +11,7 @@ export interface SmallCompetition {
 }
 
 export interface Competition {
-    id: number;
+    id: CompetitionId;
     name: string;
     shortName: string;
     isDomestic: boolean;
@@ -18,6 +19,18 @@ export interface Competition {
     iconSmall?: string;
     iconLarge?: string;
     combineStatisticsWithParent?: boolean;
+}
+
+export interface BasicCompetition {
+    id: CompetitionId;
+    name: string;
+    shortName: string;
+    isDomestic: boolean;
+    parentCompetitionId?: CompetitionId;
+    iconSmall?: string;
+    iconLarge?: string;
+    combineStatisticsWithParent?: boolean;
+    sortOrder: number;
 }
 
 export interface CompetitionInput {

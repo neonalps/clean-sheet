@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { SeasonGamesComponent } from './pages/season-games/season-games.component';
 import { GameComponent } from './pages/game/game.component';
-import { PATH_PARAM_CLUB_ID, PATH_PARAM_GAME_ID, PATH_PARAM_OAUTH_PROVIDER, PATH_PARAM_PERSON_ID, PATH_PARAM_SEASON_ID, PATH_PARAM_VENUE_ID } from './util/router';
+import { PATH_PARAM_CLUB_ID, PATH_PARAM_GAME_ID, PATH_PARAM_OAUTH_PROVIDER, PATH_PARAM_PERSON_ID, PATH_PARAM_RANKING_STATS_TYPE, PATH_PARAM_SEASON_ID, PATH_PARAM_VENUE_ID } from './util/router';
 import { PersonComponent } from './pages/person/person.component';
 import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -18,7 +18,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { CompetitionComponent } from './pages/competition/competition.component';
 import { SeasonSquadComponent } from './pages/season-squad/season-squad.component';
 import { LoginWithTokenHandlerComponent } from './component/auth-handler/login-with-token-handler.component';
-import { RankingAppearancesComponent } from './pages/ranking-appearances/ranking-appearances.component';
+import { RankingStatsComponent } from './pages/ranking-stats/ranking-stats.component';
 
 export const routes: Routes = [
     { 
@@ -78,8 +78,8 @@ export const routes: Routes = [
         canActivate: [loggedInGuard],
     },
     { 
-        path: `stats/appearances`, 
-        component: RankingAppearancesComponent,
+        path: `stats/:${PATH_PARAM_RANKING_STATS_TYPE}`, 
+        component: RankingStatsComponent,
         canActivate: [loggedInGuard],
     },
     { 

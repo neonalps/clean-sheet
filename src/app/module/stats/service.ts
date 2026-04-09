@@ -9,16 +9,16 @@ import { Nullish } from "@src/app/util/types";
 import { environment } from "@src/environments/environment";
 import { Observable } from "rxjs";
 
-export interface GetPlayerAppearanceStatsResponse extends PaginatedResponse<RankedPersonItem> {}
+export interface PlayerStatsResponse extends PaginatedResponse<RankedPersonItem> {}
 
-interface GetPlayerAppearancesRequest extends PaginationQueryParams {
+interface GetPlayerStatsRequest extends PaginationQueryParams {
     forMain?: boolean;
     competitions?: string,
     seasons?: string,
     opponents?: string,
 }
 
-export type GetPlayerAppearanceQueryParams = {
+export type GetPlayerStatsQueryParams = {
     forMain: boolean;
     competitionIds?: Array<CompetitionId>;
     opponentIds?: Array<ClubId>;
@@ -32,13 +32,19 @@ export class StatsService {
 
     constructor(private http: HttpClient) {}
 
-    getPlayerAppearanceStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerAppearanceQueryParams>): Observable<GetPlayerAppearanceStatsResponse> {
+    getPlayerAppearanceStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
         const queryParams = this.resolveQueryParams(nextPageKey, params);
 
-        return this.http.get<GetPlayerAppearanceStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-appearances?${convertObjectToQueryString(queryParams)}`);
+        return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-appearances?${convertObjectToQueryString(queryParams)}`);
     }
 
-    private resolveQueryParams(nextPageKey: Nullish<string>, params: Nullish<GetPlayerAppearanceQueryParams>): GetPlayerAppearancesRequest {
+    getPlayerGoalStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
+        const queryParams = this.resolveQueryParams(nextPageKey, params);
+
+        return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-goals?${convertObjectToQueryString(queryParams)}`);
+    }
+
+    private resolveQueryParams(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): GetPlayerStatsRequest {
         if (isDefined(nextPageKey)) {
             return { nextPageKey };
         }
@@ -47,7 +53,7 @@ export class StatsService {
             throw new Error(`If no nextPageKey is passed then params must be defined`);
         }
 
-        const request: GetPlayerAppearancesRequest = {
+        const request: GetPlayerStatsRequest = {
             forMain: params.forMain,
         };
 

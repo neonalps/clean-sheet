@@ -6,7 +6,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -20,7 +20,7 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 import { StatsPlayerHeaderComponent } from '@src/app/component/stats-player-header/stats-player-header.component';
 import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
 import { CompetitionId, PersonId } from '@src/app/util/domain-types';
-import { SmallCompetition } from '@src/app/model/competition';
+import { BasicCompetition, SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ModalService } from '@src/app/module/modal/service';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
@@ -30,6 +30,8 @@ import { FilterableGameListComponent } from "@src/app/component/filterable-game-
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
 import { ShirtDistributionComponent } from "@src/app/component/shirt-distribution/shirt-distribution.component";
+import { CompetitionService } from '@src/app/module/competition/service';
+import { getOrderedCompetitionIds } from '@src/app/util/domain';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -53,7 +55,7 @@ export class PersonComponent implements OnDestroy {
 
   performance$ = new BehaviorSubject<UiPlayerStats | null>(null);
 
-  isLoading = true;
+  isLoading = signal(true);
   colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
@@ -67,6 +69,7 @@ export class PersonComponent implements OnDestroy {
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
+  private readonly competitionService = inject(CompetitionService);
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
   private readonly personResolver = inject(PersonResolver);
@@ -91,14 +94,14 @@ export class PersonComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  onPersonResolved(person: GetPersonByIdResponse): void {
+  onPersonResolved(person: GetPersonByIdResponse, orderedCompetitions: Array<BasicCompetition>): void {
     this.person = person;
-    this.isLoading = false;
+    this.isLoading.set(false);
 
     if (person.stats) {
       const playerStats = getUiPlayerStats(person.stats.performance);
       this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
-      this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition);
+      this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition, orderedCompetitions);
       this.opponentTotalStatsRows = isDefined(person.stats.opponent) ? this.getPlayerTotalStats(person.stats.opponent) : [];
 
       this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
@@ -225,12 +228,12 @@ export class PersonComponent implements OnDestroy {
 
   private loadPersonDetails() {
     const personId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID)));
-    this.isLoading = true;
+    this.isLoading.set(true);
     if (isDefined(personId)) {
       this.resolvePerson(Number(personId));
     } else {
       // TODO show error content
-      this.isLoading = false;
+      this.isLoading.set(false);
       console.error(`Could not resolve person ID`);
     }
   }
@@ -244,21 +247,20 @@ export class PersonComponent implements OnDestroy {
         avatar: this.person.person.avatar,
       },
       filterOptions: filterOptions,
-    }).pipe(takeUntil(this.destroy$)).subscribe({
-      complete: () => {
-        console.log('modal closed');
-      }
-    });
+    }).pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   private resolvePerson(personId: PersonId) {
-    this.personResolver.getById(personId, true).pipe(takeUntil(this.destroy$)).subscribe({
-      next: person => {
-        this.onPersonResolved(person);
+    combineLatest([
+      this.competitionService.getOrderedCompetitionsFromCache(),
+      this.personResolver.getById(personId, true),
+    ]).pipe(takeUntil(this.destroy$)).subscribe({
+      next: ([orderedCompetitions, person]) => {
+        this.onPersonResolved(person, orderedCompetitions);
       },
       error: err => {
         // TODO show error
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(`Could not resolve person`, err);
       }
     });
@@ -329,11 +331,11 @@ export class PersonComponent implements OnDestroy {
     return items;
   }
 
-  private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>): ReadonlyArray<CompetitionStats> {
+  private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>, orderedCompetitions: Array<BasicCompetition>): ReadonlyArray<CompetitionStats> {
     const result: CompetitionStats[] = [];
 
-    const competitionIds = competitionStats.keys();
-    for (const competitionId of competitionIds) {
+    const orderedCompetitionIds = getOrderedCompetitionIds(Array.from(competitionStats.keys()), orderedCompetitions);
+    for (const competitionId of orderedCompetitionIds) {
       const competition = competitions.find(item => item.id === competitionId);
       if (!competition) {
         continue;
@@ -351,5 +353,4 @@ export class PersonComponent implements OnDestroy {
 
     return Array.from(result);
   }
-
 }

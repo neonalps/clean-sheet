@@ -12,6 +12,7 @@ export const PATH_PARAM_GAME_ID = "gameId";
 export const PATH_PARAM_PERSON_ID = "personId";
 export const PATH_PARAM_SEASON_ID = "seasonId";
 export const PATH_PARAM_VENUE_ID = "venueId";
+export const PATH_PARAM_RANKING_STATS_TYPE = "rankingStatsType";
 export const PATH_PARAM_OAUTH_PROVIDER = "provider";
 
 export function navigateToSeasonGames(router: Router, seasonId: SeasonId): void {

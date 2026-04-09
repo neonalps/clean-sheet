@@ -1,5 +1,6 @@
 <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isActive() }">
-    <app-modal-confirm-add-person *ngIf="isConfigmAddPersonModalActive()"/>
+    <app-modal-competition-filter *ngIf="isCompetitionFilterModalActive()"/>
+    <app-modal-confirm-add-person *ngIf="isConfirmAddPersonModalActive()"/>
     <app-delete-modal *ngIf="isDeleteModalActive()" />
     <app-modal-game-list-filter *ngIf="isFilterGameListModalActive()" />
     <app-modal-select-shirt *ngIf="isShirtModalActive()" />

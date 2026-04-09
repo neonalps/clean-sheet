@@ -1,4 +1,5 @@
 import { Injectable, signal } from "@angular/core";
+import { CompetitionFilterPayload } from "@src/app/component/modal-competition-filter/modal-competition-filter.component";
 import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
 import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
@@ -12,6 +13,7 @@ interface ModalEvent {
 }
 
 export enum Modal {
+    CompetitionFilter = 'competitionFilter',
     ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
     FilterGameList = 'filterGameList',
@@ -27,6 +29,7 @@ export class ModalService {
     readonly active$ = new BehaviorSubject<boolean>(false);
     readonly modalType = signal<Modal | null>(null);
 
+    readonly competitionFilterModalPayload$ = new Subject<CompetitionFilterPayload>();
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
@@ -34,6 +37,10 @@ export class ModalService {
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
     private modalEvent$?: Subject<ModalEvent>;
+
+    showCompetitionFilterModal(payload: CompetitionFilterPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.CompetitionFilter, payload);
+    }
 
     showConfirmAddPersonModal(payload: ConfirmAddPersonModalPayload): Observable<ModalEvent> {
         return this.showModal(Modal.ConfirmAddPerson, payload);
@@ -107,6 +114,9 @@ export class ModalService {
 
     private publishPayload(type: Modal, payload: unknown) {
         switch (type) {
+            case Modal.CompetitionFilter:
+                this.competitionFilterModalPayload$.next(payload as CompetitionFilterPayload);
+                break;
             case Modal.ConfirmAddPerson:
                 this.confirmAddPersonModalPayload$.next(payload as ConfirmAddPersonModalPayload);
                 break;
