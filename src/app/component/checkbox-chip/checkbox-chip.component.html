@@ -1,0 +1,10 @@
+@let inputValue = chip();
+<div class="min-h-32 flex align-items-center px-2 py-1 rounded-md mr-2 last:mr-0 hover:bg-color-dark-grey transition-bg-color pointer" (click)="onChipClick()">
+    <div class="mr-2">
+        <input type="checkbox" [attr.id]="inputValue.id" [checked]="inputValue.checked" />
+    </div>
+    <div *ngIf="inputValue.icon" class="width-1-25rem mr-1">
+        <app-ui-icon [descriptor]="inputValue.icon" />
+    </div>
+    <div>{{ inputValue.displayText }}</div>
+</div>

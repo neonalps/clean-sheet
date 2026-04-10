@@ -1,17 +1,18 @@
 import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
+import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
 import { filter, map, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
-import { assertUnreachable, ensureNotNullish, isNotDefined } from '@src/app/util/common';
+import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { PATH_PARAM_RANKING_STATS_TYPE } from '@src/app/util/router';
 import { ModalService } from '@src/app/module/modal/service';
 import { CompetitionFilterSuccessPayload } from '@src/app/component/modal-competition-filter/modal-competition-filter.component';
 import { BasicCompetition } from '@src/app/model/competition';
 import { CompetitionService } from '@src/app/module/competition/service';
+import { CompetitionId } from '@src/app/util/domain-types';
 
 export type RankingStatsType = 'appearances' | 'goals';
 const allowedRankingStatsTypes = ['appearances', 'goals'];
@@ -25,6 +26,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   readonly forMain = input(true);
 
+  readonly currentFilters = signal<CompetitionFilterSuccessPayload | null>(null);
   readonly isLoading = signal(false);
   readonly playerStats = signal<RankedPersonItem[]>([]);
   
@@ -46,6 +48,9 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  private domesticCompetitionIds: CompetitionId[] = [];
+  private internationalCompetitionIds: CompetitionId[] = [];
+
   constructor() {
     this.router.events.pipe(
       takeUntil(this.destroy$),
@@ -56,12 +61,10 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
           throw new Error(`Illegal ranking stats type. Allowed values are: ${allowedRankingStatsTypes.join(', ')}`);
         }
         this.rankingStatsType.set(type as RankingStatsType);
-        this.nextPageKey.set(null);
-        this.playerStats.set([]);
-        this.hasReachedEnd.set(false);
 
         this.titleText.set(this.translationService.translate(`menu.stats.${type}`));
 
+        this.resetLoad();
         this.loadData();
       }
     });
@@ -72,6 +75,9 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe(value => {
       this.orderedTopLevelCompetitionsCache.set([...value]);
+
+      this.domesticCompetitionIds = uniqueArrayElements(value.filter(item => item.isDomestic === true).map(item => item.id));
+      this.internationalCompetitionIds = uniqueArrayElements(value.filter(item => item.isDomestic !== true).map(item => item.id));
     })
   }
 
@@ -86,17 +92,28 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   showFilterModal() {
     this.modalService.showCompetitionFilterModal({
+      filterOption: this.currentFilters()?.filterOption ?? 'none',
       availableCompetitions: this.orderedTopLevelCompetitionsCache(),
-      selectedCompetitionIds: [],
-      onlyDomestic: false,
-      onlyInternational: false,
+      selectedCompetitionIds: this.currentFilters()?.selectedCompetitionIds ?? [],
     }).pipe(
         filter(event => event.type === 'confirm'),
         map(event => ensureNotNullish(event.value) as CompetitionFilterSuccessPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
-      console.log('received competition filter payload from modal', value);
+        if (this.currentFilters() === value) {
+          return;
+        }
+
+        this.currentFilters.set(value);
+        this.resetLoad();
+        this.loadData();
     });
+  }
+
+  private resetLoad(): void {
+    this.nextPageKey.set(null);
+    this.playerStats.set([]);
+    this.hasReachedEnd.set(false);
   }
 
   private loadData(): void {
@@ -119,9 +136,20 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   }
 
   private loadAppearanceStats() {
-    this.statsService.getPlayerAppearanceStats(this.nextPageKey(), {
+    const queryParams: GetPlayerStatsQueryParams = {
       forMain: this.forMain(),
-    }).pipe(takeUntil(this.destroy$)).subscribe({
+    };
+
+    const currentFilters = this.currentFilters();
+    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
+      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
+    } else if (currentFilters?.filterOption === 'domestic') {
+      queryParams.competitionIds = [...this.domesticCompetitionIds];
+    } else if (currentFilters?.filterOption === 'international') {
+      queryParams.competitionIds = [...this.internationalCompetitionIds];
+    }
+
+    this.statsService.getPlayerAppearanceStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);
@@ -131,9 +159,20 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   }
 
   private loadGoalStats() {
-    this.statsService.getPlayerGoalStats(this.nextPageKey(), {
+    const queryParams: GetPlayerStatsQueryParams = {
       forMain: this.forMain(),
-    }).pipe(takeUntil(this.destroy$)).subscribe({
+    };
+
+    const currentFilters = this.currentFilters();
+    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
+      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
+    } else if (currentFilters?.filterOption === 'domestic') {
+      queryParams.competitionIds = [...this.domesticCompetitionIds];
+    } else if (currentFilters?.filterOption === 'international') {
+      queryParams.competitionIds = [...this.internationalCompetitionIds];
+    }
+
+    this.statsService.getPlayerGoalStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);

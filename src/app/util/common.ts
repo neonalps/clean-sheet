@@ -29,6 +29,10 @@ export function assertHasText(toCheck: string, errorMessage?: string) {
     }
 }
 
+export function uniqueArrayElements<T>(array: T[]): T[] {
+    return Array.from(new Set(array));
+}
+
 export function getHtmlInputElementFromEvent(event: Event): HTMLInputElement {
     return event.target as HTMLInputElement;
 }

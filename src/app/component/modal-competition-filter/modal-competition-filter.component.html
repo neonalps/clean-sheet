@@ -1,16 +1,14 @@
-@let currentPayloadValue = currentPayload();
+@let competitionChipsValue = competitionChips();
+@let filterOptionValue = selectedFilterOption();
 <app-modal>
     <div header>{{ 'modal.competitionFilter' | $t }}</div>
     <div content>
-        <div class="flex align-items-center flex-wrap gap-y-2">
-            @for (competition of currentPayloadValue.availableCompetitions; track competition.id) {
-                <div class="min-h-32 flex align-items-center p-1 rounded-md mr-2 last:mr-0 hover:bg-color-dark-grey transition-bg-color pointer">
-                    <div class="mr-2"><input type="checkbox" (change)="onValueChange($event)" /></div>
-                    <div *ngIf="competition.iconSmall" class="width-1-25rem mr-1">
-                        <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competition.iconSmall }" />
-                    </div>
-                    <div>{{ getCompetitionName(competition.shortName) }}</div>
-                </div>
+        <div class="mb-5">
+            <app-select [optionsSource]="getFilterOptions()" [selectedOption]="pushSelectedFilterOption$" (onSelected)="onFilterOptionSelect($event)" />
+        </div>
+        <div *ngIf="filterOptionValue === 'custom'" class="flex align-items-center flex-wrap gap-y-2">
+            @for (chip of competitionChipsValue; track chip.id) {
+                <app-checkbox-chip [chip]="chip" (checkedValueChanged)="onChipValueChanged($event)" />
             }
         </div>
     </div>
