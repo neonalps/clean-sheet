@@ -95,9 +95,10 @@ export class ModalCompetitionFilterComponent implements OnInit, OnDestroy {
   }
 
   onConfirm() {
+    const option = this.selectedFilterOption();
     this.modalService.onConfirm({
-      filterOption: this.selectedFilterOption(),
-      selectedCompetitionIds: this.selectedCompetitionIds(),
+      filterOption: option,
+      selectedCompetitionIds: option === 'custom' ? this.selectedCompetitionIds() : [],
     } satisfies CompetitionFilterSuccessPayload);
   }
 
