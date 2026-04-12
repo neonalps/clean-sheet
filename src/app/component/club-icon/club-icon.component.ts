@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 
 @Component({
   selector: 'app-club-icon',
@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ClubIconComponent {
 
-  @Input() iconUrl!: string;
-  @Input() iconClassName?: string;
+  iconUrl = input.required<string>();
+  iconClassName = input<string>();
 
 }

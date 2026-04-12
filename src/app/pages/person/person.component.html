@@ -137,7 +137,7 @@
             </div>
         </ng-container>
 
-        <ng-container *ngIf="person.stats?.shirtDistribution">
+        <ng-container *ngIf="person.stats?.shirtDistribution && (person.stats?.shirtDistribution ?? []).length > 0">
             <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
                 <div class="flex align-items-center mb-3">
                     <div class="bold text-light text-md">{{ 'jersey.worn' | $t }}</div>

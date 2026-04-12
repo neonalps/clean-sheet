@@ -15,7 +15,7 @@
             </div>
             <div class="basis-2/3 flex align-items-center justify-content-between">
                 <div *ngIf="tablePosition.club.iconSmall" class="width-1-25rem mr-3 relative top-3">
-                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': tablePosition.club.iconSmall }" />
+                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': tablePosition.club.iconSmall }" [iconClassName]="'img-max-h-20'" />
                 </div>
                 <div class="flex-grow-1">{{ tablePosition.club.shortName }}</div>
             </div>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { FootballComponent } from '@src/app/icon/football/football.component';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
@@ -66,6 +66,7 @@ import { CalendarIconComponent } from "@src/app/icon/calendar-icon/calendar-icon
 })
 export class UiIconComponent {
 
-  @Input() descriptor!: UiIconDescriptor;
+  descriptor = input.required<UiIconDescriptor>();
+  iconClassName = input<string>();
 
 }

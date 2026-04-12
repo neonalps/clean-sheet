@@ -1,59 +1,61 @@
-@switch (descriptor.type) {
+@let descriptorValue = descriptor();
+@let iconClassNameValue = iconClassName();
+@switch (descriptorValue.type) {
   @case ('standard') {
-    @switch (descriptor.content) {
+    @switch (descriptorValue.content) {
         @case ('arrow-left') {
-            <app-arrow-left [color]="descriptor.color" />
+            <app-arrow-left [color]="descriptorValue.color" />
         }
         @case ('arrow-right') {
-            <app-arrow-right [color]="descriptor.color" />
+            <app-arrow-right [color]="descriptorValue.color" />
         }
         @case ('birthday-cake') {
-            <app-birthday-cake [color]="descriptor.color" />
+            <app-birthday-cake [color]="descriptorValue.color" />
         }
         @case ('calendar') {
-            <app-calendar-icon [color]="descriptor.color" />
+            <app-calendar-icon [color]="descriptorValue.color" />
         }
         @case ('captain') {
             <div class="captain text-sm bold rounded-md">C</div>
         }
         @case ('chevron-left') {
-            <app-chevron-left [color]="descriptor.color" />
+            <app-chevron-left [color]="descriptorValue.color" />
         }
         @case ('coffin') {
-            <app-coffin [color]="descriptor.color" />
+            <app-coffin [color]="descriptorValue.color" />
         }
         @case ('delete') {
-            <app-delete-icon [color]="descriptor.color" />
+            <app-delete-icon [color]="descriptorValue.color" />
         }
         @case ('drag') {
-            <app-drag-handle-icon [color]="descriptor.color" />
+            <app-drag-handle-icon [color]="descriptorValue.color" />
         }
         @case ('filter') {
-            <app-filter-icon [color]="descriptor.color" />
+            <app-filter-icon [color]="descriptorValue.color" />
         }
         @case ('football') {
-            <app-football [color]="descriptor.color" />
+            <app-football [color]="descriptorValue.color" />
         }
         @case ('football-pitch') {
-            <app-football-pitch [color]="descriptor.color" />
+            <app-football-pitch [color]="descriptorValue.color" />
         }
         @case ('football-shoe') {
-            <app-football-shoe [color]="descriptor.color" />
+            <app-football-shoe [color]="descriptorValue.color" />
         }
         @case ('glove') {
-            <app-goalkeeper-glove [color]="descriptor.color" />
+            <app-goalkeeper-glove [color]="descriptorValue.color" />
         }
         @case ('goal') {
-            <app-football-goal [color]="descriptor.color" />
+            <app-football-goal [color]="descriptorValue.color" />
         }
         @case ('goalkeeper-goal') {
-            <app-goalkeeper-goal [color]="descriptor.color" />
+            <app-goalkeeper-goal [color]="descriptorValue.color" />
         }
         @case ('google') {
             <app-google-icon />
         }
         @case ('import') {
-            <app-import-icon [color]="descriptor.color" />
+            <app-import-icon [color]="descriptorValue.color" />
         }
         @case ('loading') {
             <div class="loading-container-small">
@@ -61,28 +63,28 @@
             </div>
         }
         @case ('menu') {
-            <app-menu-icon [color]="descriptor.color" />
+            <app-menu-icon [color]="descriptorValue.color" />
         }
         @case ('menu-vertical') {
-            <app-menu-icon-vertical [color]="descriptor.color" />
+            <app-menu-icon-vertical [color]="descriptorValue.color" />
         }
         @case ('pen') {
-            <app-edit-icon [color]="descriptor.color" />
+            <app-edit-icon [color]="descriptorValue.color" />
         }
         @case ('playing-football') {
-            <app-playing-football [color]="descriptor.color" />
+            <app-playing-football [color]="descriptorValue.color" />
         }
         @case ('profile') {
-            <app-profile-icon [color]="descriptor.color" />
+            <app-profile-icon [color]="descriptorValue.color" />
         }
         @case ('save') {
-            <app-save-icon [color]="descriptor.color" />
+            <app-save-icon [color]="descriptorValue.color" />
         }
         @case ('sofascore') {
-            <app-sofascore [color]="descriptor.color" />
+            <app-sofascore [color]="descriptorValue.color" />
         }
         @case ('table') {
-            <app-competition-table [color]="descriptor.color" />
+            <app-competition-table [color]="descriptorValue.color" />
         }
         @case ('yellow-card') {
             <div class="card-yellow"></div>
@@ -99,13 +101,13 @@
     }
   }
   @case ('club') {
-    <app-club-icon [iconUrl]="descriptor.content" />
+    <app-club-icon [iconUrl]="descriptorValue.content" [iconClassName]="iconClassNameValue" />
   }
   @case ('competition') {
-    <app-club-icon [iconUrl]="descriptor.content" />
+    <app-club-icon [iconUrl]="descriptorValue.content" />
   }
   @case ('person') {
-    <app-player-icon [iconUrl]="descriptor.content" [iconBgColorClass]="'bg-color-transparent'" />
+    <app-player-icon [iconUrl]="descriptorValue.content" [iconBgColorClass]="'bg-color-transparent'" />
   }
   @default {
     <div class="text-danger">not implemented</div>
