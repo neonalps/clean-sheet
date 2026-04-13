@@ -100,6 +100,7 @@ export class GameComponent implements OnDestroy {
 
   readonly attendChecked = signal(false);
   readonly starChecked = signal(false);
+  readonly isMatchdayTabVisible = signal(true);
 
   readonly scheduledAt = signal<Date | null>(null);
 
@@ -245,6 +246,7 @@ export class GameComponent implements OnDestroy {
       { selected: false, value: 'opponent', displayText: game.opponent.shortName, displayIcon: { type: 'club', content: game.opponent.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
     ]
 
+    this.isMatchdayTabVisible.set([1, 2].includes(this.game.competition.id));
     this.isMatchdayTableVisible = this.game.competition.id !== 4 && !this.game.leg;
 
     // asynchronously fetch previous leg information

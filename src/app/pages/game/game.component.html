@@ -79,7 +79,7 @@
             </div>
             <div class="basis-1/8 pt-1">
                 <div class="text-sm mb-5">
-                    <div class="mt-4" *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
+                    <div class="mt-4 center" *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
                 </div>
                 <ng-container *ngIf="detailsVisible; else upcoming">
                     <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
@@ -130,7 +130,7 @@
             <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }">
                 <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
-            <app-tab-item [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
+            <app-tab-item *ngIf="isMatchdayTabVisible()" [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
                 <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" [hideTable]="!isMatchdayTableVisible" />
             </app-tab-item>
         </app-tab-group>
