@@ -143,7 +143,6 @@ export class GameComponent implements OnDestroy {
       if (identity === null || identity.role !== AccountRole.Manager) {
         this.isContextMenuVisible.set(false);
         this.gameContextMenuOptions.next([]);
-        return;
       }
     });
 
@@ -290,44 +289,46 @@ export class GameComponent implements OnDestroy {
   }
 
   onGameContextMenuItemSelected(itemId: string) {
-    if (this.game) {
-      const gameId = this.game.id;
-      const gameSeasonId = this.game.season.id;
-      if (itemId === GameComponent.KEY_GAME_EDIT) {
-        navigateToModifyGame(this.router, this.game.id)
-      } else if (itemId === GameComponent.KEY_GAME_DELETE) {
-        this.modalService.showDeleteModal()
-          .pipe(
-            filter(event => event.type === 'confirm'),
-            switchMap(() => this.gameService.delete(gameId)),
-            takeUntil(this.destroy$)
-          ).subscribe({
-            next: () => {
-              this.toastService.addToast({ text: this.translationService.translate('gameDelete.success'), type: 'success' });
-
-              // reload the games of the season to make sure the new game will be available
-              this.seasonGamesService.getSeasonGames(gameSeasonId, true);
-
-              navigateToSeasonGames(this.router, gameSeasonId);
-            },
-            error: err => {
-              console.error(`failed to delete game with ID ${gameId}`, err);
-
-              this.toastService.addToast({ text: `${this.translationService.translate('gameDelete.failure')}`, type: 'error' });
-            }
-          });
-      } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
-        this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
-          if (result.success) {
-            this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });
+    if (!this.game) {
+      return;
+    }
+    
+    const gameId = this.game.id;
+    const gameSeasonId = this.game.season.id;
+    if (itemId === GameComponent.KEY_GAME_EDIT) {
+      navigateToModifyGame(this.router, this.game.id)
+    } else if (itemId === GameComponent.KEY_GAME_DELETE) {
+      this.modalService.showDeleteModal()
+        .pipe(
+          filter(event => event.type === 'confirm'),
+          switchMap(() => this.gameService.delete(gameId)),
+          takeUntil(this.destroy$)
+        ).subscribe({
+          next: () => {
+            this.toastService.addToast({ text: this.translationService.translate('gameDelete.success'), type: 'success' });
 
             // reload the games of the season to make sure the new game will be available
             this.seasonGamesService.getSeasonGames(gameSeasonId, true);
-          } else {
-            this.toastService.addToast({ text: `${this.translationService.translate('gameImport.failure')}: "${result.error}"`, type: 'error' }, 10_000);
+
+            navigateToSeasonGames(this.router, gameSeasonId);
+          },
+          error: err => {
+            console.error(`failed to delete game with ID ${gameId}`, err);
+
+            this.toastService.addToast({ text: `${this.translationService.translate('gameDelete.failure')}`, type: 'error' });
           }
         });
-      }
+    } else if (itemId === GameComponent.KEY_GAME_IMPORT) {
+      this.gameService.import(this.game.id).pipe(take(1)).subscribe(result => {
+        if (result.success) {
+          this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });
+
+          // reload the games of the season to make sure the new game will be available
+          this.seasonGamesService.getSeasonGames(gameSeasonId, true);
+        } else {
+          this.toastService.addToast({ text: `${this.translationService.translate('gameImport.failure')}: "${result.error}"`, type: 'error' }, 10_000);
+        }
+      });
     }
   }
 

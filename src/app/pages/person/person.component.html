@@ -18,43 +18,48 @@
     @let avatar = getIconUrl();
     <div class="pb-8">
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
-            <div class="flex align-items-center">
-                <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
-                    <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" [iconBgColorClass]="'bg-color-transparent'" />
-                </div>
-                <div [ngClass]="{ 'pl-4': !avatar }">
-                    <div>
-                        <span class="mr-2 text-xl">
-                            <span>{{ getFirstName() }}</span>
-                            <span class="bold"> {{ getLastName() }}</span>
-                        </span>
-                        <ng-container *ngIf="nationalities.length > 0">
-                            <ng-container *ngFor="let country of nationalities">
-                                <span class="mr-1 last:mr-0" [title]="country.title">{{ country.flag }}</span>
+            <div class="flex">
+                <div class="flex-grow flex align-items-center">
+                    <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
+                        <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" [iconBgColorClass]="'bg-color-transparent'" />
+                    </div>
+                    <div [ngClass]="{ 'pl-4': !avatar }">
+                        <div>
+                            <span class="mr-2 text-xl">
+                                <span>{{ getFirstName() }}</span>
+                                <span class="bold"> {{ getLastName() }}</span>
+                            </span>
+                            <ng-container *ngIf="nationalities.length > 0">
+                                <ng-container *ngFor="let country of nationalities">
+                                    <span class="mr-1 last:mr-0" [title]="country.title">{{ country.flag }}</span>
+                                </ng-container>
                             </ng-container>
-                        </ng-container>
-                    </div>
-                    <div class="mt-2 flex align-items-center" *ngIf="birthday">
-                        <div class="birthday-icon-container mr-2">
-                            <div class="relative top-1 text-light-grey">
-                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'birthday-cake' }" />
+                        </div>
+                        <div class="mt-2 flex align-items-center" *ngIf="birthday">
+                            <div class="birthday-icon-container mr-2">
+                                <div class="relative top-1 text-light-grey">
+                                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'birthday-cake' }" />
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} <span *ngIf="!deathday">({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span></span>
                             </div>
                         </div>
-                        <div>
-                            <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d YYYY' }} <span *ngIf="!deathday">({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span></span>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex align-items-center" *ngIf="deathday">
-                        <div class="birthday-icon-container mr-2">
-                            <div class="relative top-1 text-light-grey">
-                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'coffin' }" />
+                        <div class="mt-2 flex align-items-center" *ngIf="deathday">
+                            <div class="birthday-icon-container mr-2">
+                                <div class="relative top-1 text-light-grey">
+                                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'coffin' }" />
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-sm text-light-grey-darker">{{ deathday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
                             </div>
                         </div>
-                        <div>
-                            <span class="text-sm text-light-grey-darker">{{ deathday | date:'MMM d YYYY' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
-                        </div>
+                        <app-external-links [externalLinks]="getExternalLinks()" />
                     </div>
-                    <app-external-links [externalLinks]="getExternalLinks()" />
+                </div>
+                <div *ngIf="contextMenuVisible()">
+                    <app-context-menu [menuOptions]="personContextMenuOptions" (onMenuItemSelected)="onPersonContextMenuItemSelected($event)" />
                 </div>
             </div>
         </div>

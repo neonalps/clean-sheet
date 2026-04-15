@@ -3,7 +3,7 @@ import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
-import { filter, map, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
 import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -13,18 +13,21 @@ import { CompetitionFilterSuccessPayload } from '@src/app/component/modal-compet
 import { BasicCompetition } from '@src/app/model/competition';
 import { CompetitionService } from '@src/app/module/competition/service';
 import { CompetitionId } from '@src/app/util/domain-types';
+import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
+import { SmallClub } from '@src/app/model/club';
+import { environment } from '@src/environments/environment';
 
 export type RankingStatsType = 'appearances' | 'goals';
 const allowedRankingStatsTypes = ['appearances', 'goals'];
 
 @Component({
   selector: 'app-ranking-appearances',
-  imports: [PaginatedRankedPersonListComponent],
+  imports: [PaginatedRankedPersonListComponent, ChipGroupComponent],
   templateUrl: './ranking-stats.component.html',
 })
 export class RankingStatsComponent implements OnInit, OnDestroy {
 
-  readonly forMain = input(true);
+  readonly forMain = signal(true);
 
   readonly currentFilters = signal<CompetitionFilterSuccessPayload | null>(null);
   readonly isLoading = signal(false);
@@ -50,6 +53,13 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   private domesticCompetitionIds: CompetitionId[] = [];
   private internationalCompetitionIds: CompetitionId[] = [];
+
+  private readonly mainClub: SmallClub = environment.mainClub;
+
+  readonly forMainChipGroupInput = new BehaviorSubject<ChipGroupInput>({ chips: [
+    { selected: true, value: 'forMain', displayText: this.translationService.translate('ranking.forMain', { main: this.mainClub.shortName.split(' ')[0] }) },
+    { selected: false, value: 'againstMain', displayText: this.translationService.translate('ranking.againstMain', { main: this.mainClub.shortName.split(' ')[0] }) },
+  ], mode: 'single' }).asObservable();
 
   constructor() {
     this.router.events.pipe(
@@ -87,6 +97,12 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   }
 
   onNearEndReached(): void {
+    this.loadData();
+  }
+
+  onForMainChipSelected(selectedValue: string | number | boolean): void {
+    this.forMain.set(selectedValue === 'forMain');
+    this.resetLoad();
     this.loadData();
   }
 

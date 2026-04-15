@@ -77,6 +77,7 @@ export class CountryFlagService {
         ['tr', '🇹🇷'],
         ['tz', '🇹🇿'],
         ['ua', '🇺🇦'],
+        ['uy', '🇺🇾'],
         ['xk', '🇽🇰'],
         ['zm', '🇿🇲'],
     ]);

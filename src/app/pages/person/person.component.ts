@@ -32,6 +32,9 @@ import { environment } from '@src/environments/environment';
 import { ShirtDistributionComponent } from "@src/app/component/shirt-distribution/shirt-distribution.component";
 import { CompetitionService } from '@src/app/module/competition/service';
 import { getOrderedCompetitionIds } from '@src/app/util/domain';
+import { ContextMenuSection, ContextMenuComponent } from '@src/app/component/context-menu/context-menu.component';
+import { AuthService } from '@src/app/module/auth/service';
+import { AccountRole } from '@src/app/model/auth';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -45,11 +48,14 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent, ContextMenuComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
 export class PersonComponent implements OnDestroy {
+
+  private static readonly CONTEXT_MENU_KEY_PERSON_EDIT = "editPerson";
+  private static readonly CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE = "checkDuplicate";
 
   person!: GetPersonByIdResponse;
 
@@ -62,13 +68,17 @@ export class PersonComponent implements OnDestroy {
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
   refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
 
+  readonly contextMenuVisible = signal(false);
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
   readonly opponentStatsVisible = signal(false);
   readonly refereeListVisible = signal(false);
 
+  readonly personContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
+
   private readonly mainClub: SmallClub = environment.mainClub;
 
+  private readonly authService = inject(AuthService);
   private readonly competitionService = inject(CompetitionService);
   private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
@@ -80,6 +90,31 @@ export class PersonComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   constructor() {
+    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
+      if (identity !== null && identity.role === AccountRole.Manager) {
+        this.personContextMenuOptions.next([
+          {
+            items: [
+              { 
+                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT, 
+                text: this.translationService.translate('menu.editPerson'), 
+                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+              },
+            ],
+          }, {
+            items: [
+              { 
+                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE, 
+                text: this.translationService.translate('menu.checkDuplicate'), 
+                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+              },
+            ]
+          }
+        ]);
+        this.contextMenuVisible.set(true);
+      }
+    });
+
     this.router.events.pipe(
       takeUntil(this.destroy$),
     ).subscribe(value => {
@@ -224,6 +259,10 @@ export class PersonComponent implements OnDestroy {
     }
 
     this.showStatsModal(filterOptions);
+  }
+
+  onPersonContextMenuItemSelected(itemId: string) {
+    console.log('selected', itemId);
   }
 
   private loadPersonDetails() {
