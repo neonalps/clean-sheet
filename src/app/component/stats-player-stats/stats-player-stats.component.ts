@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
@@ -26,7 +26,7 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   
   @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
 
-  statsBySeasonAndCompetition: StatsBySeasonAndCompetition[] | null = null;
+  readonly statsBySeasonAndCompetition = signal<StatsBySeasonAndCompetition[] | null>(null);
 
   private readonly destroy$ = new Subject<void>();
   private readonly seasonService = inject(SeasonService);
@@ -35,11 +35,11 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.performance$
       .pipe(
+        filter(value => value !== null),
         takeUntil(this.destroy$),
-        filter(value => value !== null)
       )
       .subscribe(performance => {
-        this.statsBySeasonAndCompetition = this.getBySeasonAndCompetitionStats(performance);
+        this.statsBySeasonAndCompetition.set(this.getBySeasonAndCompetitionStats(performance));
       });
   }
 

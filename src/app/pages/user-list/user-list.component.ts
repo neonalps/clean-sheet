@@ -10,19 +10,25 @@ import { AuthService } from '@src/app/module/auth/service';
 import { getRandomNumberBetween } from '@src/app/util/random';
 import { AccountRole } from '@src/app/model/auth';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { ContextMenuComponent, ContextMenuSection } from "@src/app/component/context-menu/context-menu.component";
+import { toObservable } from '@angular/core/rxjs-interop';
 
 export type UserInfo = Account & { myself?: boolean };
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule, I18nPipe, LabelComponent],
+  imports: [CommonModule, I18nPipe, LabelComponent, ContextMenuComponent],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
 })
 export class UserListComponent implements OnInit, OnDestroy {
 
+  private static readonly CONTEXT_MENU_KEY_DELETE_USER = "deleteUser";
+
   skeletonRows = [...Array(getRandomNumberBetween(3, 12)).keys()];
 
+  readonly contextMenuOptions = signal<ContextMenuSection[]>([]);
+  readonly contextMenuOptions$ = toObservable(this.contextMenuOptions);
   readonly users$ = new BehaviorSubject<UserInfo[]>([]);
   readonly isLoading = signal(true);
 
@@ -44,7 +50,15 @@ export class UserListComponent implements OnInit, OnDestroy {
       }
 
       this.loggedInUserId = identity.publicId;
-    })
+    });
+
+    this.contextMenuOptions.set([
+      {
+        items: [
+          { 'id': UserListComponent.CONTEXT_MENU_KEY_DELETE_USER, 'text': this.translationService.translate('action.deleteUser'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },
+        ],
+      },
+    ]);
 
     this.loadAccounts();
   }
@@ -64,7 +78,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTranslatedRole(role: AccountRole) {
+  getRoleName(role: AccountRole) {
     return this.translationService.translate(`role.${role}`);
   }
 
@@ -73,6 +87,10 @@ export class UserListComponent implements OnInit, OnDestroy {
       account.firstName,
       account.lastName
     ].filter(item => isDefined(item)).join(' ');
+  }
+
+  onContextMenuItemSelected(selectedItem: string, userId: number) {
+    console.log(`should perform '${selectedItem}' for user with ID ${userId}`);
   }
 
   private loadAccounts() {

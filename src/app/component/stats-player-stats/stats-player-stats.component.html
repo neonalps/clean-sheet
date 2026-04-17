@@ -1,7 +1,8 @@
+@let statsBySeasonAndCompetitionValue = statsBySeasonAndCompetition();
 <div>
-    <ng-container *ngIf="statsBySeasonAndCompetition !== null; else loading">
+    <ng-container *ngIf="statsBySeasonAndCompetitionValue !== null; else loading">
         <app-stats-player-header [containerClasses]="'mb-4'" [headerText]="'performance.seasonStats' | $t" />
-        @for (statsItem of statsBySeasonAndCompetition; track statsItem.season.id) {
+        @for (statsItem of statsBySeasonAndCompetitionValue; track statsItem.season.id) {
             <app-player-season-stats [seasonStatsItem]="statsItem" [isLastItem]="$last" (onSeasonCompetitionClicked)="seasonCompetitionClicked($event.seasonId, $event.filterOptions)" (onSeasonTotalClicked)="seasonTotalClicked($event.seasonId, $event.filterItemType)" />
         }
     </ng-container>

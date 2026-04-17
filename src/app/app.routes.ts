@@ -19,6 +19,7 @@ import { CompetitionComponent } from './pages/competition/competition.component'
 import { SeasonSquadComponent } from './pages/season-squad/season-squad.component';
 import { LoginWithTokenHandlerComponent } from './component/auth-handler/login-with-token-handler.component';
 import { RankingStatsComponent } from './pages/ranking-stats/ranking-stats.component';
+import { ApplicationStatsComponent } from './pages/application-stats/application-stats.component';
 
 export const routes: Routes = [
     { 
@@ -107,6 +108,17 @@ export const routes: Routes = [
         path: `user-list`, 
         component: UserListComponent,
         canActivate: [loggedInGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
+    },
+    { 
+        path: `application-stats`, 
+        component: ApplicationStatsComponent,
+        canActivate: [loggedInGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
     },
     { 
         path: 'settings', 

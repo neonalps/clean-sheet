@@ -23,7 +23,10 @@
                         </div>
                     </div>
                     <div class="basis-1/8">
-                        <app-label [content]="getTranslatedRole(user.role)" />
+                        <app-label [content]="getRoleName(user.role)" />
+                    </div>
+                    <div class="basis-1/10 flex align-items-center justify-content-end relative top-1">
+                        <app-context-menu [menuOptions]="contextMenuOptions$" (onMenuItemSelected)="onContextMenuItemSelected($event, user.id)" />
                     </div>
                 </div>
             }

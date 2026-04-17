@@ -1,9 +1,9 @@
-import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
-import { BehaviorSubject, filter, map, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, map, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
 import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';

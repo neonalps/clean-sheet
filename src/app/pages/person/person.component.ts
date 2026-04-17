@@ -6,7 +6,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
