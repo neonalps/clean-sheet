@@ -232,6 +232,7 @@
     "list.filterOptions": "Filter options",
     "load.more": "Load more",
     "login.google": "Login with Google",
+    "managerPeriod.since": "since {since}",
     "matchdayDetails.failedToLoad": "Failed to load the matchday details",
     "matchdayDetails.otherGames": "Other games",
     "matchdayDetails.tableAfterRound": "Table after Round {round}",

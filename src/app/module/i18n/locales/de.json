@@ -231,6 +231,8 @@
     "list.filterOptions": "Filter-Optionen",
     "load.more": "Mehr laden",
     "login.google": "Login mit Google",
+    "managerPeriod.fromTo": "{from} - {to}",
+    "managerPeriod.since": "seit {since}",
     "matchdayDetails.failedToLoad": "Die Spieltag-Details konnten nicht geladen werden",
     "matchdayDetails.otherGames": "Andere Spiele",
     "matchdayDetails.tableAfterRound": "Tabelle nach Runde {round}",
