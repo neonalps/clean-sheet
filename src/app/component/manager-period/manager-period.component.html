@@ -4,11 +4,6 @@
         {{ durationText() }}
     </div>
     <div class="flex align-items-center">
-        <div class="basis-1/10 mr-3 flex align-items-center justify-content-center" *ngIf="periodValue.person.avatar">
-            <div class="width-2-25rem">
-                <app-ui-icon [descriptor]="{ 'type': 'person', 'content': periodValue.person.avatar }" />
-            </div>
-        </div>
-        <div class="flex align-items-center">{{ personName() }}</div>
+        <app-person-card [person]="periodValue.person" />
     </div>
 </div>

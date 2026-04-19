@@ -1,14 +1,14 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ManagerPeriod } from '@src/app/model/manager';
-import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { getPersonName } from '@src/app/util/domain';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ensureNotNullish, isNotDefined } from '@src/app/util/common';
+import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 
 @Component({
   selector: 'app-manager-period',
-  imports: [CommonModule, UiIconComponent],
+  imports: [CommonModule, PersonCardComponent],
   templateUrl: './manager-period.component.html',
 })
 export class ManagerPeriodComponent implements OnInit {
