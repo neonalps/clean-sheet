@@ -90,7 +90,15 @@ export class NavMenuComponent implements OnInit, OnDestroy {
           {
             target: '/stats/goals',
             i18nKey: 'menu.stats.goals',
-          }
+          },
+          {
+            target: '/managers',
+            i18nKey: 'menu.managers',
+          },
+          {
+            target: '/jersey-numbers',
+            i18nKey: 'menu.jerseyNumbers',
+          },
         ]
       },
       {

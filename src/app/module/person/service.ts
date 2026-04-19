@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ExternalProviderLinkDto } from "@src/app/model/external-provider";
 import { BasicGame } from "@src/app/model/game";
 import { DetailedPerson, Person } from "@src/app/model/person";
@@ -34,7 +34,7 @@ export type GetPersonByIdResponse = {
 })
 export class PersonService {
 
-    constructor(private http: HttpClient) { }
+    private readonly http = inject(HttpClient);
 
     getById(personId: number, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
       return this.http.get<GetPersonByIdResponse>(`${environment.apiBaseUrl}/v1/people/${personId}?includeStatistics=${includeStatistics}`);

@@ -1,0 +1,23 @@
+@let managerPeriodsValue = managerPeriods();
+<section class="px-3 pb-8">
+    <div class="flex align-items-center justify-content-between">
+        <div class="page-title mb-5 ml-1">{{ 'menu.managers' | $t }}</div>
+        <div class="pointer">f</div>
+    </div>
+    <div>
+        <ng-container *ngIf="managerPeriodsValue.length > 0; else emptyList">
+            @for (item of managerPeriodsValue; track item.id) {
+                <app-manager-period [period]="item" />
+            }
+        </ng-container>
+        <ng-template #emptyList>
+            none recorded yet
+        </ng-template>
+    </div>
+</section>
+
+
+<div>
+
+    @for (period of managerPeriodsValue; track $index) {}
+</div>

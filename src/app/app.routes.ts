@@ -20,6 +20,8 @@ import { SeasonSquadComponent } from './pages/season-squad/season-squad.componen
 import { LoginWithTokenHandlerComponent } from './component/auth-handler/login-with-token-handler.component';
 import { RankingStatsComponent } from './pages/ranking-stats/ranking-stats.component';
 import { ApplicationStatsComponent } from './pages/application-stats/application-stats.component';
+import { JerseyNumbersComponent } from './pages/jersey-numbers/jersey-numbers.component';
+import { ManagersComponent } from './pages/managers/managers.component';
 
 export const routes: Routes = [
     { 
@@ -81,6 +83,16 @@ export const routes: Routes = [
     { 
         path: `stats/:${PATH_PARAM_RANKING_STATS_TYPE}`, 
         component: RankingStatsComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `jersey-numbers`, 
+        component: JerseyNumbersComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `managers`, 
+        component: ManagersComponent,
         canActivate: [loggedInGuard],
     },
     { 

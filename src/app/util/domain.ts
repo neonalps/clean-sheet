@@ -2,7 +2,7 @@ import { BasicCompetition } from "@src/app/model/competition";
 import { isDefined } from "./common";
 import { CompetitionId } from "./domain-types";
 
-export function getPersonName(person: { firstName: string, lastName: string }): string {
+export function getPersonName(person: { firstName?: string, lastName?: string }): string {
     return [person.firstName, person.lastName].filter(item => isDefined(item)).join(' ');
 }
 

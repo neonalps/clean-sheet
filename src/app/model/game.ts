@@ -271,7 +271,7 @@ export interface InjuryTimeGameEvent extends GameEvent {
 
 export interface UiPerson {
     personId: number;
-    firstName: string;
+    firstName?: string;
     lastName: string;
     avatar?: string;
 }
