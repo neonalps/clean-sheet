@@ -7,7 +7,9 @@
     <div>
         <ng-container *ngIf="managerPeriodsValue.length > 0; else emptyList">
             @for (item of managerPeriodsValue; track item.id) {
-                <app-manager-period [period]="item" />
+                <div class="mb-3">
+                    <app-manager-period [period]="item" />
+                </div>
             }
         </ng-container>
         <ng-template #emptyList>

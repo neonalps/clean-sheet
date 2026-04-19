@@ -106,12 +106,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         isOnlyVisibleTo: [AccountRole.Manager],
         items: [
           {
-            target: '/user-list',
-            i18nKey: 'menu.users',
-          },
-          {
             target: '/application-stats',
             i18nKey: 'menu.applicationStats',
+          },
+          {
+            target: '/user-list',
+            i18nKey: 'menu.users',
           },
           {
             target: '/create-game',
