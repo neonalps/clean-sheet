@@ -4,6 +4,57 @@
         {{ durationText() }}
     </div>
     <div class="flex align-items-center">
-        <app-person-card [person]="periodValue.person" />
+        <app-person-card [person]="periodValue.person" [showNationalities]="true" [textSize]="'text-lg'" [iconContainerWidth]="'width-3rem'" />
+    </div>
+    <div class="flex align-items-center">
+        <div>
+            <div class="flex align-items-center justify-content-center bold text-lg">
+                {{ avgPoints() }}
+            </div>
+            <div class="mt-3">
+                {{ winPercentage() }}
+            </div>
+        </div>
+    </div>
+    <div class="mt-8 mb-4 flex align-items-center justify-content-evenly">
+        <div class="mx-3">
+            <div class="mx-3 center">
+                <div class="flex align-items-center justify-content-center">
+                    <div class="text-lg mb-4 bold py-1 min-w-42">{{ periodValue.summary.gameCount }}</div>
+                </div>
+                <div class="text-xs text-light-grey">{{ gamesI18nPlural() }}</div>
+            </div>
+        </div>
+        <div class="mx-3">
+            <div class="mx-3 center">
+                <div class="flex align-items-center justify-content-center">
+                    <div class="text-lg mb-4 result-tendency-w rounded-lg py-1 min-w-42">{{ periodValue.summary.win }}</div>
+                </div>
+                <div class="text-xs text-light-grey">{{ winsI18nPlural() }}</div>
+            </div>
+        </div>
+        <div class="mx-3">
+            <div class="mx-3 center">
+                <div class="flex align-items-center justify-content-center">
+                    <div class="text-lg mb-4 result-tendency-d rounded-lg py-1 min-w-42">{{ periodValue.summary.draw }}</div>
+                </div>
+                <div class="text-xs text-light-grey">{{ drawsI18nPlural() }}</div>
+            </div>
+        </div>
+        <div class="mx-3">
+            <div class="mx-3 center">
+                <div class="flex align-items-center justify-content-center">
+                    <div class="text-lg mb-4 result-tendency-l rounded-lg py-1 min-w-42">{{ periodValue.summary.loss }}</div>
+                </div>
+                <div class="text-xs text-light-grey">{{ lossesI18nPlural() }}</div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="periodValue.titles.length > 0" class="flex align-items-center mt-8">
+        @for (seasonTitle of periodValue.titles; track seasonTitle.id) {
+            <div class="hover:bg-color-dark-grey-darker px-2 py-1 rounded pointer">
+                <app-season-title-small [item]="seasonTitle" />
+            </div>
+        }
     </div>
 </div>

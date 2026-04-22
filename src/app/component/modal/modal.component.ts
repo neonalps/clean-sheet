@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ModalService } from '@src/app/module/modal/service';
 
@@ -13,6 +13,11 @@ export class ModalComponent {
   private readonly modalService = inject(ModalService);
 
   handleOutsideClick() {
+    this.modalService.outsideClicked();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
     this.modalService.outsideClicked();
   }
 

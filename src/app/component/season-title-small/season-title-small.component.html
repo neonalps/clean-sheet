@@ -1,0 +1,17 @@
+@let seasonTitle = item();
+@let competitionIconValue = competitionIconDescriptor();
+<div class="px-3 py-2">
+    <div class="flex align-items-center justify-content-center">
+        <div class="width-1-75rem" *ngIf="competitionIconValue; else noCompetitionIcon">
+            <app-ui-icon [descriptor]="competitionIconValue" />
+        </div>
+        <ng-template #noCompetitionIcon>
+            <div class="width-md text-lg flex align-items-center justify-content-center">
+                🏆
+            </div>
+        </ng-template>
+    </div>
+    <div class="text-sm text-light-grey mt-3 center">
+        {{ seasonTitle.season.shortName }}
+    </div>
+</div>

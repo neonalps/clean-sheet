@@ -8,6 +8,7 @@ export type GameId = Flavor<number, 'GameId'>;
 export type ManagerPeriodId = Flavor<number, 'ManagerPeriodId'>;
 export type PersonId = Flavor<number, 'PersonId'>;
 export type SeasonId = Flavor<number, 'SeasonId'>;
+export type SeasonTitleId = Flavor<number, 'SeasonTitleId'>;
 export type ToastId = Flavor<string, 'ToastId'>;
 export type VenueId = Flavor<number, 'VenueId'>;
 export type VenueFlavorId = Flavor<number, 'VenueFlavorId'>;

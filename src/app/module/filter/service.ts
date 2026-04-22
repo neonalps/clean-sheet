@@ -10,12 +10,15 @@ type FilterItem<T extends string> = {
 }
 
 export enum GameListFilterType {
-  Competition = 'competition',
-  ComeFromBehindWin = 'comeFromBehindWin',
-  InternationalGame = 'internationalGame',
-  LossAfterLead = 'lossAfterLead',
-  LossInInjuryTime = 'lossInInjuryTime',
-  WinInInjuryTime = 'winInInjuryTime',
+    AwayGame = 'awayGame',
+    Competition = 'competition',
+    ComeFromBehindWin = 'comeFromBehindWin',
+    DomesticGame = 'domesticGame',
+    HomeGame = 'homeGame',
+    InternationalGame = 'internationalGame',
+    LossAfterLead = 'lossAfterLead',
+    LossInInjuryTime = 'lossInInjuryTime',
+    WinInInjuryTime = 'winInInjuryTime',
 };
 
 export type GenericFilterItem = FilterItem<string>;
@@ -32,8 +35,17 @@ export class FilterService {
         for (const filter of filters) {
             const filterType = ensureNotNullish(filter.type);
             switch (filterType) {
+                case GameListFilterType.AwayGame:
+                    filteredResult = filteredResult.filter(item => this.isHomeGame(item, false));
+                    break;
                 case GameListFilterType.ComeFromBehindWin:
                     filteredResult = filteredResult.filter(item => this.isComeFromBehindWin(item));
+                    break;
+                case GameListFilterType.DomesticGame:
+                    filteredResult = filteredResult.filter(item => this.isDomesticGame(item));
+                    break;
+                case GameListFilterType.HomeGame:
+                    filteredResult = filteredResult.filter(item => this.isHomeGame(item, true));
                     break;
                 case GameListFilterType.LossAfterLead:
                     filteredResult = filteredResult.filter(item => this.isLossAfterLead(item));
@@ -71,6 +83,10 @@ export class FilterService {
 
     private winInPso(game: DetailedGame): boolean {
         return isDefined(game.penaltyShootOut) && (game.penaltyShootOut[0] > game.penaltyShootOut[1]);
+    }
+
+    private isDomesticGame(game: DetailedGame): boolean {
+        return game.competition.isDomestic;
     }
 
     private isInternationalGame(game: DetailedGame): boolean {

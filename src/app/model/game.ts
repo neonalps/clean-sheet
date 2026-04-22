@@ -526,3 +526,11 @@ export interface ImportGameResponse {
     success: boolean;
     error?: string;
 }
+
+export interface RecordSummary {
+    gameCount: number;
+    win: number;
+    draw: number;
+    loss: number;
+    avgPointsFixed: string;
+}

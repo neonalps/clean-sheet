@@ -38,15 +38,15 @@ export class GameRecordComponent implements OnInit, OnDestroy {
   }
 
   getWinsText(wins: number) {
-    return this.translationService.translate(`gameRecord.win${wins === 1 ? 'Singular' : 'Plural'}`);
+    return this.translationService.translate(`gameRecord.win`, { plural: wins });
   }
 
   getDrawsText(draws: number) {
-    return this.translationService.translate(`gameRecord.draw${draws === 1 ? 'Singular' : 'Plural'}`);
+    return this.translationService.translate(`gameRecord.draw`, { plural: draws });
   }
 
   getLossesText(losses: number) {
-    return this.translationService.translate(`gameRecord.loss${losses === 1 ? 'Singular' : 'Plural'}`);
+    return this.translationService.translate(`gameRecord.loss`, { plural: losses });
   }
 
 }
