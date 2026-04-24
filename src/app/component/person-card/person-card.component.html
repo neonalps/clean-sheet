@@ -1,7 +1,7 @@
 @let personValue = person();
 @let textSizeValue = textSize();
 <div class="flex align-items-center">
-    <div class="basis-1/10 mr-3 flex align-items-center justify-content-center" *ngIf="personValue.avatar">
+    <div class="basis-1/10 flex align-items-center justify-content-center" [ngClass]="iconMargin()" *ngIf="personValue.avatar">
         <div [ngClass]="iconContainerWidth()">
             <app-ui-icon [descriptor]="{ 'type': 'person', 'content': personValue.avatar }" />
         </div>

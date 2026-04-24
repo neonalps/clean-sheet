@@ -15,6 +15,7 @@ export class PersonCardComponent implements OnInit {
   readonly person = input.required<Person>();
 
   readonly iconContainerWidth = input('width-md');
+  readonly iconMargin = input('mr-2');
   readonly lastNameBold = input(true);
   readonly showNationalities = input(false);
   readonly textSize = input('text-base');

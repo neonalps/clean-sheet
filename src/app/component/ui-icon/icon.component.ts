@@ -28,6 +28,7 @@ import { GoalkeeperGloveComponent } from "@src/app/icon/goalkeeper-glove/goalkee
 import { GoalkeeperGoalComponent } from "@src/app/icon/goalkeeper-goal/goalkeeper-goal.component";
 import { CoffinComponent } from "@src/app/icon/coffin/coffin.component";
 import { CalendarIconComponent } from "@src/app/icon/calendar-icon/calendar-icon.component";
+import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -59,7 +60,8 @@ import { CalendarIconComponent } from "@src/app/icon/calendar-icon/calendar-icon
     GoalkeeperGloveComponent,
     GoalkeeperGoalComponent,
     CoffinComponent,
-    CalendarIconComponent
+    CalendarIconComponent,
+    StadiumIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

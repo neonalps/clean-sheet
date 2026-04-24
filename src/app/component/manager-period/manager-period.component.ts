@@ -6,15 +6,18 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ensureNotNullish, isNotDefined } from '@src/app/util/common';
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { SeasonTitleSmallComponent } from "@src/app/component/season-title-small/season-title-small.component";
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { getNumberOfDaysBetween } from '@src/app/util/date';
 
 @Component({
   selector: 'app-manager-period',
-  imports: [CommonModule, PersonCardComponent, SeasonTitleSmallComponent],
+  imports: [CommonModule, I18nPipe, PersonCardComponent, SeasonTitleSmallComponent],
   templateUrl: './manager-period.component.html',
 })
 export class ManagerPeriodComponent implements OnInit {
 
   readonly avgPoints = signal('');
+  readonly durationDaysText = signal('');
   readonly winPercentage = signal('');
   readonly durationText = signal('');
   readonly personName = signal('');
@@ -43,6 +46,9 @@ export class ManagerPeriodComponent implements OnInit {
 
     const startDate = ensureNotNullish(this.datePipe.transform(new Date(periodValue.start)));
     const endDate = periodValue.end ? this.datePipe.transform(new Date(periodValue.end)) : undefined;
+
+    const durationDays = periodValue.end ? getNumberOfDaysBetween(new Date(periodValue.end), new Date(periodValue.start)) : getNumberOfDaysBetween(new Date(), new Date(periodValue.start));
+    this.durationDaysText.set(`${durationDays} ${this.translationService.translate('duration.day', { plural: durationDays })}`);
 
     if (isNotDefined(periodValue.end)) {
       this.durationText.set(this.translationService.translate('managerPeriod.since', { since: startDate }));

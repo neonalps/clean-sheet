@@ -1,0 +1,47 @@
+@let absencesValue = absences();
+@let suspendedValue = suspended();
+@let injuredValue = injured();
+@let atRiskValue = atRisk();
+@let otherValue = other();
+<div *ngIf="absencesValue.length > 0; else emptyAbsences">
+    <div>
+        <div class="section-title">Gesperrt</div>
+        @for (suspendedItem of suspendedValue; track suspendedItem.id) {
+            <div class="my-3">
+                <app-game-absence [absence]="suspendedItem" />
+            </div>
+        }
+    </div>
+    <div class="pt-3">
+        <div class="section-title">Verletzt</div>
+        <div *ngIf="injuredValue.length > 0; else emptyCategory">
+            @for (injuredItem of injuredValue; track injuredItem.id) {
+            <div class="my-3">
+                <app-game-absence [absence]="injuredItem" />
+            </div>
+        }
+        </div>
+    </div>
+    <div class="pt-6">
+        <div class="section-title">Gefährdet</div>
+        @for (atRiskItem of atRiskValue; track atRiskItem.id) {
+            <div class="my-3">
+                <app-game-absence [absence]="atRiskItem" />
+            </div>
+        }
+    </div>
+    <div class="pt-6" *ngIf="otherValue.length > 0">
+        <div class="section-title">Andere</div>
+        @for (otherItem of otherValue; track otherItem.id) {
+            <div class="my-3">
+                <app-game-absence [absence]="otherItem" />
+            </div>
+        }
+    </div>
+</div>
+<ng-template #emptyAbsences>
+    no abesences
+</ng-template>
+<ng-template #emptyCategory>
+    empty
+</ng-template>

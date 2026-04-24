@@ -1,4 +1,4 @@
-import { DateString } from "@src/app/util/domain-types";
+import { DateString, GameAbsenceId } from "@src/app/util/domain-types";
 import { ClubInput, SmallClub } from "./club";
 import { Competition, CompetitionInput, SmallCompetition } from "./competition";
 import { DetailedPerson, Person, PersonInput } from "./person";
@@ -213,7 +213,32 @@ export interface GameReport {
     referees: GameReferee[];
 }
 
+export enum GameAbsenceType {
+    AtRisk = "atRisk",
+    Exempt = "exempt",
+    Injured = "injured",
+    Suspended = "suspended",
+}
+
+export enum GameAbsenceReason {
+    // exempt
+    Private = "private",
+    // injury
+    // TODO add here
+    // suspension
+    YellowCard = "yellowCard",
+    RedCard = "redCard",
+}
+
+export interface GameAbsence {
+    id: GameAbsenceId;
+    person: Person;
+    type: GameAbsenceType;
+    reason: GameAbsenceReason;
+}
+
 export interface DetailedGame extends BasicGame {
+    absences?: GameAbsence[],
     report: GameReport,
 }
 

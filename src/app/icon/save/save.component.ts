@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
@@ -8,10 +8,9 @@ import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 })
 export class SaveIconComponent {
 
-  @Input() color?: string;
-
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
+  readonly color = input<string | undefined>(undefined);
+  readonly effectiveColor = computed(() => {
+    return this.color() ?? KEYWORD_CURRENT_COLOR;
+  });
 
 }

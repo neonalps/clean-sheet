@@ -145,33 +145,17 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">
+    <div class="game-section px-3 py-2 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">
         @let scheduledAtValue = scheduledAt();
         <div class="pt-2 mb-2" *ngIf="scheduledAtValue !== null">
-            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
-                <div class="mr-2">
-                    <div class="width-xs relative top-2">
-                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'calendar' }" />
-                    </div>
-                </div>
-                <div class="text-light-grey">{{ 'game.originallyScheduledAt' | $t }}</div>
-            </div>
-
-            <div class="p-2">
-                <div class="text-sm">{{ scheduledAtValue | date:'EEE, MMM d YYYY - HH:mm' }}</div>
-            </div>
+            <div class="heading-small">{{ 'game.originallyScheduledAt' | $t }}</div>
+            <div class="text-sm">{{ scheduledAtValue | date:'EEE, MMM d YYYY - HH:mm' }}</div>
         </div>
         <div class="pt-2">
-            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
-                <div class="mr-2">
-                    <div class="width-xs relative top-2">
-                        <app-icon-stadium [color]="colorLightGrey" />
-                    </div>
-                </div>
-                <div class="text-light-grey">{{ 'game.venue' | $t }}</div>
-            </div>
-            <div (click)="onVenueSelected(game!.venue!.id)">
-                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
+            <div class="heading-small">{{ 'game.venue' | $t }}</div>
+            <div>
+                <div (click)="onVenueSelected(game!.venue!.id)"></div>
+                <div class="text-base pointer transition-text hover:text-light-darker-10">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
             </div>
         </div>
         <div class="mt-5" *ngIf="this.game!.attendance !== null && this.game!.attendance !== undefined">
@@ -187,40 +171,28 @@
                 <div class="text-base pl-2">{{ this.game!.attendance | formatNumber }}<span *ngIf="game?.isSoldOut"> ({{ 'game.soldOut' | $t }})</span></div>
             </div>
         </div>
-        <div class="mt-5" *ngIf="getRefereeName() !== null">
-            <div class="uppercase text-sm pl-2 flex align-items-center mb-1">
-                <div class="mr-2">
-                    <div class="width-xs relative top-2">
-                        <app-icon-referee [color]="colorLightGrey" />
-                    </div>
-                </div>
-                <div class="text-light-grey">{{ 'game.referee' | $t }}</div>
-            </div>
+        @let refereeValue = referee();
+        <div class="mt-5" *ngIf="refereeValue !== null">
+            <div class="heading-small">{{ 'game.referee' | $t }}</div>
             <div>
-                <div class="text-base pl-2 pointer transition-text hover:text-light-darker-10" (click)="onRefereeSelected()">
-                    <span class="mr-2">{{ getRefereeName() }}</span>
-                    @let refereeNationalities = getRefereeNationalities();
-                    <ng-container *ngIf="refereeNationalities.length > 0">
-                        @for (country of refereeNationalities; track $index) {
-                            <span [title]="country.title">{{ country.flag }}</span>
-                        }
-                    </ng-container>
+                <div class="text-base pointer transition-text hover:text-light-darker-10" (click)="onRefereeSelected()">
+                    <app-person-card [person]="refereeValue" [lastNameBold]="false" [textSize]="'text-base'" [iconContainerWidth]="'width-2-25rem'" />
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="shouldShowLastGames()">
-        <div class="pt-2">
-            <div class="uppercase text-sm pl-2 flex align-items-center mb-2">
-                <div class="mr-2">
-                    <div class="width-xs relative top-2">
-                        <app-icon-stadium [color]="colorLightGrey" />
-                    </div>
-                </div>
-                <div class="text-light-grey">{{ 'game.headToHead' | $t }}</div>
-            </div>
+    <div class="game-section px-3 py-2 rounded-lg mt-3 mx-3" *ngIf="shouldShowLastGames()">
+        <div class="heading-small">{{ 'game.headToHead' | $t }}</div>
+        <div>
             <app-game-performance-trend [games$]="performanceTrendAgainstClub$" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
+        </div>
+    </div>
+
+    <div class="game-section p-3 rounded-lg mt-3 mx-3">
+        <div class="heading-small">{{ 'game.absentPlayers' | $t }}</div>
+        <div class="pt-3">
+            <app-absence-list [absences]="absentPlayers()" />
         </div>
     </div>
 </ng-template>

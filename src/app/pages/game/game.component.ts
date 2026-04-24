@@ -2,7 +2,7 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
-import { BasicGame, DetailedGame, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameAbsence, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -14,9 +14,7 @@ import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.compon
 import { GameEventsComponent } from "@src/app/component/game-events/game-events.component";
 import { API_FIELD_TRANSLATION_PREFIX, TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
-import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
 import { COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
-import { RefereeIconComponent } from '@src/app/icon/referee/referee.component';
 import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
 import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
@@ -30,7 +28,7 @@ import { GameId, SeasonId, VenueId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
-import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
+import { CountryFlagService } from '@src/app/module/country-flag/service';
 import { ContextMenuSection, ContextMenuComponent, ContextMenuItem } from "@src/app/component/context-menu/context-menu.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
@@ -46,6 +44,8 @@ import { AccountGameInformationService } from '@src/app/module/account/game-info
 import { Person } from '@src/app/model/person';
 import { getDisplayName } from '@src/app/util/domain';
 import { SmallCompetition } from '@src/app/model/competition';
+import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
+import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -60,8 +60,6 @@ export type GameRouteState = {
     TabGroupComponent,
     TabItemComponent,
     GameEventsComponent,
-    RefereeIconComponent,
-    StadiumIconComponent,
     AttendanceIconComponent,
     FormatNumberPipe,
     GameLineupComponent,
@@ -71,7 +69,9 @@ export type GameRouteState = {
     ContextMenuComponent,
     UiIconComponent,
     CheckboxStarComponent,
-    CheckboxEyeComponent
+    CheckboxEyeComponent,
+    AbsenceListComponent,
+    PersonCardComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -98,9 +98,11 @@ export class GameComponent implements OnDestroy {
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
 
+  readonly absentPlayers = signal<GameAbsence[]>([]);
   readonly attendChecked = signal(false);
   readonly starChecked = signal(false);
   readonly isMatchdayTabVisible = signal(true);
+  readonly referee = signal<Person | null>(null);
 
   readonly scheduledAt = signal<Date | null>(null);
 
@@ -258,6 +260,12 @@ export class GameComponent implements OnDestroy {
 
     this.starChecked.set(this.accountGameInformationService.isStarred(this.game.id));
     this.attendChecked.set(this.accountGameInformationService.isAttended(this.game.id));
+
+    this.absentPlayers.set(game.absences ?? []);
+
+    if (game.report.referees && game.report.referees.length > 0) {
+      this.referee.set(game.report.referees[0].person);
+    }
 
     this.scheduledAt.set(isDefined(game.scheduled) ? new Date(game.scheduled) : null);
 
@@ -620,25 +628,6 @@ export class GameComponent implements OnDestroy {
 
   private getResultTendencyClass(tendency: Tendency): string {
     return `result-tendency-${tendency}`;
-  }
-
-  getRefereeName(): string | null {
-    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
-    if (isNotDefined(referee)) {
-      return null;
-    }
-
-    return [referee.person.firstName, referee.person.lastName].filter(item => isDefined(item)).join(' ');
-  }
-
-  getRefereeNationalities(): CountryFlag[] {
-    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
-    if (isNotDefined(referee)) {
-      return []
-    }
-
-    const nationalities = referee.person.nationalities ?? [];
-    return this.countryFlagService.resolveNationalities(nationalities);
   }
 
   triggerNavigateToGame(game: BasicGame) {
