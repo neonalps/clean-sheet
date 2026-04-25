@@ -146,6 +146,7 @@
     </div>
 
     <div class="game-section p-3 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">
+        <div class="heading-small">{{ 'game.generalInformation' | $t }}</div>
         @let scheduledAtValue = scheduledAt();
         <div class="pt-2 mb-2" *ngIf="scheduledAtValue !== null">
             <div class="section-title">{{ 'game.originallyScheduledAt' | $t }}</div>
@@ -169,7 +170,7 @@
             <div class="section-title">{{ 'game.referee' | $t }}</div>
             <div>
                 <div class="text-base pointer transition-text hover:text-light-darker-10" (click)="onRefereeSelected(refereeValue)">
-                    <app-person-card [person]="refereeValue" [lastNameBold]="false" [textSize]="'text-base'" [iconContainerWidth]="'width-2-25rem'" />
+                    <app-person-card [person]="refereeValue" [lastNameBold]="false" [textSize]="'text-base'" [showNationalities]="true" [iconContainerWidth]="'width-2-25rem'" />
                 </div>
             </div>
         </div>

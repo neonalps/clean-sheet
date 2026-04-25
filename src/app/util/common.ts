@@ -17,6 +17,15 @@ export function assertDefined<T>(toCheck: T, errorMessage?: string) {
     }
 }
 
+export function camelToKebab(input: string): string {
+  return input
+    // insert a dash before uppercase letters
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    // handle consecutive uppercase (e.g. "XMLHttpRequest" → "xml-http-request")
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+    .toLowerCase();
+}
+
 export function hasText(toCheck: string | undefined | null): boolean {
     return isDefined(toCheck) && toCheck.trim().length > 0;
 }

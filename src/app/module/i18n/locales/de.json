@@ -139,6 +139,7 @@
     "game.delete": "Spiel löschen",
     "game.directFreeKick": "Direkter Freistoß",
     "game.events": "Spielbericht",
+    "game.generalInformation": "Match Info",
     "game.goal": "Tor",
     "game.home": "Heim",
     "game.isHome": "Heimspiel",

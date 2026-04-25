@@ -1,4 +1,5 @@
 @let absenceValue = absence();
+@let suspensionValue = suspension();
 <div class="flex align-items-center">
     <div class="flex-grow">
         <app-person-card [person]="absenceValue.person" [lastNameBold]="false" [showNationalities]="false" />
@@ -6,15 +7,15 @@
     <div class="flex align-items-center">
         @switch (absenceValue.type) {
             @case ('suspended') {
-                <div class="mr-2">5</div>
+                <div class="mr-2" *ngIf="suspensionValue?.quantity">{{ suspensionValue?.quantity }}</div>
                 <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': suspensionValue?.cause! }" />
                 </div>
             }
             @case ('atRisk') {
-                <div class="mr-2">4</div>
+                <div class="mr-2" *ngIf="suspensionValue?.quantity">{{ suspensionValue?.quantity }}</div>
                 <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': suspensionValue?.cause! }" />
                 </div>
             }
         }
