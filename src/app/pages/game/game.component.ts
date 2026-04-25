@@ -2,7 +2,7 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
-import { BasicGame, DetailedGame, GameAbsence, GameStatus, MatchdayDetails, RefereeRole, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameAbsence, GameStatus, MatchdayDetails, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -15,7 +15,6 @@ import { GameEventsComponent } from "@src/app/component/game-events/game-events.
 import { API_FIELD_TRANSLATION_PREFIX, TranslationService } from '@src/app/module/i18n/translation.service';
 import { environment } from '@src/environments/environment';
 import { COLOR_GOLD, COLOR_LIGHT_GREY } from '@src/styles/constants';
-import { AttendanceIconComponent } from "@src/app/icon/attendance/attendance.component";
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
 import { getNumberOfDaysBetween, isToday } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -28,7 +27,6 @@ import { GameId, SeasonId, VenueId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
-import { CountryFlagService } from '@src/app/module/country-flag/service';
 import { ContextMenuSection, ContextMenuComponent, ContextMenuItem } from "@src/app/component/context-menu/context-menu.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
@@ -60,7 +58,6 @@ export type GameRouteState = {
     TabGroupComponent,
     TabItemComponent,
     GameEventsComponent,
-    AttendanceIconComponent,
     FormatNumberPipe,
     GameLineupComponent,
     TrophyIconComponent,
@@ -122,7 +119,6 @@ export class GameComponent implements OnDestroy {
   private readonly starGameUpdate$ = new Subject<boolean>();
   private readonly attendGameUpdate$ = new Subject<boolean>(); 
 
-  private readonly countryFlagService = inject(CountryFlagService);
   private readonly viewportScroller = inject(ViewportScroller);
 
   private readonly accountGameInformationService = inject(AccountGameInformationService);
@@ -340,13 +336,8 @@ export class GameComponent implements OnDestroy {
     }
   }
 
-  onRefereeSelected() {
-    const referee = this.game!.report.referees.find(item => item.role === RefereeRole.Referee);
-    if (isNotDefined(referee)) {
-      return;
-    }
-
-    this.onPersonSelected(referee.person);
+  onRefereeSelected(person: Person) {
+    this.onPersonSelected(person);
   }
 
   onGamePlayerSelected(player: UiGamePlayer) {

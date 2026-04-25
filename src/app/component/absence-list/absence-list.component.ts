@@ -3,10 +3,11 @@ import { GameAbsence, GameAbsenceType } from '@src/app/model/game';
 import { GameAbsenceComponent } from "@src/app/component/game-absence/game-absence.component";
 import { CommonModule } from '@angular/common';
 import { assertUnreachable } from '@src/app/util/common';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-absence-list',
-  imports: [CommonModule, GameAbsenceComponent],
+  imports: [CommonModule, GameAbsenceComponent, I18nPipe],
   templateUrl: './absence-list.component.html'
 })
 export class AbsenceListComponent implements OnInit {

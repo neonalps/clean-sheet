@@ -1,6 +1,22 @@
 @let absenceValue = absence();
 <div class="flex align-items-center">
-    <div>
+    <div class="flex-grow">
         <app-person-card [person]="absenceValue.person" [lastNameBold]="false" [showNationalities]="false" />
+    </div>
+    <div class="flex align-items-center">
+        @switch (absenceValue.type) {
+            @case ('suspended') {
+                <div class="mr-2">5</div>
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                </div>
+            }
+            @case ('atRisk') {
+                <div class="mr-2">4</div>
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                </div>
+            }
+        }
     </div>
 </div>

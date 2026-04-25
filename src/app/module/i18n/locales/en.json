@@ -1,4 +1,5 @@
 {
+    "absences.none": "None",
     "account.profileUpdate.success": "The account was updated successfully",
     "account.profileUpdate.failure": "The account update failed",
     "action.apply": "Apply",
@@ -140,10 +141,10 @@
     "game.directFreeKick": "Direct free kick",
     "game.events": "Game events",
     "game.goal": "Goal",
-    "game.headToHead": "Head-to-head",
     "game.home": "Home",
     "game.isHome": "Home game",
     "game.isSoldOut": "Sold out",
+    "game.lastMeetings": "Last meetings",
     "game.leg.1": "First leg",
     "game.leg.2": "Second leg",
     "game.lineup": "Lineup",

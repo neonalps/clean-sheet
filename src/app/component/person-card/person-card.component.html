@@ -1,6 +1,6 @@
 @let personValue = person();
 @let textSizeValue = textSize();
-<div class="flex align-items-center">
+<div class="flex align-items-center" [ngClass]="clickable() ? 'pointer hover:text-light-grey-darker transition-colors'  : ''" (click)="handleClick()">
     <div class="basis-1/10 flex align-items-center justify-content-center" [ngClass]="iconMargin()" *ngIf="personValue.avatar">
         <div [ngClass]="iconContainerWidth()">
             <app-ui-icon [descriptor]="{ 'type': 'person', 'content': personValue.avatar }" />
