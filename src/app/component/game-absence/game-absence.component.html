@@ -2,10 +2,13 @@
 @let suspensionValue = suspension();
 <div class="flex align-items-center">
     <div class="flex-grow">
-        <app-person-card [person]="absenceValue.person" [lastNameBold]="false" [showNationalities]="false" />
+        <app-person-card [person]="absenceValue.person" [lastNameBold]="false" [showNationalities]="false" [clickable]="true" (onClick)="personClicked()" />
     </div>
     <div class="flex align-items-center">
         @switch (absenceValue.type) {
+            @case ('injured') {
+                <div class="text-sm">{{ reasonText() }}</div>
+            }
             @case ('suspended') {
                 <div class="mr-2" *ngIf="suspensionValue?.quantity">{{ suspensionValue?.quantity }}</div>
                 <div class="width-xs">
@@ -17,6 +20,9 @@
                 <div class="width-xs">
                     <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': suspensionValue?.cause! }" />
                 </div>
+            }
+            @case ('exempt') {
+                <div class="text-sm">{{ reasonText() }}</div>
             }
         }
     </div>

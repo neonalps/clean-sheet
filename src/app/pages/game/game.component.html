@@ -162,7 +162,7 @@
         <div class="mt-5" *ngIf="this.game!.attendance !== null && this.game!.attendance !== undefined">
             <div class="section-title">{{ 'game.attendance' | $t }}</div>
             <div>
-                <div class="text-base pl-2">{{ this.game!.attendance | formatNumber }}<span *ngIf="game?.isSoldOut"> ({{ 'game.soldOut' | $t }})</span></div>
+                <div class="text-base">{{ this.game!.attendance | formatNumber }}<span *ngIf="game?.isSoldOut"> ({{ 'game.soldOut' | $t }})</span></div>
             </div>
         </div>
         @let refereeValue = referee();

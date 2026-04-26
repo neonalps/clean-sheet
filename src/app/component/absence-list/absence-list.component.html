@@ -5,42 +5,42 @@
 @let otherValue = other();
 <div *ngIf="absencesValue.length > 0; else emptyAbsences">
     <div>
-        <div class="section-title">Gesperrt</div>
+        <div class="section-title">{{ 'absence.suspended' | $t }}</div>
         @for (suspendedItem of suspendedValue; track suspendedItem.id) {
             <div class="my-3">
-                <app-game-absence [absence]="suspendedItem" />
+                <app-game-absence [absence]="suspendedItem" (onPersonClick)="onPersonClicked($event)" />
             </div>
         }
     </div>
     <div class="pt-3">
-        <div class="section-title">Verletzt</div>
+        <div class="section-title">{{ 'absence.injured' | $t }}</div>
         <div *ngIf="injuredValue.length > 0; else emptyCategory">
             @for (injuredItem of injuredValue; track injuredItem.id) {
             <div class="my-3">
-                <app-game-absence [absence]="injuredItem" />
+                <app-game-absence [absence]="injuredItem" (onPersonClick)="onPersonClicked($event)" />
             </div>
         }
         </div>
     </div>
-    <div class="pt-6">
-        <div class="section-title">Gefährdet</div>
-        @for (atRiskItem of atRiskValue; track atRiskItem.id) {
+    <div class="pt-6" *ngIf="otherValue.length > 0">
+        <div class="section-title">{{ 'absence.other' | $t }}</div>
+        @for (otherItem of otherValue; track otherItem.id) {
             <div class="my-3">
-                <app-game-absence [absence]="atRiskItem" />
+                <app-game-absence [absence]="otherItem" (onPersonClick)="onPersonClicked($event)" />
             </div>
         }
     </div>
-    <div class="pt-6" *ngIf="otherValue.length > 0">
-        <div class="section-title">Andere</div>
-        @for (otherItem of otherValue; track otherItem.id) {
+    <div class="pt-6">
+        <div class="section-title">{{ 'absence.atRisk' | $t }}</div>
+        @for (atRiskItem of atRiskValue; track atRiskItem.id) {
             <div class="my-3">
-                <app-game-absence [absence]="otherItem" />
+                <app-game-absence [absence]="atRiskItem" (onPersonClick)="onPersonClicked($event)" />
             </div>
         }
     </div>
 </div>
 <ng-template #emptyAbsences>
-    no abesences
+    {{ 'absences.none' | $t }}
 </ng-template>
 <ng-template #emptyCategory>
     <div class="flex align-items-center justify-content-start">
