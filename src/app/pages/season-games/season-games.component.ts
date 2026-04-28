@@ -21,6 +21,7 @@ import { ModalService } from '@src/app/module/modal/service';
 import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
 import { FilterService, GameListFilterItem } from '@src/app/module/filter/service';
 import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 export type VisibleSeasonGames = {
   past: DetailedGame[];
@@ -64,6 +65,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     appliedFilters: 0,
   });
 
+  readonly currentlyShowingText = signal('');
   readonly gameListFilters = signal<GameListFilterItem[]>([]);
 
   private readonly seasonGames = signal<DetailedGame[]>([]);
@@ -79,6 +81,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly seasonService = inject(SeasonService);
   private readonly seasonGamesService = inject(SeasonGamesService);
+  private readonly translationService = inject(TranslationService);
   private readonly viewportScroller = inject(ViewportScroller);
 
   private readonly destroy$ = new Subject<void>();
@@ -258,11 +261,20 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       }
     }
 
+    const filteredCount = currentGameListFilters.length > 0 ? filteredGames.length : undefined;
+    const totalCount = currentSeasonGames.length;
+
+    if (filteredCount !== undefined) {
+      this.currentlyShowingText.set(this.translationService.translate(`list.currentlyShowingGames`, { filteredCount, totalCount }))
+    } else {
+      this.currentlyShowingText.set('');
+    }
+
     this.visibleSeasonGames.set({
       past,
       upcoming,
-      filteredCount: currentGameListFilters.length > 0 ? filteredGames.length : undefined,
-      totalCount: currentSeasonGames.length,
+      filteredCount: filteredCount,
+      totalCount: totalCount,
       appliedFilters: currentGameListFilters.length,
     });
   }

@@ -149,6 +149,7 @@ export class GameComponent implements OnDestroy {
       .subscribe(value => {
         if (value instanceof NavigationEnd) {
           this.lastGamesAvailable.next(false);
+          this.referee.set(null);
           this.loadGameDetails();
         }
       });
