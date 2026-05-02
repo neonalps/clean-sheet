@@ -4,7 +4,7 @@
     <div content>
         <div>
             <ng-container *ngIf="currentAbsencesValue.length > 0; else loadAbsencesSection">
-                <app-absence-list [absences]="currentAbsencesValue" />
+                <app-absence-list-editor [absences]="currentAbsencesValue" [activeSquad]="activeSquadMembers()" />
             </ng-container>
             <ng-template #loadAbsencesSection>
                 <app-button [buttonType]="'action'" [text]="'action.loadPotentialAbsences' | $t" (onClicked)="loadPotentialAbsences()" />

@@ -11,6 +11,7 @@ import { ensureNotNullish } from '@src/app/util/common';
 import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 import { SquadService } from '@src/app/module/squad/service';
 import { SmallPerson } from '@src/app/model/person';
+import { AbsenceListEditorComponent } from "../absence-list-editor/absence-list-editor.component";
 
 export type EditGameAbsencesPayload = {
   game: DetailedGame;
@@ -22,15 +23,15 @@ export type EditGameAbsencesSuccessPayload = {
 
 @Component({
   selector: 'app-modal-edit-game-absences',
-  imports: [CommonModule, I18nPipe, ModalComponent, ButtonComponent, AbsenceListComponent],
+  imports: [CommonModule, I18nPipe, ModalComponent, ButtonComponent, AbsenceListEditorComponent],
   templateUrl: './modal-edit-game-absences.component.html'
 })
 export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
 
   readonly input = signal<EditGameAbsencesPayload | null>(null);
+  
+  readonly activeSquadMembers = signal<SmallPerson[]>([]);
   readonly currentAbsences = signal<GameAbsence[]>([]);
-
-  private readonly activeSquadMembers = signal<SmallPerson[]>([]);
 
   private readonly gameAbsenceService = inject(GameAbsenceService);
   private readonly modalService = inject(ModalService);
