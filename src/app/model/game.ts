@@ -4,6 +4,7 @@ import { Competition, CompetitionInput, SmallCompetition } from "./competition";
 import { DetailedPerson, Person, PersonInput } from "./person";
 import { Season } from "./season";
 import { GameVenue, VenueInput } from "./venue";
+import { OmitStrict } from "@src/app/util/types";
 
 export enum GameStatus {
     Finished = "Finished",
@@ -238,6 +239,8 @@ export interface GameAbsence {
     type: GameAbsenceType;
     reason: GameAbsenceReason;
 }
+
+export type PotentialGameAbsence = OmitStrict<GameAbsence, 'id'>;
 
 export interface DetailedGame extends BasicGame {
     absences?: GameAbsence[],

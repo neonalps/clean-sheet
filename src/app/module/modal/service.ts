@@ -1,6 +1,7 @@
 import { Injectable, signal } from "@angular/core";
 import { CompetitionFilterPayload } from "@src/app/component/modal-competition-filter/modal-competition-filter.component";
 import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
+import { EditGameAbsencesPayload } from "@src/app/component/modal-edit-game-absences/modal-edit-game-absences.component";
 import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
@@ -16,6 +17,7 @@ export enum Modal {
     CompetitionFilter = 'competitionFilter',
     ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
+    EditGameAbsences = 'editGameAbsences',
     FilterGameList = 'filterGameList',
     Shirt = 'shirt',
     Stats = 'stats',
@@ -32,6 +34,7 @@ export class ModalService {
     readonly competitionFilterModalPayload$ = new Subject<CompetitionFilterPayload>();
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
+    readonly editGameAbsencesModalPayload$ = new Subject<EditGameAbsencesPayload>();
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
@@ -48,6 +51,10 @@ export class ModalService {
 
     showDeleteModal(payload: void): Observable<ModalEvent> {
         return this.showModal(Modal.Delete, payload);
+    }
+
+    showEditGameAbsencesModal(payload: EditGameAbsencesPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.EditGameAbsences, payload);
     }
 
     showFilterGameListModal(payload: FilterGameListPayload): Observable<ModalEvent> {
@@ -122,6 +129,9 @@ export class ModalService {
                 break;
             case Modal.Delete:
                 this.deleteModalPayload$.next();
+                break;
+            case Modal.EditGameAbsences:
+                this.editGameAbsencesModalPayload$.next(payload as EditGameAbsencesPayload);
                 break;
             case Modal.FilterGameList:
                 this.filterGameListPayload$.next(payload as FilterGameListPayload);

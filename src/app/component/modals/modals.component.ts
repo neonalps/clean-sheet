@@ -8,10 +8,11 @@ import { ModalSelectShirtComponent } from '@src/app/component/modal-select-shirt
 import { ModalConfirmAddPersonComponent } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
 import { ModalGameListFilterComponent } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ModalCompetitionFilterComponent } from "@src/app/component/modal-competition-filter/modal-competition-filter.component";
+import { ModalEditGameAbsencesComponent } from "@src/app/component/modal-edit-game-absences/modal-edit-game-absences.component";
 
 @Component({
   selector: 'app-modals',
-  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent, ModalGameListFilterComponent, ModalCompetitionFilterComponent],
+  imports: [CommonModule, DeleteModalComponent, ModalSelectShirtComponent, StatsModalComponent, ModalConfirmAddPersonComponent, ModalGameListFilterComponent, ModalCompetitionFilterComponent, ModalEditGameAbsencesComponent],
   templateUrl: './modals.component.html',
   styleUrl: './modals.component.css'
 })
@@ -46,6 +47,10 @@ export class ModalsComponent implements OnInit, OnDestroy {
 
   isDeleteModalActive() {
     return this.modalService.modalType() === Modal.Delete;
+  }
+
+  isEditGameAbsencesModalActive() {
+    return this.modalService.modalType() === Modal.EditGameAbsences;
   }
 
   isFilterGameListModalActive() {

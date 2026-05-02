@@ -184,7 +184,10 @@
     </div>
 
     <div class="game-section p-3 rounded-lg mt-3 mx-3 mb-4">
-        <div class="heading-small">{{ 'game.absentPlayers' | $t }}</div>
+        <div class="flex justify-content-between">
+            <div class="heading-small">{{ 'game.absentPlayers' | $t }}</div>
+            <div *appHasRole="'manager'" class="text-xs text-light-grey hover:text-light pointer transition-colors" (click)="openEditAbsencesModal()">{{ 'action.edit' | $t }}</div>
+        </div>
         <div class="pt-3">
             <app-absence-list [absences]="absentPlayers()" />
         </div>

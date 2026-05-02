@@ -44,6 +44,7 @@ import { getDisplayName } from '@src/app/util/domain';
 import { SmallCompetition } from '@src/app/model/competition';
 import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
+import { HasRoleDirective } from '@src/app/module/auth/has-role.directive';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -68,7 +69,8 @@ export type GameRouteState = {
     CheckboxStarComponent,
     CheckboxEyeComponent,
     AbsenceListComponent,
-    PersonCardComponent
+    PersonCardComponent,
+    HasRoleDirective,
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -612,6 +614,18 @@ export class GameComponent implements OnDestroy {
 
     const aggregateTendency: Tendency = aggregateScore[0] > aggregateScore[1] ? 'w' : aggregateScore[1] > aggregateScore[0] ? 'l' : 'd';
     return this.getResultTendencyClass(aggregateTendency);
+  }
+
+  openEditAbsencesModal() {
+    this.modalService.showEditGameAbsencesModal({ game: ensureNotNullish(this.game) })
+      .pipe(
+        filter(event => event.type === 'confirm'),
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: () => {
+          console.log('edit game absences now');
+        },
+      });
   }
 
   shouldShowLastGames(): boolean {
