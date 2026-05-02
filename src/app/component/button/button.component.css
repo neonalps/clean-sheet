@@ -39,6 +39,11 @@
   color: var(--light-grey);
 }
 
+.button-action {
+  background-color: var(--info);
+  color: var(--light);
+}
+
 .button-disabled {
   pointer-events: none;
   background-color: var(--dark-grey-lighter-2);
@@ -48,6 +53,10 @@
 @media (hover: hover) {
     .button-danger:hover {
         background-color: var(--danger-lighter-30);
+    }
+
+    .button-action:hover {
+        background-color: var(--info-darker-20);
     }
 
     .button-secondary:hover {

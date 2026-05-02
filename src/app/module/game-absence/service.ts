@@ -17,7 +17,7 @@ export class GameAbsenceService {
     private readonly http = inject(HttpClient);
 
     getPotentialAbsencesForGame(gameId: GameId): Observable<PotentialGameAbsenceResponse> {
-        return this.http.get<PotentialGameAbsenceResponse>(`${environment.apiBaseUrl}/v1/games/${gameId}`);
+        return this.http.get<PotentialGameAbsenceResponse>(`${environment.apiBaseUrl}/v1/games/${gameId}/potential-absences`);
     }
 
 }

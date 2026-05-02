@@ -15,6 +15,7 @@
     "action.remove": "Remove",
     "action.save": "Save",
     "action.deleteUser": "Delete user",
+    "action.loadPotentialAbsences": "Load potential absences",
     "applicationStats.accountCount.singular": "Account",
     "applicationStats.accountCount.plural": "Accounts",
     "applicationStats.gameCount.singular": "Game",

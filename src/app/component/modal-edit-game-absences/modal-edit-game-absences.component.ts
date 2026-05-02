@@ -6,7 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { ModalComponent } from "@src/app/component/modal/modal.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from "../button/button.component";
+import { ButtonComponent } from "@src/app/component/button/button.component";
+import { ensureNotNullish } from '@src/app/util/common';
+import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 
 export type EditGameAbsencesPayload = {
   game: DetailedGame;
@@ -18,7 +20,7 @@ export type EditGameAbsencesSuccessPayload = {
 
 @Component({
   selector: 'app-modal-edit-game-absences',
-  imports: [CommonModule, I18nPipe, ModalComponent, ButtonComponent],
+  imports: [CommonModule, I18nPipe, ModalComponent, ButtonComponent, AbsenceListComponent],
   templateUrl: './modal-edit-game-absences.component.html'
 })
 export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
@@ -54,6 +56,23 @@ export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
     this.modalService.onConfirm({
       absences: [],
     } satisfies EditGameAbsencesSuccessPayload);
+  }
+
+  loadPotentialAbsences() {
+    this.gameAbsenceService.getPotentialAbsencesForGame(this.requireInput().game.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: result => {
+          this.currentAbsences.set(result.potential.map((item, idx) => ({ ...item, id: idx })));
+        },
+        error: err => {
+          console.error(err);
+        }
+      })
+  }
+
+  private requireInput(): EditGameAbsencesPayload {
+    return ensureNotNullish(this.input());
   }
 
 }

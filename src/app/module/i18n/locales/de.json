@@ -15,6 +15,7 @@
     "action.remove": "Entfernen",
     "action.save": "Speichern",
     "action.deleteUser": "Benutzer löschen",
+    "action.loadPotentialAbsences": "Lade fehlende Spieler",
     "applicationStats.accountCount.singular": "Benutzer",
     "applicationStats.accountCount.plural": "Benutzer",
     "applicationStats.gameCount.singular": "Spiel",
