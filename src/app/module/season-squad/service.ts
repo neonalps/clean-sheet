@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { OverallPosition, SquadMember } from "@src/app/model/squad";
 import { SeasonId } from "@src/app/util/domain-types";
 import { environment } from "@src/environments/environment";
@@ -14,7 +14,7 @@ export type GetSeasonSquadResponse = {
 })
 export class SeasonSquadService {
 
-    constructor(private http: HttpClient) { }
+    private readonly http = inject(HttpClient);
 
     getSquadBySeasonId(seasonId: SeasonId): Observable<GetSeasonSquadResponse> {
         return this.http.get<GetSeasonSquadResponse>(`${environment.apiBaseUrl}/v1/seasons/${seasonId}/squad`);

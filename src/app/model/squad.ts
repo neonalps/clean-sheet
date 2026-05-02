@@ -1,4 +1,4 @@
-import { DetailedPerson } from "./person";
+import { DetailedPerson, SmallPerson } from "./person";
 
 export enum OverallPosition {
     Goalkeeper = "goalkeeper",
@@ -14,4 +14,8 @@ export interface SquadMember {
     from?: string;
     to?: string;
     loan?: boolean;
+}
+
+export interface GetActiveSquadResponse {
+    activeSquadMembers: SmallPerson[];
 }

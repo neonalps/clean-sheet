@@ -11,6 +11,13 @@ export interface Person {
     nationalities?: string[];
 }
 
+export interface SmallPerson {
+    id: PersonId;
+    lastName: string;
+    firstName?: string;
+    avatar?: string;
+}
+
 export interface DetailedPerson {
     id: PersonId;
     lastName: string;

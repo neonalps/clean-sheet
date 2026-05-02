@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { ensureNotNullish } from '@src/app/util/common';
 import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
+import { SquadService } from '@src/app/module/squad/service';
+import { SmallPerson } from '@src/app/model/person';
 
 export type EditGameAbsencesPayload = {
   game: DetailedGame;
@@ -28,8 +30,11 @@ export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
   readonly input = signal<EditGameAbsencesPayload | null>(null);
   readonly currentAbsences = signal<GameAbsence[]>([]);
 
+  private readonly activeSquadMembers = signal<SmallPerson[]>([]);
+
   private readonly gameAbsenceService = inject(GameAbsenceService);
   private readonly modalService = inject(ModalService);
+  private readonly squadService = inject(SquadService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -41,6 +46,12 @@ export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
 
         this.currentAbsences.set(payload.game.absences ?? []);
       });
+
+    this.squadService.activeSquad$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(activeSquad => this.activeSquadMembers.set(activeSquad));
+
+    this.squadService.fetch();
   }
 
   ngOnDestroy(): void {
@@ -54,7 +65,7 @@ export class ModalEditGameAbsencesComponent implements OnInit, OnDestroy {
 
   onConfirm() {
     this.modalService.onConfirm({
-      absences: [],
+      absences: this.currentAbsences(),
     } satisfies EditGameAbsencesSuccessPayload);
   }
 

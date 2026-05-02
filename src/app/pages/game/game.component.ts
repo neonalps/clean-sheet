@@ -45,6 +45,7 @@ import { SmallCompetition } from '@src/app/model/competition';
 import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { HasRoleDirective } from '@src/app/module/auth/has-role.directive';
+import { EditGameAbsencesSuccessPayload } from '@src/app/component/modal-edit-game-absences/modal-edit-game-absences.component';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -620,10 +621,12 @@ export class GameComponent implements OnDestroy {
     this.modalService.showEditGameAbsencesModal({ game: ensureNotNullish(this.game) })
       .pipe(
         filter(event => event.type === 'confirm'),
+        map(event => event.value),
         takeUntil(this.destroy$)
       ).subscribe({
-        next: () => {
-          console.log('edit game absences now');
+        next: (value) => {
+          const absencesToSave = value as EditGameAbsencesSuccessPayload;
+          console.log('save game absences now', absencesToSave);
         },
       });
   }
