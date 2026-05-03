@@ -179,6 +179,8 @@
     "game.yellowCard": "Gelbe Karte",
     "game.yellowRedCard": "Gelb-Rote Karte",
     "game.redCard": "Rote Karte",
+    "gameAbsences.update.success": "Die fehlenden Spieler wurden erfolgreich aktualisiert",
+    "gameAbsences.update.error": "Die fehlenden Spieler konnten nicht aktualisiert werden",
     "games.all": "Alle Spiele",
     "games.upcoming": "Anstehende Spiele",
     "gameCreate.success": "Das Spiel wurde erfolgreich angelegt",

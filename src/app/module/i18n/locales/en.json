@@ -180,6 +180,8 @@
     "game.yellowCard": "Yellow card",
     "game.yellowRedCard": "Yellow-red card",
     "game.redCard": "Red card",
+    "gameAbsences.update.success": "The game absences were updated successfully",
+    "gameAbsences.update.error": "The game absences could not be updated",
     "games.all": "All games",
     "games.upcoming": "Upcoming games",
     "gameCreate.success": "The game was successfully created",

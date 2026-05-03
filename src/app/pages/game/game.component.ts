@@ -46,6 +46,7 @@ import { AbsenceListComponent } from "@src/app/component/absence-list/absence-li
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { HasRoleDirective } from '@src/app/module/auth/has-role.directive';
 import { EditGameAbsencesSuccessPayload } from '@src/app/component/modal-edit-game-absences/modal-edit-game-absences.component';
+import { GameAbsenceService } from '@src/app/module/game-absence/service';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -128,6 +129,7 @@ export class GameComponent implements OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly clubResolver = inject(ClubResolver);
   private readonly gameService = inject(GameService);
+  private readonly gameAbsenceService = inject(GameAbsenceService);
   private readonly gameResolver = inject(GameResolver);
   private readonly matchdayDetailsService = inject(MatchdayDetailsService);
   private readonly gameMinuteFormatter = inject(GameMinuteFormatter);
@@ -618,16 +620,29 @@ export class GameComponent implements OnDestroy {
   }
 
   openEditAbsencesModal() {
+    const previousGameAbsenceValue = this.absentPlayers();
     this.modalService.showEditGameAbsencesModal({ game: ensureNotNullish(this.game) })
       .pipe(
         filter(event => event.type === 'confirm'),
         map(event => event.value),
+        switchMap(value => {
+          const absencesToSave = value as EditGameAbsencesSuccessPayload;
+          
+          // optimistically update the UI immediately
+          this.absentPlayers.set([...absencesToSave.absences]);
+
+          return this.gameAbsenceService.storeAbsencesForGame(ensureNotNullish(this.game).id, absencesToSave.absences);
+        }),
         takeUntil(this.destroy$)
       ).subscribe({
-        next: (value) => {
-          const absencesToSave = value as EditGameAbsencesSuccessPayload;
-          console.log('save game absences now', absencesToSave);
+        next: () => {
+          this.toastService.addToast({ type: 'success', text: this.translationService.translate(`gameAbsences.update.success`) });
         },
+        error: err => {
+          console.error(err);
+          this.toastService.addToast({ type: 'error', text: this.translationService.translate(`gameAbsences.update.error`) });
+          this.absentPlayers.set(previousGameAbsenceValue);
+        }
       });
   }
 

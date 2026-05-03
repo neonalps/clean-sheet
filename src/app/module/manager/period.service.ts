@@ -39,7 +39,6 @@ export class ManagerPeriodService implements OnDestroy {
     }
 
     private onManagerPeriodsUpdate(periods: ManagerPeriod[]) {
-        console.log('received manager periods update', periods);
         this.currentManagerPeriods.set(periods);
     }
 
