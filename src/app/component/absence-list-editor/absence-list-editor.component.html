@@ -1,43 +1,5 @@
-@let editorState = state();
 <div>
-    <div>
-        <div class="section-title">{{ 'absence.injured' | $t }}</div>
-        <div *ngIf="editorState.injured.length > 0; else emptyCategory">
-            @for (injuredItem of editorState.injured; track injuredItem.id) {
-            <div class="my-3">
-                <app-game-absence [absence]="injuredItem" />
-            </div>
-        }
-        </div>
-    </div>
-    <div class="pt-4">
-        <div class="section-title">{{ 'absence.suspended' | $t }}</div>
-        <div *ngIf="editorState.suspended.length > 0; else emptyCategory">
-            @for (suspendedItem of editorState.suspended; track suspendedItem.id) {
-                <div class="my-3">
-                    <app-game-absence [absence]="suspendedItem" />
-                </div>
-            }
-        </div>
-    </div>
-    <div class="pt-4" *ngIf="editorState.other.length > 0">
-        <div class="section-title">{{ 'absence.other' | $t }}</div>
-        @for (otherItem of editorState.other; track otherItem.id) {
-            <div class="my-3">
-                <app-game-absence [absence]="otherItem" />
-            </div>
-        }
-    </div>
-    <div class="pt-4">
-        <div class="section-title">{{ 'absence.atRisk' | $t }}</div>
-        <div *ngIf="editorState.atRisk.length > 0; else emptyCategory">
-            @for (atRiskItem of editorState.atRisk; track atRiskItem.id) {
-                <div class="my-3">
-                    <app-game-absence [absence]="atRiskItem" />
-                </div>
-            }
-        </div>
-    </div>
+    
 </div>
 <ng-template #emptyCategory>
     <div class="flex align-items-center justify-content-start my-3">

@@ -8,10 +8,9 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { ensureNotNullish } from '@src/app/util/common';
-import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 import { SquadService } from '@src/app/module/squad/service';
 import { SmallPerson } from '@src/app/model/person';
-import { AbsenceListEditorComponent } from "../absence-list-editor/absence-list-editor.component";
+import { AbsenceListEditorComponent } from "@src/app/component/absence-list-editor/absence-list-editor.component";
 
 export type EditGameAbsencesPayload = {
   game: DetailedGame;
