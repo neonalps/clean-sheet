@@ -21,7 +21,7 @@ export class ButtonComponent {
 
   @Output() onClicked = new EventEmitter<void>();
 
-  enabled = input<boolean>(true);
+  readonly enabled = input<boolean>(true);
 
   onClick() {
     this.onClicked.next();

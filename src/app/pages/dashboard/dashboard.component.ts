@@ -3,7 +3,7 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { DashboardResponse, RankedPersonItem } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
-import { BehaviorSubject, Subject, take, takeUntil } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
@@ -16,11 +16,13 @@ import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.compon
 import { AuthService } from '@src/app/module/auth/service';
 import { ChipGroupInput } from '@src/app/component/chip-group/chip-group.component';
 import { Chip } from '@src/app/component/chip/chip.component';
-import { processTranslationPlaceholders } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { PlayerRankingComponent } from "@src/app/component/player-ranking/player-ranking.component";
 import { Person } from '@src/app/model/person';
-import { getDisplayName } from '@src/app/util/domain';
+import { getDisplayName, getOrderedCompetitionIds } from '@src/app/util/domain';
+import { CompetitionService } from '@src/app/module/competition/service';
+import { BasicCompetition } from '@src/app/model/competition';
+import { ensureNotNullish } from '@src/app/util/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,6 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly topScorersRanking$ = new BehaviorSubject<RankedPersonItem[]>([]);
 
   private readonly authService = inject(AuthService);
+  private readonly competitionService = inject(CompetitionService);
   private readonly dashboardResolver = inject(DashboardResolver);
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
@@ -87,9 +90,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private resolveDashboard() {
-    this.dashboardResolver.getDashboard().pipe(take(1)).subscribe({
-      next: dashboard => {
-        this.onDashboardResolved(dashboard);
+    combineLatest([
+      this.dashboardResolver.getDashboard(),
+      this.competitionService.getOrderedCompetitionsFromCache(),
+    ]).subscribe({
+      next: ([dashboardResponse, orderedCompetitions]) => {
+        this.onDashboardResolved(dashboardResponse, orderedCompetitions);
       },
       error: err => {
         // TODO show error
@@ -99,7 +105,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private onDashboardResolved(response: DashboardResponse) {
+  private onDashboardResolved(response: DashboardResponse, orderedCompetitions: BasicCompetition[]) {
     this.dashboard = response;
     this.isLoading.set(false);
 
@@ -112,25 +118,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     if (this.dashboard.topScorers?.competitions && this.dashboard.topScorers.competitions.length > 1) {
+      const orderedCompetitionIds = getOrderedCompetitionIds(this.dashboard.topScorers.competitions.map(item => item.id), orderedCompetitions);
+
+      const competitionChips: Chip[] = [];
+      for (const competitionId of orderedCompetitionIds) {
+        const topScorerCompetition = ensureNotNullish(this.dashboard.topScorers.competitions.find(item => item.id === competitionId));
+        competitionChips.push({
+          value: topScorerCompetition.id,
+          selected: false,
+          displayIcon: topScorerCompetition.iconSmall ? {
+              type: 'competition',
+              content: topScorerCompetition.iconSmall,
+            } : undefined,
+        })
+      }
+
       const chips: Chip[] = [
         { value: 'all', displayText: this.translationService.translate('competitions.all'), selected: true,  },
-        ...this.dashboard.topScorers.competitions.map(item => {
-          const competitionShortName = processTranslationPlaceholders(item.shortName, this.translationService);
-          const competitionChip: Chip = {
-            value: item.id,
-            //displayText: competitionShortName,
-            selected: false,
-          }
-
-          if (item.iconSmall) {
-            competitionChip.displayIcon = {
-              type: 'competition',
-              content: item.iconSmall,
-            }
-          }
-
-          return competitionChip;
-        }),
+        ...competitionChips,
       ]
 
       this.competitionChips$.next({

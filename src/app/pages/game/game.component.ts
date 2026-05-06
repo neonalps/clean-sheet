@@ -45,8 +45,12 @@ import { SmallCompetition } from '@src/app/model/competition';
 import { AbsenceListComponent } from "@src/app/component/absence-list/absence-list.component";
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { HasRoleDirective } from '@src/app/module/auth/has-role.directive';
-import { EditGameAbsencesSuccessPayload } from '@src/app/component/modal-edit-game-absences/modal-edit-game-absences.component';
 import { GameAbsenceService } from '@src/app/module/game-absence/service';
+import { CdkDragPlaceholder } from "@angular/cdk/drag-drop";
+import { AbsenceListEditorComponent } from "@src/app/component/absence-list-editor/absence-list-editor.component";
+import { ButtonComponent } from "@src/app/component/button/button.component";
+import { SquadService } from '@src/app/module/squad/service';
+import { EditorPerson } from '@src/app/component/absence-list-editor-item/absence-list-editor-item.component';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -73,6 +77,9 @@ export type GameRouteState = {
     AbsenceListComponent,
     PersonCardComponent,
     HasRoleDirective,
+    CdkDragPlaceholder,
+    AbsenceListEditorComponent,
+    ButtonComponent
 ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
@@ -104,6 +111,10 @@ export class GameComponent implements OnDestroy {
   readonly starChecked = signal(false);
   readonly isMatchdayTabVisible = signal(true);
   readonly referee = signal<Person | null>(null);
+  readonly editGameAbsencesAvailable = signal(false);
+  readonly editGameAbsencesMode = signal(false);
+
+  readonly editorPersons = signal<EditorPerson[]>([]);
 
   readonly scheduledAt = signal<Date | null>(null);
 
@@ -138,6 +149,7 @@ export class GameComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly seasonGamesService = inject(SeasonGamesService);
+  private readonly squadService = inject(SquadService);
   private readonly translationService = inject(TranslationService);
   private readonly toastService = inject(ToastService);
 
@@ -221,6 +233,10 @@ export class GameComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  toggleGameAbsenceEditor() {
+    this.editGameAbsencesMode.update(current => !current);
+  }
+
   onGameResolved(game: DetailedGame): void {
     this.game = game;
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => this.gameMinuteFormatter.format(minute) });
@@ -243,6 +259,23 @@ export class GameComponent implements OnDestroy {
       ] },
     ])
     this.isContextMenuVisible.set(true);
+
+    this.editGameAbsencesAvailable.set([GameStatus.Ongoing, GameStatus.Postponed, GameStatus.Scheduled].includes(game.status));
+    if (this.editGameAbsencesAvailable()) {
+      this.squadService.activeSquad$.pipe(
+        map(activeSquad => {
+          return activeSquad.map(item => {
+            return {
+              id: item.id,
+              displayName: getDisplayName(item.firstName, item.lastName),
+            } satisfies EditorPerson;
+          });
+        }),
+        takeUntil(this.destroy$),
+      ).subscribe(activeSquad => this.editorPersons.set([...activeSquad]));
+
+      this.squadService.fetch();
+    }
 
     this.lineupTeamChips = [
       { selected: true, value: 'main', displayText: this.mainClub.shortName, displayIcon: { type: 'club', content: this.mainClub.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
@@ -619,33 +652,6 @@ export class GameComponent implements OnDestroy {
     return this.getResultTendencyClass(aggregateTendency);
   }
 
-  openEditAbsencesModal() {
-    const previousGameAbsenceValue = this.absentPlayers();
-    this.modalService.showEditGameAbsencesModal({ game: ensureNotNullish(this.game) })
-      .pipe(
-        filter(event => event.type === 'confirm'),
-        map(event => event.value),
-        switchMap(value => {
-          const absencesToSave = value as EditGameAbsencesSuccessPayload;
-          
-          // optimistically update the UI immediately
-          this.absentPlayers.set([...absencesToSave.absences]);
-
-          return this.gameAbsenceService.storeAbsencesForGame(ensureNotNullish(this.game).id, absencesToSave.absences);
-        }),
-        takeUntil(this.destroy$)
-      ).subscribe({
-        next: () => {
-          this.toastService.addToast({ type: 'success', text: this.translationService.translate(`gameAbsences.update.success`) });
-        },
-        error: err => {
-          console.error(err);
-          this.toastService.addToast({ type: 'error', text: this.translationService.translate(`gameAbsences.update.error`) });
-          this.absentPlayers.set(previousGameAbsenceValue);
-        }
-      });
-  }
-
   shouldShowLastGames(): boolean {
     return this.game?.status === GameStatus.Scheduled;
   }
@@ -656,6 +662,10 @@ export class GameComponent implements OnDestroy {
 
   triggerNavigateToGame(game: BasicGame) {
     navigateToGameWithoutDetails(this.router, game.id, game.season.id);
+  }
+
+  saveGameAbsences() {
+
   }
 
   private loadGameDetails() {

@@ -1,7 +1,34 @@
-<div class="flex align-items-center">
-    <div class="flex flex-1 align-items-center justify-content-center">
-        <div class="width-sm relative top-4 left-8 text-light-grey-darker hover:text-light-grey pointer transition-colors" (click)="removeClicked()">
-            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
+<div class="px-3 py-2 bg-color-dark-grey-lighter rounded" cdkDrag>
+    <div class="flex align-items-center justify-content-between">
+        <div class="basis-1/10 flex align-items-center justify-content-center">
+            <div class="cursor-move width-sm relative top-2 left-neg-10 text-light-grey-darker hover:text-light-grey transition-colors">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'drag' }" />
+            </div>
+        </div>
+        <div class="basis-3/4">
+            <div class="form-row">
+                <div class="form-row-title">{{ 'gameAbsenceEditor.person' | $t }}</div>
+                <div class="form-row-content">
+                    <app-select [optionsSource]="getPersonOptions()" [showSearch]="true" [selectedOption]="pushPerson$" (onSelected)="onPersonSelected($event)" (onSearch)="onPersonSearchChange($event)" />
+                </div>
+            </div>
+            <div *ngIf="personSelected()" class="form-row">
+                <div class="form-row-title">{{ 'gameAbsenceEditor.type' | $t }}</div>
+                <div class="form-row-content">
+                    <app-select [optionsSource]="getTypeOptions()" [showSearch]="false" [selectedOption]="pushType$" (onSelected)="onPersonSelected($event)" />
+                </div>
+            </div>
+            <div *ngIf="typeSelected()" class="form-row">
+                <div class="form-row-title">{{ 'gameAbsenceEditor.reason' | $t }}</div>
+                <div class="form-row-content">
+                    <app-select [optionsSource]="getReasonOptions()" [showSearch]="true" [selectedOption]="pushReason$" (onSelected)="onPersonSelected($event)" (onSearch)="onReasonSearchChange($event)" />
+                </div>
+            </div>
+        </div>
+        <div class="basis-1/8 flex align-items-center justify-content-center">
+            <div class="width-sm relative top-4 left-8 text-light-grey-darker hover:text-light-grey pointer transition-colors" (click)="removeClicked()">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
+            </div>
         </div>
     </div>
 </div>

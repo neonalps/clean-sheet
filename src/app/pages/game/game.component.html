@@ -183,13 +183,25 @@
         </div>
     </div>
 
+    @let editGameAbsencesModeValue = editGameAbsencesMode();
     <div class="game-section p-3 rounded-lg mt-3 mx-3 mb-4">
         <div class="flex justify-content-between">
             <div class="heading-small">{{ 'game.absentPlayers' | $t }}</div>
-            <div *appHasRole="'manager'" class="text-xs text-light-grey hover:text-light pointer transition-colors" (click)="openEditAbsencesModal()">{{ 'action.edit' | $t }}</div>
+            <ng-container *ngIf="editGameAbsencesAvailable() && !editGameAbsencesModeValue">
+                <div *appHasRole="'manager'" class="text-xs text-light-grey hover:text-light pointer transition-colors" (click)="toggleGameAbsenceEditor()">{{ 'action.edit' | $t }}</div>
+            </ng-container>
         </div>
         <div class="pt-3">
-            <app-absence-list [absences]="absentPlayers()" />
+            <app-absence-list [absences]="absentPlayers()" *ngIf="!editGameAbsencesModeValue; else gameAbsencesEditor" />
+            <ng-template #gameAbsencesEditor>
+                <div>
+                    <app-absence-list-editor [absences]="[]" [activeSquad]="editorPersons()" />
+                </div>
+                <div class="flex align-items-center justify-content-between mt-12">
+                    <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="toggleGameAbsenceEditor()" />
+                    <app-button class="mx-4" [buttonType]="'success'" [text]="'action.save' | $t" (onClicked)="saveGameAbsences()" />
+                </div>
+            </ng-template>
         </div>
     </div>
 </ng-template>
