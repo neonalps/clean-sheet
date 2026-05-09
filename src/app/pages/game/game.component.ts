@@ -50,7 +50,7 @@ import { CdkDragPlaceholder } from "@angular/cdk/drag-drop";
 import { AbsenceListEditorComponent } from "@src/app/component/absence-list-editor/absence-list-editor.component";
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { SquadService } from '@src/app/module/squad/service';
-import { EditorPerson } from '@src/app/component/absence-list-editor-item/absence-list-editor-item.component';
+import { EditorPerson, GameAbsenceEditorItem } from '@src/app/component/absence-list-editor-item/absence-list-editor-item.component';
 
 export type GameRouteState = {
   game: DetailedGame;
@@ -329,6 +329,10 @@ export class GameComponent implements OnDestroy {
 
   onCompetitionSelected(competition: SmallCompetition) {
     navigateToCompetition(this.router, competition);
+  }
+
+  onAbsenceEditorUpdate(updatedItems: GameAbsenceEditorItem[]) {
+    console.log('recv absence update', updatedItems)
   }
 
   onGameContextMenuItemSelected(itemId: string) {

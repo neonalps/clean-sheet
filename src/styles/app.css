@@ -69,6 +69,10 @@ a {
     border-top: 2px solid var(--dark-grey-lighter-2);
 }
 
+.drop-zone.cdk-drop-list-receiving {
+  background-color: aquamarine;
+}
+
 .section-title {
   color: var(--light-grey);
   font-weight: 600;

@@ -48,7 +48,7 @@
             <div class="basis-1/15" *ngIf="isContextMenuVisible()"></div>
             <div class="flex-grow">
                 <div class="center text-sm">
-                    <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d YYYY - HH:mm' }}</div>
+                    <div class="mb-6">{{ game!.kickoff | date:'EEE, MMM d yyyy - HH:mm' }}</div>
                     <div class="mb-3 flex align-items-center justify-content-center">
                         <div class="px-2 py-1 inline-flex align-items-center justify-content-center rounded-md transition-bg-color pointer hover:bg-color-dark-grey" (click)="onCompetitionSelected(game!.competition!)">
                             <div>
@@ -150,7 +150,7 @@
         @let scheduledAtValue = scheduledAt();
         <div class="pt-2 mb-2" *ngIf="scheduledAtValue !== null">
             <div class="section-title">{{ 'game.originallyScheduledAt' | $t }}</div>
-            <div class="text-sm">{{ scheduledAtValue | date:'EEE, MMM d YYYY - HH:mm' }}</div>
+            <div class="text-sm">{{ scheduledAtValue | date:'EEE, MMM d yyyy - HH:mm' }}</div>
         </div>
         <div class="pt-2">
             <div class="section-title">{{ 'game.venue' | $t }}</div>
@@ -195,7 +195,7 @@
             <app-absence-list [absences]="absentPlayers()" *ngIf="!editGameAbsencesModeValue; else gameAbsencesEditor" />
             <ng-template #gameAbsencesEditor>
                 <div>
-                    <app-absence-list-editor [absences]="[]" [activeSquad]="editorPersons()" />
+                    <app-absence-list-editor [absences]="[]" [activeSquad]="editorPersons()" (onUpdate)="onAbsenceEditorUpdate($event)" />
                 </div>
                 <div class="flex align-items-center justify-content-between mt-12">
                     <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="toggleGameAbsenceEditor()" />

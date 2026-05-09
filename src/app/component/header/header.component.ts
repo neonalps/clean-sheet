@@ -140,7 +140,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getGameSearchResultKickoff(resultItem: ExternalSearchResultItemDto): string | null {
     const kickoff: DateString = (resultItem.context as any)['kickoff'];
-    return new DatePipe('en-US').transform(kickoff, `EEE, MMM d YYYY`);
+    return new DatePipe('en-US').transform(kickoff, `EEE, MMM d yyyy`);
   }
 
   getGameSearchResultHomeTeamIcon(resultItem: ExternalSearchResultItemDto): string | undefined {

@@ -22,6 +22,7 @@ import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter
 import { FilterService, GameListFilterItem } from '@src/app/module/filter/service';
 import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { FilterButtonComponent } from "@src/app/component/filter-button/filter-button.component";
 
 export type VisibleSeasonGames = {
   past: DetailedGame[];
@@ -33,7 +34,7 @@ export type VisibleSeasonGames = {
 
 @Component({
   selector: 'app-season-games',
-  imports: [GameOverviewComponent, CommonModule, SeasonSelectComponent, I18nPipe, EmptyStateComponent, FieldWithBallComponent],
+  imports: [GameOverviewComponent, CommonModule, SeasonSelectComponent, I18nPipe, EmptyStateComponent, FieldWithBallComponent, FilterButtonComponent],
   templateUrl: './season-games.component.html',
   styleUrl: './season-games.component.css'
 })

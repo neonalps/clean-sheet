@@ -22,7 +22,9 @@
                 <div class="flex align-items-center justify-content-between">
                     <div class="basis-1/8"></div>
                     <div><app-season-select [seasons]="seasons$" [selectedSeason$]="selectedSeason$" (onSelected)="onSeasonSelected($event)" /></div>
-                    <div class="basis-1/8 flex align-items-center justify-content-center pointer" [ngClass]="{ 'text-light': !isLoadingValue && visibleSeasonGamesValue.filteredCount !== undefined }" (click)="showFilterGameListModal()">f</div>
+                    <div class="basis-1/8 flex align-items-center justify-content-center pointer" [ngClass]="{ 'text-light': !isLoadingValue && visibleSeasonGamesValue.filteredCount !== undefined }" (click)="showFilterGameListModal()">
+                        <app-filter-button [filterActive]="isLoadingValue !== true && visibleSeasonGamesValue.filteredCount !== undefined" />
+                    </div>
                 </div>
                 <ng-container *ngIf="isLoadingValue !== true && visibleSeasonGamesValue.filteredCount !== undefined">
                     <div class="bg-color-sky-700 mt-4 p-2 text-light-grey rounded-md flex text-sm justify-content-between align-items-center">

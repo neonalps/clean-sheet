@@ -1,14 +1,15 @@
 import { Component, computed, inject, input, OnInit, output } from '@angular/core';
-import { GameAbsenceType } from '@src/app/model/game';
+import { GameAbsenceReason, GameAbsenceType } from '@src/app/model/game';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 import { SelectComponent } from "@src/app/component/select/select.component";
-import { combineLatest, isEmpty, map, Observable, of, startWith, Subject } from 'rxjs';
+import { combineLatest, map, Observable, of, startWith, Subject } from 'rxjs';
 import { SelectOption } from '@src/app/component/select/option';
 import { PersonId } from '@src/app/util/domain-types';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { isDefined } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { CdkDrag } from '@angular/cdk/drag-drop';
 
 export type EditorPerson = { 
   id: PersonId; 
@@ -25,7 +26,7 @@ export type GameAbsenceEditorItem = {
 
 @Component({
   selector: 'app-absence-list-editor-item',
-  imports: [CommonModule, UiIconComponent, SelectComponent, I18nPipe],
+  imports: [CommonModule, UiIconComponent, SelectComponent, I18nPipe, CdkDrag],
   templateUrl: './absence-list-editor-item.component.html',
 })
 export class AbsenceListEditorItemComponent implements OnInit {
@@ -118,7 +119,30 @@ export class AbsenceListEditorItemComponent implements OnInit {
   }
 
   getReasonOptions(): Observable<SelectOption[]> {
-    return of([]);
+    return of([
+      {
+        id: GameAbsenceReason.CruciaLigament,
+        name: 'Kreuzbandriss',
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: 'yellowCard:5',
+        name: '5 Gelbe Karten',
+        type: GameAbsenceType.Suspended,
+      },
+      {
+        id: 'yellowCard:4',
+        name: '4 Gelbe Karten',
+        type: GameAbsenceType.AtRisk,
+      },
+      {
+        id: 'privateReasons',
+        name: 'Private Gründe',
+        type: GameAbsenceType.Exempt,
+      },
+    ]).pipe(
+      map(values => values.filter(value => value.type === this.absence().absenceType)),
+    );
   }
 
   onReasonSearchChange(searchValue: string) {
@@ -138,6 +162,13 @@ export class AbsenceListEditorItemComponent implements OnInit {
         avatar: selected.icon?.content ?? undefined,
       }
     })
+  }
+
+  onReasonSelected(selected: SelectOption) {
+    this.onUpdate.emit({
+      ...this.absence(),
+      absenceReason: selected.id as GameAbsenceReason,
+    });
   }
 
   removeClicked() {

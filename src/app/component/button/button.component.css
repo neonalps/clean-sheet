@@ -44,6 +44,18 @@
   color: var(--light);
 }
 
+.button-ghost {
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--light-grey-darker);
+}
+
+.button-info {
+  background-color: transparent;
+  border: 1px solid var(--info);
+  color: var(--info);
+}
+
 .button-disabled {
   pointer-events: none;
   background-color: var(--dark-grey-lighter-2);
@@ -62,5 +74,14 @@
     .button-secondary:hover {
         background-color: rgba(50, 50, 50, .7);
         border: 1px solid var(--light-grey-darker);
+    }
+
+    .button-ghost:hover {
+      color: var(--light) 
+    }
+
+    .button-info:hover {
+      border-color: var(--info-darker-20);
+      color: var(--info-darker-20);
     }
 }

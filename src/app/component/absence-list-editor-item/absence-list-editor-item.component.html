@@ -12,16 +12,10 @@
                     <app-select [optionsSource]="getPersonOptions()" [showSearch]="true" [selectedOption]="pushPerson$" (onSelected)="onPersonSelected($event)" (onSearch)="onPersonSearchChange($event)" />
                 </div>
             </div>
-            <div *ngIf="personSelected()" class="form-row">
-                <div class="form-row-title">{{ 'gameAbsenceEditor.type' | $t }}</div>
-                <div class="form-row-content">
-                    <app-select [optionsSource]="getTypeOptions()" [showSearch]="false" [selectedOption]="pushType$" (onSelected)="onPersonSelected($event)" />
-                </div>
-            </div>
-            <div *ngIf="typeSelected()" class="form-row">
+            <div class="form-row">
                 <div class="form-row-title">{{ 'gameAbsenceEditor.reason' | $t }}</div>
                 <div class="form-row-content">
-                    <app-select [optionsSource]="getReasonOptions()" [showSearch]="true" [selectedOption]="pushReason$" (onSelected)="onPersonSelected($event)" (onSearch)="onReasonSearchChange($event)" />
+                    <app-select [optionsSource]="getReasonOptions()" [showSearch]="true" [selectedOption]="pushReason$" (onSelected)="onReasonSelected($event)" (onSearch)="onReasonSearchChange($event)" />
                 </div>
             </div>
         </div>

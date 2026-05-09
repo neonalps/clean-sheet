@@ -4,7 +4,7 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 import { assertUnreachable } from '@src/app/util/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
-export type ButtonType = 'success' | 'danger' | 'secondary' | 'action';
+export type ButtonType = 'success' | 'danger' | 'secondary' | 'action' | 'ghost' | 'info';
 
 @Component({
   selector: 'app-button',
@@ -22,6 +22,7 @@ export class ButtonComponent {
   @Output() onClicked = new EventEmitter<void>();
 
   readonly enabled = input<boolean>(true);
+  readonly iconOnly = input(false);
 
   onClick() {
     this.onClicked.next();
@@ -43,12 +44,22 @@ export class ButtonComponent {
       case 'action':
         dynamic.push('button-action');
         break;
+      case 'ghost':
+        dynamic.push('button-ghost');
+        break;
+      case 'info':
+        dynamic.push('button-info');
+        break;
       default:
         assertUnreachable(this.buttonType);
     }
 
     if (!this.enabled()) {
       dynamic.push('button-disabled');
+    }
+
+    if (!this.iconOnly()) {
+      dynamic.push('min-w-160');
     }
 
     return dynamic;

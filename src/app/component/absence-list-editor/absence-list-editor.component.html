@@ -1,48 +1,18 @@
 @let activeSquadValue = activeSquad();
-@let injuredItemsValue = injuredItems();
-@let suspendedItemsValue = suspendedItems();
-@let atRiskItemsValue = atRiskItems();
-@let otherItemsValue = otherItems();
 <div>
-    <div>
-        <div class="section-title">{{ 'absence.injured' | $t }}</div>
-        <div *ngIf="injuredItemsValue.length > 0; else emptyCategory">
-            @for (injuredItem of injuredItemsValue; track injuredItem.id) {
-            <div class="my-3">
-                <app-absence-list-editor-item [absence]="injuredItem" [availablePersons]="activeSquadValue" (onRemove)="removeItem($event)" />
+    <div cdkDropListGroup>
+        @for (list of lists(); track list.id) {
+            <div class="border-2 border-gold my-3" [ngClass]="{ 'pt-12': $index > 0 }">
+                <div class="section-title">{{ list.titleI18nKey | $t }}</div>
+                <div cdkDropList [id]="list.id" [cdkDropListData]="list.items" class="drop-zone" (cdkDropListDropped)="onItemDrop($event)">
+                    @for (item of list.items; track item.id) {
+                        <div class="my-3" cdkDrag>
+                            <app-absence-list-editor-item [absence]="item" [availablePersons]="activeSquadValue" (onUpdate)="updateItem($event)" (onRemove)="removeItem($event)" />
+                        </div>
+                    }
+                </div>
             </div>
         }
-        </div>
-    </div>
-    <div class="pt-4">
-        <div class="section-title">{{ 'absence.suspended' | $t }}</div>
-        <div *ngIf="suspendedItemsValue.length > 0; else emptyCategory">
-            @for (suspendedItem of suspendedItemsValue; track suspendedItem.id) {
-            <div class="my-3">
-                <app-absence-list-editor-item [absence]="suspendedItem" [availablePersons]="activeSquadValue" (onRemove)="removeItem($event)" />
-            </div>
-        }
-        </div>
-    </div>
-    <div class="pt-4">
-        <div class="section-title">{{ 'absence.atRisk' | $t }}</div>
-        <div *ngIf="atRiskItemsValue.length > 0; else emptyCategory">
-            @for (atRiskItem of atRiskItemsValue; track atRiskItem.id) {
-            <div class="my-3">
-                <app-absence-list-editor-item [absence]="atRiskItem" [availablePersons]="activeSquadValue" (onRemove)="removeItem($event)" />
-            </div>
-        }
-        </div>
-    </div>
-    <div class="pt-4">
-        <div class="section-title">{{ 'absence.other' | $t }}</div>
-        <div *ngIf="otherItemsValue.length > 0; else emptyCategory">
-            @for (otherItem of otherItemsValue; track otherItem.id) {
-            <div class="my-3">
-                <app-absence-list-editor-item [absence]="otherItem" [availablePersons]="activeSquadValue" (onRemove)="removeItem($event)" />
-            </div>
-        }
-        </div>
     </div>
     <div class="flex align-items-center justify-content-center mt-8 text-sm pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
         <div>+ {{ 'gameAbsenceEditor.addNew' | $t }}</div>
