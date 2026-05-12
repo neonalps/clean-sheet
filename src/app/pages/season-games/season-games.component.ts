@@ -153,18 +153,17 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
     this.seasonGamesService.getSeasonGamesObservable()
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
-      if (payload.seasonId === this.selectedSeason()?.id) {
-        this.isLoading.set(true);
-        this.onSeasonGamesUpdate(payload.games);
-        this.isLoading.set(false);
+        if (payload.seasonId === this.selectedSeason()?.id) {
+          this.isLoading.set(true);
+          this.onSeasonGamesUpdate(payload.games);
+          this.isLoading.set(false);
 
-        setTimeout(() => {
-          const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
-
-          this.upcomingGamesPositionSubject.next(upcomingGamesPosition !== undefined ? [upcomingGamesPosition.x, upcomingGamesPosition.y] : [0, 0]);
-        }, 0);
-      }
-    });
+          setTimeout(() => {
+            const upcomingGamesPosition = this.upcomingGamesRef?.nativeElement.getBoundingClientRect();
+            this.upcomingGamesPositionSubject.next(upcomingGamesPosition !== undefined ? [upcomingGamesPosition.x, upcomingGamesPosition.y] : [0, 0]);
+          }, 0);
+        }
+      });
 
     const optionalStoredFilters = this.localStorageService.get<GameListFilterItem[]>(SeasonGamesComponent.STORAGE_KEY_SEASON_GAME_LIST_FILTER);
     if (isDefined(optionalStoredFilters)) {

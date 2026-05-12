@@ -38,6 +38,10 @@ export class ManagerPeriodService implements OnDestroy {
         this.getAllFetchHandle.fetch();
     }
 
+    forceFetch(): void {
+        this.getAllFetchHandle.fetch(true);
+    }
+
     private onManagerPeriodsUpdate(periods: ManagerPeriod[]) {
         this.currentManagerPeriods.set(periods);
     }

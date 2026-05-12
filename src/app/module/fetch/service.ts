@@ -5,7 +5,6 @@ import { CacheableResponse } from "@src/app/model/cacheable-response";
 import { CacheService } from "@src/app/module/cache/service";
 import { getCurrentUnix, getDateFromUnixTimestamp } from "@src/app/util/date";
 import { take } from "rxjs";
-import { AccountCacheService } from "@src/app/module/cache/account";
 
 export enum FetchStrategy {
     CacheAndNetwork = "cacheAndNetwork",

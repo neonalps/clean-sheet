@@ -16,13 +16,14 @@ import { CompetitionId } from '@src/app/util/domain-types';
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
+import { FilterButtonComponent } from '@src/app/component/filter-button/filter-button.component';
 
 export type RankingStatsType = 'appearances' | 'goals';
 const allowedRankingStatsTypes = ['appearances', 'goals'];
 
 @Component({
   selector: 'app-ranking-appearances',
-  imports: [PaginatedRankedPersonListComponent, ChipGroupComponent],
+  imports: [PaginatedRankedPersonListComponent, ChipGroupComponent, FilterButtonComponent],
   templateUrl: './ranking-stats.component.html',
 })
 export class RankingStatsComponent implements OnInit, OnDestroy {
@@ -30,6 +31,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   readonly forMain = signal(true);
 
   readonly currentFilters = signal<CompetitionFilterSuccessPayload | null>(null);
+  readonly isFiltering = signal(false);
   readonly isLoading = signal(false);
   readonly playerStats = signal<RankedPersonItem[]>([]);
   
@@ -165,6 +167,8 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
     }
 
+    this.isFiltering.set(Object.keys(queryParams).length > 1);
+
     this.statsService.getPlayerAppearanceStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
@@ -187,6 +191,8 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
     } else if (currentFilters?.filterOption === 'international') {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
     }
+
+    this.isFiltering.set(Object.keys(queryParams).length > 1);
 
     this.statsService.getPlayerGoalStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
