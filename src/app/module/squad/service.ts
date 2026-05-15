@@ -40,7 +40,6 @@ export class SquadService implements OnDestroy {
     }
 
     private onActiveSquadUpdate(update: GetActiveSquadResponse) {
-        console.log('active squad update', update);
         this.activeSquad.set([...update.activeSquadMembers]);
     }
 

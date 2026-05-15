@@ -350,6 +350,7 @@
     "search.noClubFound": "Unfortunately, no club could be found",
     "search.noCompetitionFound": "Unfortunately, no competition could be found",
     "search.noCompetitionRoundFound": "Unfortunately, no competition round could be found",
+    "search.noPersonFound": "Unfortunately, no person could be found",
     "search.noVenueFound": "Unfortunately, no venue could be found",
     "search.results": "Search results",
     "searchItemType.club": "Club",

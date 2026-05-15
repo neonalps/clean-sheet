@@ -348,6 +348,7 @@
     "search.noClubFound": "Leider konnte kein Verein gefunden werden",
     "search.noCompetitionFound": "Leider konnte kein Bewerb gefunden werden",
     "search.noCompetitionRoundFound": "Leider konnte keine Runde gefunden werden",
+    "search.noPersonFound": "Leider konnte keine Person gefunden werden",
     "search.noVenueFound": "Leider konnte kein Spielort gefunden werden",
     "search.results": "Suchergebnisse",
     "searchItemType.club": "Verein",

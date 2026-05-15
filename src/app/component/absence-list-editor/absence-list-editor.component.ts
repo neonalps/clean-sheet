@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit, computed, input, output, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, input, output, signal } from '@angular/core';
 import { Subject } from 'rxjs';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
 import { GameAbsenceEditorItem, AbsenceListEditorItemComponent, EditorPerson } from '@src/app/component/absence-list-editor-item/absence-list-editor-item.component';
 import { GameAbsenceType } from '@src/app/model/game';
-import { CdkDragDrop, moveItemInArray, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDragPlaceholder, CdkDrag, CdkDropListGroup, CdkDragPreview, transferArrayItem } from '@angular/cdk/drag-drop';
 import { groupBy } from '@src/app/util/array';
+import { assertUnreachable } from '@src/app/util/common';
 
 export type GameAbsenceDropLists = Array<GameAbsenceDropList>;
 
@@ -17,7 +18,7 @@ export type GameAbsenceDropList = {
 
 @Component({
   selector: 'app-absence-list-editor',
-  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropList],
+  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropListGroup, CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragPreview],
   templateUrl: './absence-list-editor.component.html',
 })
 export class AbsenceListEditorComponent implements OnInit, OnDestroy {
@@ -27,22 +28,23 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
 
   readonly onUpdate = output<GameAbsenceEditorItem[]>();
 
-  readonly editorItems = signal<GameAbsenceEditorItem[]>([]);
+  readonly dropLists = signal<GameAbsenceDropLists>([]);
 
-  readonly lists = computed<GameAbsenceDropLists>(() => {
-    const mappedItems = groupBy(this.editorItems(), (item: GameAbsenceEditorItem) => item.absenceType);
-    return [
-      { id: GameAbsenceType.Injured, titleI18nKey: 'absence.injured', items: mappedItems.get(GameAbsenceType.Injured) ?? [] },
-      { id: GameAbsenceType.Exempt, titleI18nKey: 'absence.other', items: mappedItems.get(GameAbsenceType.Exempt) ?? [] },
-      { id: GameAbsenceType.Suspended, titleI18nKey: 'absence.suspended', items: mappedItems.get(GameAbsenceType.Suspended) ?? [] },
-      { id: GameAbsenceType.AtRisk, titleI18nKey: 'absence.atRisk', items: mappedItems.get(GameAbsenceType.AtRisk) ?? [] },
-    ];
-  });
+  readonly injuredItems = signal<GameAbsenceEditorItem[]>([]);
+  readonly suspendedItems = signal<GameAbsenceEditorItem[]>([]);
+  readonly atRiskItems = signal<GameAbsenceEditorItem[]>([]);
+  readonly exemptItems = signal<GameAbsenceEditorItem[]> ([]);
 
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.editorItems.set([...this.absences()]);
+    const groupedInputItems = groupBy(this.absences(), (item: GameAbsenceEditorItem) => item.absenceType);
+    this.injuredItems.set(groupedInputItems.get(GameAbsenceType.Injured) ?? []);
+    this.suspendedItems.set(groupedInputItems.get(GameAbsenceType.Suspended) ?? []);
+    this.atRiskItems.set(groupedInputItems.get(GameAbsenceType.AtRisk) ?? []);
+    this.exemptItems.set(groupedInputItems.get(GameAbsenceType.Exempt) ?? []);
+
+    this.updateDropLists();
   }
 
   ngOnDestroy(): void {
@@ -51,50 +53,144 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
   }
 
   addItem() {
-    this.editorItems.update(current => {
-      return [...current, {
-        id: crypto.randomUUID(),
-        person: null,
-        absenceType: GameAbsenceType.Injured,
-        absenceReason: null,
-      }];
-    });
+    this.injuredItems.update(current => {
+      return [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          person: null,
+          absenceType: GameAbsenceType.Injured,
+          absenceReason: null,
+        },
+      ];
+    })
+
+    this.updateDropLists();
     this.publishUpdate();
   }
 
   updateItem(updatedItem: GameAbsenceEditorItem) {
-    this.editorItems.update(currentItems => {
-      const currentItemIdx = currentItems.findIndex(item => item.id === updatedItem.id);
-      currentItems[currentItemIdx] = updatedItem;
-      return [...currentItems];
-    });
+    const itemsForType = this.getItemsForType(updatedItem.absenceType);
+    const itemIndex = itemsForType.findIndex(item => item.id === updatedItem.id);
+    if (itemIndex < 0) {
+      return;
+    }
+    itemsForType[itemIndex] = { ...updatedItem };
+    this.setItemsForType(updatedItem.absenceType, itemsForType);
+   
+    this.updateDropLists();
+    this.publishUpdate();
   }
 
   removeItem(itemId: string) {
-    this.editorItems.update(current => current.filter(item => item.id !== itemId));
-    this.publishUpdate();
+    for (const itemType of [GameAbsenceType.Injured, GameAbsenceType.Suspended, GameAbsenceType.AtRisk, GameAbsenceType.Exempt]) {
+      const itemsForType = this.getItemsForType(itemType);
+      const itemIndex = itemsForType.findIndex(item => item.id === itemId);
+      if (itemIndex < 0) {
+        continue;
+      }
+
+      itemsForType.splice(itemIndex, 1);
+      this.setItemsForType(itemType, itemsForType);
+
+      this.updateDropLists();
+      this.publishUpdate();
+      return;
+    }
   }
 
   onItemDrop(event: CdkDragDrop<GameAbsenceEditorItem[]>) {
-    console.log('drop event', event)
+    const previousItemType = event.previousContainer.id as GameAbsenceType;
+    const currentItemType = event.container.id as GameAbsenceType;
 
-    const currentListItems = this.editorItems();
-
-    // Same list → reorder
-    if (event.previousContainer === event.container) {
-      moveItemInArray(currentListItems, event.previousIndex, event.currentIndex);
-    } else {
+    if (event.previousContainer !== event.container) {
       // element was moved to new section
-      console.log('must move to new section');
-    }    
-    
-    this.editorItems.set([...currentListItems]);
+      const itemsForPreviousType = this.getItemsForType(previousItemType);
+      const itemsForCurrentType = this.getItemsForType(currentItemType);
+      transferArrayItem(itemsForPreviousType, itemsForCurrentType, event.previousIndex, event.currentIndex);
 
+      // we also have to reset the reason for the moved item
+      const movedItemId = (event.item as any)._parentDrag.data.id;
+      const movedItemIndex = itemsForCurrentType.findIndex(item => item.id === movedItemId);
+      if (movedItemIndex < 0) {
+        throw new Error(`Something went wrong while moving to new section`);
+      }
+      itemsForCurrentType[movedItemIndex] = {
+        ...itemsForCurrentType[movedItemIndex],
+        absenceType: currentItemType,
+        absenceReason: null,
+      };
+
+      this.setItemsForType(previousItemType, itemsForPreviousType);
+      this.setItemsForType(currentItemType, itemsForCurrentType);
+
+      console.log('previous items are', itemsForPreviousType);
+      console.log('current items are', itemsForCurrentType);
+    } else if (event.previousIndex !== event.currentIndex) {
+      // element was moved within section
+      const itemsForType = this.getItemsForType(currentItemType);
+      moveItemInArray(itemsForType, event.previousIndex, event.currentIndex);
+      this.setItemsForType(currentItemType, itemsForType);
+      console.log('items are', itemsForType);
+    } else {
+      // nothing was changed
+      return;
+    }
+
+    this.updateDropLists();
     this.publishUpdate();
   }
 
+  private getItemsForType(type: GameAbsenceType): GameAbsenceEditorItem[] {
+    switch (type) {
+      case GameAbsenceType.Injured:
+        return [...this.injuredItems()];
+      case GameAbsenceType.Suspended:
+        return [...this.suspendedItems()];
+      case GameAbsenceType.AtRisk:
+        return [...this.atRiskItems()];
+      case GameAbsenceType.Exempt:
+        return [...this.exemptItems()];
+      default:
+        assertUnreachable(type);
+    }
+  }
+
+  private setItemsForType(type: GameAbsenceType, items: GameAbsenceEditorItem[]) {
+    switch (type) {
+      case GameAbsenceType.Injured:
+        this.injuredItems.set([...items]);
+        break;
+      case GameAbsenceType.Suspended:
+        this.suspendedItems.set([...items]);
+        break;
+      case GameAbsenceType.AtRisk:
+        this.atRiskItems.set([...items]);
+        break;
+      case GameAbsenceType.Exempt:
+        this.exemptItems.set([...items]);
+        break;
+      default:
+        assertUnreachable(type);
+    }
+  }
+
+  private updateDropLists() {
+    this.dropLists.set([
+      { id: GameAbsenceType.Injured, titleI18nKey: 'absence.injured', items: this.injuredItems() },
+      { id: GameAbsenceType.Suspended, titleI18nKey: 'absence.suspended', items: this.suspendedItems() },
+      { id: GameAbsenceType.AtRisk, titleI18nKey: 'absence.atRisk', items: this.atRiskItems() },
+      { id: GameAbsenceType.Exempt, titleI18nKey: 'absence.other', items: this.exemptItems() },
+    ]);
+  }
+
   private publishUpdate() {
-    this.onUpdate.emit([...this.editorItems()]);
+    this.onUpdate.emit([
+      ...this.injuredItems(),
+      ...this.suspendedItems(),
+      ...this.atRiskItems(),
+      ...this.exemptItems(),
+    ]);
   }
 
 }

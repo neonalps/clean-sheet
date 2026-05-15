@@ -1,12 +1,20 @@
 @let activeSquadValue = activeSquad();
 <div>
     <div cdkDropListGroup>
-        @for (list of lists(); track list.id) {
-            <div class="border-2 border-gold my-3" [ngClass]="{ 'pt-12': $index > 0 }">
+        @for (list of dropLists(); track list.id) {
+            <div class="drop-zone border-2 border-gold my-3 min-h-90" [ngClass]="{ 'pt-12': $index > 0 }" cdkDropList [id]="list.id" [cdkDropListData]="list.items" (cdkDropListDropped)="onItemDrop($event)">
                 <div class="section-title">{{ list.titleI18nKey | $t }}</div>
-                <div cdkDropList [id]="list.id" [cdkDropListData]="list.items" class="drop-zone" (cdkDropListDropped)="onItemDrop($event)">
+                <div>
                     @for (item of list.items; track item.id) {
-                        <div class="my-3" cdkDrag>
+                        <div class="my-3" cdkDrag [cdkDragData]="item" [attr.data-item-id]="item.id">
+                            <!-- Custom placeholder (shown in original position while dragging) -->
+                            <div class="drag-placeholder" *cdkDragPlaceholder></div>
+
+                            <!-- Custom drag preview (shown while dragging) -->
+                            <div class="drag-preview" *cdkDragPreview>
+                                <app-absence-list-editor-item [absence]="item" [availablePersons]="activeSquadValue" (onUpdate)="updateItem($event)" (onRemove)="removeItem($event)" />
+                            </div>
+                            
                             <app-absence-list-editor-item [absence]="item" [availablePersons]="activeSquadValue" (onUpdate)="updateItem($event)" (onRemove)="removeItem($event)" />
                         </div>
                     }

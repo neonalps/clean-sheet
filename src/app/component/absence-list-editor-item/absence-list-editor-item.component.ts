@@ -126,6 +126,16 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Injured,
       },
       {
+        id: GameAbsenceReason.Muscle,
+        name: 'Muskelverletzung',
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Ankle,
+        name: 'Knöchel',
+        type: GameAbsenceType.Injured,
+      },
+      {
         id: 'yellowCard:5',
         name: '5 Gelbe Karten',
         type: GameAbsenceType.Suspended,
@@ -136,7 +146,7 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.AtRisk,
       },
       {
-        id: 'privateReasons',
+        id: 'private', 
         name: 'Private Gründe',
         type: GameAbsenceType.Exempt,
       },

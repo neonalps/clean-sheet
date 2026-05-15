@@ -18,7 +18,6 @@ import { ModifyGameLineup, ModifyGameLineupsComponent } from "@src/app/component
 import { EditorGameEvent } from '@src/app/module/game-event-editor/types';
 import { ToastService } from '@src/app/module/toast/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 
 export type UserProviderInput = {
@@ -167,7 +166,6 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
   private readonly modifyGameService = inject(ModifyGameService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly seasonGamesService = inject(SeasonGamesService);
   private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
 
@@ -287,9 +285,6 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
         this.clearCache();
 
         this.toastService.addToast({ text: this.translationService.translate('gameCreate.success'), type: 'success' });
-        
-        // reload the games of the season to make sure the new game will be available
-        this.seasonGamesService.getSeasonGames(result.season.id, true);
 
         navigateToSeasonGames(this.router, result.season.id);
       },

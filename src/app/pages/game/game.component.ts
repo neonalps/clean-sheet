@@ -46,7 +46,6 @@ import { AbsenceListComponent } from "@src/app/component/absence-list/absence-li
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { HasRoleDirective } from '@src/app/module/auth/has-role.directive';
 import { GameAbsenceService } from '@src/app/module/game-absence/service';
-import { CdkDragPlaceholder } from "@angular/cdk/drag-drop";
 import { AbsenceListEditorComponent } from "@src/app/component/absence-list-editor/absence-list-editor.component";
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { SquadService } from '@src/app/module/squad/service';
@@ -77,7 +76,6 @@ export type GameRouteState = {
     AbsenceListComponent,
     PersonCardComponent,
     HasRoleDirective,
-    CdkDragPlaceholder,
     AbsenceListEditorComponent,
     ButtonComponent
 ],
@@ -167,6 +165,8 @@ export class GameComponent implements OnDestroy {
         if (value instanceof NavigationEnd) {
           this.lastGamesAvailable.next(false);
           this.referee.set(null);
+          this.editGameAbsencesMode.set(false);
+          this.editGameAbsencesAvailable.set(false);
           this.loadGameDetails();
         }
       });
