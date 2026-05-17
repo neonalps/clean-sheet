@@ -69,6 +69,7 @@ export class AbsenceListEditorItemComponent implements OnInit {
         this.pushPerson$.next({
           id: person.id.toString(),
           name: person.displayName,
+          icon: person.avatar ? { type: 'person', content: person.avatar } : undefined,
         });
       }
 
@@ -78,6 +79,14 @@ export class AbsenceListEditorItemComponent implements OnInit {
           id: absenceType,
           name: this.translationService.translate(`gameAbsenceType.${absenceType}`),
         });
+      }
+
+      const absenceReason = this.absence().absenceReason;
+      if (isDefined(absenceReason)) {
+        this.pushReason$.next({
+          id: absenceReason,
+          name: absenceReason,
+        })
       }
     });
   }
@@ -136,13 +145,48 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Injured,
       },
       {
+        id: 'yellowCard:3',
+        name: '3 Gelbe Karten',
+        type: GameAbsenceType.Suspended,
+      },
+      {
         id: 'yellowCard:5',
         name: '5 Gelbe Karten',
         type: GameAbsenceType.Suspended,
       },
       {
+        id: 'yellowCard:7',
+        name: '7 Gelbe Karten',
+        type: GameAbsenceType.Suspended,
+      },
+      {
+        id: 'yellowCard:9',
+        name: '9 Gelbe Karten',
+        type: GameAbsenceType.Suspended,
+      },
+      {
+        id: 'yellowCard:13',
+        name: '13 Gelbe Karten',
+        type: GameAbsenceType.Suspended,
+      },
+      {
+        id: 'yellowCard:2',
+        name: '2 Gelbe Karten',
+        type: GameAbsenceType.AtRisk,
+      },
+      {
         id: 'yellowCard:4',
         name: '4 Gelbe Karten',
+        type: GameAbsenceType.AtRisk,
+      },
+      {
+        id: 'yellowCard:8',
+        name: '8 Gelbe Karten',
+        type: GameAbsenceType.AtRisk,
+      },
+      {
+        id: 'yellowCard:12',
+        name: '12 Gelbe Karten',
         type: GameAbsenceType.AtRisk,
       },
       {

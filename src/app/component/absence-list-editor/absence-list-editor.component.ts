@@ -1,12 +1,16 @@
-import { Component, OnDestroy, OnInit, input, output, signal } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit, inject, input, output, signal } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
 import { GameAbsenceEditorItem, AbsenceListEditorItemComponent, EditorPerson } from '@src/app/component/absence-list-editor-item/absence-list-editor-item.component';
 import { GameAbsenceType } from '@src/app/model/game';
-import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDragPlaceholder, CdkDrag, CdkDropListGroup, CdkDragPreview, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDropListGroup, transferArrayItem } from '@angular/cdk/drag-drop';
 import { groupBy } from '@src/app/util/array';
 import { assertUnreachable } from '@src/app/util/common';
+import { GameAbsenceService } from '@src/app/module/game-absence/service';
+import { GameId } from '@src/app/util/domain-types';
+import { ToastService } from '@src/app/module/toast/service';
+import { TranslationService } from '@src/app/module/i18n/translation.service';
 
 export type GameAbsenceDropLists = Array<GameAbsenceDropList>;
 
@@ -18,13 +22,15 @@ export type GameAbsenceDropList = {
 
 @Component({
   selector: 'app-absence-list-editor',
-  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropListGroup, CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragPreview],
+  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropListGroup, CdkDropList, CdkDrag],
   templateUrl: './absence-list-editor.component.html',
 })
 export class AbsenceListEditorComponent implements OnInit, OnDestroy {
 
   readonly absences = input.required<GameAbsenceEditorItem[]>();
   readonly activeSquad = input.required<EditorPerson[]>();
+  readonly gameId = input.required<GameId>();
+  readonly loadPotentialAbsencesPossible = input.required<boolean>();
 
   readonly onUpdate = output<GameAbsenceEditorItem[]>();
 
@@ -34,6 +40,11 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
   readonly suspendedItems = signal<GameAbsenceEditorItem[]>([]);
   readonly atRiskItems = signal<GameAbsenceEditorItem[]>([]);
   readonly exemptItems = signal<GameAbsenceEditorItem[]> ([]);
+  readonly potentialAbsencesLoaded = signal(false);
+
+  private readonly gameAbsenceService = inject(GameAbsenceService);
+  private readonly toastService = inject(ToastService);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -80,6 +91,22 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
    
     this.updateDropLists();
     this.publishUpdate();
+  }
+
+  loadPotentialAbsences() {
+    this.potentialAbsencesLoaded.set(true);
+    this.gameAbsenceService.getPotentialAbsencesForGame(this.gameId())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: potentialAbsences => {
+          console.log('received potentials', potentialAbsences);
+        },
+        error: err => {
+          console.error(err);
+          this.toastService.addToast({ type: 'error', text: this.translationService.translate('gameAbsences.load.error') });
+          this.potentialAbsencesLoaded.set(false);
+        }
+      })
   }
 
   removeItem(itemId: string) {

@@ -195,7 +195,7 @@
             <app-absence-list [absences]="absentPlayers()" *ngIf="!editGameAbsencesModeValue; else gameAbsencesEditor" />
             <ng-template #gameAbsencesEditor>
                 <div>
-                    <app-absence-list-editor [absences]="[]" [activeSquad]="editorPersons()" (onUpdate)="onAbsenceEditorUpdate($event)" />
+                    <app-absence-list-editor [absences]="editGameAbsencesCurrentValue()" [activeSquad]="editorPersons()" [loadPotentialAbsencesPossible]="true" [gameId]="currentGameId()" (onUpdate)="onAbsenceEditorUpdate($event)" />
                 </div>
                 <div class="flex align-items-center justify-content-between mt-12">
                     <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="toggleGameAbsenceEditor()" />

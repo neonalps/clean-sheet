@@ -2,7 +2,7 @@ import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { SmallClub } from '@src/app/model/club';
-import { BasicGame, DetailedGame, GameAbsence, GameStatus, MatchdayDetails, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
+import { BasicGame, DetailedGame, GameAbsence, GameAbsenceReason, GameStatus, MatchdayDetails, PotentialGameAbsence, ScoreTuple, Tendency, UiGame, UiGamePlayer, UiScoreBoardItem } from '@src/app/model/game';
 import { GameResolver } from '@src/app/module/game/resolver';
 import { convertToUiGame, getGameResult } from '@src/app/module/game/util';
 import { ensureNotNullish, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -109,8 +109,11 @@ export class GameComponent implements OnDestroy {
   readonly starChecked = signal(false);
   readonly isMatchdayTabVisible = signal(true);
   readonly referee = signal<Person | null>(null);
+
+  readonly currentGameId = signal<GameId>(0);
   readonly editGameAbsencesAvailable = signal(false);
   readonly editGameAbsencesMode = signal(false);
+  readonly editGameAbsencesCurrentValue = signal<GameAbsenceEditorItem[]>([]);
 
   readonly editorPersons = signal<EditorPerson[]>([]);
 
@@ -167,6 +170,7 @@ export class GameComponent implements OnDestroy {
           this.referee.set(null);
           this.editGameAbsencesMode.set(false);
           this.editGameAbsencesAvailable.set(false);
+          this.editGameAbsencesCurrentValue.set([]);
           this.loadGameDetails();
         }
       });
@@ -239,6 +243,7 @@ export class GameComponent implements OnDestroy {
 
   onGameResolved(game: DetailedGame): void {
     this.game = game;
+    this.currentGameId.set(game.id);
     this.uiGame = convertToUiGame(game, { penalty: () => "(P)", ownGoal: () => "(OG)", score: (tuple) => this.scoreFormatter.format(tuple), minute: (minute) => this.gameMinuteFormatter.format(minute) });
 
     // context menu
@@ -267,6 +272,7 @@ export class GameComponent implements OnDestroy {
           return activeSquad.map(item => {
             return {
               id: item.id,
+              avatar: item.avatar,
               displayName: getDisplayName(item.firstName, item.lastName),
             } satisfies EditorPerson;
           });
@@ -297,6 +303,18 @@ export class GameComponent implements OnDestroy {
     this.attendChecked.set(this.accountGameInformationService.isAttended(this.game.id));
 
     this.absentPlayers.set(game.absences ?? []);
+    this.editGameAbsencesCurrentValue.set(this.absentPlayers().map(item => {
+      return {
+        id: item.id.toString(),
+        person: {
+          id: item.person.id,
+          displayName: getDisplayName(item.person.firstName, item.person.lastName),
+          avatar: item.person.avatar,
+        },
+        absenceReason: item.reason,
+        absenceType: item.type,
+      };
+    }));
 
     if (game.report.referees && game.report.referees.length > 0) {
       this.referee.set(game.report.referees[0].person);
@@ -332,7 +350,7 @@ export class GameComponent implements OnDestroy {
   }
 
   onAbsenceEditorUpdate(updatedItems: GameAbsenceEditorItem[]) {
-    console.log('recv absence update', updatedItems)
+    this.editGameAbsencesCurrentValue.set([...updatedItems]);
   }
 
   onGameContextMenuItemSelected(itemId: string) {
@@ -669,7 +687,50 @@ export class GameComponent implements OnDestroy {
   }
 
   saveGameAbsences() {
+    const currentValue = this.editGameAbsencesCurrentValue();
+    const potentialAbsences: PotentialGameAbsence[] = [];
 
+    for (const currentItem of currentValue) {
+      if (isNotDefined(currentItem.person) || isNotDefined(currentItem.absenceReason)) {
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate('editGameAbsences.missingField') });
+        return;
+      }
+
+      const person = ensureNotNullish(currentItem.person);
+      const nameParts = person.displayName.split(" ");
+
+      potentialAbsences.push({
+        person: {
+          id: person.id,
+          lastName: nameParts[nameParts.length - 1],
+          firstName: nameParts.length > 0 ? nameParts.slice(0, nameParts.length - 1).join(' ') : undefined,
+          avatar: person.avatar,
+        },
+        type: currentItem.absenceType,
+        reason: currentItem.absenceReason as GameAbsenceReason,
+      })
+    }
+
+    // optimistally update the UI already but store the current state in case the request fails
+    const currentUiAbsentPlayers = this.absentPlayers();
+
+    this.absentPlayers.set([...potentialAbsences].map((item, idx) => ({ ...item, id: idx })));
+
+    this.gameAbsenceService.storeAbsencesForGame(ensureNotNullish(this.game).id, potentialAbsences).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe({
+      next: () => {
+        this.editGameAbsencesCurrentValue.set([]);
+        this.editGameAbsencesMode.set(false);
+        this.toastService.addToast({ type: 'success', text: this.translationService.translate('editGameAbsences.success') });
+      },
+      error: err => {
+        console.error(err);
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate('editGameAbsences.error') });
+
+        this.absentPlayers.set([...currentUiAbsentPlayers]);
+      }
+    })
   }
 
   private loadGameDetails() {
