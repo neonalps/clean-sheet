@@ -188,7 +188,7 @@ export enum GameEventType {
     Period = "period",
 }
 
-export type ExpulsionReason = 'violentConduct' | 'denialOfGoalScoringOpportunity' | 'professionalFoul' | 'argument' | 'seriousFoulPlay';
+export type ExpulsionReason = 'violentConduct' | 'denialOfGoalScoringOpportunity' | 'professionalFoul' | 'argument' | 'seriousFoulPlay' | 'grossUnsportsmanlikeConduct';
 
 export enum BookableOffence {
     DangerousPlay = 'dangerousPlay',

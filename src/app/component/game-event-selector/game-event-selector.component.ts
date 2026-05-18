@@ -127,6 +127,7 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
       { id: 'denialOfGoalScoringOpportunity', name: this.translationService.translate(`reason.denialOfGoalScoringOpportunity`) },
       { id: 'violentConduct', name: this.translationService.translate(`reason.violentConduct`) },
       { id: 'insult', name: this.translationService.translate(`reason.insult`) },
+      { id: 'grossUnsportsmanlikeConduct', name: this.translationService.translate(`reason.grossUnsportsmanlikeConduct`) },
     ]);
   }
 
