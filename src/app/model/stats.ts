@@ -42,6 +42,8 @@ export type PlayerStatsItemDto = {
     yellowCards?: number;
     yellowRedCards?: number;
     redCards?: number;
+    captain?: number;
+    directFreeKicks?: number;
     penaltiesTaken?: [number, number],
     penaltiesFaced?: [number, number],
     psoPenaltiesTaken?: [number, number],
@@ -60,6 +62,7 @@ export interface PlayerBaseStats {
     yellowCards: number;
     yellowRedCards: number;
     redCards: number;
+    captain: number;
     regulationPenaltiesTaken: number;
     regulationPenaltiesScored: number;
     regulationPenaltiesFaced: number;

@@ -7,7 +7,7 @@
         <ng-container *ngIf="managerPeriodsValue.length > 0; else emptyList">
             @for (item of managerPeriodsValue; track item.id) {
                 <div class="mb-3">
-                    <app-manager-period [period]="item" />
+                    <app-manager-period [period]="item" (filterOptionsSelected)="openStatsModal(item.person, $event)" />
                 </div>
             }
         </ng-container>
@@ -16,9 +16,3 @@
         </ng-template>
     </div>
 </section>
-
-
-<div>
-
-    @for (period of managerPeriodsValue; track $index) {}
-</div>

@@ -4,6 +4,7 @@ import { ScrollNearEndDirective } from "@src/app/directive/scroll-near-end/scrol
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil, throttleTime } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
+import { Person } from '@src/app/model/person';
 
 @Component({
   selector: 'app-paginated-ranked-person-list',
@@ -16,6 +17,7 @@ export class PaginatedRankedPersonListComponent implements OnInit, OnDestroy {
   readonly listItems = input.required<Array<RankedPersonItem>>();
 
   readonly nearEndReached = output<void>();
+  readonly personClicked = output<Person>();
 
   private readonly destroy$ = new Subject<void>();
   private readonly nearEnd$ = new Subject<void>();

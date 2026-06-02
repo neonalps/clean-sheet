@@ -1,0 +1,75 @@
+@let optionsValue = options();
+@let displayIconValue = displayIcon();
+@let displayTextValue = displayText();
+<div class="select-container pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
+    <div #main class="select-main p-2 flex justify-content-between transition-colors" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutline && !isOpen(), 'select-outline-focus': showOutline && isOpen(), 'rounded-lg': !showOutline, 'hover:bg-color-dark-grey-lighter': !showOutline, 'bg-color-dark-grey-lighter': !showOutline && isOpen() }" [ngStyle]="getDynamicStyles()">
+        <div class="flex-grow-8 flex align-items-center justify-content-center">
+            <ng-container *ngIf="displayIconValue">
+                <div class="basis-1/10 mr-1">
+                    <div class="width-1-75rem flex align-items-center">
+                        <app-ui-icon [descriptor]="displayIconValue" />
+                    </div>
+                </div>
+            </ng-container>
+            <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ displayTextValue }}</div>
+        </div>
+        <div class="flex align-items-center" *ngIf="hideChevron !== true">
+            <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
+                <app-chevron-down [color]="colorLight" />
+            </div>
+        </div>
+    </div>
+    <div class="select-options context-menu-shadow max-h-47-vh overflow-y-auto overflow-x-none scrollbar-stable scrollbar-thin scrollbar-dark-grey" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
+        <ng-container *ngIf="showSearch">
+            <div class="search-container p-2">
+                <div class="icon absolute left-16 top-16">
+                    <app-search [color]="colorLight" />
+                </div>
+                <input #search type="text" class="select-search w-full pl-10 pr-2 py-1 text-lg text-light" (input)="onSearchChange($event)" />
+            </div>
+        </ng-container>
+        <ng-container *ngIf="isLoading; else loadedOptions">
+            <ng-container *ngIf="loadingStyle === 'spinner'; else loadingSkeleton">
+                <div class="flex align-items-center justify-content-center py-3">
+                    <div class="loading-container-medium">
+                        <app-loading />
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #loadingSkeleton>
+                @for (skeletonRow of skeletonRows; track $index) {
+                    <div class="flex align-items-center">
+                        <div class="basis-1/8 mr-1 flex align-items-center justify-content-center p-2">
+                            <div class="skeleton-circle-small"></div>
+                        </div>
+                        <div class="flex-grow-1 flex align-items-center justify-content-start py-2">
+                            <div class="skeleton-box-small"></div>
+                        </div>
+                    </div>
+                }
+            </ng-template>
+        </ng-container>
+        <ng-template #loadedOptions>
+            <ng-container *ngIf="optionsValue !== null && optionsValue.length > 0; else emptyOptions">
+                @for (option of optionsValue; track option.id) {
+                    <div class="select-option px-3 py-2 flex align-items-center" (click)="onSelect(option)" [ngClass]="{ 'selected': isSelected(option) }" [ngStyle]="getDynamicOptionStyles()">
+                        <ng-container *ngIf="option.icon">
+                            <div class="basis-1/10 mr-1">
+                                <div class="width-1-75rem flex align-items-center">
+                                    <app-ui-icon [descriptor]="option.icon" />
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>
+                        <div *ngIf="showSelectedTick && isSelected(option)" class="basis-1/20 icon">
+                            <app-check [color]="colorLight" />
+                        </div>
+                    </div>
+                }
+            </ng-container>
+            <ng-template #emptyOptions>
+                <ng-content *ngIf="emptyOptionsVisible() === true" select="[noOptions]"></ng-content>
+            </ng-template>
+        </ng-template>
+    </div>
+</div>

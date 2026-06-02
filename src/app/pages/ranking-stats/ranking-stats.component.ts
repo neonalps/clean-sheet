@@ -7,7 +7,7 @@ import { BehaviorSubject, filter, map, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
 import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { PATH_PARAM_RANKING_STATS_TYPE } from '@src/app/util/router';
+import { navigateToPerson, PATH_PARAM_RANKING_STATS_TYPE } from '@src/app/util/router';
 import { ModalService } from '@src/app/module/modal/service';
 import { CompetitionFilterSuccessPayload } from '@src/app/component/modal-competition-filter/modal-competition-filter.component';
 import { BasicCompetition } from '@src/app/model/competition';
@@ -17,6 +17,8 @@ import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-grou
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
 import { FilterButtonComponent } from '@src/app/component/filter-button/filter-button.component';
+import { Person } from '@src/app/model/person';
+import { getDisplayName } from '@src/app/util/domain';
 
 export type RankingStatsType = 'appearances' | 'goals';
 const allowedRankingStatsTypes = ['appearances', 'goals'];
@@ -126,6 +128,10 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
         this.resetLoad();
         this.loadData();
     });
+  }
+
+  onPersonClicked(person: Person) {
+    navigateToPerson(this.router, person.id, getDisplayName(person.firstName, person.lastName));
   }
 
   private resetLoad(): void {

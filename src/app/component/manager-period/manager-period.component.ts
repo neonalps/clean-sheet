@@ -1,13 +1,16 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { ManagerPeriod } from '@src/app/model/manager';
 import { getPersonName } from '@src/app/util/domain';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { ensureNotNullish, isNotDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
 import { PersonCardComponent } from "@src/app/component/person-card/person-card.component";
 import { SeasonTitleSmallComponent } from "@src/app/component/season-title-small/season-title-small.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { getNumberOfDaysBetween } from '@src/app/util/date';
+import { GamePlayedFilterOptions } from '@src/app/model/game-played';
+import { Tendency } from '@src/app/model/game';
+import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-manager-period',
@@ -15,6 +18,8 @@ import { getNumberOfDaysBetween } from '@src/app/util/date';
   templateUrl: './manager-period.component.html',
 })
 export class ManagerPeriodComponent implements OnInit {
+
+  readonly filterOptionsSelected = output<GamePlayedFilterOptions>();
 
   readonly avgPoints = signal('');
   readonly durationDaysText = signal('');
@@ -55,6 +60,18 @@ export class ManagerPeriodComponent implements OnInit {
     } else {
       this.durationText.set(this.translationService.translate('managerPeriod.fromTo', { from: startDate, to: ensureNotNullish(endDate) }));
     }
+  }
+
+  itemClicked(tendency: Nullish<Tendency>) {
+    const filterPayload: GamePlayedFilterOptions = {
+      onlyManager: true,
+    }
+
+    if (isDefined(tendency)) {
+      filterPayload.tendency = tendency;
+    }
+
+    this.filterOptionsSelected.emit(filterPayload);
   }
 
 }

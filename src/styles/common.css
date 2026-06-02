@@ -1454,6 +1454,10 @@
     background-color: var(--info);
 }
 
+.bg-color-info-darker-20 {
+    background-color: var(--info-darker-20);
+}
+
 .bg-color-warn {
     background-color: var(--warn);
 }
@@ -1500,6 +1504,14 @@
 
 .text-light-grey-darker {
     color: var(--light-grey-darker);
+}
+
+.text-info {
+    color: var(--info);
+}
+
+.text-info-darker-20 {
+    color: var(--info-darker-20);
 }
 
 .scrollbar-stable {
@@ -1564,6 +1576,14 @@
 
 .border-gold {
     border-color: var(--gold);
+}
+
+.border-info {
+    border-color: var(--info);
+}
+
+.border-info-darker-20 {
+    border-color: var(--info-darker-20);
 }
 
 .border-b-light {

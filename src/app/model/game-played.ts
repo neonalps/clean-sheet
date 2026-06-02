@@ -1,5 +1,9 @@
+import { Tendency } from "./game";
+
 export type GamePlayedFilterOptions = {
   nextPageKey?: string;
+  onlyManager?: boolean;
+  tendency?: Tendency;
   forMain?: boolean;
   competitionId?: string;
   opponentId?: string;

@@ -9,6 +9,6 @@
         <div class="flex align-items-center justify-content-center mb-6">
             <app-chip-group [chipGroup$]="forMainChipGroupInput" (onSelected)="onForMainChipSelected($event)"  />
         </div>
-        <app-paginated-ranked-person-list [listItems]="playerStats()" (nearEndReached)="onNearEndReached()" />
+        <app-paginated-ranked-person-list [listItems]="playerStats()" (nearEndReached)="onNearEndReached()" (personClicked)="onPersonClicked($event)" />
     </div>
 </section>

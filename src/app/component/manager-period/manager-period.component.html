@@ -1,7 +1,12 @@
 @let periodValue = period();
 <div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg pointer">
     <div class="flex align-items-center mt-3">
-        <app-person-card [person]="periodValue.person" [showNationalities]="true" [textSize]="'text-lg'" [iconContainerWidth]="'width-3rem'" [iconMargin]="'mr-3'" />
+        <div class="flex-grow">
+            <app-person-card [person]="periodValue.person" [showNationalities]="true" [textSize]="'text-lg'" [iconContainerWidth]="'width-3rem'" [iconMargin]="'mr-3'" />
+        </div>
+        <div *ngIf="periodValue.interim">
+            <div class="text-xs uppercase rounded-lg border-1 border-solid border-info-darker-20 px-2 py-1">{{ 'managerPeriod.interim' | $t }}</div>
+        </div>
     </div>
     <div class="mt-8 text-sm text-light-grey">
         <div>
@@ -15,7 +20,7 @@
         <div class="section-title">{{ 'section.record' | $t }}</div>
     </div>
     <div class="my-5 flex align-items-center justify-content-evenly">
-        <div class="mx-3">
+        <div class="mx-3" (click)="itemClicked(null)">
             <div class="mx-3 center">
                 <div class="flex align-items-center justify-content-center">
                     <div class="text-lg mb-4 bold py-1 min-w-42">{{ periodValue.summary.gameCount }}</div>
@@ -23,7 +28,7 @@
                 <div class="text-xs text-light-grey">{{ gamesI18nPlural() }}</div>
             </div>
         </div>
-        <div class="mx-3">
+        <div class="mx-3" (click)="itemClicked('w')">
             <div class="mx-3 center">
                 <div class="flex align-items-center justify-content-center">
                     <div class="text-lg mb-4 result-tendency-w rounded-lg py-1 min-w-42">{{ periodValue.summary.win }}</div>
@@ -31,7 +36,7 @@
                 <div class="text-xs text-light-grey">{{ winsI18nPlural() }}</div>
             </div>
         </div>
-        <div class="mx-3">
+        <div class="mx-3" (click)="itemClicked('d')">
             <div class="mx-3 center">
                 <div class="flex align-items-center justify-content-center">
                     <div class="text-lg mb-4 result-tendency-d rounded-lg py-1 min-w-42">{{ periodValue.summary.draw }}</div>
@@ -39,7 +44,7 @@
                 <div class="text-xs text-light-grey">{{ drawsI18nPlural() }}</div>
             </div>
         </div>
-        <div class="mx-3">
+        <div class="mx-3" (click)="itemClicked('l')">
             <div class="mx-3 center">
                 <div class="flex align-items-center justify-content-center">
                     <div class="text-lg mb-4 result-tendency-l rounded-lg py-1 min-w-42">{{ periodValue.summary.loss }}</div>

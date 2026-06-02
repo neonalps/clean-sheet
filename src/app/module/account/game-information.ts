@@ -24,8 +24,6 @@ export class AccountGameInformationService {
             strategy: FetchStrategy.Network,
             scope: FetchScope.Account,
             onUpdate: (update: AccountGameInformationResponse) => {
-                console.log('received account game information');
-
                 this.attendedGames = new Set(update.attended);
                 this.starredGames = new Set(update.stars);
             }, 
