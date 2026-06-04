@@ -41,6 +41,14 @@
             </div>
         </div>
     </div>
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="clubResponse.club.homeVenue">
+        <div class="page-title mb-6">
+            <div>{{ 'club.homeVenue' | $t }}</div>
+        </div>
+        <div>
+            <app-venue-details [venue]="clubResponse.club.homeVenue" />
+        </div>
+    </div>
     <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8">
         <div class="page-title mb-6">
             <div>{{ 'club.games' | $t }}</div>

@@ -62,6 +62,9 @@
                 <app-loading />
             </div>
         }
+        @case ('location') {
+            <app-location-icon [color]="descriptorValue.color" />
+        }
         @case ('menu') {
             <app-menu-icon [color]="descriptorValue.color" />
         }

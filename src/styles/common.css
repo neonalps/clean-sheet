@@ -4,6 +4,10 @@
     font-weight: bold;
 }
 
+.normal {
+    font-weight: normal;
+}
+
 .center {
     text-align: center;
 }

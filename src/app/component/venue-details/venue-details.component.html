@@ -1,0 +1,28 @@
+@let venueValue = venue();
+<div>
+    <div class="flex align-items-center">
+        <div class="basis-2/3">
+            <div class="section-title">{{ 'venue.currentName' | $t }}</div>
+            <div>{{ venueValue.name }}</div>
+        </div>
+        <div class="basis-1/3">
+            <app-button [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'location' }" [text]="'location.showOnMap' | $t" [textClasses]="'text-sm normal'" (onClicked)="showOnMap()" />
+        </div>
+    </div>
+    <div class="mt-4">
+        <div class="section-title">{{ 'venue.city' | $t }}</div>
+        <div>{{ venueValue.city }}</div>
+    </div>
+    <div class="mt-4">
+        <div class="section-title">{{ 'venue.capacity' | $t }}</div>
+        <div>{{ venueValue.capacity | formatNumber }}</div>
+    </div>
+    <div class="mt-4" *ngIf="venueValue.flavors && venueValue.flavors.length > 1">
+        <div class="section-title">{{ 'venue.alsoOrPreviouslyKnownAs' | $t }}</div>
+        <div>
+            @for (flavor of venueValue.flavors; track flavor.id) {
+                <div class="mb-2 last:mb-0">{{ flavor.name }}</div>
+            }
+        </div>
+    </div>
+</div>

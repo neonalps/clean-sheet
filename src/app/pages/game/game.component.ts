@@ -426,6 +426,7 @@ export class GameComponent implements OnDestroy {
   }
 
   onVenueSelected(venueId: VenueId): void {
+    console.log('venue id', venueId)
     navigateToVenue(this.router, venueId);
   }
 

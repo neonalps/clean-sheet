@@ -5,7 +5,7 @@
                 <app-ui-icon [descriptor]="icon" />
             </div>
         </div>
-        <div *ngIf="text" class="text-base">
+        <div *ngIf="text" [ngClass]="textClasses() ?? 'text-base'">
             {{ text }}
         </div>
         <div class="ml-3" *ngIf="iconRight">

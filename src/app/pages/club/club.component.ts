@@ -15,10 +15,11 @@ import { BasicGame } from '@src/app/model/game';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
 import { FilterableGameListComponent } from '@src/app/component/filterable-game-list/filterable-game-list.component';
+import { VenueDetailsComponent } from "@src/app/component/venue-details/venue-details.component";
 
 @Component({
   selector: 'app-club',
-  imports: [CommonModule, UiIconComponent, ExternalLinksComponent, I18nPipe, FilterableGameListComponent],
+  imports: [CommonModule, UiIconComponent, ExternalLinksComponent, I18nPipe, FilterableGameListComponent, VenueDetailsComponent],
   templateUrl: './club.component.html',
   styleUrl: './club.component.css'
 })

@@ -1,5 +1,6 @@
 import { VenueFlavorId, VenueId } from "@src/app/util/domain-types";
 import { ExternalProvider } from "./external-provider";
+import { BasicClub } from "./club";
 
 export interface GameVenue {
     id: VenueId;
@@ -19,6 +20,7 @@ export interface BasicVenue {
     latitude?: number;
     longitude?: number;
     flavors: VenueFlavor[];
+    homeVenueFor?: BasicClub[];
 }
 
 export interface VenueFlavor {

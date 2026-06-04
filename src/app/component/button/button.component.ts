@@ -19,6 +19,8 @@ export class ButtonComponent {
   @Input() iconRight?: UiIconDescriptor;
   @Input() text?: string;
 
+  readonly textClasses = input<string>();
+
   @Output() onClicked = new EventEmitter<void>();
 
   readonly enabled = input<boolean>(true);
