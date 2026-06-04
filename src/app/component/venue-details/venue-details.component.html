@@ -1,4 +1,5 @@
 @let venueValue = venue();
+@let flavorsToDisplayValue = flavorsToDisplay();
 <div>
     <div class="flex align-items-center">
         <div class="basis-2/3">
@@ -17,10 +18,17 @@
         <div class="section-title">{{ 'venue.capacity' | $t }}</div>
         <div>{{ venueValue.capacity | formatNumber }}</div>
     </div>
-    <div class="mt-4" *ngIf="venueValue.flavors && venueValue.flavors.length > 1">
+    <div class="mt-4" *ngIf="venueValue.homeVenueFor && venueValue.homeVenueFor.length > 0">
+        @for (club of venueValue.homeVenueFor; track club.id) {
+            <div class="mb-2 last:mb-0">
+                <app-small-club [club]="club" />
+            </div>
+        }
+    </div>
+    <div class="mt-4" *ngIf="flavorsToDisplayValue.length > 0">
         <div class="section-title">{{ 'venue.alsoOrPreviouslyKnownAs' | $t }}</div>
         <div>
-            @for (flavor of venueValue.flavors; track flavor.id) {
+            @for (flavor of flavorsToDisplayValue; track flavor.id) {
                 <div class="mb-2 last:mb-0">{{ flavor.name }}</div>
             }
         </div>

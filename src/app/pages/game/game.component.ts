@@ -425,9 +425,9 @@ export class GameComponent implements OnDestroy {
     this.starChecked.set(toggledValue);
   }
 
-  onVenueSelected(venueId: VenueId): void {
-    console.log('venue id', venueId)
-    navigateToVenue(this.router, venueId);
+  onVenueSelected(): void {
+    const venue = ensureNotNullish(this.game).venue;
+    navigateToVenue(this.router, venue.id, venue.branding);
   }
 
   onTabSelected(tabId: string) {

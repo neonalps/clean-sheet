@@ -48,8 +48,8 @@ export function navigateToPerson(router: Router, personId: PersonId, displayName
     router.navigate(["/person", createUrlSlug(personId, displayName)]);
 }
 
-export function navigateToVenue(router: Router, venueId: VenueId): void {
-    router.navigate(["/venue", venueId]);
+export function navigateToVenue(router: Router, venueId: VenueId, name: string): void {
+    router.navigate(["/venue", createUrlSlug(venueId, name)]);
 }
 
 export function navigateToSettings(router: Router): void {
@@ -104,8 +104,7 @@ export function parseUrlSlug(slug: string): number {
 }
 
 export function createUrlSlug(id: number, name: string): string {
-    return [id, ...name.split(" ")
-        .map(item => normalizeForSearch(item.toLowerCase()))]
+    return [id, ...name.split(" ").map(item => normalizeForSearch(item.toLowerCase()))]
         .filter(item => typeof item === 'number' || item.trim().length > 0)
         .join("-");
 }

@@ -1,1 +1,18 @@
-<p>venue works!</p>
+@let venueValue = venue();
+<div *ngIf="isLoading(); else loadedContent">
+    <div class="flex align-items-center justify-content-center">
+        <div class="loading-container-medium">
+            <app-loading />
+        </div>
+    </div>
+</div>
+<ng-template #loadedContent>
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="venueValue">
+        <div class="page-title mb-6">
+            <div>{{ 'venue.title' | $t }}</div>
+        </div>
+        <div>
+            <app-venue-details [venue]="venueValue" />
+        </div>
+    </div>
+</ng-template>

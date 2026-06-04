@@ -154,8 +154,7 @@
         </div>
         <div class="pt-2">
             <div class="section-title">{{ 'game.venue' | $t }}</div>
-            <div>
-                <div (click)="onVenueSelected(game!.venue!.id)"></div>
+            <div (click)="onVenueSelected()">
                 <div class="text-base pointer transition-text hover:text-light-darker-10">{{ game?.venue?.branding }}, {{ game?.venue?.city }}</div>
             </div>
         </div>

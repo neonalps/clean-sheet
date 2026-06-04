@@ -1,6 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { VenueDetailsComponent } from '@src/app/component/venue-details/venue-details.component';
 import { BasicVenue } from '@src/app/model/venue';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ToastService } from '@src/app/module/toast/service';
 import { VenueService } from '@src/app/module/venue/service';
@@ -8,16 +11,18 @@ import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { VenueId } from '@src/app/util/domain-types';
 import { parseUrlSlug, PATH_PARAM_VENUE_ID } from '@src/app/util/router';
 import { Subject, takeUntil } from 'rxjs';
+import { LoadingComponent } from "@src/app/component/loading/loading.component";
 
 @Component({
   selector: 'app-venue',
-  imports: [],
+  imports: [CommonModule, I18nPipe, VenueDetailsComponent, LoadingComponent],
   templateUrl: './venue.component.html',
   styleUrl: './venue.component.css'
 })
 export class VenueComponent implements OnDestroy {
 
   readonly isLoading = signal(false);
+  readonly venue = signal<BasicVenue | null>(null);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -60,6 +65,7 @@ export class VenueComponent implements OnDestroy {
     ).subscribe({
       next: venueResponse => {
         this.onVenueResolved(venueResponse);
+        this.isLoading.set(false);
       },
       error: err => {
         console.error(`Failed to load venue`, err);
@@ -68,7 +74,7 @@ export class VenueComponent implements OnDestroy {
     });
   }
 
-  private onVenueResolved(venue: BasicVenue) {
-    console.log('got venue', venue);
+  private onVenueResolved(resolvedVenue: BasicVenue) {
+    this.venue.set(resolvedVenue);
   }
 }

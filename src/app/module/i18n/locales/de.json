@@ -444,6 +444,7 @@
     "venue.city": "Stadt",
     "venue.currentName": "Aktueller Name",
     "venue.failedToLoad": "Der Spielort konnte nicht geladen werden",
+    "venue.title": "Spielort",
     "victoryGame.austrianBundesliga": "In diesem Spiel hat {main} die Österreichische Bundesliga zum {titleCount}. Mal gewonnen",
     "victoryGame.austrianCup": "In diesem Spiel hat {main} den Österreichischen Cup zum {titleCount}. Mal gewonnen",
     "victoryGame.austrianSuperCup": "In diesem Spiel hat {main} den Österreichischen Supercup zum {titleCount}. Mal gewonnen",

@@ -301,7 +301,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         navigateToSeasonGames(this.router, resultItem.entityId);
         break;
       case ExternalSearchEntity.Venue:
-        navigateToVenue(this.router, resultItem.entityId);
+        navigateToVenue(this.router, resultItem.entityId, resultItem.title.substring(0, resultItem.title.indexOf('(')));
         break;
       default:
         assertUnreachable(resultItem.type);

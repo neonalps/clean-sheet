@@ -26,6 +26,13 @@ export function camelToKebab(input: string): string {
     .toLowerCase();
 }
 
+export function toKebab(input: string): string {
+    return input
+        .split(' ')
+        .map(item => item.toLocaleLowerCase())
+        .join('-');
+}
+
 export function hasText(toCheck: string | undefined | null): boolean {
     return isDefined(toCheck) && toCheck.trim().length > 0;
 }
