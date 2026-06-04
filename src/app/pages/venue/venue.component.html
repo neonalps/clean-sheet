@@ -12,7 +12,7 @@
             <div>{{ 'venue.title' | $t }}</div>
         </div>
         <div>
-            <app-venue-details [venue]="venueValue" />
+            <app-venue-details [venue]="venueValue" (onClubClick)="onClubClicked($event)" />
         </div>
     </div>
 </ng-template>

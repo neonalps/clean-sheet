@@ -12,8 +12,9 @@ export class VenueService {
 
     constructor(private http: HttpClient) {}
 
-    getById(venueId: VenueId): Observable<BasicVenue> {
-        return this.http.get<BasicVenue>(`${environment.apiBaseUrl}/v1/venues/${venueId}`);
+    getById(venueId: VenueId, includeHomeVenueFor?: boolean): Observable<BasicVenue> {
+        const queryStringSuffix = includeHomeVenueFor ? `?includeHomeVenueFor=true` : '';
+        return this.http.get<BasicVenue>(`${environment.apiBaseUrl}/v1/venues/${venueId}${queryStringSuffix}`);
     }
 
 }

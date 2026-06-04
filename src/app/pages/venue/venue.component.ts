@@ -9,9 +9,10 @@ import { ToastService } from '@src/app/module/toast/service';
 import { VenueService } from '@src/app/module/venue/service';
 import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { VenueId } from '@src/app/util/domain-types';
-import { parseUrlSlug, PATH_PARAM_VENUE_ID } from '@src/app/util/router';
+import { navigateToClub, parseUrlSlug, PATH_PARAM_VENUE_ID } from '@src/app/util/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
+import { BasicClub } from '@src/app/model/club';
 
 @Component({
   selector: 'app-venue',
@@ -47,6 +48,10 @@ export class VenueComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
+  onClubClicked(club: BasicClub) {
+    navigateToClub(this.router, club);
+  }
+
   private loadVenueDetails() {
     const venueId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_VENUE_ID)));
     this.isLoading.set(true);
@@ -60,7 +65,7 @@ export class VenueComponent implements OnDestroy {
   }
 
   private resolveVenue(venueId: VenueId) {
-    this.venueService.getById(venueId).pipe(
+    this.venueService.getById(venueId, true).pipe(
       takeUntil(this.destroy$),
     ).subscribe({
       next: venueResponse => {

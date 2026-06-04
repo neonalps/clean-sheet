@@ -445,6 +445,7 @@
     "venue.city": "City",
     "venue.currentName": "Current name", 
     "venue.failedToLoad": "The venue could not be loaded",
+    "venue.homeVenueFor": "Home venue of",
     "venue.title": "Venue",
     "victoryGame.austrianBundesliga": "In this game {main} won the Austrian Bundesliga for the {titleCount} time",
     "victoryGame.austrianCup": "In this game {main} won the Austrian Cup for the {titleCount} time",

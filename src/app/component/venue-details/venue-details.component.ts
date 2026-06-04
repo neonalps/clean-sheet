@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { BasicVenue } from '@src/app/model/venue';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
 import { isDefined, isNotDefined } from '@src/app/util/common';
 import { ButtonComponent } from "../button/button.component";
-import { SmallClubComponent } from "../small-club/small-club.component";
+import { SmallClubComponent } from "@src/app/component/small-club/small-club.component";
+import { BasicClub } from '@src/app/model/club';
 
 @Component({
   selector: 'app-venue-details',
@@ -15,6 +16,9 @@ import { SmallClubComponent } from "../small-club/small-club.component";
 export class VenueDetailsComponent {
 
   readonly venue = input.required<BasicVenue>();
+  readonly onClubClick = output<BasicClub>();
+
+  readonly canInteractWithHomeVenueClubs = input(true);
 
   readonly locationAvailable = computed(() => {
     const venueValue = this.venue();

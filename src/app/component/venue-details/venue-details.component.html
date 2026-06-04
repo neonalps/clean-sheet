@@ -10,22 +10,25 @@
             <app-button [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'location' }" [text]="'location.showOnMap' | $t" [textClasses]="'text-sm normal'" (onClicked)="showOnMap()" />
         </div>
     </div>
-    <div class="mt-4">
+    <div class="mt-5">
         <div class="section-title">{{ 'venue.city' | $t }}</div>
         <div>{{ venueValue.city }}</div>
     </div>
-    <div class="mt-4">
+    <div class="mt-5">
         <div class="section-title">{{ 'venue.capacity' | $t }}</div>
         <div>{{ venueValue.capacity | formatNumber }}</div>
     </div>
-    <div class="mt-4" *ngIf="venueValue.homeVenueFor && venueValue.homeVenueFor.length > 0">
-        @for (club of venueValue.homeVenueFor; track club.id) {
-            <div class="mb-2 last:mb-0">
-                <app-small-club [club]="club" />
-            </div>
-        }
+    <div class="mt-5" *ngIf="venueValue.homeVenueFor && venueValue.homeVenueFor.length > 0">
+        <div class="section-title">{{ 'venue.homeVenueFor' | $t }}</div>
+        <div>
+            @for (club of venueValue.homeVenueFor; track club.id) {
+                <div class="mb-2 last:mb-0" [ngClass]="{ 'pointer': canInteractWithHomeVenueClubs() }" (click)="canInteractWithHomeVenueClubs() && onClubClick.emit(club)">
+                    <app-small-club [club]="club" />
+                </div>
+            }
+        </div>
     </div>
-    <div class="mt-4" *ngIf="flavorsToDisplayValue.length > 0">
+    <div class="mt-5" *ngIf="flavorsToDisplayValue.length > 0">
         <div class="section-title">{{ 'venue.alsoOrPreviouslyKnownAs' | $t }}</div>
         <div>
             @for (flavor of flavorsToDisplayValue; track flavor.id) {
