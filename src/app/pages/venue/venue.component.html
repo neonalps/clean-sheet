@@ -9,10 +9,10 @@
 <ng-template #loadedContent>
     <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="venueValue">
         <div class="page-title mb-6">
-            <div>{{ 'venue.title' | $t }}</div>
+            <div>{{ venueValue.name }}</div>
         </div>
         <div>
-            <app-venue-details [venue]="venueValue" (onClubClick)="onClubClicked($event)" />
+            <app-venue-details [venue]="venueValue" [hideNameSection]="true" [showCityCountryFlag]="true" (onClubClick)="onClubClicked($event)" />
         </div>
     </div>
 </ng-template>

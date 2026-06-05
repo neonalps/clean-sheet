@@ -1,18 +1,23 @@
 @let venueValue = venue();
 @let flavorsToDisplayValue = flavorsToDisplay();
 <div>
-    <div class="flex align-items-center">
-        <div class="basis-2/3">
-            <div class="section-title">{{ 'venue.currentName' | $t }}</div>
-            <div>{{ venueValue.name }}</div>
-        </div>
-        <div class="basis-1/3">
-            <app-button [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'location' }" [text]="'location.showOnMap' | $t" [textClasses]="'text-sm normal'" (onClicked)="showOnMap()" />
-        </div>
+    <div class="float-right">
+        <app-button [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'location' }" [text]="'location.showOnMap' | $t" [textClasses]="'text-sm normal'" (onClicked)="showOnMap()" />
+    </div>
+    <div *ngIf="!hideNameSection()">
+        <div class="section-title">{{ 'venue.currentName' | $t }}</div>
+        <div>{{ venueValue.name }}</div>
     </div>
     <div class="mt-5">
         <div class="section-title">{{ 'venue.city' | $t }}</div>
-        <div>{{ venueValue.city }}</div>
+        <div>
+            <span>{{ venueValue.city }}</span>
+            <span *ngIf="showCityCountryFlag()" class="ml-2">
+                @for (flag of countryFlags(); track flag.flag) {
+                    <span class="mr-1 last:mr-0">{{ flag.flag }}</span>
+                }
+            </span>
+        </div>
     </div>
     <div class="mt-5">
         <div class="section-title">{{ 'venue.capacity' | $t }}</div>

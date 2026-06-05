@@ -3,7 +3,6 @@ import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { VenueDetailsComponent } from '@src/app/component/venue-details/venue-details.component';
 import { BasicVenue } from '@src/app/model/venue';
-import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ToastService } from '@src/app/module/toast/service';
 import { VenueService } from '@src/app/module/venue/service';
@@ -16,7 +15,7 @@ import { BasicClub } from '@src/app/model/club';
 
 @Component({
   selector: 'app-venue',
-  imports: [CommonModule, I18nPipe, VenueDetailsComponent, LoadingComponent],
+  imports: [CommonModule, VenueDetailsComponent, LoadingComponent],
   templateUrl: './venue.component.html',
   styleUrl: './venue.component.css'
 })

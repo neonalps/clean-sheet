@@ -30,6 +30,10 @@
     overflow: hidden;
 }
 
+.float-right {
+    float: right;
+}
+
 .flex-col {
     flex-direction: column;
 }
