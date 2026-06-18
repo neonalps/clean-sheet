@@ -1,5 +1,6 @@
 import { DateString, GameId, SeasonTitleId } from "@src/app/util/domain-types";
 import { SmallCompetition } from "./competition";
+import { OmitStrict } from "@src/app/util/types";
 
 export interface Season {
     id: number;
@@ -16,3 +17,5 @@ export interface SeasonTitle {
     victoryDate?: DateString;
     victoryGameId?: GameId;
 }
+
+export type CompetitionTitle = OmitStrict<SeasonTitle, 'competition'>;

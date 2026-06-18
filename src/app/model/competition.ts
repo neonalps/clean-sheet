@@ -1,5 +1,6 @@
 import { CompetitionId } from "@src/app/util/domain-types";
 import { ExternalProvider } from "./external-provider";
+import { CompetitionTitle } from "./season";
 
 export interface SmallCompetition {
     id: CompetitionId;
@@ -31,6 +32,16 @@ export interface BasicCompetition {
     iconLarge?: string;
     combineStatisticsWithParent?: boolean;
     sortOrder: number;
+}
+
+export interface CompetitionResponse {
+    id: CompetitionId;
+    name: string;
+    shortName: string;
+    isDomestic: boolean;
+    iconSmall?: string;
+    iconLarge?: string;
+    titles: CompetitionTitle[];
 }
 
 export interface CompetitionInput {

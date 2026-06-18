@@ -1,9 +1,12 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "../fetch/service";
-import { BasicCompetition } from "@src/app/model/competition";
+import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
+import { BasicCompetition, CompetitionResponse } from "@src/app/model/competition";
 import { filter, map, Observable, Subject } from "rxjs";
 import { isDefined, isNotDefined } from "@src/app/util/common";
 import { fromPromise } from "rxjs/internal/observable/innerFrom";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@src/environments/environment";
+import { CompetitionId } from "@src/app/util/domain-types";
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +19,10 @@ export class CompetitionService implements OnDestroy {
 
     private competitionsSubject = new Subject<BasicCompetition[]>();
 
-    constructor(private readonly fetchService: FetchService) {}
+    constructor(
+        private readonly fetchService: FetchService,
+        private readonly http: HttpClient,
+    ) {}
 
     ngOnDestroy(): void {
         this.competitionsFetchHandle?.unsubscribe();
@@ -43,6 +49,10 @@ export class CompetitionService implements OnDestroy {
 
     getCompetitionsObservable(): Observable<BasicCompetition[]> {
         return this.competitionsSubject.asObservable();
+    }
+
+    getCompetitionById(competitionId: CompetitionId): Observable<CompetitionResponse> {
+        return this.http.get<CompetitionResponse>(`${environment.apiBaseUrl}/v1/competitions/${competitionId}`);
     }
 
     getOrderedCompetitionsFromCache(): Observable<BasicCompetition[]> {

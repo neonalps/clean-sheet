@@ -39,6 +39,7 @@
     "chip.venues": "Venues",
     "club.games": "Games",
     "club.homeVenue": "Home venue",
+    "competition.failedToLoad": "The competition could not be loaded",
     "competition.table": "Table",
     "competitionFilterOption.none": "None",
     "competitionFilterOption.domestic": "Only domestic games",

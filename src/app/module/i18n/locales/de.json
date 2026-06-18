@@ -39,6 +39,7 @@
     "chip.venues": "Spielorte",
     "club.games": "Spiele",
     "club.homeVenue": "Heimstätte",
+    "competition.failedToLoad": "Der Bewerb konnte nicht geladen werden",
     "competitionFilterOption.none": "Keine",
     "competitionFilterOption.domestic": "Nur nationale Spiele",
     "competitionFilterOption.international": "Nur internationale Spiele",
