@@ -156,7 +156,6 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         filter(baseGame => isDefined(baseGame.kickoff)),
         take(1),
       ).subscribe(baseGame => {
-        console.log('received base input', baseGame)
         this.gameId.set(baseGame.id);
 
         // game status

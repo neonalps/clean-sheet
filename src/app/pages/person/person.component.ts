@@ -292,7 +292,7 @@ export class PersonComponent implements OnDestroy {
   private resolvePerson(personId: PersonId) {
     combineLatest([
       this.competitionService.getOrderedCompetitionsFromCache(),
-      this.personResolver.getById(personId, true),
+      this.personResolver.getById(personId, true, true),
     ]).pipe(takeUntil(this.destroy$)).subscribe({
       next: ([orderedCompetitions, person]) => {
         this.onPersonResolved(person, orderedCompetitions);

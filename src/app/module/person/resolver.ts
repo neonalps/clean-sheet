@@ -9,9 +9,9 @@ export class PersonResolver {
 
   constructor(private readonly personService: PersonService) {}
 
-  getById(personId: number, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
+  getById(personId: number, includeContract = false, includeStatistics = false): Observable<GetPersonByIdResponse> {
     // here could be some caching if necessary
-    return this.personService.getById(personId, includeStatistics);
+    return this.personService.getById(personId, includeContract, includeStatistics);
   }
 
 }

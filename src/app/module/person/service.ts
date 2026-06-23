@@ -3,6 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { ExternalProviderLinkDto } from "@src/app/model/external-provider";
 import { BasicGame } from "@src/app/model/game";
 import { DetailedPerson, Person } from "@src/app/model/person";
+import { ContractForPerson } from "@src/app/model/person-contract";
 import { GoalsAgainstClubStatsItemDto, PlayerBaseStats, PlayerSeasonStatsItemDto, ShirtDistributionItem } from "@src/app/model/stats";
 import { DateString } from "@src/app/util/domain-types";
 import { environment } from "@src/environments/environment";
@@ -19,6 +20,7 @@ export type CreatePersonRequest = {
 
 export type GetPersonByIdResponse = {
   person: DetailedPerson;
+  contaract?: ContractForPerson;
   stats?: {
     performance: Array<PlayerSeasonStatsItemDto>;
     goalsAgainstClubs: Array<GoalsAgainstClubStatsItemDto>;
@@ -36,8 +38,8 @@ export class PersonService {
 
     private readonly http = inject(HttpClient);
 
-    getById(personId: number, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
-      return this.http.get<GetPersonByIdResponse>(`${environment.apiBaseUrl}/v1/people/${personId}?includeStatistics=${includeStatistics}`);
+    getById(personId: number, includeContract = false, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
+      return this.http.get<GetPersonByIdResponse>(`${environment.apiBaseUrl}/v1/people/${personId}?includeContract=${includeContract}&includeStatistics=${includeStatistics}`);
     }
 
     create(createPerson: CreatePersonRequest): Observable<Person> {
