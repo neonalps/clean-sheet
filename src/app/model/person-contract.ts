@@ -1,8 +1,8 @@
 import { Nullish } from "@src/app/util/types";
-import { PersonContractId } from "@src/app/util/domain-types";
+import { DateString, PersonContractId } from "@src/app/util/domain-types";
 
 export interface ContractForPerson {
     id: PersonContractId;
-    contractUntil: Nullish<Date>;
-    onLoanUntil: Nullish<Date>;
+    contractUntil: Nullish<DateString>;
+    onLoanUntil: Nullish<DateString>;
 }

@@ -20,7 +20,7 @@ export type CreatePersonRequest = {
 
 export type GetPersonByIdResponse = {
   person: DetailedPerson;
-  contaract?: ContractForPerson;
+  contract?: ContractForPerson;
   stats?: {
     performance: Array<PlayerSeasonStatsItemDto>;
     goalsAgainstClubs: Array<GoalsAgainstClubStatsItemDto>;

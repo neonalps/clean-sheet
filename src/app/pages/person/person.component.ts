@@ -19,7 +19,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { StatsPlayerHeaderComponent } from '@src/app/component/stats-player-header/stats-player-header.component';
 import { CompetitionStats, StatsPlayerCompetitionComponent } from '@src/app/component/stats-player-competition/stats-player-competition.component';
-import { CompetitionId, PersonId } from '@src/app/util/domain-types';
+import { CompetitionId, DateString, PersonId } from '@src/app/util/domain-types';
 import { BasicCompetition, SmallCompetition } from '@src/app/model/competition';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ModalService } from '@src/app/module/modal/service';
@@ -61,18 +61,20 @@ export class PersonComponent implements OnDestroy {
 
   performance$ = new BehaviorSubject<UiPlayerStats | null>(null);
 
-  isLoading = signal(true);
-  colorLight = COLOR_LIGHT;
+  readonly isLoading = signal(true);
+  readonly colorLight = COLOR_LIGHT;
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
-  refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
+  readonly refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   readonly contextMenuVisible = signal(false);
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
   readonly opponentStatsVisible = signal(false);
   readonly refereeListVisible = signal(false);
+  readonly contractUntil = signal<DateString | null>(null);
+  readonly onLoan = signal<boolean>(false);
 
   readonly personContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
 
@@ -132,6 +134,12 @@ export class PersonComponent implements OnDestroy {
   onPersonResolved(person: GetPersonByIdResponse, orderedCompetitions: Array<BasicCompetition>): void {
     this.person = person;
     this.isLoading.set(false);
+
+    if (person.contract) {
+      const effectiveContractUntil = person.contract.contractUntil || person.contract.onLoanUntil;
+      this.contractUntil.set(effectiveContractUntil ?? null);
+      this.onLoan.set(isDefined(person.contract.onLoanUntil));
+    }
 
     if (person.stats) {
       const playerStats = getUiPlayerStats(person.stats.performance);
@@ -268,6 +276,7 @@ export class PersonComponent implements OnDestroy {
   private loadPersonDetails() {
     const personId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_PERSON_ID)));
     this.isLoading.set(true);
+    this.contractUntil.set(null);
     if (isDefined(personId)) {
       this.resolvePerson(Number(personId));
     } else {

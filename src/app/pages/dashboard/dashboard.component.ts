@@ -40,6 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly competitionChipsVisible = signal(false);
   readonly competitionChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly loginName = signal<string | null>(null);
+  readonly shouldDisplayTopScorers = signal(false);
 
   readonly topScorersLoading$ = new BehaviorSubject(true);
   readonly topScorersRanking$ = new BehaviorSubject<RankedPersonItem[]>([]);
@@ -152,6 +153,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private updateTopScorers(ranking: RankedPersonItem[]) {
     this.topScorersRanking$.next(ranking);
+    this.shouldDisplayTopScorers.set(ranking.length > 0);
   }
 
 }
