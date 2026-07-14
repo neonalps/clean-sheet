@@ -102,6 +102,19 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ]
       },
       {
+        i18nKey: 'menu.myGames',
+        items: [
+          {
+            target: '/my-games/attended',
+            i18nKey: 'myGames.attended',
+          },
+          {
+            target: '/my-games/favourites',
+            i18nKey: 'myGames.favourites',
+          },
+        ]
+      },
+      {
         i18nKey: 'menu.management',
         isOnlyVisibleTo: [AccountRole.Manager],
         items: [

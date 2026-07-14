@@ -22,6 +22,8 @@ import { RankingStatsComponent } from './pages/ranking-stats/ranking-stats.compo
 import { ApplicationStatsComponent } from './pages/application-stats/application-stats.component';
 import { JerseyNumbersComponent } from './pages/jersey-numbers/jersey-numbers.component';
 import { ManagersComponent } from './pages/managers/managers.component';
+import { GamesFavouritesComponent } from './pages/games-favourites/games-favourites.component';
+import { GamesAttendedComponent } from './pages/games-attended/games-attended.component';
 
 export const routes: Routes = [
     { 
@@ -93,6 +95,16 @@ export const routes: Routes = [
     { 
         path: `managers`, 
         component: ManagersComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `my-games/attended`, 
+        component: GamesAttendedComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `my-games/favourites`, 
+        component: GamesFavouritesComponent,
         canActivate: [loggedInGuard],
     },
     { 
