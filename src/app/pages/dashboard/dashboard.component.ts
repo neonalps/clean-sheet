@@ -118,7 +118,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.updateTopScorers(this.dashboard.topScorers.ranking);
     }
 
-    if (this.dashboard.topScorers?.competitions && this.dashboard.topScorers.competitions.length > 1) {
+    if (this.dashboard.topScorers?.competitions && this.dashboard.topScorers.competitions.length > 0) {
       const orderedCompetitionIds = getOrderedCompetitionIds(this.dashboard.topScorers.competitions.map(item => item.id), orderedCompetitions);
 
       const competitionChips: Chip[] = [];

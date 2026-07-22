@@ -85,7 +85,7 @@ export class AbsenceListEditorItemComponent implements OnInit {
       if (isDefined(absenceReason)) {
         this.pushReason$.next({
           id: absenceReason,
-          name: absenceReason,
+          name: this.translationService.translate(`injury.${absenceReason}`),
         })
       }
     });
