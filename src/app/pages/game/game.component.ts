@@ -92,7 +92,9 @@ export class GameComponent implements OnDestroy {
 
   game: DetailedGame | null = null;
   uiGame!: UiGame;
-  isLoading = true;
+
+  readonly isLoading = signal(true);
+
   readonly activeTab$ = new BehaviorSubject<string | null>(null);
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
@@ -296,7 +298,7 @@ export class GameComponent implements OnDestroy {
       this.resolvePreviousLeg(this.game.previousLeg, this.game.season.id);
     } else {
       // if there is no previous leg to resolve we can finish loading now
-      this.isLoading = false;
+      this.isLoading.set(false);
     }
 
     this.starChecked.set(this.accountGameInformationService.isStarred(this.game.id));
@@ -754,7 +756,7 @@ export class GameComponent implements OnDestroy {
         this.resolveGame(Number(gameId), seasonId !== undefined ? Number(seasonId) : undefined);
       } else {
         // TODO show error content
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(`Could not resolve game ID`);
       }
     }
@@ -767,7 +769,7 @@ export class GameComponent implements OnDestroy {
       },
       error: err => {
         // TODO show error
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(`Could not resolve game`, err);
       }
     });
@@ -777,11 +779,11 @@ export class GameComponent implements OnDestroy {
     this.gameResolver.getById(previousLeg, seasonId).pipe(take(1)).subscribe({
           next: game => {
             this.previousLeg = game;
-            this.isLoading = false;
+            this.isLoading.set(false);
           },
           error: err => {
             console.error(`Could not resolve previous leg`, err);
-            this.isLoading = false;
+            this.isLoading.set(false);
           }
         });
   }

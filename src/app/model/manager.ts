@@ -2,6 +2,7 @@ import { DateString, ManagerPeriodId } from "@src/app/util/domain-types";
 import { Person } from "./person";
 import { RecordSummary } from "./game";
 import { SeasonTitle } from "./season";
+import { OmitStrict } from "@src/app/util/types";
 
 export interface ManagerPeriod {
     id: ManagerPeriodId;
@@ -12,3 +13,5 @@ export interface ManagerPeriod {
     summary: RecordSummary;
     titles: SeasonTitle[];
 }
+
+export type ManagerPeriodForPerson = OmitStrict<ManagerPeriod, 'person'>;

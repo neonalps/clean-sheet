@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { ExternalProviderLinkDto } from "@src/app/model/external-provider";
 import { BasicGame } from "@src/app/model/game";
+import { ManagerPeriodForPerson } from "@src/app/model/manager";
 import { DetailedPerson, Person } from "@src/app/model/person";
 import { ContractForPerson } from "@src/app/model/person-contract";
 import { GoalsAgainstClubStatsItemDto, PlayerBaseStats, PlayerSeasonStatsItemDto, ShirtDistributionItem } from "@src/app/model/stats";
@@ -27,6 +28,7 @@ export type GetPersonByIdResponse = {
     refereeGames?: Array<BasicGame>;
     opponent?: PlayerBaseStats;
     shirtDistribution?: Array<ShirtDistributionItem>;
+    managerPeriods?: Array<ManagerPeriodForPerson>;
   },
   externalLinks?: ReadonlyArray<ExternalProviderLinkDto>;
 }

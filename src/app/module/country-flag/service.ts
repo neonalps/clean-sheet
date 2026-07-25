@@ -58,6 +58,7 @@ export class CountryFlagService {
         ['kr', '🇰🇷'],
         ['lt', '🇱🇹'],
         ['lu', '🇱🇺'],
+        ['lv', '🇱🇻'],
         ['me', '🇲🇪'],
         ['mk', '🇲🇰'],
         ['ml', '🇲🇱'],
