@@ -35,6 +35,8 @@ import { getOrderedCompetitionIds } from '@src/app/util/domain';
 import { ContextMenuSection, ContextMenuComponent } from '@src/app/component/context-menu/context-menu.component';
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
+import { ManagerPeriodForPerson } from '@src/app/model/manager';
+import { ManagerPeriodComponent } from "@src/app/component/manager-period/manager-period.component";
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -48,7 +50,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent, ContextMenuComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent, ContextMenuComponent, ManagerPeriodComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -67,12 +69,14 @@ export class PersonComponent implements OnDestroy {
   opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
   readonly refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
+  readonly maangerPeriods = signal<ManagerPeriodForPerson[]>([]);
 
   readonly contextMenuVisible = signal(false);
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
   readonly opponentStatsVisible = signal(false);
   readonly refereeListVisible = signal(false);
+  readonly managerPeriodListVisible = signal(false);
   readonly contractUntil = signal<DateString | null>(null);
   readonly onLoan = signal<boolean>(false);
 
@@ -151,11 +155,18 @@ export class PersonComponent implements OnDestroy {
       this.goalsAgainstClubsVisible.set(person.stats.goalsAgainstClubs !== undefined && person.stats.goalsAgainstClubs.length > 0);
       this.opponentStatsVisible.set(this.opponentTotalStatsRows.length > 0);
 
+      const managerPeriodsFromStats = person.stats.managerPeriods ?? [];
+      this.managerPeriodListVisible.set(managerPeriodsFromStats.length > 0);
+      this.maangerPeriods.set(managerPeriodsFromStats);
+
       const refereeGames = person.stats.refereeGames ?? [];
       this.refereeGames$.next(refereeGames);
       this.refereeListVisible.set(refereeGames.length > 0);
 
       this.performance$.next(playerStats);
+    } else {
+      this.refereeListVisible.set(false);
+      this.managerPeriodListVisible.set(false);
     }
   }
 

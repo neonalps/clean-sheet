@@ -1,14 +1,15 @@
 @let periodValue = period();
+@let managerPersonValue = managerPerson();
 <div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg pointer">
-    <div class="flex align-items-center mt-3">
+    <div class="flex align-items-center mt-3 mb-8" *ngIf="managerPersonValue">
         <div class="flex-grow">
-            <app-person-card [person]="periodValue.person" [showNationalities]="true" [textSize]="'text-lg'" [iconContainerWidth]="'width-3rem'" [iconMargin]="'mr-3'" />
+            <app-person-card [person]="managerPersonValue" [showNationalities]="true" [textSize]="'text-lg'" [iconContainerWidth]="'width-3rem'" [iconMargin]="'mr-3'" />
         </div>
         <div *ngIf="periodValue.interim">
             <div class="text-xs uppercase rounded-lg border-1 border-solid border-info-darker-20 px-2 py-1">{{ 'managerPeriod.interim' | $t }}</div>
         </div>
     </div>
-    <div class="mt-8 text-sm text-light-grey">
+    <div class="text-sm text-light-grey">
         <div>
             <div class="section-title">{{ 'section.duration' | $t }}</div>
         </div>

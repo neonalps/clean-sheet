@@ -817,6 +817,10 @@
     padding: 3rem;
 }
 
+.last\:pb-0:last-child {
+    padding-bottom: 0;
+}
+
 .pb-1 {
     padding-bottom: .25rem;
 }
@@ -1527,6 +1531,10 @@
 }
 
 .border-none {
+    border: none;
+}
+
+.last\:border-none:last-child {
     border: none;
 }
 

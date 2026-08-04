@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
-import { ManagerPeriod } from '@src/app/model/manager';
+import { ManagerPeriod, ManagerPeriodForPerson } from '@src/app/model/manager';
 import { getPersonName } from '@src/app/util/domain';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
@@ -11,6 +11,7 @@ import { getNumberOfDaysBetween } from '@src/app/util/date';
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { Tendency } from '@src/app/model/game';
 import { Nullish } from '@src/app/util/types';
+import { Person } from '@src/app/model/person';
 
 @Component({
   selector: 'app-manager-period',
@@ -20,6 +21,8 @@ import { Nullish } from '@src/app/util/types';
 export class ManagerPeriodComponent implements OnInit {
 
   readonly filterOptionsSelected = output<GamePlayedFilterOptions>();
+
+  readonly managerPerson = signal<Person | null>(null);
 
   readonly avgPoints = signal('');
   readonly durationDaysText = signal('');
@@ -32,14 +35,18 @@ export class ManagerPeriodComponent implements OnInit {
   readonly drawsI18nPlural = signal('');
   readonly lossesI18nPlural = signal('');
 
-  readonly period = input.required<ManagerPeriod>();
+  readonly period = input.required<ManagerPeriod | ManagerPeriodForPerson>();
 
   private readonly datePipe = new DatePipe('en-US');
   private readonly translationService = inject(TranslationService);
 
   ngOnInit(): void {
     const periodValue = this.period();
-    this.personName.set(getPersonName(periodValue.person));
+
+    if ('person' in periodValue) {
+      this.managerPerson.set(periodValue.person);
+      this.personName.set(getPersonName(periodValue.person));
+    }
 
     this.avgPoints.set(`Ø ${periodValue.summary.avgPointsFixed.replace('.', ',')}`);
     this.winPercentage.set(`${ Math.round(periodValue.summary.win / periodValue.summary.gameCount * 100) }%`);

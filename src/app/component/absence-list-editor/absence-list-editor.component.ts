@@ -11,6 +11,7 @@ import { GameAbsenceService } from '@src/app/module/game-absence/service';
 import { GameId } from '@src/app/util/domain-types';
 import { ToastService } from '@src/app/module/toast/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { getDisplayName } from '@src/app/util/domain';
 
 export type GameAbsenceDropLists = Array<GameAbsenceDropList>;
 
@@ -100,6 +101,27 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
       .subscribe({
         next: potentialAbsences => {
           console.log('received potentials', potentialAbsences);
+
+          const potentialInjured = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.Injured);
+          const potentialAtRisk = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.AtRisk);
+          const potentialSuspended = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.Suspended);
+          const potentialExempt = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.Exempt);
+
+          this.injuredItems.update(current => {
+            return [...current, ...potentialInjured.map((item, idx) => ({ id: `potential-injured-${idx}`, absenceType: item.type, absenceReason: item.reason, person: { id: item.person.id, avatar: item.person.avatar, displayName: getDisplayName(item.person.firstName, item.person.lastName) } }))]
+          });
+          this.atRiskItems.update(current => {
+            return [...current, ...potentialAtRisk.map((item, idx) => ({ id: `potential-at-risk-${idx}`, absenceType: item.type, absenceReason: item.reason, person: { id: item.person.id, avatar: item.person.avatar, displayName: getDisplayName(item.person.firstName, item.person.lastName) } }))]
+          });
+          this.suspendedItems.update(current => {
+            return [...current, ...potentialSuspended.map((item, idx) => ({ id: `potential-suspended-${idx}`, absenceType: item.type, absenceReason: item.reason, person: { id: item.person.id, avatar: item.person.avatar, displayName: getDisplayName(item.person.firstName, item.person.lastName) } }))]
+          });
+          this.exemptItems.update(current => {
+            return [...current, ...potentialExempt.map((item, idx) => ({ id: `potential-exempt-${idx}`, absenceType: item.type, absenceReason: item.reason, person: { id: item.person.id, avatar: item.person.avatar, displayName: getDisplayName(item.person.firstName, item.person.lastName) } }))]
+          });
+
+          this.updateDropLists();
+          this.publishUpdate();
         },
         error: err => {
           console.error(err);

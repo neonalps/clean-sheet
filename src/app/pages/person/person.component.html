@@ -76,6 +76,19 @@
             </div>
         </div>
 
+        <ng-container *ngIf="managerPeriodListVisible()">
+            <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mt-3 ">
+                <div class="bold text-light text-lg mb-2">{{ 'person.managerPeriods' | $t }}</div>
+                <div>
+                    @for (period of maangerPeriods(); track period.id) {
+                        <div class="mb-4 last:mb-0 pb-2 last:pb-0 border-b-solid border-b-1 border-b-light last:border-none">
+                            <app-manager-period [period]="period" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </ng-container>
+
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="shouldDisplayPlayerStatistics()">
             <div class="pl-3 flex align-items-center mb-1">
                 <div class="bold text-light text-lg">{{ getStatsForMainText() }}</div>

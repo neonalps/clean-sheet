@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="mb-8" *ngIf="dashboard?.upcomingGame">
-        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+        <div class="heading-small">
             {{ 'dashboard.nextGame' | $t }}
         </div>
         <div class="dashboard-item-content">
@@ -20,7 +20,7 @@
     </div>
 
     <div class="mb-8" *ngIf="dashboard?.lastGame">
-        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+        <div class="heading-small">
             {{ 'dashboard.lastGame' | $t }}
         </div>
         <div class="dashboard-item-content">
@@ -29,7 +29,7 @@
     </div>
 
     <div class="mb-8">
-        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+        <div class="heading-small">
             {{ 'dashboard.performanceTrend' | $t }}
         </div>
         <div class="dashboard-item-content pt-3">
@@ -42,7 +42,7 @@
     </div>
 
     <div class="mb-8" *ngIf="shouldDisplayTopScorers()">
-        <div class="dashboard-item-title border-l-3 border-l-solid border-l-light bold text-sm uppercase pl-3 ml-1">
+        <div class="heading-small">
             {{ 'dashboard.topScorers' | $t }}
         </div>
         <div class="bg-color-dark-grey-darker rounded-lg p-2 mt-3">
