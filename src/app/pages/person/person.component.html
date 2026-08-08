@@ -81,7 +81,7 @@
                 <div class="bold text-light text-lg mb-2">{{ 'person.managerPeriods' | $t }}</div>
                 <div>
                     @for (period of maangerPeriods(); track period.id) {
-                        <div class="mb-4 last:mb-0 pb-2 last:pb-0 border-b-solid border-b-1 border-b-light last:border-none">
+                        <div class="mb-4 last:mb-0 pb-2 border-b-solid border-b-1 border-b-light last:border-none">
                             <app-manager-period [period]="period" />
                         </div>
                     }

@@ -130,68 +130,73 @@ export class AbsenceListEditorItemComponent implements OnInit {
   getReasonOptions(): Observable<SelectOption[]> {
     return of([
       {
+        id: GameAbsenceReason.Ankle,
+        name: this.translationService.translate(`injury.ankle`),
+        type: GameAbsenceType.Injured,
+      },
+      {
         id: GameAbsenceReason.CruciaLigament,
-        name: 'Kreuzbandriss',
+        name: this.translationService.translate(`injury.cruciateLigament`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Calf,
+        name: this.translationService.translate(`injury.calf`),
         type: GameAbsenceType.Injured,
       },
       {
         id: GameAbsenceReason.Muscle,
-        name: 'Muskelverletzung',
-        type: GameAbsenceType.Injured,
-      },
-      {
-        id: GameAbsenceReason.Ankle,
-        name: 'Knöchel',
+        name: this.translationService.translate(`injury.muscle`),
         type: GameAbsenceType.Injured,
       },
       {
         id: 'yellowCard:3',
-        name: '3 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 3 }),
         type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:5',
-        name: '5 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 5 }),
         type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:7',
-        name: '7 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 7 }),
         type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:9',
-        name: '9 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 9 }),
         type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:13',
-        name: '13 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 13 }),
         type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:2',
-        name: '2 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 2 }),
         type: GameAbsenceType.AtRisk,
       },
       {
         id: 'yellowCard:4',
-        name: '4 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 4 }),
         type: GameAbsenceType.AtRisk,
       },
       {
         id: 'yellowCard:8',
-        name: '8 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 8 }),
         type: GameAbsenceType.AtRisk,
       },
       {
         id: 'yellowCard:12',
-        name: '12 Gelbe Karten',
+        name: this.translationService.translate(`suspension.yellowCards`, { plural: 12 }),
         type: GameAbsenceType.AtRisk,
       },
       {
-        id: 'private', 
-        name: 'Private Gründe',
+        id: 'private',
+        name: this.translationService.translate(`absence.privateReasons`),
         type: GameAbsenceType.Exempt,
       },
     ]).pipe(

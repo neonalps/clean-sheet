@@ -3,12 +3,14 @@ import { ModalComponent } from '@src/app/component/modal/modal.component';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ModalService } from '@src/app/module/modal/service';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { FilterItemComponent } from "@src/app/component/filter/filter-item/filter-item.component";
 import { CommonModule } from '@angular/common';
 import { GameListFilterItem, GameListFilterType, GenericFilterItem } from '@src/app/module/filter/service';
 import { SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
+import { MultiSelectComponent } from "@src/app/component/select-multi/select-multi.component";
+import { CompetitionService } from '@src/app/module/competition/service';
 
 export type FilterGameListPayload = {
   gameListFilterItems: GameListFilterItem[];
@@ -16,14 +18,21 @@ export type FilterGameListPayload = {
 
 @Component({
   selector: 'app-modal-game-list-filter',
-  imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent],
+  imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent],
   templateUrl: './modal-game-list-filter.component.html',
   styleUrl: './modal-game-list-filter.component.css'
 })
 export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
+  readonly competitionFilterVisible = signal(false);
 
+  readonly selectedCompetitions = new Observable<SelectOption[]>;
+
+  private readonly competitionOptions$ = new Subject<SelectOption[]>;
+  readonly competitionOptions = this.competitionOptions$.asObservable();
+
+  private readonly competitionService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);
   private readonly translationService = inject(TranslationService);
 
@@ -35,6 +44,20 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       .subscribe(payload => {
         this.currentFilterItems.set(payload.gameListFilterItems.length > 0 ? payload.gameListFilterItems : [this.createEmptyGameListFilterItem()]);
       });
+
+    this.competitionService.getOrderedTopLevelCompetitionsFromCache().pipe(
+      map(competitions => {
+        return competitions.map(item => ({
+          id: item.id,
+          name: item.shortName,
+          icon: item.iconSmall ? { type: 'competition', content: item.iconSmall } : undefined,
+        } satisfies SelectOption));
+      }),
+      takeUntil(this.destroy$),
+    ).subscribe((competitionOptions: SelectOption[]) => {
+      console.log('emitting them options', competitionOptions)
+      this.competitionOptions$.next(competitionOptions);
+    });
   }
 
   ngOnDestroy(): void {
@@ -72,6 +95,8 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       copy[idxToUpdate] = payload as GameListFilterItem;
       return copy;
     });
+
+    this.competitionFilterVisible.set(payload.type === GameListFilterType.Competition);
   }
 
   onFilterItemRemove(payload: GenericFilterItem): void {
