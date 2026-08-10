@@ -253,3 +253,39 @@ a {
 .scrollbar-color-modal {
     scrollbar-color: var(--dark-grey) var(--dark-grey-lighter-2);
 }
+
+.select-main {
+    transition: background-color .15s linear;
+}
+
+.select-outline {
+    border: 1px solid var(--light-grey-darker);
+}
+
+.select-outline-focus {
+    border: 1px solid var(--light);
+}
+
+.select-options {
+    position: absolute;
+    background-color: #333;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .15s linear, opacity .15s linear;
+    z-index: 10;
+}
+
+.select-options.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.select-option.selected {
+    background-color: #515151;
+    font-weight: bold;
+}
+
+.chevron-container {
+    transition: transform .15s linear;
+}

@@ -11,7 +11,7 @@
                 }
             </div>
             <div *ngIf="competitionFilterVisible()">
-                <app-multi-select [optionsSource]="competitionOptions" [selectedValue]="selectedCompetitions" />
+                <app-multi-select [options]="competitionOptions()" [selected]="selectedCompetitions()" (onSelectedChange)="onCompetitionSelectionChanged($event)" />
             </div>
             <div class="flex align-items-center justify-content-center mt-4 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
                 <div>+ {{ 'filterGameList.addNewFilter' | $t }}</div>

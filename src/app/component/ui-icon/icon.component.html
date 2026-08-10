@@ -18,6 +18,9 @@
         @case ('captain') {
             <div class="captain text-sm bold rounded-md">C</div>
         }
+        @case ('check') {
+            <app-check [color]="descriptorValue.color" />
+        }
         @case ('chevron-left') {
             <app-chevron-left [color]="descriptorValue.color" />
         }

@@ -62,7 +62,7 @@
                         </ng-container>
                         <div class="flex-grow-1" [ngClass]="{ 'center': centerOptions }">{{ option.name }}</div>
                         <div *ngIf="showSelectedTick && isSelected(option)" class="basis-1/20 icon">
-                            <app-check [color]="colorLight" />
+                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'check' }" />
                         </div>
                     </div>
                 }

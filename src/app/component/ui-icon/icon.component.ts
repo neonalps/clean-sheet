@@ -31,6 +31,7 @@ import { CalendarIconComponent } from "@src/app/icon/calendar-icon/calendar-icon
 import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
 import { LocationIconComponent } from '@src/app/icon/location/location.component';
 import { ContractIconComponent } from "@src/app/icon/contract/contract.component";
+import { CheckComponent } from "@src/app/icon/check/check.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -65,7 +66,8 @@ import { ContractIconComponent } from "@src/app/icon/contract/contract.component
     CalendarIconComponent,
     StadiumIconComponent,
     LocationIconComponent,
-    ContractIconComponent
+    ContractIconComponent,
+    CheckComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

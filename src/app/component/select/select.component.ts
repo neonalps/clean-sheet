@@ -8,7 +8,6 @@ import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.co
 import { COLOR_LIGHT } from '@src/styles/constants';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
-import { CheckComponent } from '@src/app/icon/check/check.component';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 
@@ -16,7 +15,7 @@ export type LoadingStyle = 'skeleton' | 'spinner';
 
 @Component({
   selector: 'app-select',
-  imports: [ChevronDownComponent, CheckComponent, CommonModule, ClickOutsideDirective, LoadingComponent, LoadingComponent, SearchComponent, UiIconComponent],
+  imports: [ChevronDownComponent, CommonModule, ClickOutsideDirective, LoadingComponent, LoadingComponent, SearchComponent, UiIconComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css'
 })

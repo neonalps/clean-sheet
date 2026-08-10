@@ -3,11 +3,11 @@ import { ModalComponent } from '@src/app/component/modal/modal.component';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ModalService } from '@src/app/module/modal/service';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { FilterItemComponent } from "@src/app/component/filter/filter-item/filter-item.component";
 import { CommonModule } from '@angular/common';
 import { GameListFilterItem, GameListFilterType, GenericFilterItem } from '@src/app/module/filter/service';
-import { SelectOption } from '@src/app/component/select/option';
+import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { MultiSelectComponent } from "@src/app/component/select-multi/select-multi.component";
 import { CompetitionService } from '@src/app/module/competition/service';
@@ -27,10 +27,8 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
   readonly competitionFilterVisible = signal(false);
 
-  readonly selectedCompetitions = new Observable<SelectOption[]>;
-
-  private readonly competitionOptions$ = new Subject<SelectOption[]>;
-  readonly competitionOptions = this.competitionOptions$.asObservable();
+  readonly competitionOptions = signal<SelectOption[]>([]);
+  readonly selectedCompetitions = signal<OptionId[]>([]);
 
   private readonly competitionService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);
@@ -55,8 +53,7 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroy$),
     ).subscribe((competitionOptions: SelectOption[]) => {
-      console.log('emitting them options', competitionOptions)
-      this.competitionOptions$.next(competitionOptions);
+      this.competitionOptions.set(competitionOptions);
     });
   }
 
@@ -67,6 +64,10 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   addItem(): void {
     this.currentFilterItems.set([...this.currentFilterItems(), this.createEmptyGameListFilterItem()]);
+  }
+
+  onCompetitionSelectionChanged(selectedCompetitionIds: OptionId[]) {
+    this.selectedCompetitions.set(selectedCompetitionIds);
   }
 
   getGameListFilterTypeOptions(): SelectOption[] {
