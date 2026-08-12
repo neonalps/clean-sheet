@@ -6,12 +6,13 @@
             <div>
                 @for (item of currentFilterItemsValue; track item.id) {
                     <div class="mb-2 last:mb-0 p-2 bg-color-dark-grey-darker rounded-md">
-                        <app-filter-item [filterItem]="item" [availableFilterTypeOptions]="getGameListFilterTypeOptions()" (onFilterItemChanged)="onFilterItemChange($event)" (onFilterItemRemoved)="onFilterItemRemove($event)" />
+                        <app-filter-item [filterItem]="item" [availableFilterTypeOptions]="getGameListFilterTypeOptions()" (onFilterItemChanged)="onFilterItemChange($event)" (onFilterItemRemoved)="onFilterItemRemove($event)">
+                            <div *ngIf="item.type === 'competition'">
+                                <app-multi-select [options]="competitionOptions()" [selected]="selectedCompetitions()" (onSelectedChange)="onCompetitionSelectionChanged($event)" />
+                            </div>
+                        </app-filter-item>                 
                     </div>
                 }
-            </div>
-            <div *ngIf="competitionFilterVisible()">
-                <app-multi-select [options]="competitionOptions()" [selected]="selectedCompetitions()" (onSelectedChange)="onCompetitionSelectionChanged($event)" />
             </div>
             <div class="flex align-items-center justify-content-center mt-4 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
                 <div>+ {{ 'filterGameList.addNewFilter' | $t }}</div>

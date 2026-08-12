@@ -60,7 +60,11 @@ export class FilterService {
                     filteredResult = filteredResult.filter(item => this.isInternationalGame(item));
                     break;
                 case GameListFilterType.Competition:
-                    throw new Error(`Not implemented yet`);
+                    filteredResult = filteredResult.filter(item => {
+                        console.log(filter)
+                        return true;
+                    });
+                    break;
                 default:
                     assertUnreachable(filterType);
             }

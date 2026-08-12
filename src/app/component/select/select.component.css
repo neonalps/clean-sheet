@@ -12,9 +12,3 @@
 .select-search:focus {
     border-bottom: 2px solid var(--light);
 }
-
-@media (hover: hover) {
-    .select-option:hover {
-        background-color: #474747;
-    }
-}

@@ -11,6 +11,7 @@ import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { MultiSelectComponent } from "@src/app/component/select-multi/select-multi.component";
 import { CompetitionService } from '@src/app/module/competition/service';
+import { processTranslationPlaceholders } from '@src/app/util/common';
 
 export type FilterGameListPayload = {
   gameListFilterItems: GameListFilterItem[];
@@ -25,7 +26,6 @@ export type FilterGameListPayload = {
 export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
-  readonly competitionFilterVisible = signal(false);
 
   readonly competitionOptions = signal<SelectOption[]>([]);
   readonly selectedCompetitions = signal<OptionId[]>([]);
@@ -47,7 +47,7 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       map(competitions => {
         return competitions.map(item => ({
           id: item.id,
-          name: item.shortName,
+          name: processTranslationPlaceholders(item.shortName, this.translationService),
           icon: item.iconSmall ? { type: 'competition', content: item.iconSmall } : undefined,
         } satisfies SelectOption));
       }),
@@ -96,8 +96,6 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       copy[idxToUpdate] = payload as GameListFilterItem;
       return copy;
     });
-
-    this.competitionFilterVisible.set(payload.type === GameListFilterType.Competition);
   }
 
   onFilterItemRemove(payload: GenericFilterItem): void {

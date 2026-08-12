@@ -17,6 +17,10 @@
         transition-duration: 150ms;
     }
 
+    .select-option:hover {
+        background-color: #474747;
+    }
+
     .hover\:bg-color-dark-grey:hover {
         background-color: var(--dark-grey);
     }

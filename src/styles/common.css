@@ -853,6 +853,10 @@
     padding-bottom: 2rem;
 }
 
+.empty\:pt-0:empty {
+    padding-top: 0;
+}
+
 .pt-1 {
     padding-top: .25rem;
 }

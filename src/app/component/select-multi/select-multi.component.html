@@ -3,13 +3,13 @@
     <div #main (click)="toggleDropdown()">
         {{ getSelectedString() }}
     </div>
-    <div class="select-options text-sm" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
+    <div class="select-options text-sm context-menu-shadow max-h-47-vh overflow-y-auto overflow-x-none scrollbar-stable scrollbar-thin scrollbar-dark-grey" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
         @for (option of options(); track option.id) {
             @let isSelected = isOptionCurrentlySelected(option.id);
             <div class="select-option px-3 py-2 flex align-items-center" (click)="toggleOption(option.id)" [ngClass]="{ 'selected': isSelected }">
                 <ng-container *ngIf="option.icon">
-                    <div class="basis-1/10 mr-1">
-                        <div class="width-1-75rem flex align-items-center">
+                    <div class="basis-1/12 mr-1">
+                        <div class="width-1-25rem flex align-items-center">
                             <app-ui-icon [descriptor]="option.icon" />
                         </div>
                     </div>
