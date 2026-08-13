@@ -3,11 +3,12 @@ import { Subject } from "rxjs";
 import { OptionId, SelectOption } from "@src/app/component/select/option";
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
 import { CommonModule } from "@angular/common";
+import { SelectOptionComponent } from "@src/app/component/select-option/select-option.component";
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
 @Component({
   selector: 'app-multi-select',
-  imports: [CommonModule, ClickOutsideDirective, UiIconComponent],
+  imports: [CommonModule, ClickOutsideDirective, SelectOptionComponent, UiIconComponent],
   templateUrl: './select-multi.component.html',
 })
 export class MultiSelectComponent implements OnDestroy {
@@ -17,6 +18,7 @@ export class MultiSelectComponent implements OnDestroy {
     readonly options = input.required<SelectOption[]>();
     readonly selected = input<OptionId[]>([]);
     readonly hideChevron = input<boolean>(false);
+    readonly showOutline = input<boolean>(true);
 
     readonly onSelectedChange = output<OptionId[]>();
 

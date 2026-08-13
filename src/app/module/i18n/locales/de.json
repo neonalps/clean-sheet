@@ -203,6 +203,8 @@
     "gameCreate.failure": "Das Spiel konnte nicht angelegt werden",
     "gameDelete.success": "Das Spiel wurde erfolgreich gelöscht",
     "gameDelete.failure": "Das Spiel konnte nicht gelöscht werden",
+    "gameUpdate.success": "Das Spiel wurde erfolgreich aktualisiert",
+    "gameUpdate.failure": "Das Spiel konnte nicht aktualisiert werden",
     "gameEvent.affectedPerson": "Person",
     "gameEvent.assistBy": "Assist von",
     "gameEvent.goalType": "Tor-Art",

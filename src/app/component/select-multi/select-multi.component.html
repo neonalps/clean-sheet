@@ -1,24 +1,19 @@
-@let shouldCenterOptions = false;
+@let isOpenValue = isOpen();
+@let showOutlineValue = showOutline();
 <div class="pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
-    <div #main (click)="toggleDropdown()">
-        {{ getSelectedString() }}
-    </div>
-    <div class="select-options text-sm context-menu-shadow max-h-47-vh overflow-y-auto overflow-x-none scrollbar-stable scrollbar-thin scrollbar-dark-grey" [ngClass]="{ 'visible': isOpen() }" [style.width]="optionsWidth()">
-        @for (option of options(); track option.id) {
-            @let isSelected = isOptionCurrentlySelected(option.id);
-            <div class="select-option px-3 py-2 flex align-items-center" (click)="toggleOption(option.id)" [ngClass]="{ 'selected': isSelected }">
-                <ng-container *ngIf="option.icon">
-                    <div class="basis-1/12 mr-1">
-                        <div class="width-1-25rem flex align-items-center">
-                            <app-ui-icon [descriptor]="option.icon" />
-                        </div>
-                    </div>
-                </ng-container>
-                <div class="flex-grow-1" [ngClass]="{ 'center': shouldCenterOptions }">{{ option.name }}</div>
-                <div *ngIf="isSelected" class="basis-1/20 icon">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'check' }" />
-                </div>
+    <div #main class="select-main p-2 flex justify-content-between transition-colors" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutlineValue && !isOpenValue, 'select-outline-focus': showOutlineValue && isOpenValue, 'rounded-lg': !showOutlineValue, 'hover:bg-color-dark-grey-lighter': !showOutlineValue, 'bg-color-dark-grey-lighter': !showOutlineValue && isOpenValue }">
+        <div class="flex-grow-8 flex align-items-center justify-content-center">
+            {{ getSelectedString() }}
+        </div>
+        <div class="flex align-items-center" *ngIf="!hideChevron()">
+            <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpenValue, 'open': isOpenValue }">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'chevron-down' }" />
             </div>
+        </div>
+    </div>
+    <div class="select-options text-sm context-menu-shadow max-h-47-vh overflow-y-auto overflow-x-none scrollbar-stable scrollbar-thin scrollbar-dark-grey" [ngClass]="{ 'visible': isOpenValue }" [style.width]="optionsWidth()">
+        @for (option of options(); track option.id) {
+            <app-select-option [option]="option" [selected]="isOptionCurrentlySelected(option.id)" (onToggle)="toggleOption($event)" />
         }
     </div>
 </div>

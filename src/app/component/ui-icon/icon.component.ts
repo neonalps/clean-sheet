@@ -32,6 +32,7 @@ import { StadiumIconComponent } from "@src/app/icon/stadium/stadium.component";
 import { LocationIconComponent } from '@src/app/icon/location/location.component';
 import { ContractIconComponent } from "@src/app/icon/contract/contract.component";
 import { CheckComponent } from "@src/app/icon/check/check.component";
+import { ChevronDownComponent } from "@src/app/icon/chevron-down/chevron-down.component";
 
 @Component({
   selector: 'app-ui-icon',
@@ -67,7 +68,8 @@ import { CheckComponent } from "@src/app/icon/check/check.component";
     StadiumIconComponent,
     LocationIconComponent,
     ContractIconComponent,
-    CheckComponent
+    CheckComponent,
+    ChevronDownComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

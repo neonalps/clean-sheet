@@ -1,13 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-chevron-down',
   imports: [],
-  templateUrl: './chevron-down.component.html',
-  styleUrl: './chevron-down.component.css'
+  templateUrl: './chevron-down.component.html'
 })
 export class ChevronDownComponent {
 
-  @Input() color: string = "white";
+  readonly color = input<string>();
+
+  readonly effectiveColor = computed(() => {
+    return this.color() ?? KEYWORD_CURRENT_COLOR;
+  });
 
 }

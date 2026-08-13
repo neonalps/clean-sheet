@@ -284,14 +284,14 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       next: result => {
         this.clearCache();
 
-        this.toastService.addToast({ text: this.translationService.translate('gameCreate.success'), type: 'success' });
+        this.toastService.addToast({ text: this.translationService.translate(this.isEditMode() ? 'gameUpdate.success' : 'gameCreate.success'), type: 'success' });
 
         navigateToSeasonGames(this.router, result.season.id);
       },
       error: err => {
         console.error(`failed to submit game`, err);
 
-        this.toastService.addToast({ text: `${this.translationService.translate('gameCreate.failure')}`, type: 'error' });
+        this.toastService.addToast({ text: `${this.translationService.translate(this.isEditMode() ? 'gameUpdate.failure' : 'gameCreate.failure')}`, type: 'error' });
       }
     })
   }

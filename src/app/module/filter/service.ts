@@ -60,10 +60,7 @@ export class FilterService {
                     filteredResult = filteredResult.filter(item => this.isInternationalGame(item));
                     break;
                 case GameListFilterType.Competition:
-                    filteredResult = filteredResult.filter(item => {
-                        console.log(filter)
-                        return true;
-                    });
+                    filteredResult = filteredResult.filter(item => this.isInCompetition(item, ensureNotNullish(filter.value) as CompetitionId[]));
                     break;
                 default:
                     assertUnreachable(filterType);
@@ -98,8 +95,7 @@ export class FilterService {
     }
 
     private isInCompetition(game: DetailedGame, competitionIds: CompetitionId[]): boolean {
-        const effectiveCompetitionId = game.competition.parent?.id ?? game.competition.id;
-        return competitionIds.includes(effectiveCompetitionId);
+        return competitionIds.includes(game.competition.id);
     }
 
     private isComeFromBehindWin(game: DetailedGame, behindByAtLeast = 1): boolean {

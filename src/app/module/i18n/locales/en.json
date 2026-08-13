@@ -204,6 +204,8 @@
     "gameCreate.failure": "The game could not be created",
     "gameDelete.success": "The game was successfully deleted",
     "gameDelete.failure": "The game could not be deleted",
+    "gameUpdate.success": "The game was successfully updated",
+    "gameUpdate.failure": "The game could not be updated",
     "gameEvent.affectedPerson": "Person",
     "gameEvent.assistBy": "Assist by",
     "gameEvent.goalType": "Goal type",

@@ -11,7 +11,7 @@ import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { MultiSelectComponent } from "@src/app/component/select-multi/select-multi.component";
 import { CompetitionService } from '@src/app/module/competition/service';
-import { processTranslationPlaceholders } from '@src/app/util/common';
+import { ensureNotNullish, processTranslationPlaceholders } from '@src/app/util/common';
 
 export type FilterGameListPayload = {
   gameListFilterItems: GameListFilterItem[];
@@ -41,6 +41,12 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
         this.currentFilterItems.set(payload.gameListFilterItems.length > 0 ? payload.gameListFilterItems : [this.createEmptyGameListFilterItem()]);
+
+        const competitionFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Competition);
+        if (!competitionFilterItem) {
+          return;
+        }
+        this.selectedCompetitions.set(ensureNotNullish(competitionFilterItem.value) as OptionId[]);
       });
 
     this.competitionService.getOrderedTopLevelCompetitionsFromCache().pipe(
@@ -63,11 +69,21 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
   }
 
   addItem(): void {
-    this.currentFilterItems.set([...this.currentFilterItems(), this.createEmptyGameListFilterItem()]);
+    this.currentFilterItems.update(current => [...current, this.createEmptyGameListFilterItem()]);
   }
 
   onCompetitionSelectionChanged(selectedCompetitionIds: OptionId[]) {
     this.selectedCompetitions.set(selectedCompetitionIds);
+
+    const competitionFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Competition);
+    if (!competitionFilterItem) {
+      return;
+    }
+
+    this.onFilterItemChange({
+      ...competitionFilterItem,
+      value: ensureNotNullish(this.selectedCompetitions()),
+    });
   }
 
   getGameListFilterTypeOptions(): SelectOption[] {
@@ -84,23 +100,23 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     ]
   }
 
-  onFilterItemChange(payload: GenericFilterItem): void {
+  onFilterItemChange(filterItem: GenericFilterItem): void {
     const current = this.currentFilterItems();
-    const idxToUpdate = current.findIndex(item => item.id === payload.id);
+    const idxToUpdate = current.findIndex(item => item.id === filterItem.id);
     if (idxToUpdate < 0) {
       return;
     }
 
     this.currentFilterItems.update(items => {
       const copy = [...items];
-      copy[idxToUpdate] = payload as GameListFilterItem;
+      copy[idxToUpdate] = filterItem as GameListFilterItem;
       return copy;
     });
   }
 
-  onFilterItemRemove(payload: GenericFilterItem): void {
+  onFilterItemRemove(filterItem: GenericFilterItem): void {
     const current = this.currentFilterItems();
-    const idxToRemove = current.findIndex(item => item.id === payload.id);
+    const idxToRemove = current.findIndex(item => item.id === filterItem.id);
     if (idxToRemove < 0) {
       return;
     }

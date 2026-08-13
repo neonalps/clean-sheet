@@ -6,17 +6,18 @@ import { SelectOption } from '@src/app/component/select/option';
 import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { GenericFilterItem } from '@src/app/module/filter/service';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-filter-item',
-  imports: [SelectComponent, I18nPipe, UiIconComponent],
-  templateUrl: './filter-item.component.html',
-  styleUrl: './filter-item.component.css'
+  imports: [CommonModule, SelectComponent, I18nPipe, UiIconComponent],
+  templateUrl: './filter-item.component.html'
 })
 export class FilterItemComponent implements OnInit, OnDestroy {
 
   readonly filterItem = input.required<GenericFilterItem>();
   readonly availableFilterTypeOptions = input.required<SelectOption[]>();
+  readonly removable = input(true);
 
   readonly onFilterItemChanged = output<GenericFilterItem>();
   readonly onFilterItemRemoved = output<GenericFilterItem>();
