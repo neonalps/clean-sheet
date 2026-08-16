@@ -1,4 +1,4 @@
-import { Component, ElementRef, input, OnDestroy, output, signal, ViewChild } from "@angular/core";
+import { Component, computed, ElementRef, input, OnDestroy, output, signal, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { OptionId, SelectOption } from "@src/app/component/select/option";
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
@@ -22,9 +22,17 @@ export class MultiSelectComponent implements OnDestroy {
 
     readonly onSelectedChange = output<OptionId[]>();
 
-    readonly currentOptions = signal<SelectOption[]>([]);
     readonly isOpen = signal(false);
     readonly optionsWidth = signal('0');
+    
+    readonly selectedDisplay = computed(() => {
+        const currentlySelected = this.selected();
+        
+        return this.options()
+            .filter(option => currentlySelected.includes(option.id))
+            .map(option => option.name)
+            .join(', ');
+    });
 
     readonly destroy$ = new Subject<void>();
 
@@ -35,10 +43,6 @@ export class MultiSelectComponent implements OnDestroy {
 
     handleOutsideClick() {
         this.hideDropdown();
-    }
-
-    getSelectedString() {
-        return JSON.stringify(this.selected());
     }
 
     hideDropdown() {

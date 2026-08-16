@@ -2,8 +2,8 @@
 @let showOutlineValue = showOutline();
 <div class="pointer user-select-none" role="select" appClickOutside (clickOutside)="handleOutsideClick()">
     <div #main class="select-main p-2 flex justify-content-between transition-colors" (click)="toggleDropdown()" [ngClass]="{ 'select-outline': showOutlineValue && !isOpenValue, 'select-outline-focus': showOutlineValue && isOpenValue, 'rounded-lg': !showOutlineValue, 'hover:bg-color-dark-grey-lighter': !showOutlineValue, 'bg-color-dark-grey-lighter': !showOutlineValue && isOpenValue }">
-        <div class="flex-grow-8 flex align-items-center justify-content-center">
-            {{ getSelectedString() }}
+        <div class="flex-grow-8 flex align-items-center">
+            {{ selectedDisplay() }}
         </div>
         <div class="flex align-items-center" *ngIf="!hideChevron()">
             <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpenValue, 'open': isOpenValue }">

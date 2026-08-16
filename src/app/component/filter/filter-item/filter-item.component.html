@@ -11,8 +11,8 @@
             <ng-content />
         </div>
     </div>
-    <div class="basis-1/8 flex align-items-center justify-content-center" [ngClass]="{ 'pointer-events-none': !removableValue }">
-        <div class="width-sm relative top-4 left-4 text-light-grey-darker hover:text-light-grey pointer transition-colors" (click)="removeItem()">
+    <div class="basis-1/8 flex align-items-center justify-content-center" [ngClass]="{ 'pointer-events-none': !removableValue, 'text-light-grey-darker': removableValue, 'text-dark-grey-lighter': !removableValue }">
+        <div class="width-sm relative top-4 left-4 hover:text-light-grey pointer transition-colors" (click)="removeItem()">
             <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
         </div>
     </div>
