@@ -33,6 +33,11 @@ export class FilterService {
         let filteredResult = games;
 
         for (const filter of filters) {
+            // simply ignore empty filters  
+            if (filter.type === null) {
+                continue;
+            }
+
             const filterType = ensureNotNullish(filter.type);
             switch (filterType) {
                 case GameListFilterType.AwayGame:
