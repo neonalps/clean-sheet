@@ -24,6 +24,7 @@ import { JerseyNumbersComponent } from './pages/jersey-numbers/jersey-numbers.co
 import { ManagersComponent } from './pages/managers/managers.component';
 import { GamesFavouritesComponent } from './pages/games-favourites/games-favourites.component';
 import { GamesAttendedComponent } from './pages/games-attended/games-attended.component';
+import { GameTableComponent } from './pages/game-table/game-table.component';
 
 export const routes: Routes = [
     { 
@@ -80,6 +81,11 @@ export const routes: Routes = [
     { 
         path: `competition/:${PATH_PARAM_VENUE_ID}`, 
         component: CompetitionComponent,
+        canActivate: [loggedInGuard],
+    },
+    { 
+        path: `game-table`, 
+        component: GameTableComponent,
         canActivate: [loggedInGuard],
     },
     { 

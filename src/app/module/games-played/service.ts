@@ -31,7 +31,7 @@ export type GetPlayerGamesPlayedResponse = {
 })
 export class GamesPlayedService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
     getForPlayer(personId: number, filterOptions?: GamePlayedFilterOptions): Observable<PaginatedResponse<GetPlayerGamesPlayedResponse>> {
       const query = filterOptions ? `?${convertDtoToQueryString(filterOptions)}` : '';

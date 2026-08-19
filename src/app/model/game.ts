@@ -93,6 +93,13 @@ export interface BasicGame {
     victoryGameText?: string;
 }
 
+export interface UserGameInformation {
+    attended?: boolean;
+    favourite?: boolean;
+}
+
+export type UserBasicGame = BasicGame & UserGameInformation;
+
 export interface GameInput {
     gameId?: number;
 }

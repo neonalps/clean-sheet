@@ -1,0 +1,48 @@
+@let currentPageValue = currentPage();
+@let hasNextPageValue = hasNextPage();
+@let pageSizeValue = pageSize();
+@let gamesValue = visibleGames();
+<div>
+    @for (game of gamesValue; track game.id) {
+        <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(game)">
+            <div class="basis-1/15 flex align-items-center justify-content-end">
+                <div class="text-sm">{{ (currentPageValue * pageSizeValue) + $index + 1 }}</div>
+            </div>
+            <div class="basis-1/12 flex align-items-center justify-content-center">
+                <div class="width-xs relative">
+                    <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': game.competition.iconSmall! }" />
+                </div>
+            </div>
+            <div class="basis-1/7 flex align-items-center justify-content-end text-sm">
+                <div class="pr-2">{{ game.kickoff | date:'dd.MM.yy' }}</div>
+            </div>
+            <div class="basis-1/3 flex text-sm">
+                <div class="width-xs mr-2 relative top-1" *ngIf="game.opponent.iconSmall">
+                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': game.opponent.iconSmall }" />
+                </div>
+                <div>
+                    {{ game.opponent.shortName }}
+                </div>
+            </div>
+            <div class="basis-1/8 flex align-items-center">
+                <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(game)">{{ getGameScoreBeforePso(game) }}</div>
+            </div>
+            <div class="flex align-items-center">
+                <div *ngIf="game.attended">
+                    <div class="width-xs relative top-2">
+                        <app-eye-icon />
+                    </div>
+                </div>
+                <div *ngIf="game.favourite">
+                    <div class="width-xs relative top-1">
+                        <app-star-icon [fillColor]="'currentColor'" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="mt-4 mb-8 px-8 flex align-items-center justify-content-between user-select-none">
+    <div (click)="onBefore()" [ngClass]="{ 'text-dark-grey-lighter': currentPageValue <= 0, 'pointer': currentPageValue > 0 }">before</div>
+    <div (click)="onNext()" [ngClass]="{ 'text-dark-grey-lighter': !hasNextPageValue, 'pointer': hasNextPageValue }">next</div>
+</div>
