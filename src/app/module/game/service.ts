@@ -15,6 +15,8 @@ export interface GetGamesRequest extends PaginationQueryParams {
     status?: GameStatus;
     isHomeGame?: boolean;
     isNeutralGround?: boolean;
+    hasAccountAttended?: boolean;
+    hasAccountStarred?: boolean;
 }
 
 @Injectable({
@@ -22,7 +24,7 @@ export interface GetGamesRequest extends PaginationQueryParams {
 })
 export class GameService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   create(game: CreateGame): Observable<DetailedGame> {
     return this.http.post<DetailedGame>(`${environment.apiBaseUrl}/v1/games`, game);

@@ -11,10 +11,13 @@ import { ScoreFormatter } from "@src/app/module/game/score-formatter";
 import { EyeIconComponent } from "@src/app/icon/eye/eye.component";
 import { StarIconComponent } from "@src/app/icon/star/star.component";
 import { isDefined } from "@src/app/util/common";
+import { I18nPipe } from "@src/app/module/i18n/i18n.pipe";
+import { FilterButtonComponent } from "@src/app/component/filter-button/filter-button.component";
+import { ModalService } from "@src/app/module/modal/service";
 
 @Component({
   selector: 'app-game-table',
-  imports: [CommonModule, UiIconComponent, EyeIconComponent, StarIconComponent],
+  imports: [CommonModule, UiIconComponent, EyeIconComponent, StarIconComponent, I18nPipe, FilterButtonComponent],
   templateUrl: './game-table.component.html'
 })
 export class GameTableComponent implements OnInit {
@@ -25,6 +28,7 @@ export class GameTableComponent implements OnInit {
   readonly hasNextPage = signal(true);
   readonly pageSize = signal(20);
   readonly sortOrder = signal(SortOrder.Descending);
+  readonly isFiltering = signal(false);
 
   private readonly games = signal<UserBasicGame[]>([]);
   readonly visibleGames = computed(() => {
@@ -38,6 +42,7 @@ export class GameTableComponent implements OnInit {
   });
 
   private readonly gameService = inject(GameService);
+  private readonly modalService = inject(ModalService);
   private readonly scoreFormatter = inject(ScoreFormatter);
 
   ngOnInit(): void {
@@ -46,6 +51,10 @@ export class GameTableComponent implements OnInit {
 
   onGameClicked(game: BasicGame) {
     
+  }
+
+  showFilterModal() {
+
   }
 
   getResult(score: ScoreTuple | null): string {

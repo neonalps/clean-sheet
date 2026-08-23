@@ -85,7 +85,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         items: [
           {
             target: '/game-table',
-            i18nKey: 'menu.games',
+            i18nKey: 'pageTitle.allGames',
           },
           {
             target: '/stats/appearances',

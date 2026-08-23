@@ -1089,6 +1089,14 @@
     line-height: 1rem;
 }
 
+.min-w-32 {
+    min-width: 32px;
+}
+
+.min-w-34 {
+    min-width: 34px;
+}
+
 .min-w-42 {
     min-width: 42px;
 }
