@@ -1,26 +1,31 @@
 import { CommonModule } from "@angular/common";
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { BasicGame, GameStatus, ScoreTuple, UserBasicGame } from "@src/app/model/game";
 import { SortOrder } from "@src/app/model/pagination";
-import { GameService } from "@src/app/module/game/service";
+import { GameService, GetGamesRequest } from "@src/app/module/game/service";
 import { Nullish } from "@src/app/util/types";
-import { take } from "rxjs";
+import { filter, map, Subject, take, takeUntil } from "rxjs";
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { getGameResult } from "@src/app/module/game/util";
 import { ScoreFormatter } from "@src/app/module/game/score-formatter";
 import { EyeIconComponent } from "@src/app/icon/eye/eye.component";
 import { StarIconComponent } from "@src/app/icon/star/star.component";
-import { isDefined } from "@src/app/util/common";
+import { ensureNotNullish, isDefined } from "@src/app/util/common";
 import { I18nPipe } from "@src/app/module/i18n/i18n.pipe";
 import { FilterButtonComponent } from "@src/app/component/filter-button/filter-button.component";
 import { ModalService } from "@src/app/module/modal/service";
+import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
+import { GameListFilterItem, GameListFilterType } from "@src/app/module/filter/service";
+import { LocalStorageStorageProvider } from "@src/app/module/storage/local-storage";
 
 @Component({
   selector: 'app-game-table',
   imports: [CommonModule, UiIconComponent, EyeIconComponent, StarIconComponent, I18nPipe, FilterButtonComponent],
   templateUrl: './game-table.component.html'
 })
-export class GameTableComponent implements OnInit {
+export class GameTableComponent implements OnInit, OnDestroy {
+
+  private static readonly STORAGE_KEY_GAME_TABLE_FILTER = 'filterGameTable';
 
   readonly currentPage = signal(-1);
   readonly isLoading = signal(false);
@@ -28,7 +33,10 @@ export class GameTableComponent implements OnInit {
   readonly hasNextPage = signal(true);
   readonly pageSize = signal(20);
   readonly sortOrder = signal(SortOrder.Descending);
-  readonly isFiltering = signal(false);
+  readonly gameListFilters = signal<GameListFilterItem[]>([]);
+  readonly isFiltering = computed(() => {
+    return !this.isLoading() && this.gameListFilters().length > 0;
+  });
 
   private readonly games = signal<UserBasicGame[]>([]);
   readonly visibleGames = computed(() => {
@@ -42,11 +50,19 @@ export class GameTableComponent implements OnInit {
   });
 
   private readonly gameService = inject(GameService);
+  private readonly localStorageService = inject(LocalStorageStorageProvider);
   private readonly modalService = inject(ModalService);
   private readonly scoreFormatter = inject(ScoreFormatter);
 
+  private readonly destroy$ = new Subject<void>();
+
   ngOnInit(): void {
       this.loadTable();
+  }
+
+  ngOnDestroy(): void {
+      this.destroy$.next();
+      this.destroy$.complete();
   }
 
   onGameClicked(game: BasicGame) {
@@ -54,7 +70,30 @@ export class GameTableComponent implements OnInit {
   }
 
   showFilterModal() {
+    this.modalService.showFilterGameListModal({
+      gameListFilterItems: this.gameListFilters(),
+    }).pipe(
+        filter(event => event.type === 'confirm'),
+        map(event => ensureNotNullish(event.value) as FilterGameListPayload),
+        takeUntil(this.destroy$),
+    ).subscribe(value => {
+      this.setAndApplyGameFilters([...value.gameListFilterItems]);
+    });
+  }
 
+  setAndApplyGameFilters(filters: GameListFilterItem[]) {
+    const previousFilters = this.gameListFilters();
+    const updatedFilters = [...filters];
+
+    if (previousFilters.length === updatedFilters.length && previousFilters.every(item => updatedFilters.some(innerItem => innerItem.id === item.id && item.value === innerItem.value))) {
+      console.log('filters are the same, no need to fetch again');
+      return;
+    }
+
+    this.gameListFilters.set(updatedFilters);
+    this.localStorageService.set(GameTableComponent.STORAGE_KEY_GAME_TABLE_FILTER, updatedFilters);
+
+    this.loadTable(true);
   }
 
   getResult(score: ScoreTuple | null): string {
@@ -89,7 +128,7 @@ export class GameTableComponent implements OnInit {
     this.loadTable();
   }
 
-  private loadTable() {
+  private loadTable(filtersChanged = false) {
     if (this.isLoading()) {
       console.warn(`Table is already loading`);
       return;
@@ -100,11 +139,24 @@ export class GameTableComponent implements OnInit {
       return;
     }
 
+    if (filtersChanged) {
+      this.currentPage.set(-1);
+      this.nextPageKey.set(null);
+      this.games.set([]);
+    }
+
     const currentNextPageKey = this.nextPageKey();
     const nextPageRequestParams = isDefined(currentNextPageKey) ? { nextPageKey: currentNextPageKey } : { limit: this.pageSize(), order: this.sortOrder(), status: GameStatus.Finished };
 
+    const getGameTableRequest: GetGamesRequest = {
+      ...this.convertGameFiltersToRequestParams(),
+      ...nextPageRequestParams,
+    }
+
+    console.log(getGameTableRequest)
+
     this.isLoading.set(true);
-    this.gameService.getPaginated(nextPageRequestParams)
+    this.gameService.getPaginated(getGameTableRequest)
       .pipe(
         take(1),
       ).subscribe({
@@ -120,6 +172,22 @@ export class GameTableComponent implements OnInit {
           this.isLoading.set(false);
         },
       })
+  }
+
+  private convertGameFiltersToRequestParams(): Partial<GetGamesRequest> {
+    const requestPartial: Partial<GetGamesRequest> = {};
+
+    const currentFilters = this.gameListFilters();
+
+    if (currentFilters.some(item => item.type === GameListFilterType.HomeGame)) {
+      requestPartial.isHomeGame = true;
+    }
+
+    if (currentFilters.some(item => item.type === GameListFilterType.AwayGame)) {
+      requestPartial.isHomeGame = false;
+    }
+
+    return requestPartial;
   }
 
 }

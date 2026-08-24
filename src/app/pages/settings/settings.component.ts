@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { OptionId, SelectOption } from '@src/app/component/select/option';
+import { SelectOption } from '@src/app/component/select/option';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';

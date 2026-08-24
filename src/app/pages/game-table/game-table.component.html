@@ -2,7 +2,7 @@
 @let hasNextPageValue = hasNextPage();
 @let pageSizeValue = pageSize();
 @let gamesValue = visibleGames();
-<section class="px-3 pb-8">
+<section class="px-3 pb-8 user-select-none">
     <div class="flex align-items-center justify-content-between">
         <div class="page-title ml-1">{{ 'pageTitle.allGames' | $t }}</div>
         <div class="flex align-items-center justify-content-center pointer" (click)="showFilterModal()">
