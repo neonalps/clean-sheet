@@ -68,6 +68,10 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  isFilterItemRemovable(item: GameListFilterItem): boolean {
+    return item.type !== null;
+  }
+
   addItem(): void {
     this.currentFilterItems.update(current => [...current, this.createEmptyGameListFilterItem()]);
   }
@@ -122,6 +126,11 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     }
 
     current.splice(idxToRemove, 1);
+
+    if (current.length === 0) {
+      current.push(this.createEmptyGameListFilterItem());
+    }
+
     this.currentFilterItems.set(current);
   }
 

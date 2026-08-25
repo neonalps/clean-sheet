@@ -6,7 +6,7 @@
             <div>
                 @for (item of currentFilterItemsValue; track item.id) {
                     <div class="mb-2 last:mb-0 p-2 bg-color-dark-grey-darker rounded-md">
-                        <app-filter-item [filterItem]="item" [availableFilterTypeOptions]="getGameListFilterTypeOptions()" [removable]="currentFilterItemsValue.length > 1 || !$first" (onFilterItemChanged)="onFilterItemChange($event)" (onFilterItemRemoved)="onFilterItemRemove($event)">
+                        <app-filter-item [filterItem]="item" [availableFilterTypeOptions]="getGameListFilterTypeOptions()" [removable]="isFilterItemRemovable(item) || $index > 0" (onFilterItemChanged)="onFilterItemChange($event)" (onFilterItemRemoved)="onFilterItemRemove($event)">
                             <div *ngIf="item.type === 'competition'">
                                 <div class="form-row">
                                     <div class="form-row-title">{{ 'filter.competition' | $t }}</div>

@@ -269,6 +269,8 @@
     "lineup.referees": "Schiedsrichter",
     "lineup.starting": "Startformation",
     "lineup.substitutes": "Ersatzspieler",
+    "list.currentlyActiveFilters.singular": "{plural} Filter aktiv",
+    "list.currentlyActiveFilters.plural": "{plural} Filter aktiv",
     "list.currentlyShowingGames": "{filteredCount} von {totalCount} Spielen sichtbar",
     "list.filterOptions": "Filter-Optionen",
     "list.resetFilters": "Filter zurücksetzen",

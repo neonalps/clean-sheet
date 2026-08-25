@@ -270,6 +270,8 @@
     "lineup.referees": "Referees",
     "lineup.starting": "Starting lineup",
     "lineup.substitutes": "Substitutes",
+    "list.currentlyActiveFilters.singular": "{plural} filter active",
+    "list.currentlyActiveFilters.plural": "{plural} filters active",
     "list.currentlyShowingGames": "currently showing {filteredCount} out of {totalCount} games",
     "list.filterOptions": "Filter options",
     "list.resetFilters": "reset filters",

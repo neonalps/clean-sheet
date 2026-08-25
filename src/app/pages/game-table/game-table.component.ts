@@ -17,6 +17,7 @@ import { ModalService } from "@src/app/module/modal/service";
 import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { GameListFilterItem, GameListFilterType } from "@src/app/module/filter/service";
 import { LocalStorageStorageProvider } from "@src/app/module/storage/local-storage";
+import { TranslationService } from "@src/app/module/i18n/translation.service";
 
 @Component({
   selector: 'app-game-table',
@@ -37,6 +38,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
   readonly isFiltering = computed(() => {
     return !this.isLoading() && this.gameListFilters().length > 0;
   });
+  readonly currentlyShowingText = signal('filtering');
 
   private readonly games = signal<UserBasicGame[]>([]);
   readonly visibleGames = computed(() => {
@@ -53,6 +55,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
   private readonly localStorageService = inject(LocalStorageStorageProvider);
   private readonly modalService = inject(ModalService);
   private readonly scoreFormatter = inject(ScoreFormatter);
+  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -90,10 +93,14 @@ export class GameTableComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.gameListFilters.set(updatedFilters);
-    this.localStorageService.set(GameTableComponent.STORAGE_KEY_GAME_TABLE_FILTER, updatedFilters);
+    if (this.hasNonEmptyFilters(updatedFilters)) {
+      this.gameListFilters.set(updatedFilters);
+      this.localStorageService.set(GameTableComponent.STORAGE_KEY_GAME_TABLE_FILTER, updatedFilters);
+      this.currentlyShowingText.set(this.translationService.translate('list.currentlyActiveFilters', { plural: updatedFilters.length }));
+    }
 
-    this.loadTable(true);
+    this.resetPagination();
+    this.loadTable();
   }
 
   getResult(score: ScoreTuple | null): string {
@@ -128,7 +135,20 @@ export class GameTableComponent implements OnInit, OnDestroy {
     this.loadTable();
   }
 
-  private loadTable(filtersChanged = false) {
+  resetFilters(): void {
+    this.gameListFilters.set([]);
+    this.localStorageService.remove(GameTableComponent.STORAGE_KEY_GAME_TABLE_FILTER);
+    this.resetPagination();
+    this.loadTable();
+  }
+
+  private resetPagination() {
+    this.currentPage.set(-1);
+    this.nextPageKey.set(null);
+    this.games.set([]);
+  }
+
+  private loadTable() {
     if (this.isLoading()) {
       console.warn(`Table is already loading`);
       return;
@@ -139,11 +159,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (filtersChanged) {
-      this.currentPage.set(-1);
-      this.nextPageKey.set(null);
-      this.games.set([]);
-    }
+    this.isLoading.set(true);
 
     const currentNextPageKey = this.nextPageKey();
     const nextPageRequestParams = isDefined(currentNextPageKey) ? { nextPageKey: currentNextPageKey } : { limit: this.pageSize(), order: this.sortOrder(), status: GameStatus.Finished };
@@ -151,11 +167,8 @@ export class GameTableComponent implements OnInit, OnDestroy {
     const getGameTableRequest: GetGamesRequest = {
       ...this.convertGameFiltersToRequestParams(),
       ...nextPageRequestParams,
-    }
+    };
 
-    console.log(getGameTableRequest)
-
-    this.isLoading.set(true);
     this.gameService.getPaginated(getGameTableRequest)
       .pipe(
         take(1),
@@ -179,15 +192,28 @@ export class GameTableComponent implements OnInit, OnDestroy {
 
     const currentFilters = this.gameListFilters();
 
-    if (currentFilters.some(item => item.type === GameListFilterType.HomeGame)) {
-      requestPartial.isHomeGame = true;
-    }
+    for (const filter of currentFilters) {
+      const filterType = filter.type;
 
-    if (currentFilters.some(item => item.type === GameListFilterType.AwayGame)) {
-      requestPartial.isHomeGame = false;
+      switch (filterType) {
+        case GameListFilterType.HomeGame:
+          requestPartial.isHomeGame = true;
+          break;
+        case GameListFilterType.AwayGame:
+          requestPartial.isHomeGame = false;
+          break;
+        case GameListFilterType.Competition:
+          requestPartial.competitionId = (ensureNotNullish(filter.value) as string[]).join(',');
+          break;
+        // TODO add others and assertUnreachable
+      }
     }
 
     return requestPartial;
+  }
+
+  private hasNonEmptyFilters(filters: GameListFilterItem[]): boolean {
+    return filters.some(item => item.type !== null);
   }
 
 }
