@@ -121,6 +121,8 @@
     "editGameAbsences.missingField": "Not all required fields for saving game absences have been filled in",
     "editGameAbsences.success": "The game absences were saved successfully",
     "editGameAbsences.error": "The game absences could not be saved",
+    "filter.accountAttended": "Attended game",
+    "filter.accountStarred": "Memorable game",
     "filter.awayGame": "Away game",
     "filter.comeFromBehindWin": "Come from behind win",
     "filter.competition": "Competition",

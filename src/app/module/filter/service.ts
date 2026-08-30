@@ -19,6 +19,9 @@ export enum GameListFilterType {
     LossAfterLead = 'lossAfterLead',
     LossInInjuryTime = 'lossInInjuryTime',
     WinInInjuryTime = 'winInInjuryTime',
+    Tendency = 'tedency',
+    AccountAttended = 'accountAttended',
+    AccountStarred = 'accountStarred',
 };
 
 export type GenericFilterItem = FilterItem<string>;
@@ -66,6 +69,15 @@ export class FilterService {
                     break;
                 case GameListFilterType.Competition:
                     filteredResult = filteredResult.filter(item => this.isInCompetition(item, ensureNotNullish(filter.value) as CompetitionId[]));
+                    break;
+                case GameListFilterType.Tendency:
+                    // TODO implement
+                    break;
+                case GameListFilterType.AccountAttended:
+                    // TODO implement
+                    break;
+                case GameListFilterType.AccountStarred:
+                    // TODO implement
                     break;
                 default:
                     assertUnreachable(filterType);

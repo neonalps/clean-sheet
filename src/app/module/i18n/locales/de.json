@@ -120,6 +120,8 @@
     "editGameAbsences.missingField": "Es wurden nicht alle Felder für die fehlenden Spieler ausgefüllt",
     "editGameAbsences.success": "Die fehlenden Spieler wurden erfolgreich gespeichert",
     "editGameAbsences.error": "Die fehlenden Spieler konnten nicht gespeichert werden",
+    "filter.accountAttended": "Im Stadion gesehen",
+    "filter.accountStarred": "Denkwürdiges Spiel",
     "filter.awayGame": "Auswärtsspiel",
     "filter.comeFromBehindWin": "Sieg nach Rückstand",
     "filter.competition": "Bewerb",

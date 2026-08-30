@@ -205,6 +205,12 @@ export class GameTableComponent implements OnInit, OnDestroy {
         case GameListFilterType.Competition:
           requestPartial.competitionId = (ensureNotNullish(filter.value) as string[]).join(',');
           break;
+        case GameListFilterType.AccountAttended:
+          requestPartial.hasAccountAttended = true;
+          break;
+        case GameListFilterType.AccountStarred:
+          requestPartial.hasAccountStarred = true;
+          break;
         // TODO add others and assertUnreachable
       }
     }
