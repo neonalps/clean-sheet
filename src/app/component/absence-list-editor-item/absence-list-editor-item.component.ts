@@ -6,7 +6,7 @@ import { combineLatest, map, Observable, of, startWith, Subject } from 'rxjs';
 import { SelectOption } from '@src/app/component/select/option';
 import { PersonId } from '@src/app/util/domain-types';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
-import { isDefined } from '@src/app/util/common';
+import { assertUnreachable, isDefined } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { CdkDrag } from '@angular/cdk/drag-drop';
@@ -85,7 +85,7 @@ export class AbsenceListEditorItemComponent implements OnInit {
       if (isDefined(absenceReason)) {
         this.pushReason$.next({
           id: absenceReason,
-          name: this.translationService.translate(`injury.${absenceReason}`),
+          name: this.translationService.translate(`${this.getTranslationPrefixForGameAbsenceType(absenceType)}.${absenceReason}`),
         })
       }
     });
@@ -135,8 +135,13 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Injured,
       },
       {
+        id: GameAbsenceReason.Back,
+        name: this.translationService.translate(`injury.back`),
+        type: GameAbsenceType.Injured,
+      },
+      {
         id: GameAbsenceReason.CruciaLigament,
-        name: this.translationService.translate(`injury.cruciateLigament`),
+        name: this.translationService.translate(`injury.cruciateLigamentRupture`),
         type: GameAbsenceType.Injured,
       },
       {
@@ -148,6 +153,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
         id: GameAbsenceReason.Muscle,
         name: this.translationService.translate(`injury.muscle`),
         type: GameAbsenceType.Injured,
+      },
+      {
+        id: 'redCard',
+        name: this.translationService.translate(`suspension.redCard`),
+        type: GameAbsenceType.Suspended,
       },
       {
         id: 'yellowCard:3',
@@ -232,6 +242,21 @@ export class AbsenceListEditorItemComponent implements OnInit {
 
   removeClicked() {
     this.onRemove.emit(this.absence().id);
+  }
+
+  private getTranslationPrefixForGameAbsenceType(type: GameAbsenceType): string {
+    switch (type) {
+      case GameAbsenceType.AtRisk:
+        return `atRisk`;
+      case GameAbsenceType.Injured:
+        return 'injury';
+      case GameAbsenceType.Exempt:
+        return 'exempt';
+      case GameAbsenceType.Suspended:
+        return 'suspension';
+      default:
+        assertUnreachable(type);
+    }
   }
 
 }

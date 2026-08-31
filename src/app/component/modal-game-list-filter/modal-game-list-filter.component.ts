@@ -12,6 +12,7 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { MultiSelectComponent } from "@src/app/component/select-multi/select-multi.component";
 import { CompetitionService } from '@src/app/module/competition/service';
 import { ensureNotNullish, processTranslationPlaceholders } from '@src/app/util/common';
+import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 
 export type FilterGameListPayload = {
   gameListFilterItems: GameListFilterItem[];
@@ -19,7 +20,7 @@ export type FilterGameListPayload = {
 
 @Component({
   selector: 'app-modal-game-list-filter',
-  imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent],
+  imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent, ChipGroupComponent],
   templateUrl: './modal-game-list-filter.component.html',
   styleUrl: './modal-game-list-filter.component.css'
 })
@@ -29,6 +30,18 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   readonly competitionOptions = signal<SelectOption[]>([]);
   readonly selectedCompetitions = signal<OptionId[]>([]);
+  readonly yesNoChipGroupInput = signal<ChipGroupInput>({
+    mode: 'single',
+    chips: [{
+      value: 'yes',
+      displayText: 'Ja',
+      selected: true,
+    }, {
+      value: 'no',
+      displayText: 'No',
+      selected: false,
+    }],
+  });
 
   private readonly competitionService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);

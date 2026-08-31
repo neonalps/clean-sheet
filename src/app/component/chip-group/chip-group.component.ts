@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Chip, ChipComponent } from '@src/app/component/chip/chip.component';
 import { assertDefined, assertUnreachable } from '@src/app/util/common';
-import { Observable, Subject, takeUntil } from 'rxjs';
 
 export type ChipGroupMode = 'single';   // could also support: toggle, multi
 
@@ -22,25 +21,9 @@ export type ChipGroupInput = {
 })
 export class ChipGroupComponent {
 
-  @Input() chipGroup$!: Observable<ChipGroupInput>;
-  @Output() onSelected = new EventEmitter<string | number | boolean>();
+  readonly chipGroup = input.required<ChipGroupInput>();
 
-  readonly chipGroup = signal<ChipGroupInput | null>(null);
-
-  private readonly destroy$ = new Subject<void>();
-
-  ngOnInit(): void {
-    this.chipGroup$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        this.chipGroup.set(value);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  readonly onSelected = output<string | number | boolean>();
 
   onClick(chip: Chip) {
     if (chip.selected === true) {
@@ -54,7 +37,7 @@ export class ChipGroupComponent {
       case 'single':
         currentChipGroup!.chips.forEach(chip => chip.selected = false);
         chip.selected = true;
-        this.onSelected.next(chip.value);
+        this.onSelected.emit(chip.value);
         break;
       default:
         assertUnreachable(currentChipGroup!.mode);

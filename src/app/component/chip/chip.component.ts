@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 
@@ -32,22 +32,25 @@ export class ChipComponent {
     bgColorHover: 'hover:bg-color-dark-grey-lighter',
   }
 
-  @Input() chip!: Chip;
-  @Input() colorMode = ChipComponent.DEFAULT_COLOR_MODE;
-  @Input() dynamicClassNames?: string[];
-  @Input() dynamicBoundingClassNames?: string[];
+  readonly chip = input.required<Chip>();
+  readonly colorMode = input(ChipComponent.DEFAULT_COLOR_MODE);
+  readonly dynamicClassNames = input<string | string[]>();
+  readonly dynamicBoundingClassNames = input<string[]>();
+
+  readonly effectiveDynamicClassNames = computed(() => this.dynamicClassNames() ?? 'text-xs');
 
   getBoundingClasses(): string[] {
     const boundingClasses: string[] = [];
 
-    if (this.chip.selected) {
-      boundingClasses.push(this.colorMode.bgColorSelected, this.colorMode.textColorSelected);
+    if (this.chip().selected) {
+      boundingClasses.push(this.colorMode().bgColorSelected, this.colorMode().textColorSelected);
     } else {
-      boundingClasses.push(this.colorMode.bgColorHover);
+      boundingClasses.push(this.colorMode().bgColorHover);
     }
 
-    if (this.dynamicBoundingClassNames && this.dynamicBoundingClassNames.length > 0) {
-      boundingClasses.push(...this.dynamicBoundingClassNames);
+    const dynamicBoundingClassNamesValue = this.dynamicBoundingClassNames();
+    if (dynamicBoundingClassNamesValue && dynamicBoundingClassNamesValue.length > 0) {
+      boundingClasses.push(...dynamicBoundingClassNamesValue);
     }
 
     return boundingClasses;
@@ -55,11 +58,11 @@ export class ChipComponent {
 
   getDynamicClasses(): string[] {
     const dynamicClasses = [];
-    if (this.chip.selected) {
+    if (this.chip().selected) {
       dynamicClasses.push(`bold`);
     }
 
-    return [...(this.dynamicClassNames || ['text-xs']), ...dynamicClasses];
+    return [...this.effectiveDynamicClassNames(), ...dynamicClasses];
   }
 
 }

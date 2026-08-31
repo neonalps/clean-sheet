@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly isSearchResultOpen = signal(false);
 
   readonly searchResultItems$ = new Subject<ExternalSearchResultItemDto[]>();
-  readonly searchTypeFilterChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly searchTypeFilterChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly searchTypeFilter$ = new BehaviorSubject<string | null>(null);
 
   private readonly mainClub: SmallClub = environment.mainClub;
@@ -311,7 +311,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private resetSearchFilters() {
-    this.searchTypeFilterChips$.next({ chips: [
+    this.searchTypeFilterChips.set({ chips: [
       { value: 'all', selected: true, displayText: this.translationService.translate('chip.all') },
       { value: 'person', selected: false, displayText: this.translationService.translate('chip.people'), },
       { value: 'game', selected: false, displayText: this.translationService.translate('chip.games'), },

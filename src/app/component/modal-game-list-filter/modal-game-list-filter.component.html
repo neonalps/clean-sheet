@@ -10,14 +10,17 @@
                             @switch (item.type) {
                                 @case ('competition') {
                                     <div class="form-row">
-                                        <div class="form-row-title">{{ 'filter.competition' | $t }}</div>
                                         <div class="form-row-content">
                                             <app-multi-select [options]="competitionOptions()" [selected]="selectedCompetitions()" (onSelectedChange)="onCompetitionSelectionChanged($event)" />
                                         </div>
                                     </div>
                                 }
                                 @case ('accountAttended') {
-                                    ja / nein
+                                    <div class="form-row">
+                                        <div class="form-row-content">
+                                            <app-chip-group [chipGroup]="yesNoChipGroupInput()" />
+                                        </div>
+                                    </div>
                                 }
                             }
                         </app-filter-item>                 

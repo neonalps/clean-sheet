@@ -52,7 +52,7 @@
         @let resultItems = searchResultItems$ | async;
         <div>
             <div class="mt-4">
-                <app-chip-group [chipGroup$]="searchTypeFilterChips$" (onSelected)="onSearchTypeFilterChanged($event)" />
+                <app-chip-group [chipGroup]="searchTypeFilterChips()" (onSelected)="onSearchTypeFilterChanged($event)" />
             </div>
             <div class="w-full pt-6">
                 @for (resultItem of resultItems; track $index) {

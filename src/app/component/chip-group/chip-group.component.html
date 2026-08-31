@@ -1,13 +1,8 @@
-@let currentChipGroup = chipGroup();
-<ng-container *ngIf="currentChipGroup !== null; else loading">
-    <div class="flex flex-wrap gap-y-4" [ngClass]="currentChipGroup.dynamicClassNamesContainer">
-        @for (chip of currentChipGroup.chips; track $index) {
-            <div class="chip-item">
-                <app-chip [chip]="chip" [dynamicClassNames]="currentChipGroup.dynamicClassNamesChip" [dynamicBoundingClassNames]="currentChipGroup.chipBoundingClassNames" (click)="onClick(chip)" />
-            </div>
-        }
-    </div>
-</ng-container>
-<ng-template #loading>
-    loading...
-</ng-template>
+@let chipGroupValue = chipGroup();
+<div class="flex flex-wrap gap-y-4" [ngClass]="chipGroupValue.dynamicClassNamesContainer">
+    @for (chip of chipGroupValue.chips; track $index) {
+        <div class="chip-item">
+            <app-chip [chip]="chip" [dynamicClassNames]="chipGroupValue.dynamicClassNamesChip" [dynamicBoundingClassNames]="chipGroupValue.chipBoundingClassNames" (click)="onClick(chip)" />
+        </div>
+    }
+</div>

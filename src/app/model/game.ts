@@ -233,6 +233,7 @@ export enum GameAbsenceReason {
     Private = "private",
     // injury
     Ankle = "ankle",
+    Back = "back",
     Calf = "calf",
     CruciaLigament = "cruciateLigamentRupture",
     Muscle = "muscle",

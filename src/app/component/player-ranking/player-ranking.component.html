@@ -1,5 +1,5 @@
 <div *ngIf="competitionChipsVisible()" class="p-2 mb-4">
-    <app-chip-group [chipGroup$]="competitionChips$" (onSelected)="onCompetitionFilterUpdated($event)" />
+    <app-chip-group [chipGroup]="competitionChips()" (onSelected)="onCompetitionFilterUpdated($event)" />
 </div>
 <ng-container *ngIf="isLoading(); else loadedContent">
     <div>
@@ -13,7 +13,7 @@
 </ng-container>
 <ng-template #loadedContent>
     <div>
-        @for (rankingElement of rankingElements(); track $index) {
+        @for (rankingElement of ranking(); track $index) {
             <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey-lighter transition-bg-color rounded-md p-1" (click)="onPlayerClicked(rankingElement.person)">
                 <div class="basis-1/8 flex align-items-center mr-2" *ngIf="rankingElement.person.avatar">
                     <div class="width-md">

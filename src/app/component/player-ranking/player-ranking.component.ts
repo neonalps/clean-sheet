@@ -1,62 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.component';
 import { ChipGroupComponent, ChipGroupInput } from '@src/app/component/chip-group/chip-group.component';
-import { Observable, Subject, takeUntil } from 'rxjs';
 import { RankedPersonItem } from '@src/app/model/dashboard';
 import { Person } from '@src/app/model/person';
 
 @Component({
   selector: 'app-player-ranking',
   imports: [CommonModule, ChipGroupComponent, PlayerIconComponent],
-  templateUrl: './player-ranking.component.html',
-  styleUrl: './player-ranking.component.css'
+  templateUrl: './player-ranking.component.html'
 })
-export class PlayerRankingComponent implements OnInit, OnDestroy {
+export class PlayerRankingComponent {
 
-  readonly isLoading = signal(true);
-  readonly rankingElements = signal<RankedPersonItem[]>([]);
+  readonly isLoading = input(true);
+  readonly ranking = input<RankedPersonItem[]>([]);
+  readonly competitionChips = input<ChipGroupInput>({ mode: 'single', chips: [] });
+  readonly skeletonRowCount = input(5);
 
-  readonly competitionChipsVisible = signal(false);
+  readonly competitionChipsVisible = computed(() => this.competitionChips().chips.length > 0);
 
-  @Input() ranking!: Observable<RankedPersonItem[]>;
-  @Input() loading!: Observable<boolean>;
-  @Input() competitionChips$!: Observable<ChipGroupInput>;
-  @Input() skeletonRowCount = 5;
-
-  @Output() onCompetitionFilterChanged = new EventEmitter<string>();
-  @Output() onPlayerSelected = new EventEmitter<Person>();
+  readonly onCompetitionFilterChanged = output<string>();
+  readonly onPlayerSelected = output<Person>();
 
   readonly skeletonRows = [...Array(this.skeletonRowCount).keys()];
 
-  private readonly destroy$ = new Subject<void>();
-
-  ngOnInit(): void {
-    this.loading.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.isLoading.set(value);
-    });
-
-    this.ranking.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.rankingElements.set(value);
-      this.isLoading.set(false);
-    });
-
-    this.competitionChips$.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.competitionChipsVisible.set(true);
-    })
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   onCompetitionFilterUpdated(value: string | number | boolean) {
-    this.onCompetitionFilterChanged.next(value as string);
+    this.onCompetitionFilterChanged.emit(value as string);
   }
 
   onPlayerClicked(person: Person) {
-    this.onPlayerSelected.next(person);
+    this.onPlayerSelected.emit(person);
   }
 
 }

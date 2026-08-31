@@ -39,9 +39,9 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
 
   readonly mainClub: SmallClub = environment.mainClub;
   readonly gameRecord$ = new BehaviorSubject<GameRecord>({ w: 0, d: 0, l: 0 });
-  readonly competitionChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
-  readonly homeAwayChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
-  readonly tendencyChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly homeAwayChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly tendencyChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly visibleGames$ = new BehaviorSubject<BasicGame[]>([]);
 
   readonly toggle$ = new Subject<void>();
@@ -77,7 +77,7 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
       const seenCompetitionIds = Array.from(seenCompetitions.keys());
       
       if (seenCompetitionIds.length > 1) {
-        this.competitionChips$.next({
+        this.competitionChips.set({
           mode: 'single',
           chips: [
             { displayText: this.translationService.translate('competitions.all'), value: 'all', selected: true, },
@@ -121,7 +121,7 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
           });
         }
 
-        this.homeAwayChips$.next({
+        this.homeAwayChips.set({
             mode: 'single',
             chips: [
               { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
@@ -163,7 +163,7 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
           });
         }
 
-        this.tendencyChips$.next({
+        this.tendencyChips.set({
             mode: 'single',
             chips: [
               { displayText: this.translationService.translate('tendency.all'), value: 'all', selected: true, },

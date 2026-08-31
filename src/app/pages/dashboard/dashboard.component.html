@@ -46,7 +46,7 @@
             {{ 'dashboard.topScorers' | $t }}
         </div>
         <div class="bg-color-dark-grey-darker rounded-lg p-2 mt-3">
-            <app-player-ranking [loading]="topScorersLoading$" [ranking]="topScorersRanking$" [competitionChips$]="competitionChips$" (onPlayerSelected)="onPlayerClicked($event)" (onCompetitionFilterChanged)="onCompetitionFilterChanged($event)" />
+            <app-player-ranking [isLoading]="topScorersLoading()" [ranking]="topScorersRanking()" [competitionChips]="competitionChips()" (onPlayerSelected)="onPlayerClicked($event)" (onCompetitionFilterChanged)="onCompetitionFilterChanged($event)" />
         </div>
     </div>
 </section>

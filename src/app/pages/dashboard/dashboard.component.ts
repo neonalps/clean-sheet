@@ -3,7 +3,7 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { DashboardResponse, RankedPersonItem } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
-import { BehaviorSubject, combineLatest, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
@@ -38,12 +38,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   games = new Subject<DetailedGame[]>;
 
   readonly competitionChipsVisible = signal(false);
-  readonly competitionChips$ = new BehaviorSubject<ChipGroupInput>({ chips: [], mode: 'single' });
+  readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly loginName = signal<string | null>(null);
   readonly shouldDisplayTopScorers = signal(false);
 
-  readonly topScorersLoading$ = new BehaviorSubject(true);
-  readonly topScorersRanking$ = new BehaviorSubject<RankedPersonItem[]>([]);
+  readonly topScorersLoading = signal(true);
+  readonly topScorersRanking = signal<RankedPersonItem[]>([]);
 
   private readonly authService = inject(AuthService);
   private readonly competitionService = inject(CompetitionService);
@@ -72,13 +72,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onCompetitionFilterChanged(value: string | number | boolean): void {
-    this.topScorersLoading$.next(true);
+    this.topScorersLoading.set(true);
     this.dashboardResolver.getDashboard(['topScorers'], Number(value)).pipe(take(1)).subscribe(response => {
       if (response.topScorers) {
         this.updateTopScorers(response.topScorers.ranking);
-      } else {
-        this.topScorersLoading$.next(false);
       }
+
+      this.topScorersLoading.set(false);
     });
   }
 
@@ -97,6 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ]).subscribe({
       next: ([dashboardResponse, orderedCompetitions]) => {
         this.onDashboardResolved(dashboardResponse, orderedCompetitions);
+        this.topScorersLoading.set(false);
       },
       error: err => {
         // TODO show error
@@ -135,24 +136,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       const chips: Chip[] = [
-        { value: 'all', displayText: this.translationService.translate('competitions.all'), selected: true,  },
+        { value: 'all', displayText: this.translationService.translate('competitions.all'), selected: true  },
         ...competitionChips,
       ]
 
-      this.competitionChips$.next({
+      this.competitionChips.set({
         chips: chips,
         mode: 'single',
         chipBoundingClassNames: ['min-h-32'],
+        dynamicClassNamesChip: ['text-xs'],
       });
       this.competitionChipsVisible.set(true);
     } else {
       this.competitionChipsVisible.set(false);
-      this.competitionChips$.next({ chips: [], mode: 'single' });
+      this.competitionChips.set({ chips: [], mode: 'single' });
     }
   }
 
   private updateTopScorers(ranking: RankedPersonItem[]) {
-    this.topScorersRanking$.next(ranking);
+    this.topScorersRanking.set(ranking);
     this.shouldDisplayTopScorers.set(ranking.length > 0);
   }
 

@@ -3,7 +3,7 @@ import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
-import { BehaviorSubject, filter, map, Subject, takeUntil } from 'rxjs';
+import { filter, map, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
 import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -60,10 +60,10 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
-  readonly forMainChipGroupInput = new BehaviorSubject<ChipGroupInput>({ chips: [
+  readonly forMainChipGroupInput = signal<ChipGroupInput>({ chips: [
     { selected: true, value: 'forMain', displayText: this.translationService.translate('ranking.forMain', { main: this.mainClub.shortName.split(' ')[0] }) },
     { selected: false, value: 'againstMain', displayText: this.translationService.translate('ranking.againstMain', { main: this.mainClub.shortName.split(' ')[0] }) },
-  ], mode: 'single' }).asObservable();
+  ], mode: 'single' });
 
   constructor() {
     this.router.events.pipe(
