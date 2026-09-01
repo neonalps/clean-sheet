@@ -23,6 +23,7 @@ import { FilterService, GameListFilterItem } from '@src/app/module/filter/servic
 import { LocalStorageStorageProvider } from '@src/app/module/storage/local-storage';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { FilterButtonComponent } from "@src/app/component/filter-button/filter-button.component";
+import { getGameListFilterTypeOptions } from '@src/app/module/filter/game-list-filter';
 
 export type VisibleSeasonGames = {
   past: DetailedGame[];
@@ -215,6 +216,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
 
   showFilterGameListModal(): void {
     this.modalService.showFilterGameListModal({
+      availableFilterTypeOptions: getGameListFilterTypeOptions(this.translationService),
       gameListFilterItems: this.gameListFilters(),
     }).pipe(
         filter(event => event.type === 'confirm'),

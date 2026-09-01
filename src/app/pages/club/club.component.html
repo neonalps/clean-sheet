@@ -1,4 +1,4 @@
-<ng-container *ngIf="isLoading; else loadedContent">
+<ng-container *ngIf="isLoading(); else loadedContent">
     <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
         <div class="flex align-items-center">
             <div class="basis-1/6 mr-1 flex align-items-center justify-content-center p-2">
@@ -11,14 +11,15 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
-    @let nationalities = getNationalities();
-    @let avatar = getIconUrl();
-    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+    @let nationalitiesValue = nationalities();
+    @let avatar = iconUrl();
+    @let clubResponseValue = clubResponse();
+    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="clubResponseValue">
         <div class="flex align-items-center">
             <div class="basis-1/10 flex align-items-center justify-content-center">
                 <div>
-                    <div class="rounded-lg width-sm height-sm mb-2" [style.background-color]="clubResponse.club.primaryColour"></div>
-                    <div class="rounded-lg width-sm height-sm" [style.background-color]="clubResponse.club.secondaryColour"></div>
+                    <div class="rounded-lg width-sm height-sm mb-2" [style.background-color]="clubResponseValue.club.primaryColour"></div>
+                    <div class="rounded-lg width-sm height-sm" [style.background-color]="clubResponseValue.club.secondaryColour"></div>
                 </div>
             </div>
             <div class="basis-1/5 flex align-items-center justify-content-center mr-3" *ngIf="avatar">
@@ -29,32 +30,32 @@
             <div class="flex-grow">
                 <div>
                     <span class="mr-2 text-xl">
-                        <span class="bold"> {{ clubResponse.club.name }}</span>
+                        <span class="bold"> {{ clubResponseValue.club.name }}</span>
                     </span>
                     <ng-container *ngIf="nationalities.length > 0">
-                        <ng-container *ngFor="let country of nationalities">
+                        <ng-container *ngFor="let country of nationalitiesValue">
                             <span [title]="country.title">{{ country.flag }}</span>
                         </ng-container>
                     </ng-container>
                 </div>
-                <app-external-links [externalLinks]="getExternalLinks()" />
+                <app-external-links [externalLinks]="externalLinks()" />
             </div>
         </div>
     </div>
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="clubResponse.club.homeVenue">
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="clubResponseValue && clubResponseValue.club.homeVenue">
         <div class="page-title mb-6">
             <div>{{ 'club.homeVenue' | $t }}</div>
         </div>
         <div>
-            <app-venue-details [venue]="clubResponse.club.homeVenue" />
+            <app-venue-details [venue]="clubResponseValue.club.homeVenue" />
         </div>
     </div>
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8">
+    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8" *ngIf="shouldDisplayGames()">
         <div class="page-title mb-6">
             <div>{{ 'club.games' | $t }}</div>
         </div>
         <div>
-            <app-filterable-game-list [games$]="gamesAgainstClub$" />
+            <app-filterable-game-list [games]="gamesAgainstClub()" />
         </div>
     </div>
 </ng-template>

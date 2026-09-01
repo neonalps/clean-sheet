@@ -28,10 +28,10 @@
         </app-collapsible>
     </div>
     <div class="mb-6">
-        <app-game-record [gameRecord$]="gameRecord$" />
+        <app-game-record [gameRecord]="gameRecord()" />
     </div>
     <div appScrollNearEnd (nearEnd)="onNearEndScroll()">
-        @for (game of visibleGames$ | async; track $index) {
+        @for (game of visibleGames(); track game.id) {
             <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
         }
     </div>

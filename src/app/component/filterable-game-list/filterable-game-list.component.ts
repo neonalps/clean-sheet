@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { BasicGame, Tendency } from '@src/app/model/game';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { GameRecord, GameRecordComponent } from "@src/app/component/game-record/game-record.component";
@@ -26,9 +26,9 @@ import { COLOR_LIGHT } from '@src/styles/constants';
   templateUrl: './filterable-game-list.component.html',
   styleUrl: './filterable-game-list.component.css'
 })
-export class FilterableGameListComponent implements OnInit, OnDestroy {
+export class FilterableGameListComponent implements OnInit {
 
-  @Input() games$!: Observable<BasicGame[]>;
+  readonly games = input<BasicGame[]>([]);
 
   readonly colorLight = COLOR_LIGHT;
 
@@ -38,181 +38,173 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
   readonly tendencyFiltersVisible = signal(false);
 
   readonly mainClub: SmallClub = environment.mainClub;
-  readonly gameRecord$ = new BehaviorSubject<GameRecord>({ w: 0, d: 0, l: 0 });
+  readonly gameRecord = signal<GameRecord>({ w: 0, d: 0, l: 0 });
   readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly homeAwayChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly tendencyChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
-  readonly visibleGames$ = new BehaviorSubject<BasicGame[]>([]);
+  readonly visibleGames = signal<BasicGame[]>([]);
 
   readonly toggle$ = new Subject<void>();
 
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
 
-  private storedGames: BasicGame[] = [];
-  private currentActivePage = 1;
-  private currentCompetitionFilters: CompetitionId[] = [];
-  private currentHomeAwayFilters: HomeAwayFilter[] = [];
-  private currentTendencyFilters: Tendency[] = [];
+  private readonly currentActivePage = signal(1);
+  private readonly currentCompetitionFilters = signal<CompetitionId[]>([]);
+  private readonly currentHomeAwayFilters = signal<HomeAwayFilter[]>([]);
+  private readonly currentTendencyFilters = signal<Tendency[]>([]);
   
-  private isCurrentlyLoadingMore = false;
-  private isLoadingMoreAvailable = false;
+  private readonly isCurrentlyLoadingMore = signal(false);
+  private readonly isLoadingMoreAvailable = signal(false);
 
-  private readonly destroy$ = new Subject<void>();
   private readonly gamesPageSize = 20;
 
   ngOnInit(): void {
-    this.games$.pipe(takeUntil(this.destroy$)).subscribe(games => {
-      this.storedGames = games;
+    const storedGames = [...this.games()];
 
-      const seenCompetitions = this.storedGames.reduce((acc, current) => {
-        const effectiveCompetition = this.getEffectiveCompetition(current);
+    const seenCompetitions = storedGames.reduce((acc, current) => {
+      const effectiveCompetition = this.getEffectiveCompetition(current);
 
-        if (!acc.has(effectiveCompetition.id)) {
-          acc.set(effectiveCompetition.id, effectiveCompetition);
-        }
-        return acc;
-      }, new Map<CompetitionId, SmallCompetition>());
+      if (!acc.has(effectiveCompetition.id)) {
+        acc.set(effectiveCompetition.id, effectiveCompetition);
+      }
+      return acc;
+    }, new Map<CompetitionId, SmallCompetition>());
 
-      const seenCompetitionIds = Array.from(seenCompetitions.keys());
-      
-      if (seenCompetitionIds.length > 1) {
-        this.competitionChips.set({
+    const seenCompetitionIds = Array.from(seenCompetitions.keys());
+    
+    if (seenCompetitionIds.length > 1) {
+      this.competitionChips.set({
+        mode: 'single',
+        chips: [
+          { displayText: this.translationService.translate('competitions.all'), value: 'all', selected: true, },
+          ...seenCompetitionIds.map(competitionId => {
+            const competition = seenCompetitions.get(competitionId);
+            return { displayText: competition!.shortName, value: competitionId, selected: false };
+          }),
+        ],
+        dynamicClassNamesChip: ['text-xs'],
+      });
+      this.competitionFiltersVisible.set(true);
+    } else {
+      this.competitionFiltersVisible.set(false);
+    }
+
+    const hasAwayGame = storedGames.some(game => game.isHomeGame === false);
+    const hasHomeGame = storedGames.some(game => game.isHomeGame === true);
+    const hasNeutralGroundGame = storedGames.some(game => game.isNeutralGround === true);
+    if ([hasAwayGame, hasHomeGame, hasNeutralGroundGame].filter(condition => condition === true).length > 1) {
+      const homeAwayChips: Chip[] = [];
+      if (hasHomeGame) {
+        homeAwayChips.push({
+          displayText: this.translationService.translate('game.home'),
+          value: 'home',
+          selected: false,
+        });
+      }
+
+      if (hasAwayGame) {
+        homeAwayChips.push({
+          displayText: this.translationService.translate('game.away'),
+          value: 'away',
+          selected: false,
+        });
+      }
+
+      if (hasNeutralGroundGame) {
+        homeAwayChips.push({
+          displayText: this.translationService.translate('game.neutralGround'),
+          value: 'neutral',
+          selected: false,
+        });
+      }
+
+      this.homeAwayChips.set({
           mode: 'single',
           chips: [
-            { displayText: this.translationService.translate('competitions.all'), value: 'all', selected: true, },
-            ...seenCompetitionIds.map(competitionId => {
-              const competition = seenCompetitions.get(competitionId);
-              return { displayText: competition!.shortName, value: competitionId, selected: false };
-            }),
+            { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
+            ...homeAwayChips,
           ],
+          dynamicClassNamesChip: ['text-xs'],
+      });
+
+      this.homeAwayFiltersVisible.set(true);
+    } else {
+      this.homeAwayFiltersVisible.set(false);
+    }
+
+    const hasWin = storedGames.some(game => game.resultTendency === 'w');
+    const hasDraw = storedGames.some(game => game.resultTendency === 'd');
+    const hasLoss = storedGames.some(game => game.resultTendency === 'l');
+    if ([hasWin, hasDraw, hasLoss].filter(condition => condition === true).length > 1) {
+      const tendencyChips: Chip[] = [];
+      if (hasWin) {
+        tendencyChips.push({
+          displayText: this.translationService.translate('tendency.win'),
+          value: 'w',
+          selected: false,
         });
-        this.competitionFiltersVisible.set(true);
-      } else {
-        this.competitionFiltersVisible.set(false);
       }
 
-      const hasAwayGame = this.storedGames.some(game => game.isHomeGame === false);
-      const hasHomeGame = this.storedGames.some(game => game.isHomeGame === true);
-      const hasNeutralGroundGame = this.storedGames.some(game => game.isNeutralGround === true);
-      if ([hasAwayGame, hasHomeGame, hasNeutralGroundGame].filter(condition => condition === true).length > 1) {
-        const homeAwayChips: Chip[] = [];
-        if (hasHomeGame) {
-          homeAwayChips.push({
-            displayText: this.translationService.translate('game.home'),
-            value: 'home',
-            selected: false,
-          });
-        }
-
-        if (hasAwayGame) {
-          homeAwayChips.push({
-            displayText: this.translationService.translate('game.away'),
-            value: 'away',
-            selected: false,
-          });
-        }
-
-        if (hasNeutralGroundGame) {
-          homeAwayChips.push({
-            displayText: this.translationService.translate('game.neutralGround'),
-            value: 'neutral',
-            selected: false,
-          });
-        }
-
-        this.homeAwayChips.set({
-            mode: 'single',
-            chips: [
-              { displayText: this.translationService.translate('games.all'), value: 'all', selected: true, },
-              ...homeAwayChips,
-            ],
+      if (hasDraw) {
+        tendencyChips.push({
+          displayText: this.translationService.translate('tendency.draw'),
+          value: 'd',
+          selected: false,
         });
-
-        this.homeAwayFiltersVisible.set(true);
-      } else {
-        this.homeAwayFiltersVisible.set(false);
       }
 
-      const hasWin = this.storedGames.some(game => game.resultTendency === 'w');
-      const hasDraw = this.storedGames.some(game => game.resultTendency === 'd');
-      const hasLoss = this.storedGames.some(game => game.resultTendency === 'l');
-      if ([hasWin, hasDraw, hasLoss].filter(condition => condition === true).length > 1) {
-        const tendencyChips: Chip[] = [];
-        if (hasWin) {
-          tendencyChips.push({
-            displayText: this.translationService.translate('tendency.win'),
-            value: 'w',
-            selected: false,
-          });
-        }
-
-        if (hasDraw) {
-          tendencyChips.push({
-            displayText: this.translationService.translate('tendency.draw'),
-            value: 'd',
-            selected: false,
-          });
-        }
-
-        if (hasLoss) {
-          tendencyChips.push({
-            displayText: this.translationService.translate('tendency.loss'),
-            value: 'l',
-            selected: false,
-          });
-        }
-
-        this.tendencyChips.set({
-            mode: 'single',
-            chips: [
-              { displayText: this.translationService.translate('tendency.all'), value: 'all', selected: true, },
-              ...tendencyChips,
-            ],
+      if (hasLoss) {
+        tendencyChips.push({
+          displayText: this.translationService.translate('tendency.loss'),
+          value: 'l',
+          selected: false,
         });
-
-        this.tendencyFiltersVisible.set(true);
-      } else {
-        this.tendencyFiltersVisible.set(false);
       }
 
-      if (this.storedGames.length > this.gamesPageSize) {
-        this.isLoadingMoreAvailable = true;
-      }
+      this.tendencyChips.set({
+          mode: 'single',
+          chips: [
+            { displayText: this.translationService.translate('tendency.all'), value: 'all', selected: true, },
+            ...tendencyChips,
+          ],
+          dynamicClassNamesChip: ['text-xs'],
+      });
 
-      this.updateUi();
-    });
-  }
+      this.tendencyFiltersVisible.set(true);
+    } else {
+      this.tendencyFiltersVisible.set(false);
+    }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    if (storedGames.length > this.gamesPageSize) {
+      this.isLoadingMoreAvailable.set(true);
+    }
+
+    this.updateUi();
   }
 
   onCompetitionFilterChanged(value: string | number | boolean) {
-    this.currentCompetitionFilters = value === 'all' ? [] : [value as CompetitionId];
+    this.currentCompetitionFilters.set(value === 'all' ? [] : [value as CompetitionId]);
     this.updateUi();
   }
 
   onHomeAwayFilterChanged(value: string | number | boolean) {
-    this.currentHomeAwayFilters = value === 'all' ? [] : [value as HomeAwayFilter];
+    this.currentHomeAwayFilters.set(value === 'all' ? [] : [value as HomeAwayFilter]);
     this.updateUi();
   }
 
   onTendencyFilterChanged(value: string | number | boolean) {
-    this.currentTendencyFilters = value === 'all' ? [] : [value as Tendency];
+    this.currentTendencyFilters.set(value === 'all' ? [] : [value as Tendency]);
     this.updateUi();
   }
 
   onNearEndScroll() {
-    if (this.isLoadingMoreAvailable && !this.isCurrentlyLoadingMore) {
-      console.log('starting loading more');
-      this.isCurrentlyLoadingMore = true;
+    if (this.isLoadingMoreAvailable() && !this.isCurrentlyLoadingMore()) {
+      this.isCurrentlyLoadingMore.set(true);
 
-      this.currentActivePage += 1;
+      this.currentActivePage.update(current => current + 1);
       this.updateUi();
-      console.log('finished loading more');
-      this.isCurrentlyLoadingMore = false;
+      this.isCurrentlyLoadingMore.set(false);
     }
   }
 
@@ -225,35 +217,41 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
   }
 
   private updateUi() {
+    const storedGames = [...this.games()];
+
+    const currentCompetitionFiltersValue = this.currentCompetitionFilters();
+    const currentHomeAwayFiltersValue = this.currentHomeAwayFilters();
+    const currentTendencyFiltersValue = this.currentTendencyFilters();
+
     // determine visible games
-    const visibleGames = this.storedGames
+    const visibleGames = storedGames
       .filter(game => {
         const effectiveCompetition = this.getEffectiveCompetition(game);
-        return this.currentCompetitionFilters.length === 0 || this.currentCompetitionFilters.includes(effectiveCompetition.id);
+        return currentCompetitionFiltersValue.length === 0 || currentCompetitionFiltersValue.includes(effectiveCompetition.id);
       })
       .filter(game => {
-        if (this.currentHomeAwayFilters.includes('neutral')) {
+        if (currentHomeAwayFiltersValue.includes('neutral')) {
           return game.isNeutralGround === true;
         }
 
-        if (this.currentHomeAwayFilters.includes('away')) {
+        if (currentHomeAwayFiltersValue.includes('away')) {
           return game.isHomeGame === false && game.isNeutralGround !== true;
         }
 
-        if (this.currentHomeAwayFilters.includes('home')) {
+        if (currentHomeAwayFiltersValue.includes('home')) {
           return game.isHomeGame === true && game.isNeutralGround !== true;
         }
 
         return true;
       })
       .filter(game => {
-        return this.currentTendencyFilters.length > 0 ? game.resultTendency === this.currentTendencyFilters[0] : true;
+        return currentTendencyFiltersValue.length > 0 ? game.resultTendency === currentTendencyFiltersValue[0] : true;
       });
 
-    this.hasActiveFilters.set(visibleGames.length !== this.storedGames.length);
+    this.hasActiveFilters.set(visibleGames.length !== storedGames.length);
 
     // determine and publish new game record
-    this.gameRecord$.next(visibleGames.reduce((acc: GameRecord, current: BasicGame): GameRecord => {
+    this.gameRecord.set(visibleGames.reduce((acc: GameRecord, current: BasicGame): GameRecord => {
         return {
           w: acc.w + (current.resultTendency === 'w' ? 1 : 0),
           d: acc.d + (current.resultTendency === 'd' ? 1 : 0),
@@ -262,10 +260,10 @@ export class FilterableGameListComponent implements OnInit, OnDestroy {
       }, { w: 0, d: 0, l: 0 }));
 
     // publish visible games
-    const updatedVisibleGamesSize = this.currentActivePage * this.gamesPageSize;
-    this.visibleGames$.next(visibleGames.slice(0, updatedVisibleGamesSize));
+    const updatedVisibleGamesSize = this.currentActivePage() * this.gamesPageSize;
+    this.visibleGames.set(visibleGames.slice(0, updatedVisibleGamesSize));
 
-    this.isLoadingMoreAvailable = updatedVisibleGamesSize < this.storedGames.length;
+    this.isLoadingMoreAvailable.set(updatedVisibleGamesSize < storedGames.length);
   }
 
   private getEffectiveCompetition(game: BasicGame): SmallCompetition {

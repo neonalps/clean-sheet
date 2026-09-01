@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { ClubId } from '@src/app/util/domain-types';
 import { navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
+import { CountryFlagService } from '@src/app/module/country-flag/service';
 import { GetClubByIdResponse } from '@src/app/module/club/service';
 import { ExternalLinksComponent } from '@src/app/component/external-links/external-links.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -25,14 +25,23 @@ import { VenueDetailsComponent } from "@src/app/component/venue-details/venue-de
 })
 export class ClubComponent implements OnDestroy {
 
-  clubResponse!: GetClubByIdResponse;
-  competitionFiltersVisible = signal(false);
-  homeAwayFiltersVisible = signal(false);
-  isLoading = true;
+  readonly clubResponse = signal<GetClubByIdResponse | null>(null);
+  readonly competitionFiltersVisible = signal(false);
+  readonly homeAwayFiltersVisible = signal(false);
+  readonly isLoading = signal(true);
+  readonly mainClub = signal<SmallClub>(environment.mainClub);
+  readonly gamesAgainstClub = signal<BasicGame[]>([]);
 
-  mainClub: SmallClub = environment.mainClub;
-
-  readonly gamesAgainstClub$ = new BehaviorSubject<BasicGame[]>([]);
+  readonly iconUrl = computed(() => this.clubResponse()?.club.iconSmall );
+  readonly externalLinks = computed(() => {
+    const links = this.clubResponse()?.externalLinks;
+    return links ? [...links].filter(item => item.provider === 'sofascore') : [];
+  });
+  readonly nationalities = computed(() => {
+    const club = this.clubResponse()?.club;
+    return club ? this.countryFlagService.resolveNationalities([club.countryCode]) : [];
+  });
+  readonly shouldDisplayGames = computed(() => this.clubResponse()?.club.id !== this.mainClub().id);
 
   private readonly clubResolver = inject(ClubResolver);
   private readonly countryFlagService = inject(CountryFlagService);
@@ -57,25 +66,13 @@ export class ClubComponent implements OnDestroy {
   }
 
   onClubResolved(clubResponse: GetClubByIdResponse): void {
-    this.clubResponse = clubResponse;
+    this.clubResponse.set(clubResponse);
 
-    if (this.clubResponse.allGames) {
-      this.gamesAgainstClub$.next(this.clubResponse.allGames.map(game => ({ ...game, opponent: this.clubResponse.club })));
+    if (clubResponse.allGames) {
+      this.gamesAgainstClub.set(clubResponse.allGames.map(game => ({ ...game, opponent: clubResponse.club })));
     }
 
-    this.isLoading = false;
-  }
-
-  getIconUrl() {
-    return this.clubResponse.club.iconSmall;
-  }
-
-  getNationalities(): CountryFlag[] {
-    return this.countryFlagService.resolveNationalities([this.clubResponse.club.countryCode]);
-  }
-
-  getExternalLinks() {
-    return this.clubResponse.externalLinks ? [...this.clubResponse.externalLinks].filter(item => item.provider === 'sofascore') : [];
+    this.isLoading.set(false);
   }
 
   triggerNavigateToGame(game: BasicGame) {
@@ -84,12 +81,12 @@ export class ClubComponent implements OnDestroy {
 
   private loadClubDetails() {
     const clubId = parseUrlSlug(ensureNotNullish(this.route.snapshot.paramMap.get(PATH_PARAM_CLUB_ID)));
-    this.isLoading = true;
+    this.isLoading.set(true);
     if (isDefined(clubId)) {
       this.resolveClub(Number(clubId));
     } else {
       // TODO show error content
-      this.isLoading = false;
+      this.isLoading.set(false);
       console.error(`Could not resolve club ID`);
     }
   }
@@ -101,7 +98,7 @@ export class ClubComponent implements OnDestroy {
       },
       error: err => {
         // TODO show error
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(`Could not resolve club`, err);
       }
     });

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { Observable, Subject, takeUntil } from 'rxjs';
 
 export type GameRecord = {
   w: number;
@@ -15,38 +14,14 @@ export type GameRecord = {
   templateUrl: './game-record.component.html',
   styleUrl: './game-record.component.css'
 })
-export class GameRecordComponent implements OnInit, OnDestroy {
+export class GameRecordComponent {
 
-  @Input() gameRecord$!: Observable<GameRecord>;
+  readonly gameRecord = input.required<GameRecord>();
 
-  readonly gameRecord = signal<GameRecord | null>(null);
+  readonly winsText = computed(() => this.translationService.translate(`gameRecord.win`, { plural: this.gameRecord().w }));
+  readonly drawsText = computed(() => this.translationService.translate(`gameRecord.draw`, { plural: this.gameRecord().d }));
+  readonly lossesText = computed(() => this.translationService.translate(`gameRecord.loss`, { plural: this.gameRecord().l }));
 
-  private readonly destroy$ = new Subject<void>();
   private readonly translationService = inject(TranslationService);
-
-  ngOnInit(): void {
-    this.gameRecord$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        this.gameRecord.set(value);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  getWinsText(wins: number) {
-    return this.translationService.translate(`gameRecord.win`, { plural: wins });
-  }
-
-  getDrawsText(draws: number) {
-    return this.translationService.translate(`gameRecord.draw`, { plural: draws });
-  }
-
-  getLossesText(losses: number) {
-    return this.translationService.translate(`gameRecord.loss`, { plural: losses });
-  }
 
 }

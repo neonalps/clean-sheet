@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
@@ -68,14 +68,15 @@ export class PersonComponent implements OnDestroy {
   playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
   playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
-  readonly refereeGames$ = new BehaviorSubject<BasicGame[]>([]);
-  readonly maangerPeriods = signal<ManagerPeriodForPerson[]>([]);
+  readonly managerPeriods = signal<ManagerPeriodForPerson[]>([]);
+  readonly refereeGames = signal<BasicGame[]>([]);
+  readonly refereeListVisible = computed(() => this.refereeGames().length > 0);
 
   readonly contextMenuVisible = signal(false);
   readonly shouldDisplayPlayerStatistics = signal(false);
   readonly goalsAgainstClubsVisible = signal(false);
   readonly opponentStatsVisible = signal(false);
-  readonly refereeListVisible = signal(false);
+  
   readonly managerPeriodListVisible = signal(false);
   readonly contractUntil = signal<DateString | null>(null);
   readonly onLoan = signal<boolean>(false);
@@ -157,15 +158,12 @@ export class PersonComponent implements OnDestroy {
 
       const managerPeriodsFromStats = person.stats.managerPeriods ?? [];
       this.managerPeriodListVisible.set(managerPeriodsFromStats.length > 0);
-      this.maangerPeriods.set(managerPeriodsFromStats);
+      this.managerPeriods.set(managerPeriodsFromStats);
 
-      const refereeGames = person.stats.refereeGames ?? [];
-      this.refereeGames$.next(refereeGames);
-      this.refereeListVisible.set(refereeGames.length > 0);
-
+      this.refereeGames.set(person.stats.refereeGames ?? []);
       this.performance$.next(playerStats);
     } else {
-      this.refereeListVisible.set(false);
+      this.refereeGames.set([]);
       this.managerPeriodListVisible.set(false);
     }
   }

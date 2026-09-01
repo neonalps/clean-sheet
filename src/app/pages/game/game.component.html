@@ -1,3 +1,7 @@
+@let mainClubValue = mainClub();
+@let matchdayDetailsValue = matchdayDetails();
+@let matchdayDetailsLoadingValue = matchdayDetailsLoading();
+@let shouldHideGeneralDetailsValue = shouldHideGeneralDetails();
 <ng-container *ngIf="isLoading(); else loadedContent">
     <div>
         <div class="game-section py-3 rounded-lg mt-3 mx-3">
@@ -113,7 +117,7 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="mainWonOnAwayGoals !== null">
+    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="mainWonOnAwayGoals() !== null">
         <div class="flex align-items-center justify-content-center p-2">
             <div class="text-sm">{{ getAwayGoalsText() }}</div>
         </div>
@@ -124,14 +128,14 @@
             <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
-            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClub.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClub.iconSmall! }">
+            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClubValue.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClubValue.iconSmall! }">
                 <app-game-lineup [lineup]="getMainLineup()" />
             </app-tab-item>
             <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }">
                 <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
             <app-tab-item *ngIf="isMatchdayTabVisible()" [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
-                <app-round-information [loading]="matchdayDetailsLoading" [matchdayDetails]="matchdayDetails ?? undefined" [hideTable]="!isMatchdayTableVisible" />
+                <app-round-information [loading]="matchdayDetailsLoadingValue" [matchdayDetails]="matchdayDetailsValue ?? undefined" [hideTable]="!isMatchdayTableVisible()" />
             </app-tab-item>
         </app-tab-group>
     </div>
@@ -145,7 +149,7 @@
         </div>
     </div>
 
-    <div class="game-section p-3 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetails }">
+    <div class="game-section p-3 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetailsValue }">
         <div class="heading-small">{{ 'game.generalInformation' | $t }}</div>
         @let scheduledAtValue = scheduledAt();
         <div class="pt-2 mb-2" *ngIf="scheduledAtValue !== null">
@@ -183,7 +187,7 @@
     </div>
 
     @let editGameAbsencesModeValue = editGameAbsencesMode();
-    <div class="game-section p-3 rounded-lg mt-3 mx-3 mb-4">
+    <div class="game-section p-3 rounded-lg mt-3 mx-3 mb-4 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetailsValue }">
         <div class="flex justify-content-between">
             <div class="heading-small">{{ 'game.absentPlayers' | $t }}</div>
             <ng-container *ngIf="editGameAbsencesAvailable() && !editGameAbsencesModeValue">

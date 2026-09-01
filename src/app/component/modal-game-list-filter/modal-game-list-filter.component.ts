@@ -13,8 +13,10 @@ import { MultiSelectComponent } from "@src/app/component/select-multi/select-mul
 import { CompetitionService } from '@src/app/module/competition/service';
 import { ensureNotNullish, processTranslationPlaceholders } from '@src/app/util/common';
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
+import { OmitStrict } from '@src/app/util/types';
 
 export type FilterGameListPayload = {
+  availableFilterTypeOptions: SelectOption[];
   gameListFilterItems: GameListFilterItem[];
 }
 
@@ -26,6 +28,11 @@ export type FilterGameListPayload = {
 })
 export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
+  private readonly competitionService = inject(CompetitionService);
+  private readonly modalService = inject(ModalService);
+  private readonly translationService = inject(TranslationService);
+
+  readonly currentFilterTypeOptions = signal<SelectOption[]>([]);
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
 
   readonly competitionOptions = signal<SelectOption[]>([]);
@@ -34,18 +41,15 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     mode: 'single',
     chips: [{
       value: 'yes',
-      displayText: 'Ja',
+      displayText: this.translationService.translate('toggle.yes'),
       selected: true,
     }, {
       value: 'no',
-      displayText: 'No',
+      displayText: this.translationService.translate('toggle.no'),
       selected: false,
     }],
+    dynamicClassNamesChip: ['text-xs'],
   });
-
-  private readonly competitionService = inject(CompetitionService);
-  private readonly modalService = inject(ModalService);
-  private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
 
@@ -53,6 +57,7 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     this.modalService.filterGameListPayload$
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
+        this.currentFilterTypeOptions.set(payload.availableFilterTypeOptions);
         this.currentFilterItems.set(payload.gameListFilterItems.length > 0 ? payload.gameListFilterItems : [this.createEmptyGameListFilterItem()]);
 
         const competitionFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Competition);
@@ -103,22 +108,6 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     });
   }
 
-  getGameListFilterTypeOptions(): SelectOption[] {
-    return [
-      { id: GameListFilterType.HomeGame, name: this.translationService.translate(`filter.homeGame`) },
-      { id: GameListFilterType.AwayGame, name: this.translationService.translate(`filter.awayGame`) },
-      { id: GameListFilterType.Competition, name: this.translationService.translate(`filter.competition`) },
-      { id: GameListFilterType.DomesticGame, name: this.translationService.translate(`filter.domesticGame`) },
-      { id: GameListFilterType.InternationalGame, name: this.translationService.translate(`filter.internationalGame`) },
-      { id: GameListFilterType.ComeFromBehindWin, name: this.translationService.translate(`filter.comeFromBehindWin`) },
-      { id: GameListFilterType.WinInInjuryTime, name: this.translationService.translate(`filter.winInInjuryTime`) },
-      { id: GameListFilterType.LossAfterLead, name: this.translationService.translate(`filter.lossAfterLead`) },
-      { id: GameListFilterType.LossInInjuryTime, name: this.translationService.translate(`filter.lossInInjuryTime`) },
-      { id: GameListFilterType.AccountAttended, name: this.translationService.translate(`filter.accountAttended`) },
-      { id: GameListFilterType.AccountStarred, name: this.translationService.translate(`filter.accountStarred`) },
-    ]
-  }
-
   onFilterItemChange(filterItem: GenericFilterItem): void {
     const current = this.currentFilterItems();
     const idxToUpdate = current.findIndex(item => item.id === filterItem.id);
@@ -156,7 +145,7 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
   onConfirm() {
     this.modalService.onConfirm({
       gameListFilterItems: this.currentFilterItems(),
-    } satisfies FilterGameListPayload);
+    } satisfies OmitStrict<FilterGameListPayload, 'availableFilterTypeOptions'>);
   }
 
   private createEmptyGameListFilterItem(): GameListFilterItem {

@@ -23,7 +23,7 @@ import { TrophyIconComponent } from "@src/app/icon/trophy/trophy.component";
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { GamePerformanceTrendComponent } from "@src/app/component/game-performance-trend/game-performance-trend.component";
 import { Chip } from '@src/app/component/chip/chip.component';
-import { GameId, SeasonId, VenueId } from '@src/app/util/domain-types';
+import { GameId, SeasonId } from '@src/app/util/domain-types';
 import { RoundInformationComponent } from "@src/app/component/round-information/round-information.component";
 import { MatchdayDetailsService } from '@src/app/module/game/matchday-details-service';
 import { ToastService } from '@src/app/module/toast/service';
@@ -101,7 +101,7 @@ export class GameComponent implements OnDestroy {
   readonly isContextMenuVisible = signal(false);
   readonly gameContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
 
-  private previousLeg: DetailedGame | null = null;
+  private readonly previousLeg = signal<DetailedGame | null>(null);
 
   readonly colorLightGrey = COLOR_LIGHT_GREY;
   readonly colorGold = COLOR_GOLD;
@@ -121,15 +121,15 @@ export class GameComponent implements OnDestroy {
 
   readonly scheduledAt = signal<Date | null>(null);
 
-  mainClub: SmallClub = environment.mainClub;
-  mainWonOnAwayGoals: boolean | null = null;
-  lineupTeamChips: Chip[] = [];
+  readonly mainClub = signal<SmallClub>(environment.mainClub);
+  readonly mainWonOnAwayGoals = signal<boolean | null>(null);
+  readonly lineupTeamChips = signal<Chip[]>([]);
 
-  matchdayDetailsLoading = true;
-  matchdayDetails?: MatchdayDetails | null;
+  readonly matchdayDetailsLoading = signal(true);
+  readonly matchdayDetails = signal<MatchdayDetails | null>(null);
 
-  shouldHideGeneralDetails = false;
-  isMatchdayTableVisible = true;
+  readonly shouldHideGeneralDetails = signal(false);
+  readonly isMatchdayTableVisible = signal(true);
 
   private readonly destroy$ = new Subject<void>();
   private readonly lastGamesAvailable = new BehaviorSubject<boolean>(false);
@@ -285,13 +285,13 @@ export class GameComponent implements OnDestroy {
       this.squadService.fetch();
     }
 
-    this.lineupTeamChips = [
-      { selected: true, value: 'main', displayText: this.mainClub.shortName, displayIcon: { type: 'club', content: this.mainClub.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
+    this.lineupTeamChips.set([
+      { selected: true, value: 'main', displayText: this.mainClub().shortName, displayIcon: { type: 'club', content: this.mainClub().iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
       { selected: false, value: 'opponent', displayText: game.opponent.shortName, displayIcon: { type: 'club', content: game.opponent.iconSmall!, containerClasses: ['width-1-25rem', 'mr-2', 'relative', 'top-1'] } },
-    ]
+    ]);
 
     this.isMatchdayTabVisible.set([1, 2].includes(this.game.competition.id));
-    this.isMatchdayTableVisible = this.game.competition.id !== 4 && !this.game.leg;
+    this.isMatchdayTableVisible.set(this.game.competition.id !== 4 && !this.game.leg);
 
     // asynchronously fetch previous leg information
     if (isDefined(this.game.previousLeg)) {
@@ -436,34 +436,34 @@ export class GameComponent implements OnDestroy {
     replaceHash(tabId);
 
     if (tabId === 'matchday') {
-      this.matchdayDetailsLoading = true;
-      this.shouldHideGeneralDetails = true;
+      this.matchdayDetailsLoading.set(true);
+      this.shouldHideGeneralDetails.set(true);
       this.matchdayDetailsService.getForGame(this.game!.id).pipe(takeUntil(this.destroy$)).subscribe({
         next: details => {
-          this.matchdayDetails = {
+          this.matchdayDetails.set({
             ...details,
             competitionRound: this.game!.round,
-          };
-          this.matchdayDetailsLoading = false;
+          });
+          this.matchdayDetailsLoading.set(false);
         },
         error: error => {
           console.error(error);
-          this.matchdayDetails = null;
+          this.matchdayDetails.set(null);
           this.toastService.addToast({ type: 'error', text: this.translationService.translate(`matchdayDetails.failedToLoad`) });
-          this.matchdayDetailsLoading = false;
+          this.matchdayDetailsLoading.set(false);
         }
       })
     } else {
-      this.shouldHideGeneralDetails = false;
+      this.shouldHideGeneralDetails.set(false);
     }
   }
 
   getHomeTeam(): SmallClub {
-    return this.game!.isHomeGame ? this.mainClub : this.game!.opponent;
+    return this.game!.isHomeGame ? this.mainClub() : this.game!.opponent;
   }
 
   getAwayTeam(): SmallClub {
-    return this.game!.isHomeGame ? this.game!.opponent : this.mainClub;
+    return this.game!.isHomeGame ? this.game!.opponent : this.mainClub();
   }
 
   getGameStatus(): string {
@@ -526,7 +526,8 @@ export class GameComponent implements OnDestroy {
 
     parts.push(this.translationService.translate(`game.leg.${this.game!.leg}`));
 
-    if (isDefined(this.previousLeg) && this.previousLeg.status === GameStatus.Finished) {
+    const previousLegValue = this.previousLeg();
+    if (isDefined(previousLegValue) && previousLegValue.status === GameStatus.Finished) {
       parts.push(this.translationService.translate(`game.aggregate`));
     }
 
@@ -538,7 +539,7 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return this.translationService.translate(this.game.victoryGameText, { main: this.mainClub.shortName, titleCount: { ordinalValue: this.game.titleCount as number } });
+    return this.translationService.translate(this.game.victoryGameText, { main: this.mainClub().shortName, titleCount: { ordinalValue: this.game.titleCount as number } });
   }
 
   getAwayGoalsText(): string | null {
@@ -546,7 +547,7 @@ export class GameComponent implements OnDestroy {
       return null;
     }
 
-    return this.translationService.translate('game.decidedByAwayGoals', { club: this.mainWonOnAwayGoals === true ? this.mainClub.name : this.game!.opponent.name })
+    return this.translationService.translate('game.decidedByAwayGoals', { club: this.mainWonOnAwayGoals() ? this.mainClub.name : this.game!.opponent.name })
   }
 
   showGameDetails(): boolean {
@@ -574,12 +575,13 @@ export class GameComponent implements OnDestroy {
   }
 
   getAggregateScoreTuple(): ScoreTuple | null {
-    if (isNotDefined(this.previousLeg)) {
+    const previousLegValue = this.previousLeg();
+    if (isNotDefined(previousLegValue)) {
       return null;
     }
 
     const gameScore = getGameResult(this.game!, false);
-    const previousLegScore = getGameResult(this.previousLeg);
+    const previousLegScore = getGameResult(previousLegValue);
 
     if (gameScore === null || previousLegScore === null) {
       return null;
@@ -610,10 +612,10 @@ export class GameComponent implements OnDestroy {
 
         // check for away goals win
         if (awayGoalsMain > awayGoalsOpponent) {
-          this.mainWonOnAwayGoals = true;
+          this.mainWonOnAwayGoals.set(true);
           additionalMain += .5;
         } else if (awayGoalsOpponent > awayGoalsMain) {
-          this.mainWonOnAwayGoals = false;
+          this.mainWonOnAwayGoals.set(false);
           additionalOpponent += .5;
         }
       }
@@ -624,7 +626,7 @@ export class GameComponent implements OnDestroy {
 
   getAggregateScore(): string | null {
     // only show the aggregate score box if the first leg is already finished
-    if (this.previousLeg?.status !== GameStatus.Finished) {
+    if (this.previousLeg()?.status !== GameStatus.Finished) {
       return null;
     }
 
@@ -778,7 +780,7 @@ export class GameComponent implements OnDestroy {
   private resolvePreviousLeg(previousLeg: number, seasonId: number) {
     this.gameResolver.getById(previousLeg, seasonId).pipe(take(1)).subscribe({
           next: game => {
-            this.previousLeg = game;
+            this.previousLeg.set(game);
             this.isLoading.set(false);
           },
           error: err => {

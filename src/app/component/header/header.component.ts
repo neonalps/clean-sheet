@@ -319,7 +319,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       { value: 'competition', selected: false, displayText: this.translationService.translate('chip.competitions'), },
       { value: 'season', selected: false, displayText: this.translationService.translate('chip.seasons'), },
       { value: 'venue', selected: false, displayText: this.translationService.translate('chip.venues'), },
-    ], mode: 'single' });
+    ], mode: 'single', dynamicClassNamesChip: ['text-xs'] });
   }
 
   private convertResultItemTypeToIconType(entity: ExternalSearchEntity): UiIconType {

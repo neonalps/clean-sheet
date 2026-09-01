@@ -18,6 +18,7 @@ import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter
 import { GameListFilterItem, GameListFilterType } from "@src/app/module/filter/service";
 import { LocalStorageStorageProvider } from "@src/app/module/storage/local-storage";
 import { TranslationService } from "@src/app/module/i18n/translation.service";
+import { getGameListFilterTypeOptions } from "@src/app/module/filter/game-list-filter";
 
 @Component({
   selector: 'app-game-table',
@@ -74,6 +75,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
 
   showFilterModal() {
     this.modalService.showFilterGameListModal({
+      availableFilterTypeOptions: getGameListFilterTypeOptions(this.translationService),
       gameListFilterItems: this.gameListFilters(),
     }).pipe(
         filter(event => event.type === 'confirm'),
