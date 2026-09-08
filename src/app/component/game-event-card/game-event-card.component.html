@@ -1,9 +1,10 @@
-<app-game-event [event]="event">
+@let eventValue = event();
+<app-game-event [event]="eventValue">
     <div info>
         <div class="w-full flex align-items-center justify-content-center">
-            <div *ngIf="event.cardType === 'yellow'" class="card-yellow"></div>
-            <div *ngIf="event.cardType === 'red'" class="card-red"></div>
-            <div *ngIf="event.cardType === 'yellowRed'">
+            <div *ngIf="eventValue.cardType === 'yellow'" class="card-yellow"></div>
+            <div *ngIf="eventValue.cardType === 'red'" class="card-red"></div>
+            <div *ngIf="eventValue.cardType === 'yellowRed'">
                 <div class="inline-block card-yellow-red-yellow card-yellow"></div>
                 <div class="inline-block card-yellow-red-red card-red"></div>
             </div>
@@ -12,13 +13,18 @@
     <div person>
         <div class="flex align-items-center">
             <div class="flex-grow">
-                <div class="game-event-scored-by text-sm">{{ getPersonName() }}</div>
-                <div *ngIf="event.reason" class="text-xs text-light-grey">
-                    {{ getReason() }} <span *ngIf="event.notOnPitch">{{ getNotOnPitchText() }}</span>
+                <div class="game-event-scored-by text-sm">{{ personName() }}</div>
+                <div *ngIf="eventValue.reason" class="text-xs text-light-grey">
+                    {{ reasonText() }}
                 </div>
             </div>
-            <div *ngIf="isVarEvent()" class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">
+            <div *ngIf="varEvent()" class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">
                 VAR
+            </div>
+            <div *ngIf="eventValue.notOnPitch" class="pr-2" [attr.title]="notOnPitchText()">
+                <div class="width-xs">
+                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'bench' }" />
+                </div>
             </div>
         </div>
     </div>

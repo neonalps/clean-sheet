@@ -33,12 +33,15 @@ import { LocationIconComponent } from '@src/app/icon/location/location.component
 import { ContractIconComponent } from "@src/app/icon/contract/contract.component";
 import { CheckComponent } from "@src/app/icon/check/check.component";
 import { ChevronDownComponent } from "@src/app/icon/chevron-down/chevron-down.component";
+import { BenchIconComponent } from "@src/app/icon/bench/bench.component";
+import { BicycleKickIconComponent } from '@src/app/icon/bicycle-kick/bicycle-kick.component';
 
 @Component({
   selector: 'app-ui-icon',
   imports: [
     LoadingComponent,
     FootballComponent,
+    BicycleKickIconComponent,
     BirthdayCakeComponent,
     ClubIconComponent,
     PlayerIconComponent,
@@ -69,7 +72,8 @@ import { ChevronDownComponent } from "@src/app/icon/chevron-down/chevron-down.co
     LocationIconComponent,
     ContractIconComponent,
     CheckComponent,
-    ChevronDownComponent
+    ChevronDownComponent,
+    BenchIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

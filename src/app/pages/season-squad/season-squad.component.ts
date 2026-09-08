@@ -9,7 +9,6 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { SeasonSquadService } from '@src/app/module/season-squad/service';
 import { SeasonService } from '@src/app/module/season/service';
 import { assertDefined } from '@src/app/util/common';
-import { PersonId } from '@src/app/util/domain-types';
 import { navigateToPerson, navigateToSeasonSquad, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
 import { BehaviorSubject, combineLatest, delay, filter, map, Observable, of, Subject, takeUntil } from 'rxjs';
 import { SeasonSelectComponent } from "@src/app/component/season-select/season-select.component";
