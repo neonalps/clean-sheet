@@ -328,23 +328,23 @@ export class PersonComponent implements OnDestroy {
 
     // if the person has clean sheets we assume it's a goalkeeper, so we only display goals scored and assists if they actually have some
     const cleanSheets = stats.cleanSheets ?? 0;
-    const hasCleanSheets = cleanSheets > 0;
+    const appearsToBeGoalkeeper = cleanSheets > 0 || stats.regulationPenaltiesFaced > 0;
 
     const baseItems: UiStatsItem[] = [
       { itemType: 'gamesPlayed', iconDescriptor: { type: 'standard', content: 'football-pitch' }, titleText: this.translationService.translate('stats.games', { plural: stats.gamesPlayed }), value: `${stats.gamesPlayed}` }
     ];
 
-    if (hasCleanSheets) {
+    if (appearsToBeGoalkeeper) {
       baseItems.push({ itemType: 'cleanSheets', iconDescriptor: { type: 'standard', content: 'goalkeeper-goal' }, titleText: this.translationService.translate('stats.cleanSheets', { plural: cleanSheets }), value: `${cleanSheets}` });
     }
 
     const goalsScored = stats.goalsScored ?? 0;
-    if (!hasCleanSheets || goalsScored > 0) {
+    if (!appearsToBeGoalkeeper || goalsScored > 0) {
       baseItems.push({ itemType: 'goalsScored', iconDescriptor: { type: 'standard', content: 'football' }, titleText: this.translationService.translate('stats.goals', { plural: goalsScored }), value: `${goalsScored}` });
     }
 
     const assists = stats.assists ?? 0;
-    if (!hasCleanSheets || assists > 0) {
+    if (!appearsToBeGoalkeeper || assists > 0) {
       baseItems.push({ itemType: 'assists', iconDescriptor: { type: 'standard', content: 'football-shoe' }, titleText: this.translationService.translate('stats.assists', { plural: assists }), value: `${assists}` });
     }
 
