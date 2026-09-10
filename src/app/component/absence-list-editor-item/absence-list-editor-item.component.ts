@@ -128,32 +128,68 @@ export class AbsenceListEditorItemComponent implements OnInit {
   }
 
   getReasonOptions(): Observable<SelectOption[]> {
+    return combineLatest([
+      this.getGameAbsenceOptions(),
+      this.reasonSearchValue.asObservable().pipe(startWith('')),
+    ]).pipe(
+      map(([absenceOptions, search]) => {
+        if (search.trim().length === 0) {
+          return absenceOptions;
+        }
+
+        return absenceOptions.filter(item => item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+      }),
+    );
+  }
+
+  onReasonSearchChange(searchValue: string) {
+    this.reasonSearchValue.next(searchValue);
+  }
+
+  onPersonSearchChange(searchValue: string) {
+    this.personSearchValue.next(searchValue);
+  }
+
+  onPersonSelected(selected: SelectOption) {
+    this.onUpdate.emit({
+      ...this.absence(),
+      person: {
+        id: typeof selected.id === 'number' ? selected.id : Number(selected.id),
+        displayName: selected.name,
+        avatar: selected.icon?.content ?? undefined,
+      }
+    })
+  }
+
+  onReasonSelected(selected: SelectOption) {
+    this.onUpdate.emit({
+      ...this.absence(),
+      absenceReason: selected.id as GameAbsenceReason,
+    });
+  }
+
+  removeClicked() {
+    this.onRemove.emit(this.absence().id);
+  }
+
+  private getTranslationPrefixForGameAbsenceType(type: GameAbsenceType): string {
+    switch (type) {
+      case GameAbsenceType.AtRisk:
+        return `atRisk`;
+      case GameAbsenceType.Injured:
+        return 'injury';
+      case GameAbsenceType.Exempt:
+        return 'exempt';
+      case GameAbsenceType.Suspended:
+        return 'suspension';
+      default:
+        assertUnreachable(type);
+    }
+  }
+
+  private getGameAbsenceOptions(): Observable<SelectOption[]> {
     return of([
-      {
-        id: GameAbsenceReason.Ankle,
-        name: this.translationService.translate(`injury.ankle`),
-        type: GameAbsenceType.Injured,
-      },
-      {
-        id: GameAbsenceReason.Back,
-        name: this.translationService.translate(`injury.back`),
-        type: GameAbsenceType.Injured,
-      },
-      {
-        id: GameAbsenceReason.CruciaLigament,
-        name: this.translationService.translate(`injury.cruciateLigamentRupture`),
-        type: GameAbsenceType.Injured,
-      },
-      {
-        id: GameAbsenceReason.Calf,
-        name: this.translationService.translate(`injury.calf`),
-        type: GameAbsenceType.Injured,
-      },
-      {
-        id: GameAbsenceReason.Muscle,
-        name: this.translationService.translate(`injury.muscle`),
-        type: GameAbsenceType.Injured,
-      },
+      ...this.getOrderedTranslatedInjuryReasons(),
       {
         id: 'redCard',
         name: this.translationService.translate(`suspension.redCard`),
@@ -214,49 +250,43 @@ export class AbsenceListEditorItemComponent implements OnInit {
     );
   }
 
-  onReasonSearchChange(searchValue: string) {
-    this.reasonSearchValue.next(searchValue);
-  }
-
-  onPersonSearchChange(searchValue: string) {
-    this.personSearchValue.next(searchValue);
-  }
-
-  onPersonSelected(selected: SelectOption) {
-    this.onUpdate.emit({
-      ...this.absence(),
-      person: {
-        id: typeof selected.id === 'number' ? selected.id : Number(selected.id),
-        displayName: selected.name,
-        avatar: selected.icon?.content ?? undefined,
-      }
-    })
-  }
-
-  onReasonSelected(selected: SelectOption) {
-    this.onUpdate.emit({
-      ...this.absence(),
-      absenceReason: selected.id as GameAbsenceReason,
+  private getOrderedTranslatedInjuryReasons(): SelectOption[] {
+    return [
+      {
+        id: GameAbsenceReason.Ankle,
+        name: this.translationService.translate(`injury.ankle`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Back,
+        name: this.translationService.translate(`injury.back`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.CruciaLigament,
+        name: this.translationService.translate(`injury.cruciateLigamentRupture`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Calf,
+        name: this.translationService.translate(`injury.calf`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Muscle,
+        name: this.translationService.translate(`injury.muscle`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.Thigh,
+        name: this.translationService.translate(`injury.thigh`),
+        type: GameAbsenceType.Injured,
+      },
+    ].sort((a, b) => {
+      const first = a.name.toLocaleUpperCase();
+      const second = b.name.toLocaleUpperCase();
+      return (first < second) ? -1 : (first > second) ? 1 : 0;
     });
-  }
-
-  removeClicked() {
-    this.onRemove.emit(this.absence().id);
-  }
-
-  private getTranslationPrefixForGameAbsenceType(type: GameAbsenceType): string {
-    switch (type) {
-      case GameAbsenceType.AtRisk:
-        return `atRisk`;
-      case GameAbsenceType.Injured:
-        return 'injury';
-      case GameAbsenceType.Exempt:
-        return 'exempt';
-      case GameAbsenceType.Suspended:
-        return 'suspension';
-      default:
-        assertUnreachable(type);
-    }
   }
 
 }

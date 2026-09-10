@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
@@ -33,11 +33,12 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   readonly forMain = signal(true);
 
   readonly currentFilters = signal<CompetitionFilterSuccessPayload | null>(null);
-  readonly isFiltering = signal(false);
   readonly isLoading = signal(false);
   readonly playerStats = signal<RankedPersonItem[]>([]);
   
   readonly titleText = signal<string>('');
+
+  readonly isFiltering = computed(() => !this.isLoading() && this.currentFilters() !== null);
 
   private readonly orderedTopLevelCompetitionsCache = signal<BasicCompetition[]>([]);
   private readonly hasReachedEnd = signal(false);
@@ -63,7 +64,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   readonly forMainChipGroupInput = signal<ChipGroupInput>({ chips: [
     { selected: true, value: 'forMain', displayText: this.translationService.translate('ranking.forMain', { main: this.mainClub.shortName.split(' ')[0] }) },
     { selected: false, value: 'againstMain', displayText: this.translationService.translate('ranking.againstMain', { main: this.mainClub.shortName.split(' ')[0] }) },
-  ], mode: 'single' });
+  ], mode: 'single', dynamicClassNamesChip: ['text-xs'] });
 
   constructor() {
     this.router.events.pipe(
@@ -173,8 +174,6 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
     }
 
-    this.isFiltering.set(Object.keys(queryParams).length > 1);
-
     this.statsService.getPlayerAppearanceStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
@@ -197,8 +196,6 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
     } else if (currentFilters?.filterOption === 'international') {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
     }
-
-    this.isFiltering.set(Object.keys(queryParams).length > 1);
 
     this.statsService.getPlayerGoalStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),

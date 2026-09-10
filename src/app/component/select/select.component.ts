@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
 import { SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
@@ -147,6 +147,7 @@ export class SelectComponent implements OnInit, OnDestroy {
     return this.currentValue()?.id === option.id;
   }
 
+  @HostListener('document:keydown.escape')
   handleOutsideClick() {
     this.hideDropdown();
   }

@@ -1,5 +1,6 @@
-<ng-container *ngIf="externalLinks !== undefined && externalLinks.length > 0">
-    @for (externalLink of externalLinks; track $index) {
+@let externalLinksValue = externalLinks();
+<ng-container *ngIf="externalLinksValue.length > 0">
+    @for (externalLink of externalLinksValue; track $index) {
         <div class="mt-2 flex align-items-center pointer transition-colors text-light-grey-darker hover:text-light" (click)="externalLinkClicked(externalLink.link)">
             <div class="birthday-icon-container mr-2">
                 <div class="width-xs relative top-1">

@@ -31,6 +31,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
 
   readonly currentPage = signal(-1);
   readonly isLoading = signal(false);
+  readonly hasLoadedAtLeastOnce = signal(false);
   readonly nextPageKey = signal<Nullish<string>>(null);
   readonly hasNextPage = signal(true);
   readonly pageSize = signal(20);

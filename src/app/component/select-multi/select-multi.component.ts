@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, input, OnDestroy, output, signal, ViewChild } from "@angular/core";
+import { Component, computed, ElementRef, HostListener, input, OnDestroy, output, signal, ViewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { OptionId, SelectOption } from "@src/app/component/select/option";
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
@@ -41,6 +41,7 @@ export class MultiSelectComponent implements OnDestroy {
         this.destroy$.complete();
     }
 
+    @HostListener('document:keydown.escape')
     handleOutsideClick() {
         this.hideDropdown();
     }
