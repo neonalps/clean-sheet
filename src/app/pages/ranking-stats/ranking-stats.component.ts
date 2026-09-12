@@ -19,13 +19,14 @@ import { environment } from '@src/environments/environment';
 import { FilterButtonComponent } from '@src/app/component/filter-button/filter-button.component';
 import { Person } from '@src/app/model/person';
 import { getDisplayName } from '@src/app/util/domain';
+import { CommonModule } from '@angular/common';
 
-export type RankingStatsType = 'appearances' | 'goals';
-const allowedRankingStatsTypes = ['appearances', 'goals'];
+export type RankingStatsType = 'appearances' | 'goals' | 'cards';
+const allowedRankingStatsTypes = ['appearances', 'goals', 'cards'];
 
 @Component({
   selector: 'app-ranking-appearances',
-  imports: [PaginatedRankedPersonListComponent, ChipGroupComponent, FilterButtonComponent],
+  imports: [CommonModule, PaginatedRankedPersonListComponent, ChipGroupComponent, FilterButtonComponent],
   templateUrl: './ranking-stats.component.html',
 })
 export class RankingStatsComponent implements OnInit, OnDestroy {
@@ -61,10 +62,24 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
-  readonly forMainChipGroupInput = signal<ChipGroupInput>({ chips: [
-    { selected: true, value: 'forMain', displayText: this.translationService.translate('ranking.forMain', { main: this.mainClub.shortName.split(' ')[0] }) },
-    { selected: false, value: 'againstMain', displayText: this.translationService.translate('ranking.againstMain', { main: this.mainClub.shortName.split(' ')[0] }) },
-  ], mode: 'single', dynamicClassNamesChip: ['text-xs'] });
+  readonly cardsChipGroupInput = signal<ChipGroupInput>({
+    chips: [
+      { selected: true, value: 'yellow', displayIcon: { type: 'standard', content: 'yellow-card' }, displayText: this.translationService.translate('card.yellow')},
+      { selected: false, value: 'yellowRed', displayIcon: { type: 'standard', content: 'yellow-red-card' }, displayText: this.translationService.translate('card.yellowRed')},
+      { selected: false, value: 'red', displayIcon: { type: 'standard', content: 'red-card' }, displayText: this.translationService.translate('card.red')},
+    ], 
+    mode: 'single',
+  });
+  readonly shouldDisplayCardChips = computed(() => this.rankingStatsType() === 'cards');
+
+  readonly forMainChipGroupInput = signal<ChipGroupInput>({ 
+    chips: [
+      { selected: true, value: 'forMain', displayText: this.translationService.translate('ranking.forMain', { main: this.mainClub.shortName.split(' ')[0] }) },
+      { selected: false, value: 'againstMain', displayText: this.translationService.translate('ranking.againstMain', { main: this.mainClub.shortName.split(' ')[0] }) },
+  ], 
+    mode: 'single',
+    dynamicClassNamesChip: ['text-xs'] 
+  });
 
   constructor() {
     this.router.events.pipe(
@@ -103,6 +118,10 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
 
   onNearEndReached(): void {
     this.loadData();
+  }
+
+  onCardChipSelected(selectedValue: string | number | boolean): void {
+
   }
 
   onForMainChipSelected(selectedValue: string | number | boolean): void {
@@ -154,6 +173,9 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
         break;
       case 'goals':
         this.loadGoalStats();
+        break;
+      case 'cards':
+        // TODO implement
         break;
       default:
         assertUnreachable(statsType);
