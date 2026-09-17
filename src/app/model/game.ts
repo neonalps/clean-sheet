@@ -237,6 +237,7 @@ export enum GameAbsenceReason {
     Calf = "calf",
     CruciaLigament = "cruciateLigamentRupture",
     Muscle = "muscle",
+    Shoulder = "shoulder",
     Thigh = "thigh",
     // suspension
     YellowCard = "yellowCard",

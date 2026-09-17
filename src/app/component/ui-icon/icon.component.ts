@@ -35,6 +35,7 @@ import { CheckComponent } from "@src/app/icon/check/check.component";
 import { ChevronDownComponent } from "@src/app/icon/chevron-down/chevron-down.component";
 import { BenchIconComponent } from "@src/app/icon/bench/bench.component";
 import { BicycleKickIconComponent } from '@src/app/icon/bicycle-kick/bicycle-kick.component';
+import { PenaltyMisedIconComponent } from '@src/app/icon/penalty-missed/penalty-missed.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -73,7 +74,8 @@ import { BicycleKickIconComponent } from '@src/app/icon/bicycle-kick/bicycle-kic
     ContractIconComponent,
     CheckComponent,
     ChevronDownComponent,
-    BenchIconComponent
+    BenchIconComponent,
+    PenaltyMisedIconComponent
 ],
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.css'

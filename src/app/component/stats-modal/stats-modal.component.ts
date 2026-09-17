@@ -164,6 +164,14 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     window.open(`${environment.frontendBaseUrl}/game/${game.id}`, '_blank');
   }
 
+  getPenaltiesMissed(item: GetPlayerGamesPlayedResponse): number {
+    if (isNotDefined(item.regulationPenaltiesTaken)) {
+      return 0;
+    }
+
+    return item.regulationPenaltiesTaken[0] - item.regulationPenaltiesTaken[1];
+  }
+
   getPenaltiesSaved(item: GetPlayerGamesPlayedResponse): number {
     if (isNotDefined(item.regulationPenaltiesFaced)) {
       return 0;

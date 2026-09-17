@@ -2,11 +2,11 @@ import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
-  selector: 'app-bicycle-kick-icon',
+  selector: 'app-penalty-missed-icon',
   imports: [],
-  templateUrl: './bicycle-kick.component.html',
+  templateUrl: './penalty-missed.component.html',
 })
-export class BicycleKickIconComponent {
+export class PenaltyMisedIconComponent {
 
   readonly color = input<string>();
 

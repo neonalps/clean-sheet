@@ -1,13 +1,13 @@
-<app-game-event [event]="event">
+<app-game-event [event]="event()">
     <div info>
-        <div class="width-xs football-container">
-            <app-football [color]="penaltyMissedColor" />
+        <div class="width-xs">
+            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'penalty-missed' }" />
         </div>
     </div>
     <div person>
-        <div class="game-event-scored-by text-sm">{{ 'game.penaltyMissed' | $t }}: <span class="no-break">{{ getTakenByName() }}</span></div>
+        <div class="game-event-scored-by text-sm">{{ 'game.penaltyMissed' | $t }}: <span class="no-break">{{ takenByName() }}</span></div>
         <div class="text-xs text-light-grey">
-            {{ getReason() }}
+            {{ reason() }}
         </div>
     </div>
 </app-game-event>

@@ -278,6 +278,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Injured,
       },
       {
+        id: GameAbsenceReason.Shoulder,
+        name: this.translationService.translate(`injury.shoulder`),
+        type: GameAbsenceType.Injured,
+      },
+      {
         id: GameAbsenceReason.Thigh,
         name: this.translationService.translate(`injury.thigh`),
         type: GameAbsenceType.Injured,
