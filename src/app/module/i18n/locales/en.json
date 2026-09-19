@@ -406,6 +406,7 @@
     "settings.role": "Role",
     "settings.scoreFormat": "Score format",
     "shirt.select": "Select shirt number",
+    "shirtHistory.forShirt": "History for jersey {shirt}",
     "suspension.redCard": "Red card",
     "suspension.yellowCards.singular": "{plural} Yellow card",
     "suspension.yellowCards.plural": "{plural} Yellow cards",

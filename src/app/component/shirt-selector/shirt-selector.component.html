@@ -66,7 +66,12 @@
             <div class="flex align-items-center justify-content-between mb-6">
                 @for (column of row.columns; track $index) {
                     <div class="width-4-5rem">
-                        <div *ngIf="!column.empty" class="py-3 center rounded-md" [ngClass]="{ 'bg-color-info': currentShirt === column.shirt, 'bg-color-dark-grey-mid hover:bg-color-dark-grey-darker pointer transition-colors': !isUnavailable(column.shirt), 'bg-color-light-grey-darker pointer-events-none': isUnavailable(column.shirt) }" (click)="selectShirt(column.shirt)">{{ column.shirt }}</div>
+                        <div *ngIf="!column.empty" class="py-3 center rounded-md" [ngClass]="{ 
+                            'bg-color-info': currentShirt === column.shirt, 
+                            'bg-color-dark-grey-mid pointer transition-colors': column.available,
+                            'hover:bg-color-dark-grey-darker': column.available && !column.selected,
+                            'bg-color-light-grey-darker pointer-events-none': !column.available
+                            }" (click)="selectShirt(column.shirt)">{{ column.shirt }}</div>
                     </div>
                 }
             </div>

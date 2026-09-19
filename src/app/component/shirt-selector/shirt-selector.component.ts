@@ -21,6 +21,8 @@ type GridRow = {
 type GridColumn = {
   shirt: number;
   empty: boolean;
+  selected?: boolean;
+  available?: boolean;
 }
 
 @Component({
@@ -41,29 +43,31 @@ export class ShirtSelectorComponent {
   readonly currentStage = signal(1);
   readonly numberGroup = signal(0);
   readonly stageTwoGrid = computed<Grid>(() => {
+    const selected = this.selectedShirt();
     const groupStart = this.numberGroup();
+    const unavailable = this.unavailableShirts();
 
     return [
       {
         columns: [
-          { shirt: groupStart + 1, empty: false, },
-          { shirt: groupStart + 2, empty: false, },
-          { shirt: groupStart + 3, empty: false, },
-          { shirt: groupStart + 4, empty: false, },
+          { shirt: groupStart + 1, empty: false, selected: selected === groupStart + 1, available: unavailable.indexOf(groupStart + 1) < 0 },
+          { shirt: groupStart + 2, empty: false, selected: selected === groupStart + 2, available: unavailable.indexOf(groupStart + 2) < 0 },
+          { shirt: groupStart + 3, empty: false, selected: selected === groupStart + 3, available: unavailable.indexOf(groupStart + 3) < 0 },
+          { shirt: groupStart + 4, empty: false, selected: selected === groupStart + 4, available: unavailable.indexOf(groupStart + 4) < 0 },
         ],
       },
       {
         columns: [
-          { shirt: groupStart + 5, empty: false, },
-          { shirt: groupStart + 6, empty: false, },
-          { shirt: groupStart + 7, empty: false, },
-          { shirt: groupStart + 8, empty: false, },
+          { shirt: groupStart + 5, empty: false, selected: selected === groupStart + 5, available: unavailable.indexOf(groupStart + 5) < 0 },
+          { shirt: groupStart + 6, empty: false, selected: selected === groupStart + 6, available: unavailable.indexOf(groupStart + 6) < 0 },
+          { shirt: groupStart + 7, empty: false, selected: selected === groupStart + 7, available: unavailable.indexOf(groupStart + 7) < 0 },
+          { shirt: groupStart + 8, empty: false, selected: selected === groupStart + 8, available: unavailable.indexOf(groupStart + 8) < 0 },
         ],
       },
       {
         columns: [
-          { shirt: groupStart + 9, empty: false, },
-          { shirt: groupStart !== 90 ? groupStart + 10 : 0, empty: groupStart === 90, },
+          { shirt: groupStart + 9, empty: false, selected: selected === groupStart + 9, available: unavailable.indexOf(groupStart + 9) < 0 },
+          { shirt: groupStart !== 90 ? groupStart + 10 : 0, empty: groupStart === 90, selected: selected === groupStart + 10, available: unavailable.indexOf(groupStart + 10) < 0 },
           { shirt: 0, empty: true, },
           { shirt: 0, empty: true, },
         ],
@@ -82,10 +86,6 @@ export class ShirtSelectorComponent {
 
   selectStage(stage: number) {
     this.currentStage.set(stage);
-  }
-
-  isUnavailable(shirt: number): boolean {
-    return this.unavailableShirts().indexOf(shirt) >= 0;
   }
 
 }

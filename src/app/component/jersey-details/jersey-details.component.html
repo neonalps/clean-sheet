@@ -1,3 +1,9 @@
+@let selectedShirtValue = selectedShirt();
 <div class="p-4">
-    <app-shirt-selector [selectedShirt]="selectedShirt()" />
+    <div>
+        <app-shirt-selector [selectedShirt]="selectedShirt()" (onShirtSelected)="onShirtSelect($event)" />
+    </div>
+    <div class="mt-8" *ngIf="selectedShirtValue">
+        <div class="bold">{{ historyText() }}</div>
+    </div>
 </div>
