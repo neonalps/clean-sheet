@@ -1,5 +1,4 @@
 import { Component, computed, input, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ButtonComponent, ButtonType } from "@src/app/component/button/button.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 
@@ -15,11 +14,5 @@ export class FilterButtonComponent {
 
   readonly buttonType = computed<ButtonType>(() => this.filterActive() ? 'info' : 'ghost');
   readonly iconDescriptor = signal<UiIconDescriptor>({ type: 'standard', content: 'filter' });
-
-  constructor() {
-    toObservable(this.filterActive).pipe(takeUntilDestroyed()).subscribe({
-      next: value => console.log(`filter active is now: ${value}`),
-    })
-  }
 
 }

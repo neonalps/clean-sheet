@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameStatus, ManagingRole, RefereeRole, TacticalFormation } from '@src/app/model/game';
 import { UiIconDescriptor } from '@src/app/model/icon';
-import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueId } from '@src/app/util/domain-types';
+import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueFlavorId, VenueId } from '@src/app/util/domain-types';
 import { navigateToSeasonGames, PATH_PARAM_GAME_ID } from '@src/app/util/router';
 import { BehaviorSubject, filter, map, Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
@@ -76,7 +76,7 @@ export type RefereeInputModel = {
 }
 
 export type VenueUiEntityModel = {
-  id: VenueId;
+  id: VenueFlavorId;
   displayText: string;
   icon?: UiIconDescriptor;
 }

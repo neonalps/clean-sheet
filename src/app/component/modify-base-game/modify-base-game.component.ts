@@ -54,17 +54,18 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
   readonly input = input<Observable<Partial<BaseGameInformation>>>();
   readonly onUpdate = output<BaseGameInformation>();
 
-  isSearchingForClub = signal(false);
-  isSearchingForCompetition = signal(false);
-  isSearchingForCompetitionRound = signal(false);
-  isSearchingForVenue = signal(false);
-  isSearchingForReferee = signal(false);
-  isHomeGame = signal(false);
-  isSoldOut = signal(false);
+  readonly isSearchingForClub = signal(false);
+  readonly isSearchingForCompetition = signal(false);
+  readonly isSearchingForCompetitionRound = signal(false);
+  readonly isSearchingForVenue = signal(false);
+  readonly isSearchingForReferee = signal(false);
+  readonly isHomeGame = signal(false);
+  readonly isSoldOut = signal(false);
   
-  colorLight = COLOR_LIGHT;
+  readonly colorLight = COLOR_LIGHT;
 
   readonly gameId = signal<GameId | undefined>(undefined);
+  readonly opponentId = signal<ClubId | undefined>(undefined);
 
   readonly pushKickoff$ = new Subject<Date | undefined>();
   readonly pushSelectedOpponent$ = new Subject<SelectOption>();
@@ -173,6 +174,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 
         // opponent
         if (baseGame.opponentId && baseGame.opponentName) {
+          this.opponentId.set(baseGame.opponentId);
           this.pushSelectedOpponent$.next({ id: baseGame.opponentId, name: baseGame.opponentName, icon: baseGame.opponentIcon });
           this.selectedOpponentId$.next(baseGame.opponentId);
         }
@@ -254,18 +256,21 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
       this.selectedOpponentName$.next(option.name);
       this.selectedOpponentIcon$.next(option.icon ?? null);
   
-      this.clubResolver.getById(clubId, false).pipe(take(1)).subscribe({
-        next: (clubResponse) => {
-          this.selectedOpponent = clubResponse.club;
-          
-          // auto-fill the venue based on the information we received
-          this.pushSelectedVenue(this.selectedOpponent.homeVenue);
-        },
-        error: (error) => {
-          console.error(error);
-          this.selectedOpponent = undefined;
-        },
-      });
+      if (clubId !== this.opponentId()) {
+        this.opponentId.set(clubId);
+        this.clubResolver.getById(clubId, false).pipe(take(1)).subscribe({
+          next: (clubResponse) => {
+            this.selectedOpponent = clubResponse.club;
+            
+            // auto-fill the venue based on the information we received
+            this.pushSelectedVenue(this.selectedOpponent.homeVenue);
+          },
+          error: (error) => {
+            console.error(error);
+            this.selectedOpponent = undefined;
+          },
+        });
+      }
     }
   
     getClubOptions(): Observable<SelectOption[]> {

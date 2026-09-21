@@ -146,7 +146,7 @@ export class ModifyGameService implements OnDestroy {
             } : undefined,
             competitionRound: response.round,
             competitionStage: response.stage,
-            venueId: response.venue.id,
+            venueFlavorId: response.venue.flavorId,
             venueName: response.venue.branding,
             attendance: response.attendance,
             isHomeGame: response.isHomeGame,

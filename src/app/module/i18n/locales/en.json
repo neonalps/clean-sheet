@@ -410,6 +410,7 @@
     "suspension.redCard": "Red card",
     "suspension.yellowCards.singular": "{plural} Yellow card",
     "suspension.yellowCards.plural": "{plural} Yellow cards",
+    "suspension.yellowRedCard": "Yellow-red card",
     "squad.member.from": "From",
     "squad.member.to": "To",
     "squad.member.loan": "Loan",
