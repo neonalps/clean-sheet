@@ -44,6 +44,24 @@ export class StatsService {
         return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-goals?${convertObjectToQueryString(queryParams)}`);
     }
 
+    getPlayerYellowCardStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
+        const queryParams = this.resolveQueryParams(nextPageKey, params);
+
+        return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-yellow-cards?${convertObjectToQueryString(queryParams)}`);
+    }
+
+    getPlayerYellowRedCardStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
+        const queryParams = this.resolveQueryParams(nextPageKey, params);
+
+        return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-yellow-red-cards?${convertObjectToQueryString(queryParams)}`);
+    }
+
+    getPlayerRedCardStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
+        const queryParams = this.resolveQueryParams(nextPageKey, params);
+
+        return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-red-cards?${convertObjectToQueryString(queryParams)}`);
+    }
+
     private resolveQueryParams(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): GetPlayerStatsRequest {
         if (isDefined(nextPageKey)) {
             return { nextPageKey };

@@ -353,6 +353,8 @@
     "player.goalsAgainstClubs": "Goals against clubs",
     "player.stats": "Player stats",
     "playerAppearanceStats.error": "The player appearance stats could not be loaded",
+    "playerCardStats.error": "The player card stats could not be loaded",
+    "playerGoalStats.error": "The player goal stats could not be loaded",
     "ranking.againstMain": "against {main}",
     "ranking.forMain": "for {main}",
     "reason.dangerousPlay": "Dangerous play",

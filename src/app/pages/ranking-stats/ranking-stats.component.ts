@@ -3,7 +3,7 @@ import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
-import { filter, map, Subject, takeUntil } from 'rxjs';
+import { filter, map, Observable, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
 import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -20,9 +20,13 @@ import { FilterButtonComponent } from '@src/app/component/filter-button/filter-b
 import { Person } from '@src/app/model/person';
 import { getDisplayName } from '@src/app/util/domain';
 import { CommonModule } from '@angular/common';
+import { Nullish } from '@src/app/util/types';
 
 export type RankingStatsType = 'appearances' | 'goals' | 'cards';
 const allowedRankingStatsTypes = ['appearances', 'goals', 'cards'];
+
+export type CardType = 'yellow' | 'yellowRed' | 'red';
+const allowedCardTypes = ['yellow', 'yellowRed', 'red'];
 
 @Component({
   selector: 'app-ranking-appearances',
@@ -44,6 +48,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   private readonly orderedTopLevelCompetitionsCache = signal<BasicCompetition[]>([]);
   private readonly hasReachedEnd = signal(false);
   private readonly rankingStatsType = signal<RankingStatsType | null>(null);
+  private readonly cardType = signal<CardType>('yellow');
 
   private readonly nextPageKey = signal<string | null>(null);
 
@@ -121,7 +126,15 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   }
 
   onCardChipSelected(selectedValue: string | number | boolean): void {
-
+    if (typeof selectedValue !== 'string') {
+      throw new Error(`Incorrect data type received for card type. Only strings are allowed.`);
+    }
+    if (!allowedCardTypes.includes(selectedValue)) {
+      throw new Error(`Illegal card type. Allowed values are: ${allowedCardTypes.join(', ')}`);
+    }
+    this.cardType.set(selectedValue as CardType);
+    this.resetLoad();
+    this.loadCardStats();
   }
 
   onForMainChipSelected(selectedValue: string | number | boolean): void {
@@ -175,7 +188,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
         this.loadGoalStats();
         break;
       case 'cards':
-        // TODO implement
+        this.loadCardStats();
         break;
       default:
         assertUnreachable(statsType);
@@ -223,9 +236,45 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);
-        this.toastService.addToast({ type: 'error', text: this.translationService.translate(`playerAppearanceStats.error`) });
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate(`playerGoalStats.error`) });
       }
     })
+  }
+
+  private loadCardStats() {
+    const queryParams: GetPlayerStatsQueryParams = {
+      forMain: this.forMain(),
+    };
+
+    const currentFilters = this.currentFilters();
+    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
+      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
+    } else if (currentFilters?.filterOption === 'domestic') {
+      queryParams.competitionIds = [...this.domesticCompetitionIds];
+    } else if (currentFilters?.filterOption === 'international') {
+      queryParams.competitionIds = [...this.internationalCompetitionIds];
+    }
+
+    this.getCardStatsObservable(this.cardType(), this.nextPageKey(), queryParams).subscribe({
+      next: playerStats => this.onPlayerStatsResult(playerStats),
+      error: (err) => {
+        console.error(err);
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate(`playerCardStats.error`) });
+      }
+    })
+  }
+
+  private getCardStatsObservable(cardType: CardType, nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
+    switch (cardType) {
+      case 'yellow':
+        return this.statsService.getPlayerYellowCardStats(nextPageKey, params);
+      case 'yellowRed':
+        return this.statsService.getPlayerYellowRedCardStats(nextPageKey, params);
+      case 'red':
+        return this.statsService.getPlayerRedCardStats(nextPageKey, params); 
+      default:
+        assertUnreachable(cardType);
+    }
   }
 
   private onPlayerStatsResult(result: PlayerStatsResponse): void {
