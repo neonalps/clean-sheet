@@ -15,6 +15,13 @@
                                         </div>
                                     </div>
                                 }
+                                @case ('season') {
+                                    <div class="form-row">
+                                        <div class="form-row-content">
+                                            <app-multi-select [options]="seasonOptions()" [selected]="selectedSeasons()" (onSelectedChange)="onSeasonSelectionChanged($event)" />
+                                        </div>
+                                    </div>
+                                }
                                 @case ('accountAttended') {
                                     <div class="form-row">
                                         <div class="form-row-content">

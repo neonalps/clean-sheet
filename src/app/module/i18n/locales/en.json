@@ -134,6 +134,7 @@
     "filter.internationalGame": "International game",
     "filter.lossAfterLead": "Loss after lead",
     "filter.lossInInjuryTime": "Loss in injury time",
+    "filter.season": "Season",
     "filter.winInInjuryTime": "Win in injury time",
     "filter.type": "Filter type",
     "filterGameList.addNewFilter": "Add filter",

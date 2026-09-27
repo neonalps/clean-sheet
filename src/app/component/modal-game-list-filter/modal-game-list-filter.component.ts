@@ -14,6 +14,7 @@ import { CompetitionService } from '@src/app/module/competition/service';
 import { ensureNotNullish, processTranslationPlaceholders } from '@src/app/util/common';
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { OmitStrict } from '@src/app/util/types';
+import { SeasonService } from '@src/app/module/season/service';
 
 export type FilterGameListPayload = {
   availableFilterTypeOptions: SelectOption[];
@@ -30,13 +31,16 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   private readonly competitionService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);
+  private readonly seasonService = inject(SeasonService);
   private readonly translationService = inject(TranslationService);
 
   readonly currentFilterTypeOptions = signal<SelectOption[]>([]);
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
 
   readonly competitionOptions = signal<SelectOption[]>([]);
+  readonly seasonOptions = signal<SelectOption[]>([]);
   readonly selectedCompetitions = signal<OptionId[]>([]);
+  readonly selectedSeasons = signal<OptionId[]>([]);
   readonly yesNoChipGroupInput = signal<ChipGroupInput>({
     mode: 'single',
     chips: [{
@@ -79,6 +83,18 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     ).subscribe((competitionOptions: SelectOption[]) => {
       this.competitionOptions.set(competitionOptions);
     });
+
+    this.seasonService.getOrderedSeasonssFromCache().pipe(
+      map(seasons => {
+        return seasons.map(item => ({
+          id: item.id,
+          name: item.name,
+        } satisfies SelectOption));
+      }),
+      takeUntil(this.destroy$),
+    ).subscribe((seasonOptions: SelectOption[]) => {
+      this.seasonOptions.set(seasonOptions);
+    });
   }
 
   ngOnDestroy(): void {
@@ -105,6 +121,20 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     this.onFilterItemChange({
       ...competitionFilterItem,
       value: ensureNotNullish(this.selectedCompetitions()),
+    });
+  }
+
+  onSeasonSelectionChanged(selectedSeasonIds: OptionId[]) {
+    this.selectedSeasons.set(selectedSeasonIds);
+
+    const seasonFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Season);
+    if (!seasonFilterItem) {
+      return;
+    }
+
+    this.onFilterItemChange({
+      ...seasonFilterItem,
+      value: ensureNotNullish(this.selectedSeasons()),
     });
   }
 

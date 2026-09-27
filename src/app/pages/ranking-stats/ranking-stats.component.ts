@@ -1,18 +1,14 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RankedPersonItem } from '@src/app/model/dashboard';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { GetPlayerStatsQueryParams, PlayerStatsResponse, StatsService } from '@src/app/module/stats/service';
 import { ToastService } from '@src/app/module/toast/service';
 import { filter, map, Observable, Subject, takeUntil } from 'rxjs';
 import { PaginatedRankedPersonListComponent } from "@src/app/component/paginated-ranked-person-list/paginated-ranked-person-list.component";
-import { assertUnreachable, ensureNotNullish, isNotDefined, uniqueArrayElements } from '@src/app/util/common';
+import { assertUnreachable, ensureNotNullish, isNotDefined } from '@src/app/util/common';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { navigateToPerson, PATH_PARAM_RANKING_STATS_TYPE } from '@src/app/util/router';
 import { ModalService } from '@src/app/module/modal/service';
-import { CompetitionFilterSuccessPayload } from '@src/app/component/modal-competition-filter/modal-competition-filter.component';
-import { BasicCompetition } from '@src/app/model/competition';
-import { CompetitionService } from '@src/app/module/competition/service';
-import { CompetitionId } from '@src/app/util/domain-types';
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
@@ -21,6 +17,9 @@ import { Person } from '@src/app/model/person';
 import { getDisplayName } from '@src/app/util/domain';
 import { CommonModule } from '@angular/common';
 import { Nullish } from '@src/app/util/types';
+import { getPlayerStatsFilterTypeOptions } from '@src/app/module/filter/game-list-filter';
+import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
+import { GameListFilterItem } from '@src/app/module/filter/service';
 
 export type RankingStatsType = 'appearances' | 'goals' | 'cards';
 const allowedRankingStatsTypes = ['appearances', 'goals', 'cards'];
@@ -33,26 +32,24 @@ const allowedCardTypes = ['yellow', 'yellowRed', 'red'];
   imports: [CommonModule, PaginatedRankedPersonListComponent, ChipGroupComponent, FilterButtonComponent],
   templateUrl: './ranking-stats.component.html',
 })
-export class RankingStatsComponent implements OnInit, OnDestroy {
+export class RankingStatsComponent {
 
   readonly forMain = signal(true);
 
-  readonly currentFilters = signal<CompetitionFilterSuccessPayload | null>(null);
+  readonly currentFilters = signal<GameListFilterItem[]>([]);
   readonly isLoading = signal(false);
   readonly playerStats = signal<RankedPersonItem[]>([]);
   
   readonly titleText = signal<string>('');
 
-  readonly isFiltering = computed(() => !this.isLoading() && this.currentFilters() !== null);
+  readonly isFiltering = computed(() => !this.isLoading() && this.currentFilters().length > 0);
 
-  private readonly orderedTopLevelCompetitionsCache = signal<BasicCompetition[]>([]);
   private readonly hasReachedEnd = signal(false);
   private readonly rankingStatsType = signal<RankingStatsType | null>(null);
   private readonly cardType = signal<CardType>('yellow');
 
   private readonly nextPageKey = signal<string | null>(null);
 
-  private readonly competitionsService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -61,9 +58,6 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
-
-  private domesticCompetitionIds: CompetitionId[] = [];
-  private internationalCompetitionIds: CompetitionId[] = [];
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
@@ -105,22 +99,6 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.competitionsService.getOrderedTopLevelCompetitionsFromCache().pipe(
-      takeUntil(this.destroy$),
-    ).subscribe(value => {
-      this.orderedTopLevelCompetitionsCache.set([...value]);
-
-      this.domesticCompetitionIds = uniqueArrayElements(value.filter(item => item.isDomestic === true).map(item => item.id));
-      this.internationalCompetitionIds = uniqueArrayElements(value.filter(item => item.isDomestic !== true).map(item => item.id));
-    })
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   onNearEndReached(): void {
     this.loadData();
   }
@@ -144,22 +122,19 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
   }
 
   showFilterModal() {
-    this.modalService.showCompetitionFilterModal({
-      filterOption: this.currentFilters()?.filterOption ?? 'none',
-      availableCompetitions: this.orderedTopLevelCompetitionsCache(),
-      selectedCompetitionIds: this.currentFilters()?.selectedCompetitionIds ?? [],
+    this.modalService.showFilterGameListModal({
+      availableFilterTypeOptions: getPlayerStatsFilterTypeOptions(this.translationService),
+      gameListFilterItems: [],
     }).pipe(
         filter(event => event.type === 'confirm'),
-        map(event => ensureNotNullish(event.value) as CompetitionFilterSuccessPayload),
+        map(event => ensureNotNullish(event.value) as FilterGameListPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
-        if (this.currentFilters() === value) {
-          return;
-        }
+      const updatedFilters = value.gameListFilterItems;
 
-        this.currentFilters.set(value);
-        this.resetLoad();
-        this.loadData();
+      this.currentFilters.set(updatedFilters);
+      this.resetLoad();
+      this.loadData();
     });
   }
 
@@ -200,14 +175,15 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       forMain: this.forMain(),
     };
 
-    const currentFilters = this.currentFilters();
+    // TODO implement
+    /*const currentFilters = this.currentFilters();
     if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
       queryParams.competitionIds = currentFilters.selectedCompetitionIds;
     } else if (currentFilters?.filterOption === 'domestic') {
       queryParams.competitionIds = [...this.domesticCompetitionIds];
     } else if (currentFilters?.filterOption === 'international') {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }
+    }*/
 
     this.statsService.getPlayerAppearanceStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
@@ -223,6 +199,8 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       forMain: this.forMain(),
     };
 
+    // TODO implement
+    /*
     const currentFilters = this.currentFilters();
     if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
       queryParams.competitionIds = currentFilters.selectedCompetitionIds;
@@ -230,7 +208,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       queryParams.competitionIds = [...this.domesticCompetitionIds];
     } else if (currentFilters?.filterOption === 'international') {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }
+    }*/
 
     this.statsService.getPlayerGoalStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
@@ -246,6 +224,8 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       forMain: this.forMain(),
     };
 
+    // TODO implement
+    /*
     const currentFilters = this.currentFilters();
     if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
       queryParams.competitionIds = currentFilters.selectedCompetitionIds;
@@ -253,7 +233,7 @@ export class RankingStatsComponent implements OnInit, OnDestroy {
       queryParams.competitionIds = [...this.domesticCompetitionIds];
     } else if (currentFilters?.filterOption === 'international') {
       queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }
+    }*/
 
     this.getCardStatsObservable(this.cardType(), this.nextPageKey(), queryParams).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),

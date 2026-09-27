@@ -20,6 +20,7 @@ export enum GameListFilterType {
     LossInInjuryTime = 'lossInInjuryTime',
     WinInInjuryTime = 'winInInjuryTime',
     Tendency = 'tedency',
+    Season = 'season',
     AccountAttended = 'accountAttended',
     AccountStarred = 'accountStarred',
 };
@@ -77,6 +78,9 @@ export class FilterService {
                     // TODO implement
                     break;
                 case GameListFilterType.AccountStarred:
+                    // TODO implement
+                    break;
+                case GameListFilterType.Season:
                     // TODO implement
                     break;
                 default:

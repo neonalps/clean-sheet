@@ -134,6 +134,7 @@
     "filter.lossAfterLead": "Niederlage nach Führung",
     "filter.lossInInjuryTime": "Niederlage in Nachspielzeit",
     "filter.winInInjuryTime": "Sieg in Nachspielzeit",
+    "filter.season": "Saison",
     "filter.type": "Filter-Typ",
     "filterGameList.addNewFilter": "Filter hinzufügen",
     "game.absentPlayers": "Fehlende Spieler",

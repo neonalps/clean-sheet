@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
 import { Season } from "@src/app/model/season";
 import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
-import { Observable, BehaviorSubject } from "rxjs";
+import { isDefined } from "@src/app/util/common";
+import { Observable, BehaviorSubject, filter } from "rxjs";
+import { fromPromise } from "rxjs/internal/observable/innerFrom";
 
 @Injectable({
     providedIn: 'root'
 })
 export class SeasonService {
+
+    private static readonly REQUEST_SEASONS = 'GetSeasons';
 
     private seasonsFetchHandle: FetchHandle | undefined;
     private seasons: Season[] = [];
@@ -16,7 +20,7 @@ export class SeasonService {
 
     init(): void {
         this.seasonsFetchHandle = this.fetchService.subscribe<Season[]>({
-            name: 'GetSeasons',
+            name: SeasonService.REQUEST_SEASONS,
             request: {
                 method: 'GET',
                 url: `/v1/seasons`,
@@ -44,6 +48,12 @@ export class SeasonService {
 
     getSeasonsObservable(): Observable<Season[]> {
         return this.seasonsSubject.asObservable();
+    }
+
+    getOrderedSeasonssFromCache(): Observable<Season[]> {
+        return fromPromise(this.fetchService.getFromCache<Season[]>(SeasonService.REQUEST_SEASONS)).pipe(
+            filter(value => isDefined(value)),
+        );
     }
 
     private onSeasonsUpdate(updatedSeasons: Season[]): void {

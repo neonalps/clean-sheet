@@ -1,8 +1,19 @@
 <div class="transition-fade" [ngClass]="{ 'hidden-fade': !isActive() }">
-    <app-modal-competition-filter *ngIf="isCompetitionFilterModalActive()"/>
-    <app-modal-confirm-add-person *ngIf="isConfirmAddPersonModalActive()"/>
-    <app-delete-modal *ngIf="isDeleteModalActive()" />
-    <app-modal-game-list-filter *ngIf="isFilterGameListModalActive()" />
-    <app-modal-select-shirt *ngIf="isShirtModalActive()" />
-    <app-stats-modal *ngIf="isStatsModalActive()" />
+    @switch (modalType()) {
+        @case ('confirmAddPerson') {
+            <app-modal-confirm-add-person />
+        }
+        @case ('delete') {
+            <app-delete-modal />
+        }
+        @case ('filterGameList') {
+            <app-modal-game-list-filter />
+        }
+        @case ('shirt') {
+            <app-modal-select-shirt />
+        }
+        @case ('stats') {
+            <app-stats-modal />
+        }
+    }
 </div>
