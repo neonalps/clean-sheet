@@ -2,6 +2,7 @@ export const environment = {
     production: false,
     apiBaseUrl: "http://localhost:3024/api",
     frontendBaseUrl: "http://localhost:4200",
+    domesticLeagueId: 2,
     mainClub: {
         id: 1,
         name: "SK Sturm Graz",

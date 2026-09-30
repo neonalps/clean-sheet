@@ -50,7 +50,7 @@ export class SeasonService {
         return this.seasonsSubject.asObservable();
     }
 
-    getOrderedSeasonssFromCache(): Observable<Season[]> {
+    getOrderedSeasonsFromCache(): Observable<Season[]> {
         return fromPromise(this.fetchService.getFromCache<Season[]>(SeasonService.REQUEST_SEASONS)).pipe(
             filter(value => isDefined(value)),
         );

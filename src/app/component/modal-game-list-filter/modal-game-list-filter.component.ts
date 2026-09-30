@@ -3,7 +3,7 @@ import { ModalComponent } from '@src/app/component/modal/modal.component';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ModalService } from '@src/app/module/modal/service';
-import { map, Subject, takeUntil } from 'rxjs';
+import { combineLatest, map, Subject, takeUntil } from 'rxjs';
 import { FilterItemComponent } from "@src/app/component/filter/filter-item/filter-item.component";
 import { CommonModule } from '@angular/common';
 import { GameListFilterItem, GameListFilterType, GenericFilterItem } from '@src/app/module/filter/service';
@@ -15,6 +15,7 @@ import { ensureNotNullish, processTranslationPlaceholders } from '@src/app/util/
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { OmitStrict } from '@src/app/util/types';
 import { SeasonService } from '@src/app/module/season/service';
+import { environment } from '@src/environments/environment';
 
 export type FilterGameListPayload = {
   availableFilterTypeOptions: SelectOption[];
@@ -36,6 +37,9 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   readonly currentFilterTypeOptions = signal<SelectOption[]>([]);
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
+
+  readonly quickFilterChipGroup = signal<ChipGroupInput | null>(null);
+  readonly quickFilterItems = signal<GameListFilterItem[]>([]);
 
   readonly competitionOptions = signal<SelectOption[]>([]);
   readonly seasonOptions = signal<SelectOption[]>([]);
@@ -65,13 +69,17 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
         this.currentFilterItems.set(payload.gameListFilterItems.length > 0 ? payload.gameListFilterItems : [this.createEmptyGameListFilterItem()]);
 
         const competitionFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Competition);
-        if (!competitionFilterItem) {
-          return;
+        if (competitionFilterItem) {
+          this.selectedCompetitions.set(ensureNotNullish(competitionFilterItem.value) as OptionId[]);
         }
-        this.selectedCompetitions.set(ensureNotNullish(competitionFilterItem.value) as OptionId[]);
+        
+        const seasonFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Season);
+        if (seasonFilterItem) {
+          this.selectedSeasons.set(ensureNotNullish(seasonFilterItem.value) as OptionId[]);
+        }
       });
 
-    this.competitionService.getOrderedTopLevelCompetitionsFromCache().pipe(
+    const competition$ = this.competitionService.getOrderedTopLevelCompetitionsFromCache().pipe(
       map(competitions => {
         return competitions.map(item => ({
           id: item.id,
@@ -80,11 +88,9 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
         } satisfies SelectOption));
       }),
       takeUntil(this.destroy$),
-    ).subscribe((competitionOptions: SelectOption[]) => {
-      this.competitionOptions.set(competitionOptions);
-    });
+    );
 
-    this.seasonService.getOrderedSeasonssFromCache().pipe(
+    const seasons$ = this.seasonService.getOrderedSeasonsFromCache().pipe(
       map(seasons => {
         return seasons.map(item => ({
           id: item.id,
@@ -92,14 +98,58 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
         } satisfies SelectOption));
       }),
       takeUntil(this.destroy$),
-    ).subscribe((seasonOptions: SelectOption[]) => {
-      this.seasonOptions.set(seasonOptions);
+    );
+
+    combineLatest([
+      competition$,
+      seasons$,
+    ]).pipe(
+      takeUntil(this.destroy$),
+    ).subscribe({
+      next: ([competitionOptions, seasonOptions]) => {
+        this.competitionOptions.set(competitionOptions);
+        this.seasonOptions.set(seasonOptions);
+
+        const bundesligaCompetition = competitionOptions.find(item => item.id === environment.domesticLeagueId);
+        const currentSeason = seasonOptions.length > 0 ? seasonOptions[0] : null;
+
+        // set quick filter to current Bundesliga season
+        if (bundesligaCompetition && currentSeason) {
+          this.quickFilterChipGroup.set({
+            mode: 'single',
+            chips: [
+              {
+                selected: false,
+                displayIcon: bundesligaCompetition.icon ? { ...bundesligaCompetition.icon, 'containerClasses': ['width-xs', 'relative', 'top-neg-1'] } : undefined,
+                displayText: `${bundesligaCompetition.name} ${currentSeason.name}`,
+                value: 'not-used',
+                colorMode: {
+                  bgColorSelected: 'bg-color-dark-grey-darker',
+                  textColorSelected: 'text-light',
+                  bgColorHover: 'hover:bg-color-dark-grey-darker',
+                }
+              }
+            ],
+          });
+
+          this.quickFilterItems.set([
+            { id: crypto.randomUUID(), type: GameListFilterType.Competition, value: [bundesligaCompetition.id] },
+            { id: crypto.randomUUID(), type: GameListFilterType.Season, value: [currentSeason.id] },
+          ]);
+        }
+      }
     });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onQuickFilterSelected(): void {
+    this.modalService.onConfirm({
+      gameListFilterItems: this.quickFilterItems(),
+    } satisfies OmitStrict<FilterGameListPayload, 'availableFilterTypeOptions'>)
   }
 
   isFilterItemRemovable(item: GameListFilterItem): boolean {

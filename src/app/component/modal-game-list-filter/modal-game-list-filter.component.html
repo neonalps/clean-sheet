@@ -1,6 +1,14 @@
 @let currentFilterItemsValue = currentFilterItems();
+@let quickFilterChipGroupValue = quickFilterChipGroup();
 <app-modal>
-    <div header>{{ 'modal.filterGames' | $t }}</div>
+    <div header>
+        <div class="flex align-items-center justify-content-between">
+            <div>{{ 'modal.filterGames' | $t }}</div>
+            <div class="text-xs normal" *ngIf="quickFilterChipGroupValue">
+                <app-chip-group [chipGroup]="quickFilterChipGroupValue" (onSelected)="onQuickFilterSelected()" />
+            </div>
+        </div>
+    </div>
     <div content>
         <ng-container *ngIf="currentFilterItemsValue.length > 0; else emptyList">
             <div>

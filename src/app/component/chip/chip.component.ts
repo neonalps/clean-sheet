@@ -9,6 +9,7 @@ export interface Chip {
   displayText?: string;
   displayIcon?: UiIconDescriptor;
   additionalClasses?: string[];
+  colorMode?: ChipColorMode;
   showDisplayTextOnlyWhileSelected?: boolean;
 }
 
@@ -33,19 +34,20 @@ export class ChipComponent {
   }
 
   readonly chip = input.required<Chip>();
-  readonly colorMode = input(ChipComponent.DEFAULT_COLOR_MODE);
+  readonly colorMode = input<ChipColorMode>();
   readonly dynamicClassNames = input<string | string[]>();
   readonly dynamicBoundingClassNames = input<string[]>();
 
   readonly effectiveDynamicClassNames = computed(() => this.dynamicClassNames() ?? 'text-xs');
+  readonly effectiveColorMode = computed(() => this.colorMode() ?? ChipComponent.DEFAULT_COLOR_MODE);
 
   getBoundingClasses(): string[] {
     const boundingClasses: string[] = [];
 
     if (this.chip().selected) {
-      boundingClasses.push(this.colorMode().bgColorSelected, this.colorMode().textColorSelected);
+      boundingClasses.push(this.effectiveColorMode().bgColorSelected, this.effectiveColorMode().textColorSelected);
     } else {
-      boundingClasses.push(this.colorMode().bgColorHover);
+      boundingClasses.push(this.effectiveColorMode().bgColorHover);
     }
 
     const dynamicBoundingClassNamesValue = this.dynamicBoundingClassNames();

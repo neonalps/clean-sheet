@@ -19,7 +19,8 @@ import { CommonModule } from '@angular/common';
 import { Nullish } from '@src/app/util/types';
 import { getPlayerStatsFilterTypeOptions } from '@src/app/module/filter/game-list-filter';
 import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
-import { GameListFilterItem } from '@src/app/module/filter/service';
+import { GameListFilterItem, GameListFilterType } from '@src/app/module/filter/service';
+import { CompetitionId, SeasonId } from '@src/app/util/domain-types';
 
 export type RankingStatsType = 'appearances' | 'goals' | 'cards';
 const allowedRankingStatsTypes = ['appearances', 'goals', 'cards'];
@@ -42,7 +43,7 @@ export class RankingStatsComponent {
   
   readonly titleText = signal<string>('');
 
-  readonly isFiltering = computed(() => !this.isLoading() && this.currentFilters().length > 0);
+  readonly isFiltering = computed(() => !this.isLoading() && this.currentFilters().some(item => item.type));
 
   private readonly hasReachedEnd = signal(false);
   private readonly rankingStatsType = signal<RankingStatsType | null>(null);
@@ -124,15 +125,13 @@ export class RankingStatsComponent {
   showFilterModal() {
     this.modalService.showFilterGameListModal({
       availableFilterTypeOptions: getPlayerStatsFilterTypeOptions(this.translationService),
-      gameListFilterItems: [],
+      gameListFilterItems: this.currentFilters(),
     }).pipe(
         filter(event => event.type === 'confirm'),
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
-      const updatedFilters = value.gameListFilterItems;
-
-      this.currentFilters.set(updatedFilters);
+      this.currentFilters.set(value.gameListFilterItems);
       this.resetLoad();
       this.loadData();
     });
@@ -171,21 +170,7 @@ export class RankingStatsComponent {
   }
 
   private loadAppearanceStats() {
-    const queryParams: GetPlayerStatsQueryParams = {
-      forMain: this.forMain(),
-    };
-
-    // TODO implement
-    /*const currentFilters = this.currentFilters();
-    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
-      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
-    } else if (currentFilters?.filterOption === 'domestic') {
-      queryParams.competitionIds = [...this.domesticCompetitionIds];
-    } else if (currentFilters?.filterOption === 'international') {
-      queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }*/
-
-    this.statsService.getPlayerAppearanceStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
+    this.statsService.getPlayerAppearanceStats(this.nextPageKey(), this.getPlayerStatsQueryParams()).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);
@@ -195,22 +180,7 @@ export class RankingStatsComponent {
   }
 
   private loadGoalStats() {
-    const queryParams: GetPlayerStatsQueryParams = {
-      forMain: this.forMain(),
-    };
-
-    // TODO implement
-    /*
-    const currentFilters = this.currentFilters();
-    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
-      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
-    } else if (currentFilters?.filterOption === 'domestic') {
-      queryParams.competitionIds = [...this.domesticCompetitionIds];
-    } else if (currentFilters?.filterOption === 'international') {
-      queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }*/
-
-    this.statsService.getPlayerGoalStats(this.nextPageKey(), queryParams).pipe(takeUntil(this.destroy$)).subscribe({
+    this.statsService.getPlayerGoalStats(this.nextPageKey(), this.getPlayerStatsQueryParams()).pipe(takeUntil(this.destroy$)).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);
@@ -220,28 +190,33 @@ export class RankingStatsComponent {
   }
 
   private loadCardStats() {
-    const queryParams: GetPlayerStatsQueryParams = {
-      forMain: this.forMain(),
-    };
-
-    // TODO implement
-    /*
-    const currentFilters = this.currentFilters();
-    if (currentFilters?.selectedCompetitionIds && currentFilters.selectedCompetitionIds.length > 0) {
-      queryParams.competitionIds = currentFilters.selectedCompetitionIds;
-    } else if (currentFilters?.filterOption === 'domestic') {
-      queryParams.competitionIds = [...this.domesticCompetitionIds];
-    } else if (currentFilters?.filterOption === 'international') {
-      queryParams.competitionIds = [...this.internationalCompetitionIds];
-    }*/
-
-    this.getCardStatsObservable(this.cardType(), this.nextPageKey(), queryParams).subscribe({
+    this.getCardStatsObservable(this.cardType(), this.nextPageKey(), this.getPlayerStatsQueryParams()).subscribe({
       next: playerStats => this.onPlayerStatsResult(playerStats),
       error: (err) => {
         console.error(err);
         this.toastService.addToast({ type: 'error', text: this.translationService.translate(`playerCardStats.error`) });
       }
     })
+  }
+
+  private getPlayerStatsQueryParams(): GetPlayerStatsQueryParams {
+    const queryParams: GetPlayerStatsQueryParams = {
+      forMain: this.forMain(),
+    };
+
+    const currentFilters = this.currentFilters();
+    
+    const seasonFilter = currentFilters.find(item => item.type === GameListFilterType.Season);
+    if (seasonFilter) {
+      queryParams.seasonIds = (ensureNotNullish(seasonFilter.value) as SeasonId[]);
+    }
+
+    const competitionFilter = currentFilters.find(item => item.type === GameListFilterType.Competition);
+    if (competitionFilter) {
+      queryParams.competitionIds = (ensureNotNullish(competitionFilter.value) as CompetitionId[]);
+    }
+
+    return queryParams;
   }
 
   private getCardStatsObservable(cardType: CardType, nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {

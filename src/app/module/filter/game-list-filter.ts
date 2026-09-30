@@ -7,6 +7,7 @@ export function getGameListFilterTypeOptions(translationService: TranslationServ
     { id: GameListFilterType.HomeGame, name: translationService.translate(`filter.homeGame`) },
     { id: GameListFilterType.AwayGame, name: translationService.translate(`filter.awayGame`) },
     { id: GameListFilterType.Competition, name: translationService.translate(`filter.competition`) },
+    { id: GameListFilterType.Season, name: translationService.translate(`filter.season`) },
     { id: GameListFilterType.DomesticGame, name: translationService.translate(`filter.domesticGame`) },
     { id: GameListFilterType.InternationalGame, name: translationService.translate(`filter.internationalGame`) },
     { id: GameListFilterType.ComeFromBehindWin, name: translationService.translate(`filter.comeFromBehindWin`) },

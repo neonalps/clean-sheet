@@ -165,7 +165,11 @@ export class GameTableComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
 
     const currentNextPageKey = this.nextPageKey();
-    const nextPageRequestParams = isDefined(currentNextPageKey) ? { nextPageKey: currentNextPageKey } : { limit: this.pageSize(), order: this.sortOrder(), status: GameStatus.Finished };
+    const nextPageRequestParams = isDefined(currentNextPageKey) ? { nextPageKey: currentNextPageKey } : { 
+      limit: this.pageSize(), 
+      order: this.sortOrder(), 
+      status: GameStatus.Finished,
+     };
 
     const getGameTableRequest: GetGamesRequest = {
       ...this.convertGameFiltersToRequestParams(),
