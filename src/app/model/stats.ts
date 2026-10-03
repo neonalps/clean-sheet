@@ -1,7 +1,8 @@
-import { CompetitionId, SeasonId } from "../util/domain-types";
+import { CompetitionId, DateString, SeasonId } from "@src/app/util/domain-types";
 import { SmallClub } from "./club";
 import { SmallCompetition } from "./competition";
 import { DetailedGame } from "./game";
+import { Person } from "./person";
 import { Season } from "./season";
 
 export type PlayerSeasonStatsItemDto = {
@@ -90,4 +91,11 @@ export type UiPlayerStats = {
 export interface PerformanceTrend {
     score: number;
     games: DetailedGame[];
+}
+
+export interface ShirtWornBy {
+    person: Person;
+    firstWorn: DateString;
+    lastWorn: DateString;
+    wornCount: number;
 }

@@ -11,6 +11,7 @@ export type PersonId = Flavor<number, 'PersonId'>;
 export type PersonContractId = Flavor<number, 'PersonContractId'>;
 export type SeasonId = Flavor<number, 'SeasonId'>;
 export type SeasonTitleId = Flavor<number, 'SeasonTitleId'>;
+export type Shirt = Flavor<number, 'Shirt'>;
 export type ToastId = Flavor<string, 'ToastId'>;
 export type VenueId = Flavor<number, 'VenueId'>;
 export type VenueFlavorId = Flavor<number, 'VenueFlavorId'>;

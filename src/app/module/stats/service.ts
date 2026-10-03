@@ -2,8 +2,9 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { RankedPersonItem } from "@src/app/model/dashboard";
 import { PaginatedResponse, PaginationQueryParams } from "@src/app/model/pagination";
+import { ShirtWornBy } from "@src/app/model/stats";
 import { isDefined, isNotDefined } from "@src/app/util/common";
-import { ClubId, CompetitionId, SeasonId } from "@src/app/util/domain-types";
+import { ClubId, CompetitionId, SeasonId, Shirt } from "@src/app/util/domain-types";
 import { convertObjectToQueryString } from "@src/app/util/router";
 import { Nullish } from "@src/app/util/types";
 import { environment } from "@src/environments/environment";
@@ -25,12 +26,23 @@ export type GetPlayerStatsQueryParams = {
     seasonIds?: Array<SeasonId>;
 }
 
+export interface GetShirtStatsRequest {
+    shirt: Shirt;
+    sortMode?: ShirtWornBySortMode;
+}
+
+export interface GetShirtStatsResponse {
+    wornBy: Array<ShirtWornBy>;
+}
+
+export type ShirtWornBySortMode = 'temporal' | 'frequency';
+
 @Injectable({
     providedIn: 'root'
 })
 export class StatsService {
 
-    constructor(private http: HttpClient) {}
+    constructor(private readonly http: HttpClient) {}
 
     getPlayerAppearanceStats(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): Observable<PlayerStatsResponse> {
         const queryParams = this.resolveQueryParams(nextPageKey, params);
@@ -60,6 +72,12 @@ export class StatsService {
         const queryParams = this.resolveQueryParams(nextPageKey, params);
 
         return this.http.get<PlayerStatsResponse>(`${environment.apiBaseUrl}/v1/stats/player-red-cards?${convertObjectToQueryString(queryParams)}`);
+    }
+
+    getShirtStats(shirt: number, sortMode: ShirtWornBySortMode): Observable<GetShirtStatsResponse> {
+        const queryParams: GetShirtStatsRequest = { shirt, sortMode };
+        
+        return this.http.get<GetShirtStatsResponse>(`${environment.apiBaseUrl}/v1/stats/shirt?${convertObjectToQueryString(queryParams)}`);
     }
 
     private resolveQueryParams(nextPageKey: Nullish<string>, params: Nullish<GetPlayerStatsQueryParams>): GetPlayerStatsRequest {
