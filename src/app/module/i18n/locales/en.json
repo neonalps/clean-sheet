@@ -410,6 +410,7 @@
     "settings.scoreFormat": "Score format",
     "shirt.select": "Select shirt number",
     "shirtHistory.forShirt": "History for jersey {shirt}",
+    "shirtHistory.empty": "This jersey has not been worn yet",
     "suspension.redCard": "Red card",
     "suspension.yellowCards.singular": "{plural} Yellow card",
     "suspension.yellowCards.plural": "{plural} Yellow cards",

@@ -1,13 +1,14 @@
 @let isLoadingValue = isLoading();
 @let selectedShirtValue = selectedShirt();
+@let shirtWornByValue = shirtWornBy();
 <div class="p-4">
     <div>
         <app-shirt-selector [selectedShirt]="selectedShirt()" (onShirtSelected)="onShirtSelect($event)" />
     </div>
-    <div class="mt-8" *ngIf="selectedShirtValue">
+    <div class="mt-12" *ngIf="selectedShirtValue">
         <div class="bold">{{ historyText() }}</div>
     </div>
-    <div>
+    <div *ngIf="selectedShirtValue">
         <ng-container *ngIf="isLoadingValue; else loaded">
             <div class="mt-3">
                 <div class="skeleton-box-medium" style="width: 100%;"></div>
@@ -17,7 +18,28 @@
             </div>
         </ng-container>
         <ng-template #loaded>
-
+            <ng-container *ngIf="shirtWornByValue.length > 0; else emptyList">
+                @for (item of shirtWornByValue; track $index) {
+                    <div class="flex align-items-center py-1 mt-2">
+                        <div class="basis-4/5">
+                            <app-person-card [person]="item.person" />
+                        </div>
+                        <div class="basis-1/5 text-right">
+                            {{ item.wornCount }}
+                        </div>
+                    </div>
+                }
+            </ng-container>
+            <ng-template #emptyList>
+                <app-empty-state class="text-light-grey">
+                    <div icon>
+                        <div class="width-3rem">
+                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'jersey' }" />
+                        </div>
+                    </div>
+                    <div class="center mt-4" text>{{ 'shirtHistory.empty' | $t }}</div>
+                </app-empty-state>
+            </ng-template>
         </ng-template>
     </div>
 </div>

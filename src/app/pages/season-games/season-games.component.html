@@ -55,7 +55,9 @@
         <ng-template #emptySeasonGames>
             <div class="empty-state" *ngIf="visibleSeasonGamesValue.filteredCount !== 0">
                 <app-empty-state>
-                    <div class="w-1/4" icon><app-field-with-ball [color]="colorDarkGreyLighter" /></div>
+                    <div class="w-1/4" icon>
+                        <app-field-with-ball [color]="colorDarkGreyLighter" />
+                    </div>
                     <div class="center mt-4" text>{{ 'seasonGames.empty' | $t }}</div>
                 </app-empty-state>
             </div>

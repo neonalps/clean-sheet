@@ -5,11 +5,15 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { StatsService } from '@src/app/module/stats/service';
 import { Shirt } from '@src/app/util/domain-types';
 import { take } from 'rxjs';
-import { CdkDragPlaceholder } from '@angular/cdk/drag-drop';
+import { ShirtWornBy } from '@src/app/model/stats';
+import { PersonCardComponent } from '@src/app/component/person-card/person-card.component';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
+import { UiIconComponent } from '../ui-icon/icon.component';
 
 @Component({
   selector: 'app-jersey-details',
-  imports: [CommonModule, ShirtSelectorComponent],
+  imports: [CommonModule, ShirtSelectorComponent, PersonCardComponent, I18nPipe, EmptyStateComponent, UiIconComponent],
   templateUrl: './jersey-details.component.html'
 })
 export class JerseyDetailsComponent {
@@ -19,6 +23,7 @@ export class JerseyDetailsComponent {
 
   readonly isLoading = signal(false);
   readonly selectedShirt = signal<number | null>(null);
+  readonly shirtWornBy = signal<ShirtWornBy[]>([]);
   
   readonly historyText = computed(() => {
     const shirt = this.selectedShirt();
@@ -32,11 +37,12 @@ export class JerseyDetailsComponent {
 
   loadShirtStats(shirt: Shirt) {
     this.isLoading.set(true);
+    this.shirtWornBy.set([]);
     this.statsService.getShirtStats(shirt, 'temporal').pipe(
       take(1),
     ).subscribe({
       next: response => {
-        console.log(response.wornBy);
+        this.shirtWornBy.set(response.wornBy);
         this.isLoading.set(false);
       },
       error: err => {
