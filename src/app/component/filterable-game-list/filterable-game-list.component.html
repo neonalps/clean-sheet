@@ -1,6 +1,6 @@
 <div>
     <div class="mb-4">
-        <app-collapsible [toggle$]="toggle$">
+        <app-collapsible [isOpen]="filtersExapnded()" (onClicked)="triggerToggle()">
             <ng-container header>
                 <div class="flex align-items-center pointer relative uppercase text-sm text-light-grey" [style.top]="'-3px'" (click)="triggerToggle()">
                     <div class="mr-2">

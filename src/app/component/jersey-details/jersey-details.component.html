@@ -20,14 +20,7 @@
         <ng-template #loaded>
             <ng-container *ngIf="shirtWornByValue.length > 0; else emptyList">
                 @for (item of shirtWornByValue; track $index) {
-                    <div class="flex align-items-center py-1 mt-2">
-                        <div class="basis-4/5">
-                            <app-person-card [person]="item.person" />
-                        </div>
-                        <div class="basis-1/5 text-right">
-                            {{ item.wornCount }}
-                        </div>
-                    </div>
+                    <app-shirt-worn-by [shirtWornBy]="item" />
                 }
             </ng-container>
             <ng-template #emptyList>

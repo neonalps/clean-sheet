@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { BasicGame, Tendency } from '@src/app/model/game';
-import { Subject } from 'rxjs';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
 import { GameRecord, GameRecordComponent } from "@src/app/component/game-record/game-record.component";
@@ -43,8 +42,7 @@ export class FilterableGameListComponent implements OnInit {
   readonly homeAwayChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly tendencyChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly visibleGames = signal<BasicGame[]>([]);
-
-  readonly toggle$ = new Subject<void>();
+  readonly filtersExapnded = signal(false);
 
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
@@ -213,7 +211,7 @@ export class FilterableGameListComponent implements OnInit {
   }
 
   triggerToggle() {
-    this.toggle$.next();
+    this.filtersExapnded.update(current => !current);
   }
 
   private updateUi() {

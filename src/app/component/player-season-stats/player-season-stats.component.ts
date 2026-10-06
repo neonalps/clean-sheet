@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, input, OnInit, output, signal } from '@angular/core';
 import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible.component";
 import { CompetitionStats, StatsPlayerCompetitionComponent } from "@src/app/component/stats-player-competition/stats-player-competition.component";
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { Season } from '@src/app/model/season';
 import { PlayerBaseStats } from '@src/app/model/stats';
 import { SeasonId } from '@src/app/util/domain-types';
-import { Subject } from 'rxjs';
 
 export type StatsBySeasonAndCompetition = {
   season: Season;
@@ -27,42 +26,42 @@ export type SeasonTotalClickedEvent = {
 @Component({
   selector: 'app-player-season-stats',
   imports: [CommonModule, CollapsibleComponent, StatsPlayerCompetitionComponent],
-  templateUrl: './player-season-stats.component.html',
-  styleUrl: './player-season-stats.component.css'
+  templateUrl: './player-season-stats.component.html'
 })
-export class PlayerSeasonStatsComponent implements OnDestroy {
+export class PlayerSeasonStatsComponent implements OnInit {
 
-  @Input() seasonStatsItem!: StatsBySeasonAndCompetition;
-  @Input() isLastItem = false;
+  readonly seasonStatsItem = input.required<StatsBySeasonAndCompetition>();
+  readonly isLastItem = input(false);
 
-  @Output() onSeasonCompetitionClicked = new EventEmitter<SeasonCompetitionClickedEvent>();
-  @Output() onSeasonTotalClicked = new EventEmitter<SeasonTotalClickedEvent>();
+  readonly onSeasonCompetitionClicked = output<SeasonCompetitionClickedEvent>();
+  readonly onSeasonTotalClicked = output<SeasonTotalClickedEvent>();
 
-  readonly toggle$ = new Subject<void>();
+  readonly detailsOpen = signal(false);
 
-  private readonly destroy$ = new Subject<void>();
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngOnInit(): void {
+    this.detailsOpen.set(this.seasonStatsItem().season.isCurrent === true);
   }
 
   seasonCompetitionClicked(seasonId: SeasonId, filterOptions: GamePlayedFilterOptions) {
-    this.onSeasonCompetitionClicked.next({
+    this.onSeasonCompetitionClicked.emit({
       seasonId: seasonId,
       filterOptions: filterOptions,
     });
   }
 
   seasonTotalClicked(seasonId: SeasonId, filterItemType: keyof GamePlayedFilterOptions) {
-    this.onSeasonTotalClicked.next({
+    this.onSeasonTotalClicked.emit({
       seasonId: seasonId,
       filterItemType: filterItemType,
     });
   }
 
   triggerToggle() {
-    this.toggle$.next();
+    this.toggle();
+  }
+
+  toggle() {
+    this.detailsOpen.update(current => !current);
   }
 
 }

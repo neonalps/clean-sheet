@@ -6,14 +6,14 @@ import { StatsService } from '@src/app/module/stats/service';
 import { Shirt } from '@src/app/util/domain-types';
 import { take } from 'rxjs';
 import { ShirtWornBy } from '@src/app/model/stats';
-import { PersonCardComponent } from '@src/app/component/person-card/person-card.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
-import { UiIconComponent } from '../ui-icon/icon.component';
+import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
+import { ShirtWornByComponent } from '@src/app/component/shirt-worn-by/shirt-worn-by.component';
 
 @Component({
   selector: 'app-jersey-details',
-  imports: [CommonModule, ShirtSelectorComponent, PersonCardComponent, I18nPipe, EmptyStateComponent, UiIconComponent],
+  imports: [CommonModule, ShirtSelectorComponent, I18nPipe, EmptyStateComponent, UiIconComponent, ShirtWornByComponent],
   templateUrl: './jersey-details.component.html'
 })
 export class JerseyDetailsComponent {

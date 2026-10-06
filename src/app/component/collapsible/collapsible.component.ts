@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { ChevronRightComponent } from "@src/app/icon/chevron-right/chevron-right.component";
-import { Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-collapsible',
@@ -9,59 +8,24 @@ import { Observable, Subject, takeUntil } from 'rxjs';
   templateUrl: './collapsible.component.html',
   styleUrl: './collapsible.component.css'
 })
-export class CollapsibleComponent implements OnInit, AfterViewInit {
+export class CollapsibleComponent implements AfterViewInit {
+  
+  readonly contentElement = viewChild.required<ElementRef<HTMLElement>>('content');
 
-  @Input() initiallyOpen = false;
-  @Input() toggle$!: Observable<void>;
+  readonly isOpen = input.required<boolean>();
 
-  @ViewChild('content') contentEl!: ElementRef;
+  readonly elementMaxHeight = signal<string>('');
 
-  isOpen = signal<boolean>(true);
+  readonly onClicked = output<void>();
 
-  elementMaxHeight$ = new Subject<string>();
-  private hasEmitted = false;
-
-  private readonly destroy$ = new Subject<void>();
+  constructor() {
+    effect(() => {
+      this.elementMaxHeight.set(this.isOpen() ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
+    });
+  }
 
   ngAfterViewInit(): void {
-    this.isOpen.set(this.initiallyOpen);
-
-    if (!this.initiallyOpen) {
-      this.hasEmitted = true;
-      this.elementMaxHeight$.next('0px');
-    }
-  }
-
-  ngOnInit(): void {
-    this.toggle$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.toggle();
-    })
-  }
-  
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  toggle() {
-    this.isOpen.set(!this.isOpen());
-
-    if (this.isOpen()) {
-      this.hasEmitted = true;
-      return this.elementMaxHeight$.next(`${this.contentEl.nativeElement.scrollHeight}px`);
-    } else {
-      // if the collapsible was initially opened and no value has been emitted yet, we must first set the value to the current scroll height before setting it to zero to trigger the animation
-      if (!this.hasEmitted) {
-        this.hasEmitted = true;
-        this.elementMaxHeight$.next(`${this.contentEl.nativeElement.scrollHeight}px`);
-        setTimeout(() => {
-            this.elementMaxHeight$.next('0px');
-        }, 0);
-      } else {
-        this.hasEmitted = true;
-        this.elementMaxHeight$.next('0px');
-      }
-    }
+    this.elementMaxHeight.set(this.isOpen() ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
   }
 
 }

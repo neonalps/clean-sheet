@@ -1,7 +1,7 @@
 <div>
     <div class="flex align-items-center">
         <div class="mr-2 pointer">
-            <div class="width-xs transition-transform" [ngClass]="{ 'rotate-90': this.isOpen() }" (click)="toggle()">
+            <div class="width-xs transition-transform" [ngClass]="{ 'rotate-90': isOpen() }" (click)="this.onClicked.emit()">
                 <app-chevron-right />
             </div>
         </div>
@@ -9,7 +9,7 @@
             <ng-content select="[header]"></ng-content>
         </div>
     </div>
-    <div #content class="collapsible-content" [style.max-height]="elementMaxHeight$ | async">
+    <div #content class="collapsible-content" [style.max-height]="elementMaxHeight()">
         <ng-content select="[content]"></ng-content>
     </div>
 </div>
