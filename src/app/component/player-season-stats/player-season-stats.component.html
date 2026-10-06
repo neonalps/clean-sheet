@@ -22,7 +22,7 @@
             </div>
         </ng-container>
         <ng-container content>
-            <div class="ml-2" [ngClass]="{ 'mb-4': !isLastItem }">
+            <div class="ml-2" [ngClass]="{ 'mb-4': !isLastItem() }">
                 <app-stats-player-competition [competitionStats]="seasonStatsItemValue.competitionStats" (filterOptionsSelected)="seasonCompetitionClicked(seasonStatsItemValue.season.id, $event)" />
             </div>
         </ng-container>

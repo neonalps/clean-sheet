@@ -20,12 +20,16 @@ export class CollapsibleComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      this.elementMaxHeight.set(this.isOpen() ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
+      this.updateElementMaxHeight(this.isOpen());
     });
   }
 
   ngAfterViewInit(): void {
-    this.elementMaxHeight.set(this.isOpen() ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
+    this.updateElementMaxHeight(this.isOpen());
+  }
+
+  private updateElementMaxHeight(open: boolean): void {
+    this.elementMaxHeight.set(open ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
   }
 
 }
