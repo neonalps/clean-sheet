@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 import { CompetitionResponse } from '@src/app/model/competition';
 import { CompetitionService } from '@src/app/module/competition/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -11,9 +13,8 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-competition',
-  imports: [],
-  templateUrl: './competition.component.html',
-  styleUrl: './competition.component.css'
+  imports: [CommonModule, UiIconComponent],
+  templateUrl: './competition.component.html'
 })
 export class CompetitionComponent implements OnDestroy {
 
@@ -60,7 +61,6 @@ export class CompetitionComponent implements OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe({
       next: competitionResponse => {
-        console.log('comp', competitionResponse)
         this.onCompetitionResolved(competitionResponse);
         this.isLoading.set(false);
       },

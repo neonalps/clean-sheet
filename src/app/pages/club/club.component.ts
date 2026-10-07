@@ -20,8 +20,7 @@ import { VenueDetailsComponent } from "@src/app/component/venue-details/venue-de
 @Component({
   selector: 'app-club',
   imports: [CommonModule, UiIconComponent, ExternalLinksComponent, I18nPipe, FilterableGameListComponent, VenueDetailsComponent],
-  templateUrl: './club.component.html',
-  styleUrl: './club.component.css'
+  templateUrl: './club.component.html'
 })
 export class ClubComponent implements OnDestroy {
 

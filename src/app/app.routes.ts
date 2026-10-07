@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { SeasonGamesComponent } from './pages/season-games/season-games.component';
 import { GameComponent } from './pages/game/game.component';
-import { PATH_PARAM_CLUB_ID, PATH_PARAM_GAME_ID, PATH_PARAM_OAUTH_PROVIDER, PATH_PARAM_PERSON_ID, PATH_PARAM_RANKING_STATS_TYPE, PATH_PARAM_SEASON_ID, PATH_PARAM_VENUE_ID } from './util/router';
+import { PATH_PARAM_CLUB_ID, PATH_PARAM_COMPETITION_ID, PATH_PARAM_GAME_ID, PATH_PARAM_OAUTH_PROVIDER, PATH_PARAM_PERSON_ID, PATH_PARAM_RANKING_STATS_TYPE, PATH_PARAM_SEASON_ID, PATH_PARAM_VENUE_ID } from './util/router';
 import { PersonComponent } from './pages/person/person.component';
 import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -79,7 +79,7 @@ export const routes: Routes = [
         canActivate: [loggedInGuard],
     },
     { 
-        path: `competition/:${PATH_PARAM_VENUE_ID}`, 
+        path: `competition/:${PATH_PARAM_COMPETITION_ID}`, 
         component: CompetitionComponent,
         canActivate: [loggedInGuard],
     },
