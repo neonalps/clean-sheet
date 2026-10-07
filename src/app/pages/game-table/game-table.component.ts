@@ -92,7 +92,6 @@ export class GameTableComponent implements OnInit, OnDestroy {
     const updatedFilters = [...filters];
 
     if (previousFilters.length === updatedFilters.length && previousFilters.every(item => updatedFilters.some(innerItem => innerItem.id === item.id && item.value === innerItem.value))) {
-      console.log('filters are the same, no need to fetch again');
       return;
     }
 
@@ -148,6 +147,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
   private resetPagination() {
     this.currentPage.set(-1);
     this.nextPageKey.set(null);
+    this.hasNextPage.set(true);
     this.games.set([]);
   }
 
@@ -211,6 +211,9 @@ export class GameTableComponent implements OnInit, OnDestroy {
           break;
         case GameListFilterType.Competition:
           requestPartial.competitionId = (ensureNotNullish(filter.value) as string[]).join(',');
+          break;
+        case GameListFilterType.Season:
+          requestPartial.seasonId = (ensureNotNullish(filter.value) as string[]).join(',');
           break;
         case GameListFilterType.AccountAttended:
           requestPartial.hasAccountAttended = true;

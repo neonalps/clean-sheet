@@ -24,27 +24,27 @@
                 <div class="basis-1/15 flex align-items-center justify-content-end">
                     <div class="text-sm">{{ (currentPageValue * pageSizeValue) + $index + 1 }}</div>
                 </div>
-                <div class="basis-1/12 flex align-items-center justify-content-center">
-                    <div class="width-xs relative">
+                <div class="basis-1/10 flex align-items-center justify-content-end pr-2">
+                    <div class="width-xs relative top-neg-1">
                         <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': game.competition.iconSmall! }" />
                     </div>
                 </div>
-                <div class="basis-1/7 flex align-items-center justify-content-end text-sm">
+                <div class="basis-1/5 flex align-items-center justify-content-center text-sm">
                     <div class="pr-2">{{ game.kickoff | date:'dd.MM.yy' }}</div>
                 </div>
-                <div class="basis-1/3 flex text-sm align-items-center">
-                    <div class="width-xs mr-2 relative top-1" *ngIf="game.opponent.iconSmall">
+                <div class="basis-2/5 flex text-sm align-items-center">
+                    <div class="width-xs mr-2 relative top-neg-1" *ngIf="game.opponent.iconSmall">
                         <app-ui-icon [descriptor]="{ 'type': 'club', 'content': game.opponent.iconSmall }" />
                     </div>
                     <div>
                         {{ game.opponent.shortName }}
                     </div>
                 </div>
-                <div class="basis-1/8 flex align-items-center">
+                <div class="basis-1/7 flex align-items-center">
                     <div class="text-sm px-1 py-1/2 rounded-md center bold min-w-32" [ngClass]="getResultTendencyClass(game)">{{ getGameScoreBeforePso(game) }}</div>
                 </div>
                 <div class="flex align-items-center">
-                    <div *ngIf="game.attended">
+                    <div *ngIf="game.attended" [ngClass]="{ 'mr-2': game.favourite }">
                         <div class="width-xs relative top-2">
                             <app-eye-icon />
                         </div>

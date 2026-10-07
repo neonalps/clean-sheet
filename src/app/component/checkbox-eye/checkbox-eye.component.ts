@@ -12,12 +12,12 @@ import { EyeSlashIconComponent } from "@src/app/icon/eye-slash/eye-slash.compone
 })
 export class CheckboxEyeComponent {
 
-  checked = input.required<boolean>();
-  color = input(KEYWORD_CURRENT_COLOR);
-  disabled = input(false);
-  displayText = input<string | null>(null);
+  readonly checked = input.required<boolean>();
+  readonly color = input(KEYWORD_CURRENT_COLOR);
+  readonly disabled = input(false);
+  readonly displayText = input<string | null>(null);
   
-  onClick = output<void>();
+  readonly onClick = output<void>();
 
   onClicked() {
     if (this.disabled()) {

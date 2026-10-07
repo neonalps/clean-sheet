@@ -1,7 +1,7 @@
 <div>
     <div class="flex align-items-center">
         <div class="mr-2 pointer">
-            <div class="width-xs transition-transform" [ngClass]="{ 'rotate-90': isOpen() }" (click)="this.onClicked.emit()">
+            <div class="width-xs transition-transform" [ngClass]="effectiveChevronContainerClasses()" (click)="this.onClicked.emit()">
                 <app-chevron-right />
             </div>
         </div>

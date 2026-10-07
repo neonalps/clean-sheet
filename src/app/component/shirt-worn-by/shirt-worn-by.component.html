@@ -1,6 +1,6 @@
 @let shirtWornByValue = shirtWornBy();
-<app-collapsible [isOpen]="detailsOpen()" (onClicked)="toggle()">
-    <div header>
+<app-collapsible [isOpen]="detailsOpen()" [chevronContainerClasses]="'relative top-9'" (onClicked)="toggle()">
+    <div header (click)="toggle()" class="pointer">
         <div class="flex align-items-center py-1 mt-2">
             <div class="basis-4/5">
                 <app-person-card [person]="shirtWornByValue.person" />
@@ -11,6 +11,19 @@
         </div>
     </div>
     <div content>
-        deetz
+        <div class="mt-2 flex justify-content-between">
+            <div class="basis-1/3 flex flex-col align-items-center justify-content-center p-2 mx-1 rounded-lg">
+                <div class="text-sm">
+                    <span>{{ shirtWornByValue.firstWorn | date:'MMM d yyyy' }}</span>
+                </div>
+                <div class="flex-grow flex align-items-center mt-2 text-xs center text-light-grey-darker">{{ 'shirtHistory.firstWorn' | $t }}</div>
+            </div>
+            <div class="basis-1/3 flex flex-col align-items-center justify-content-center p-2 mx-1 rounded-lg">
+                <div class="text-sm">
+                    <span>{{ shirtWornByValue.lastWorn | date:'MMM d yyyy' }}</span>
+                </div>
+                <div class="flex-grow flex align-items-center mt-2 text-xs center text-light-grey-darker">{{ 'shirtHistory.lastWorn' | $t }}</div>
+            </div>
+        </div>
     </div>
 </app-collapsible>

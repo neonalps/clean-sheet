@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { ChevronRightComponent } from "@src/app/icon/chevron-right/chevron-right.component";
 
 @Component({
@@ -13,8 +13,16 @@ export class CollapsibleComponent implements AfterViewInit {
   readonly contentElement = viewChild.required<ElementRef<HTMLElement>>('content');
 
   readonly isOpen = input.required<boolean>();
+  readonly chevronContainerClasses = input<string>();
 
   readonly elementMaxHeight = signal<string>('');
+
+  readonly effectiveChevronContainerClasses = computed(() => {
+    const currentIsOpen = this.isOpen();
+    const externalContainerClasses = this.chevronContainerClasses();
+
+    return [currentIsOpen ? 'rotate-90' : '', externalContainerClasses].join(' ');
+  });
 
   readonly onClicked = output<void>();
 
@@ -29,7 +37,7 @@ export class CollapsibleComponent implements AfterViewInit {
   }
 
   private updateElementMaxHeight(open: boolean): void {
-    this.elementMaxHeight.set(open ? `${this.contentElement().nativeElement.scrollHeight}px` : '0px');
+    this.elementMaxHeight.set(open ? `${this.contentElement().nativeElement.scrollHeight}px` : `0px`);
   }
 
 }
