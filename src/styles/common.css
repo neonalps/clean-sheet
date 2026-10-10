@@ -210,6 +210,10 @@
     flex-basis: 14.2856%;
 }
 
+.basis-5\/14 {
+    flex-basis: 35.714%;
+}
+
 .basis-2\/5 {
     flex-basis: 40%;
 }

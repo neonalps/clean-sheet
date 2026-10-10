@@ -32,7 +32,7 @@
                 <div class="basis-1/5 flex align-items-center justify-content-center text-sm">
                     <div class="pr-2">{{ game.kickoff | date:'dd.MM.yy' }}</div>
                 </div>
-                <div class="basis-2/5 flex text-sm align-items-center">
+                <div class="basis-5/14 flex text-sm align-items-center">
                     <div class="width-xs mr-2 relative top-neg-1" *ngIf="game.opponent.iconSmall">
                         <app-ui-icon [descriptor]="{ 'type': 'club', 'content': game.opponent.iconSmall }" />
                     </div>

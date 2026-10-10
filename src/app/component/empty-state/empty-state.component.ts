@@ -1,13 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-empty-state',
   imports: [],
-  templateUrl: './empty-state.component.html',
-  styleUrl: './empty-state.component.css'
+  templateUrl: './empty-state.component.html'
 })
-export class EmptyStateComponent {
-
-  @Input() text!: string;
-
-}
+export class EmptyStateComponent {}
