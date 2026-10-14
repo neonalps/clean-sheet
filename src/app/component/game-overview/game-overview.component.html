@@ -1,18 +1,18 @@
-<div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg mt-3 pointer" [ngClass]="getDynamicContainerClasses()">
+<div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color p-2 rounded-lg mt-3 pointer" [ngClass]="dynamicContainerClasses()">
     <div class="flex justify-content-between text-xs text-light-grey mb-4">
-        <div>{{ getDateText() }}</div>
-        <div>{{ getCompetitionName() }}</div>
+        <div>{{ dateText() }}</div>
+        <div *ngIf="showCompetitionName()">{{ competitionName() }}</div>
     </div>
     <div class="flex align-items-center justify-content-center">
         <div class="basis-3/7 flex justify-content-end">
-            <app-small-club [club]="getHomeTeam()" [iconPosition]="'right'" />
+            <app-small-club [club]="homeTeam()" [iconPosition]="'right'" />
         </div>
         <div class="basis-1/8 mx-2">
-            <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="getResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
-            <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
+            <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="resultTendencyClass()">{{ scoreBeforePso() }}</div>
+            <div class="text-xs mt-2 center" *ngIf="hasExtendedPlay()">{{ extendedPlayText() }}</div>
         </div>
         <div class="basis-3/7">
-            <app-small-club [club]="getAwayTeam()" />
+            <app-small-club [club]="awayTeam()" />
         </div>
     </div>
 </div>

@@ -6,8 +6,6 @@ import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-grou
 import { GameRecord, GameRecordComponent } from "@src/app/component/game-record/game-record.component";
 import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
-import { SmallClub } from '@src/app/model/club';
-import { environment } from '@src/environments/environment';
 import { CompetitionId } from '@src/app/util/domain-types';
 import { HomeAwayFilter } from '@src/app/util/filter';
 import { SmallCompetition } from '@src/app/model/competition';
@@ -36,7 +34,6 @@ export class FilterableGameListComponent implements OnInit {
   readonly homeAwayFiltersVisible = signal(false);
   readonly tendencyFiltersVisible = signal(false);
 
-  readonly mainClub: SmallClub = environment.mainClub;
   readonly gameRecord = signal<GameRecord>({ w: 0, d: 0, l: 0 });
   readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly homeAwayChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });

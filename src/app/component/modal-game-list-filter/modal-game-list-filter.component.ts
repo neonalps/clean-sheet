@@ -20,13 +20,13 @@ import { environment } from '@src/environments/environment';
 export type FilterGameListPayload = {
   availableFilterTypeOptions: SelectOption[];
   gameListFilterItems: GameListFilterItem[];
+  showCurrentLeagueSeasonQuickFilter?: boolean;
 }
 
 @Component({
   selector: 'app-modal-game-list-filter',
   imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent, ChipGroupComponent],
-  templateUrl: './modal-game-list-filter.component.html',
-  styleUrl: './modal-game-list-filter.component.css'
+  templateUrl: './modal-game-list-filter.component.html'
 })
 export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
@@ -38,13 +38,29 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
   readonly currentFilterTypeOptions = signal<SelectOption[]>([]);
   readonly currentFilterItems = signal<GameListFilterItem[]>([]);
 
+  readonly quickFilterVisible = signal(false);
   readonly quickFilterChipGroup = signal<ChipGroupInput | null>(null);
   readonly quickFilterItems = signal<GameListFilterItem[]>([]);
 
   readonly competitionOptions = signal<SelectOption[]>([]);
   readonly seasonOptions = signal<SelectOption[]>([]);
+  readonly tendencyOptions = signal<SelectOption[]>([
+    {
+      id: 'w',
+      name: this.translationService.translate('tendency.win'),
+    },
+    {
+      id: 'd',
+      name: this.translationService.translate('tendency.draw'),
+    },
+    {
+      id: 'l',
+      name: this.translationService.translate('tendency.loss'),
+    }
+  ]);
   readonly selectedCompetitions = signal<OptionId[]>([]);
   readonly selectedSeasons = signal<OptionId[]>([]);
+  readonly selectedTendencies = signal<OptionId[]>([]);
   readonly yesNoChipGroupInput = signal<ChipGroupInput>({
     mode: 'single',
     chips: [{
@@ -77,6 +93,13 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
         if (seasonFilterItem) {
           this.selectedSeasons.set(ensureNotNullish(seasonFilterItem.value) as OptionId[]);
         }
+
+        const tendencyFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Tendency);
+        if (tendencyFilterItem) {
+          this.selectedTendencies.set(ensureNotNullish(tendencyFilterItem.value) as OptionId[]);
+        }
+
+        this.quickFilterVisible.set(payload.showCurrentLeagueSeasonQuickFilter === true);
       });
 
     const competition$ = this.competitionService.getOrderedTopLevelCompetitionsFromCache().pipe(
@@ -185,6 +208,20 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     this.onFilterItemChange({
       ...seasonFilterItem,
       value: ensureNotNullish(this.selectedSeasons()),
+    });
+  }
+
+  onTendencySelectionChanged(selectedTendencies: OptionId[]) {
+    this.selectedTendencies.set(selectedTendencies);
+
+    const tendencyFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Tendency);
+    if (!tendencyFilterItem) {
+      return;
+    }
+
+    this.onFilterItemChange({
+      ...tendencyFilterItem,
+      value: ensureNotNullish(this.selectedTendencies()),
     });
   }
 

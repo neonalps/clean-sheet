@@ -8,7 +8,6 @@ import { BehaviorSubject, combineLatest, filter, map, Observable, of, Subject, t
 import { SeasonGamesService } from '@src/app/module/season-games/service';
 import { DetailedGame, GameStatus } from '@src/app/model/game';
 import { GameOverviewComponent } from '@src/app/component/game-overview/game-overview.component';
-import { SmallClub } from '@src/app/model/club';
 import { SeasonSelectComponent } from '@src/app/component/season-select/season-select.component';
 import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -16,7 +15,6 @@ import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.
 import { navigateToGame, navigateToSeasonGames, PATH_PARAM_SEASON_ID } from '@src/app/util/router';
 import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
 import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
-import { environment } from '@src/environments/environment';
 import { ModalService } from '@src/app/module/modal/service';
 import { FilterGameListPayload } from '@src/app/component/modal-game-list-filter/modal-game-list-filter.component';
 import { FilterService, GameListFilterItem } from '@src/app/module/filter/service';
@@ -36,8 +34,7 @@ export type VisibleSeasonGames = {
 @Component({
   selector: 'app-season-games',
   imports: [GameOverviewComponent, CommonModule, SeasonSelectComponent, I18nPipe, EmptyStateComponent, FieldWithBallComponent, FilterButtonComponent],
-  templateUrl: './season-games.component.html',
-  styleUrl: './season-games.component.css'
+  templateUrl: './season-games.component.html'
 })
 export class SeasonGamesComponent implements OnInit, OnDestroy {
 
@@ -50,8 +47,6 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
   readonly isLoading = signal(true);
 
   private seasons = signal<Season[]>([]);
-
-  readonly mainClub: SmallClub = environment.mainClub;
 
   readonly colorDarkGreyLighter = COLOR_DARK_GREY_LIGHTER;
   readonly selectedSeason = signal<Season | null>(null);

@@ -78,6 +78,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
     this.modalService.showFilterGameListModal({
       availableFilterTypeOptions: getGameListFilterTypeOptions(this.translationService),
       gameListFilterItems: this.gameListFilters(),
+      showCurrentLeagueSeasonQuickFilter: true,
     }).pipe(
         filter(event => event.type === 'confirm'),
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
@@ -214,6 +215,9 @@ export class GameTableComponent implements OnInit, OnDestroy {
           break;
         case GameListFilterType.Season:
           requestPartial.seasonId = (ensureNotNullish(filter.value) as string[]).join(',');
+          break;
+        case GameListFilterType.Tendency:
+          requestPartial.tendency = (ensureNotNullish(filter.value) as string[]).join(',');
           break;
         case GameListFilterType.AccountAttended:
           requestPartial.hasAccountAttended = true;

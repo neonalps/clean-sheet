@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CreateGame, DetailedGame, GameStatus, ImportGameResponse, Tendency, UpdateGame, UserBasicGame } from '@src/app/model/game';
+import { CreateGame, DetailedGame, GameStatus, ImportGameResponse, UpdateGame, UserBasicGame } from '@src/app/model/game';
 import { PaginatedResponse, PaginationQueryParams } from '@src/app/model/pagination';
 import { GameId } from '@src/app/util/domain-types';
 import { convertDtoToQueryString } from '@src/app/util/router';
@@ -11,7 +11,7 @@ export interface GetGamesRequest extends PaginationQueryParams {
     competitionId?: string;
     opponentId?: string;
     seasonId?: string;
-    tendency?: Tendency;
+    tendency?: string;
     status?: GameStatus;
     isHomeGame?: boolean;
     isNeutralGround?: boolean;

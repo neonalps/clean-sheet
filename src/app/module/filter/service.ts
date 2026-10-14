@@ -19,7 +19,7 @@ export enum GameListFilterType {
     LossAfterLead = 'lossAfterLead',
     LossInInjuryTime = 'lossInInjuryTime',
     WinInInjuryTime = 'winInInjuryTime',
-    Tendency = 'tedency',
+    Tendency = 'tendency',
     Season = 'season',
     AccountAttended = 'accountAttended',
     AccountStarred = 'accountStarred',
@@ -72,7 +72,7 @@ export class FilterService {
                     filteredResult = filteredResult.filter(item => this.isInCompetition(item, ensureNotNullish(filter.value) as CompetitionId[]));
                     break;
                 case GameListFilterType.Tendency:
-                    // TODO implement
+                    filteredResult = filteredResult.filter(item => this.hasTendency(item, ensureNotNullish(filter.value) as Tendency[]));
                     break;
                 case GameListFilterType.AccountAttended:
                     // TODO implement
@@ -89,10 +89,6 @@ export class FilterService {
         }
 
         return filteredResult;
-    }
-
-    private isTendency(game: DetailedGame, tendency: Tendency): boolean {
-        return game.resultTendency === tendency;
     }
 
     private isHomeGame(game: DetailedGame, isHome: boolean): boolean {
@@ -117,6 +113,10 @@ export class FilterService {
 
     private isInCompetition(game: DetailedGame, competitionIds: CompetitionId[]): boolean {
         return competitionIds.includes(game.competition.id);
+    }
+
+    private hasTendency(game: DetailedGame, tendencies: Tendency[]): boolean {
+        return tendencies.includes(game.resultTendency);
     }
 
     private isComeFromBehindWin(game: DetailedGame, behindByAtLeast = 1): boolean {

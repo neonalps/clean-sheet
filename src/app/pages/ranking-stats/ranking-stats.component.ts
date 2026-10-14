@@ -126,6 +126,7 @@ export class RankingStatsComponent {
     this.modalService.showFilterGameListModal({
       availableFilterTypeOptions: getPlayerStatsFilterTypeOptions(this.translationService),
       gameListFilterItems: this.currentFilters(),
+      showCurrentLeagueSeasonQuickFilter: true,
     }).pipe(
         filter(event => event.type === 'confirm'),
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),

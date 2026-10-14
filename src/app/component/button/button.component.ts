@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { assertUnreachable } from '@src/app/util/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
@@ -14,26 +14,23 @@ export type ButtonType = 'success' | 'danger' | 'secondary' | 'action' | 'ghost'
 })
 export class ButtonComponent {
 
-  @Input() buttonType!: ButtonType;
-  @Input() icon?: UiIconDescriptor;
-  @Input() iconRight?: UiIconDescriptor;
-  @Input() text?: string;
-
+  readonly buttonType = input.required<ButtonType>();
+  readonly icon = input<UiIconDescriptor>();
+  readonly iconRight = input<UiIconDescriptor>();
+  readonly text = input<string>();
   readonly textClasses = input<string>();
-
-  @Output() onClicked = new EventEmitter<void>();
-
+  
   readonly enabled = input<boolean>(true);
   readonly iconOnly = input(false);
 
-  onClick() {
-    this.onClicked.next();
-  }
+  readonly onClicked = output<void>();
 
-  getDynamicClasses(): string[] {
+  readonly dynamicClasses = computed(() => {
+    const buttonType = this.buttonType();
+
     const dynamic: string[] = [];
 
-    switch (this.buttonType) {
+    switch (buttonType) {
       case 'success':
         dynamic.push('button-success');
         break;
@@ -53,7 +50,7 @@ export class ButtonComponent {
         dynamic.push('button-info');
         break;
       default:
-        assertUnreachable(this.buttonType);
+        assertUnreachable(buttonType);
     }
 
     if (!this.enabled()) {
@@ -65,6 +62,10 @@ export class ButtonComponent {
     }
 
     return dynamic;
+  });
+
+  onClick() {
+    this.onClicked.emit();
   }
 
 }

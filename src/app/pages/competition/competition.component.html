@@ -30,12 +30,15 @@
         </div>
     </div>
     <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8" *ngIf="titlesValue.length > 0">
-        <div class="page-title mb-6">
+        <div class="page-title mb-6 flex align-items-center justify-content-between">
             <div>{{ 'competition.titles' | $t }}</div>
+            <div class="mr-3">{{ titlesValue.length }}<span class="inline-block ml-2">🏆</span></div>
         </div>
         <div>
             @for (title of titlesValue; track title.id) {
-                <app-competition-title [competitionTitle]="title" />
+                <div class="pt-2 mb-4 last:mb-0" (click)="triggerNavigateToGame(title.victoryGame)">
+                    <app-competition-title [competitionTitle]="title" />
+                </div>
             }
         </div>
     </div>

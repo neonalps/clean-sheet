@@ -41,13 +41,13 @@
             <div #scrolling class="mb-8">
                 <div *ngIf="visibleSeasonGamesValue.past.length > 0">
                     @for (pastSeasonGame of visibleSeasonGamesValue.past; track pastSeasonGame.id) {
-                        <app-game-overview [game]="pastSeasonGame" [mainClub]="mainClub" (click)="triggerNavigateToGame(pastSeasonGame)" />
+                        <app-game-overview [game]="pastSeasonGame" (click)="triggerNavigateToGame(pastSeasonGame)" />
                     }
                 </div>
                 <div *ngIf="visibleSeasonGamesValue.upcoming.length > 0" #upcomingGamesContainer>
                     <div class="text-sm text-light-grey mt-6">{{ 'games.upcoming' | $t }}</div>
                     @for (upcomingGame of visibleSeasonGamesValue.upcoming; track upcomingGame.id) {
-                        <app-game-overview [game]="upcomingGame" [mainClub]="mainClub" (click)="triggerNavigateToGame(upcomingGame)" />
+                        <app-game-overview [game]="upcomingGame" (click)="triggerNavigateToGame(upcomingGame)" />
                     }
                 </div>
             </div>

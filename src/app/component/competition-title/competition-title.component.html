@@ -1,4 +1,8 @@
 @let competitionTitleValue = competitionTitle();
-<div class="flex align-items-center">
-    <div>{{ competitionTitleValue.season.name }}</div>
+@let victoryGameValue = victoryGame();
+<div>
+    <div class="bold">{{ competitionTitleValue.season.name }}</div>
+    <div *ngIf="victoryGameValue">
+        <app-game-overview [game]="victoryGameValue" [showCompetitionName]="false" [showYear]="true" />
+    </div>
 </div>

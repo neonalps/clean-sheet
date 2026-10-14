@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
@@ -8,98 +8,93 @@ import { isDefined, processTranslationPlaceholders } from '@src/app/util/common'
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getNumberOfDaysBetween } from '@src/app/util/date';
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
+import { environment } from '@src/environments/environment';
 
 @Component({
   selector: 'app-game-overview',
   imports: [CommonModule, SmallClubComponent],
-  templateUrl: './game-overview.component.html',
-  styleUrl: './game-overview.component.css'
+  templateUrl: './game-overview.component.html'
 })
 export class GameOverviewComponent {
 
-  @Input() game!: BasicGame;
-  @Input() mainClub!: SmallClub;
-  @Input() showYear = false;
-
+  private readonly mainClub = environment.mainClub;
   private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);
 
-  getHomeTeam(): SmallClub {
-    return this.game.isHomeGame ? this.mainClub : this.game.opponent;
-  }
+  readonly game = input.required<BasicGame>();
+  readonly showCompetitionName = input(true);
+  readonly showYear = input(false);
 
-  getAwayTeam(): SmallClub {
-    return this.game.isHomeGame ? this.game.opponent : this.mainClub;
-  }
+  readonly homeTeam = computed<SmallClub>(() => {
+    const game = this.game();
+    return game.isHomeGame ? this.mainClub : game.opponent;
+  });
 
-  getCompetitionName(): string {
+  readonly awayTeam = computed<SmallClub>(() => {
+    const game = this.game();
+    return game.isHomeGame ? game.opponent : this.mainClub;
+  });
+
+  readonly competitionName = computed<string>(() => {
+    const game = this.game();
     const parts: string[] = [];
-    if (isDefined(this.game.competition.parent)) {
-      parts.push(this.game.competition.parent.shortName);
+    if (isDefined(game.competition.parent)) {
+      parts.push(game.competition.parent.shortName);
     }
 
-    parts.push(this.game.competition.shortName);
+    parts.push(game.competition.shortName);
 
     return parts.map(item => processTranslationPlaceholders(item, this.translationService)).join(' · ');
-  }
+  });
 
-  getResultTendencyClass(): string {
-    return `result-tendency-${this.game.resultTendency}`;
-  }
+  readonly resultTendencyClass = computed<string>(() => `result-tendency-${this.game().resultTendency}`);
 
-  getDateText() {
-    const daysUntil = getNumberOfDaysBetween(new Date(this.game.kickoff), new Date());
+  readonly dateText = computed(() => {
+    const game = this.game();
+
+    const daysUntil = getNumberOfDaysBetween(new Date(game.kickoff), new Date());
     if (daysUntil === 0) {
-      return [this.translationService.translate(`date.today`), new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+      return [this.translationService.translate(`date.today`), new DatePipe('en-us').transform(game.kickoff, '- HH:mm')].join(' ');
     } else if (daysUntil === 1) {
-      return [this.translationService.translate(`date.tomorrow`), new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+      return [this.translationService.translate(`date.tomorrow`), new DatePipe('en-us').transform(game.kickoff, '- HH:mm')].join(' ');
     } else if (daysUntil === -1) {
-      return [this.translationService.translate(`date.yesterday`), , new DatePipe('en-us').transform(this.game.kickoff, '- HH:mm')].join(' ');
+      return [this.translationService.translate(`date.yesterday`), , new DatePipe('en-us').transform(game.kickoff, '- HH:mm')].join(' ');
     } else {
-      return new DatePipe('en-US').transform(this.game.kickoff, this.getDateFormat());
+      return new DatePipe('en-US').transform(game.kickoff, this.dateFormat());
     }
-  }
+  });
 
-  private getDateFormat(): string {
-    return `EEE, MMM d ${this.showYear ? 'YYYY' : ''} - HH:mm`
-  }
+  readonly dateFormat = computed<string>(() => `EEE, MMM d ${this.showYear() ? 'YYYY' : ''} - HH:mm`);
 
-  hasExtendedPlay(): boolean {
-    return isDefined(this.game.afterExtraTime) || isDefined(this.game.penaltyShootOut);
-  }
+  readonly hasExtendedPlay = computed<boolean>(() => {
+    const game = this.game();
+    return isDefined(game.afterExtraTime) || isDefined(game.penaltyShootOut);
+  });
 
-  getResult(score: ScoreTuple | null): string {
-    return this.scoreFormatter.format(score);
-  }
+  readonly scoreBeforePso = computed<string>(() => {
+    const game = this.game();
 
-  getGameScoreBeforePso() {
-    if (this.game.status === GameStatus.Scheduled) {
+    if (game.status === GameStatus.Scheduled) {
       return "-";
     }
 
-    return this.getResult(getGameResult(this.game, false));
-  }
+    return this.getResult(getGameResult(game, false));
+  });
 
-  getGameScoreAfterPso() {
-    return this.getResult(getGameResult(this.game, true));
-  }
+  readonly scoreAfterPso = computed<string>(() => this.getResult(getGameResult(this.game(), true)));
 
-  getExtendedPlayText(): string {
-    if (isDefined(this.game.penaltyShootOut)) {
-      return this.translationService.translate(`gameResult.pso`, { 'score': this.getGameScoreAfterPso() });
+  readonly extendedPlayText = computed<string>(() => {
+    if (isDefined(this.game().penaltyShootOut)) {
+      return this.translationService.translate(`gameResult.pso`, { 'score': this.scoreAfterPso() });
     }
 
     return this.translationService.translate('gameResult.aet');
-  }
+  });
 
-  getDynamicContainerClasses(): string[] {
-    const classes = [];
+  readonly dynamicContainerClasses = computed<string[]>(() => this.game().titleWinningGame ? ['border-1 border-gold border-solid'] : []);
 
-    if (this.game.titleWinningGame === true) {
-      classes.push('border-1 border-gold border-solid');
-    }
-
-    return classes;
+  private getResult(score: ScoreTuple | null): string {
+    return this.scoreFormatter.format(score);
   }
 
 }

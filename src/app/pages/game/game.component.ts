@@ -97,7 +97,7 @@ export class GameComponent implements OnDestroy {
 
   readonly activeTab$ = new BehaviorSubject<string | null>(null);
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
-  readonly performanceTrendAgainstClub$ = new Subject<BasicGame[]>;
+  readonly performanceTrendAgainstClub = signal<BasicGame[]>([]);
   readonly isContextMenuVisible = signal(false);
   readonly gameContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
 
@@ -331,7 +331,7 @@ export class GameComponent implements OnDestroy {
           if (clubResponse.lastGames) {
             const lastGamesWithOpponent = clubResponse.lastGames.map(item => ({ opponent: clubResponse.club, ...item }));
             this.lastGamesAgainstClub$.next(lastGamesWithOpponent);
-            this.performanceTrendAgainstClub$.next(lastGamesWithOpponent.slice(0, 5).reverse());
+            this.performanceTrendAgainstClub.set(lastGamesWithOpponent.slice(0, 5).reverse());
 
             setTimeout(() => this.lastGamesAvailable.next(true), 0);
           }

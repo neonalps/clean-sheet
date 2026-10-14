@@ -1,10 +1,11 @@
 @let currentFilterItemsValue = currentFilterItems();
+@let quickFilterVisibleValue = quickFilterVisible();
 @let quickFilterChipGroupValue = quickFilterChipGroup();
 <app-modal>
     <div header>
         <div class="flex align-items-center justify-content-between">
             <div>{{ 'modal.filterGames' | $t }}</div>
-            <div class="text-xs normal" *ngIf="quickFilterChipGroupValue">
+            <div class="text-xs normal" *ngIf="quickFilterVisibleValue && quickFilterChipGroupValue">
                 <app-chip-group [chipGroup]="quickFilterChipGroupValue" (onSelected)="onQuickFilterSelected()" />
             </div>
         </div>
@@ -27,6 +28,13 @@
                                     <div class="form-row">
                                         <div class="form-row-content">
                                             <app-multi-select [options]="seasonOptions()" [selected]="selectedSeasons()" (onSelectedChange)="onSeasonSelectionChanged($event)" />
+                                        </div>
+                                    </div>
+                                }
+                                @case ('tendency') {
+                                    <div class="form-row">
+                                        <div class="form-row-content">
+                                            <app-multi-select [options]="tendencyOptions()" [selected]="selectedTendencies()" (onSelectedChange)="onTendencySelectionChanged($event)" />
                                         </div>
                                     </div>
                                 }

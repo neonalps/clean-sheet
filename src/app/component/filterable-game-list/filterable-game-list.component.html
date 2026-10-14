@@ -32,7 +32,7 @@
     </div>
     <div appScrollNearEnd (nearEnd)="onNearEndScroll()">
         @for (game of visibleGames(); track game.id) {
-            <app-game-overview [game]="game" [mainClub]="mainClub" [showYear]="true" (click)="triggerNavigateToGame(game)" />
+            <app-game-overview [game]="game" [showYear]="true" (click)="triggerNavigateToGame(game)" />
         }
     </div>
 </div>

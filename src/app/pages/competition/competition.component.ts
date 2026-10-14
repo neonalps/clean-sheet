@@ -7,11 +7,13 @@ import { CompetitionService } from '@src/app/module/competition/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ToastService } from '@src/app/module/toast/service';
-import { ensureNotNullish, isDefined } from '@src/app/util/common';
+import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common';
 import { CompetitionId } from '@src/app/util/domain-types';
-import { parseUrlSlug, PATH_PARAM_COMPETITION_ID } from '@src/app/util/router';
+import { navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_COMPETITION_ID } from '@src/app/util/router';
 import { Subject, takeUntil } from 'rxjs';
 import { CompetitionTitleComponent } from '@src/app/component/competition-title/competition-title.component';
+import { BasicGame } from '@src/app/model/game';
+import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-competition',
@@ -46,6 +48,14 @@ export class CompetitionComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  triggerNavigateToGame(game: Nullish<BasicGame>): void {
+    if (isNotDefined(game)) {
+      return;
+    }
+    
+    navigateToGameWithoutDetails(this.router, game.id, game.season.id);
   }
 
   private loadCompetitionDetails() {

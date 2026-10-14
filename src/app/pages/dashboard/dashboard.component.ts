@@ -5,8 +5,6 @@ import { DashboardResponse, RankedPersonItem } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { SmallClub } from '@src/app/model/club';
-import { environment } from '@src/environments/environment';
 import { BasicGame, DetailedGame } from '@src/app/model/game';
 import { navigateToGameWithoutDetails, navigateToPerson } from '@src/app/util/router';
 import { Router } from '@angular/router';
@@ -27,15 +25,14 @@ import { ensureNotNullish } from '@src/app/util/common';
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent, MainFlagComponent, PlayerRankingComponent],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
   dashboard?: DashboardResponse;
-  isLoading = signal(true);
-  mainClub: SmallClub = environment.mainClub;
-  games = new Subject<DetailedGame[]>;
+  readonly isLoading = signal(true);
+
+  readonly lastGames = signal<DetailedGame[]>([]);
 
   readonly competitionChipsVisible = signal(false);
   readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
@@ -112,7 +109,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoading.set(false);
 
     if (this.dashboard.performanceTrend?.games) {
-      this.games.next(this.dashboard.performanceTrend.games);
+      this.lastGames.set(this.dashboard.performanceTrend.games);
     }
 
     if (this.dashboard.topScorers) {

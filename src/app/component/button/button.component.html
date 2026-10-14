@@ -1,16 +1,19 @@
-<button class="button transition-colors flex min-h-42" [ngClass]="getDynamicClasses()" (click)="onClick()">
-    <div class="flex align-items-center" [ngClass]="{ 'px-3': !iconOnly() }">
-        <div *ngIf="icon" [ngClass]="{ 'mr-3': !iconOnly() }">
+@let iconValue = icon();
+@let iconRightValue = iconRight();
+@let iconOnlyValue = iconOnly();
+<button class="button transition-colors flex min-h-42" [ngClass]="dynamicClasses()" (click)="onClick()">
+    <div class="flex align-items-center" [ngClass]="{ 'px-3': !iconOnlyValue }">
+        <div *ngIf="iconValue" [ngClass]="{ 'mr-3': !iconOnlyValue }">
             <div class="width-sm relative top-1">
-                <app-ui-icon [descriptor]="icon" />
+                <app-ui-icon [descriptor]="iconValue" />
             </div>
         </div>
         <div *ngIf="text" [ngClass]="textClasses() ?? 'text-base'">
-            {{ text }}
+            {{ text() }}
         </div>
-        <div class="ml-3" *ngIf="iconRight">
+        <div class="ml-3" *ngIf="iconRightValue">
             <div class="width-sm">
-                <app-ui-icon [descriptor]="iconRight" />
+                <app-ui-icon [descriptor]="iconRightValue" />
             </div>
         </div>
     </div>

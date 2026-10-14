@@ -1,3 +1,4 @@
+@let isLoadingValue = isLoading();
 <section class="dashboard-container mt-3 px-3 py-2">
     <div class="flex align-items-center mt-1 mb-8">
         <div class="basis-1/5 pl-2 mr-2">
@@ -15,7 +16,7 @@
             {{ 'dashboard.nextGame' | $t }}
         </div>
         <div class="dashboard-item-content">
-            <app-game-overview [game]="dashboard!.upcomingGame!" [mainClub]="mainClub" (click)="triggerNavigateToGame(dashboard!.upcomingGame!)" />
+            <app-game-overview [game]="dashboard!.upcomingGame!" (click)="triggerNavigateToGame(dashboard!.upcomingGame!)" />
         </div>
     </div>
 
@@ -24,7 +25,7 @@
             {{ 'dashboard.lastGame' | $t }}
         </div>
         <div class="dashboard-item-content">
-            <app-game-overview [game]="dashboard!.lastGame!" [mainClub]="mainClub" (click)="triggerNavigateToGame(dashboard!.lastGame!)" />
+            <app-game-overview [game]="dashboard!.lastGame!" (click)="triggerNavigateToGame(dashboard!.lastGame!)" />
         </div>
     </div>
 
@@ -33,7 +34,7 @@
             {{ 'dashboard.performanceTrend' | $t }}
         </div>
         <div class="dashboard-item-content pt-3">
-            <app-game-performance-trend [games$]="games" [applyInnerPadding]="true" [noGamesText]="'performanceTrend.noSeasonGames' | $t">
+            <app-game-performance-trend [games]="lastGames()" [isLoading]="isLoadingValue" [applyInnerPadding]="true" [noGamesText]="'performanceTrend.noSeasonGames' | $t">
                     <div class="mb-2 width-lg" noGamesIcon>
                         <app-football-shoe />
                     </div>
