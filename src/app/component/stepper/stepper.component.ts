@@ -15,8 +15,7 @@ export type StepConfig = {
 @Component({
   selector: 'app-stepper',
   imports: [CommonModule],
-  templateUrl: './stepper.component.html',
-  styleUrl: './stepper.component.css'
+  templateUrl: './stepper.component.html'
 })
 export class StepperComponent implements AfterContentInit, OnDestroy {
 

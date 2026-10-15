@@ -1,38 +1,39 @@
+@let memberValue = member();
 @let playerNationalities = nationalities();
-<div [ngClass]="containerClass">
+<div [ngClass]="containerClass()">
     <div class="basis-1/10 flex justify-content-center align-items-center">
-        {{ member.shirt }}
+        {{ memberValue.shirt }}
     </div>
-    <div class="basis-1/8" *ngIf="member.player.avatar">
+    <div class="basis-1/8" *ngIf="memberValue.player.avatar">
         <div class="width-md">
-            <app-ui-icon [descriptor]="{ 'type': 'person', 'content': member.player.avatar }" />
+            <app-ui-icon [descriptor]="{ 'type': 'person', 'content': memberValue.player.avatar }" />
         </div>
     </div>
     <div class="flex-grow">
         <div class="flex align-items-center">
             <div>
-                {{ member.player.firstName }} <span class="bold">{{ member.player.lastName }}</span>
+                {{ memberValue.player.firstName }} <span class="bold">{{ memberValue.player.lastName }}</span>
             </div>
             <ng-container *ngIf="playerNationalities && playerNationalities.length > 0">
                 <div class="ml-1">
-                    <ng-container *ngFor="let country of playerNationalities">
+                    @for (country of playerNationalities; track $index) {
                         <span [title]="country.title">{{ country.flag }}</span>
-                    </ng-container>
+                    }
                 </div>
             </ng-container>
         </div>
-        <div class="mt-2 text-sm text-light-grey" *ngIf="member.from || member.to">
-            <div class="flex" *ngIf="member.from">
+        <div class="mt-2 text-sm text-light-grey" *ngIf="memberValue.from || memberValue.to">
+            <div class="flex" *ngIf="memberValue.from">
                 <div class="text-light-grey-darker mr-2">{{ 'squad.member.from' | $t }}:</div>
-                <div>{{ member.from | date:'MMM d yyyy' }}</div>
+                <div>{{ memberValue.from | date:'MMM d yyyy' }}</div>
             </div>
-            <div class="flex" *ngIf="member.to">
+            <div class="flex" *ngIf="memberValue.to">
                 <div class="text-light-grey-darker mr-2">{{ 'squad.member.to' | $t }}:</div>
-                <div>{{ member.to | date:'MMM d yyyy' }}</div>
+                <div>{{ memberValue.to | date:'MMM d yyyy' }}</div>
             </div>
         </div>
     </div>
-    <div class="basis-1/10 flex align-items-center justify-content-center" *ngIf="member.loan === true">
-        <div class="text-sm text-light-grey">{{ 'squad.member.loan' | $t}}</div>
+    <div class="basis-1/10 flex align-items-center justify-content-center" *ngIf="memberValue.loan">
+        <div class="text-sm text-light-grey">{{ 'squad.member.loan' | $t }}</div>
     </div>
 </div>

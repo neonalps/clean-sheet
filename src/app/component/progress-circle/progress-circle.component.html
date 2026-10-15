@@ -1,18 +1,20 @@
-@let normalizedRadius = getNormalizedRadius();
-@let strokeDashArray = getStrokeDashArray();
-@let strokeDashOffset = getStrokeDashOffset();
+@let radiusValue = radius();
+@let normalizedRadiusValue = normalizedRadius();
+@let strokeDashArrayValue = strokeDashArray();
+@let strokeDashOffsetValue = strokeDashOffset();
+@let strokeWidthValue = strokeWidth();
 <div>
     <div class="flex relative">
-        <span class="count-animation inline-flex w-full h-full absolute text-lg bold align-items-center justify-content-center" [attr.style]="styleAttribute" [ngClass]="{ 'invisible': hidden }"></span>
-        <svg [attr.height]="radius * 2" [attr.width]="radius * 2">
+        <span class="count-animation inline-flex w-full h-full absolute text-lg bold align-items-center justify-content-center" [attr.style]="styleAttribute()" [ngClass]="{ 'invisible': hidden() }"></span>
+        <svg [attr.height]="radiusValue * 2" [attr.width]="radiusValue * 2">
             <circle class="circle"
-                [attr.stroke]="color"
-                [attr.stroke-dasharray]="strokeDashArray"
-                [attr.stroke-dashoffset]="strokeDashOffset"
-                [attr.stroke-width]="strokeWidth"
-                [attr.cx]="radius"
-                [attr.cy]="radius"
-                [attr.r]="normalizedRadius"
+                [attr.stroke]="color()"
+                [attr.stroke-dasharray]="strokeDashArrayValue"
+                [attr.stroke-dashoffset]="strokeDashOffsetValue"
+                [attr.stroke-width]="strokeWidthValue"
+                [attr.cx]="radiusValue"
+                [attr.cy]="radiusValue"
+                [attr.r]="normalizedRadiusValue"
                 fill="transparent"
             ></circle>
         </svg>

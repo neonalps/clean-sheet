@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
@@ -10,21 +10,23 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 })
 export class CheckboxSliderComponent {
 
-  @Input() checked = false;
-  @Input() showText = false;
-  @Input() overrideText: string | undefined;
-  @Output() readonly valueChange = new EventEmitter<boolean>();
+  readonly checkboxElement = viewChild.required<ElementRef<HTMLInputElement>>('check');
 
-  @ViewChild('check', { static: false }) checkbox!: ElementRef;
+  readonly checked = input(false);
+  readonly showText = input(false);
+  readonly overrideText = input<string>();
+  readonly valueChangeDelayMs = input(300);
+
+  readonly valueChange = output<boolean>();
 
   onChange() {
     // the timeout should be the duration of the transition (defined in the component's css file)
     // if it is shorter, the transition is aborted
-    setTimeout(() => this.valueChange.next(!this.checked), 300);
+    setTimeout(() => this.valueChange.emit(!this.checked()), this.valueChangeDelayMs());
   }
 
   onTextClicked() {
-    this.checkbox.nativeElement.checked = !this.checked;
+    this.checkboxElement().nativeElement.checked = !this.checked();
     this.onChange();
   }
 

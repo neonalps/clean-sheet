@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, computed, input, signal } from '@angular/core';
 import { COLOR_LIGHT } from '@src/styles/constants';
 
 @Component({
@@ -10,41 +10,35 @@ import { COLOR_LIGHT } from '@src/styles/constants';
 })
 export class ProgressCircleComponent implements AfterViewInit {
 
-  @Input() percentage!: number;
-  @Input() radius!: number;
-  @Input() strokeWidth: number = 3;
-  @Input() color = COLOR_LIGHT;
-  @Input() transitionDelayMs = 0;
+  readonly percentage = input.required<number>();
+  readonly radius = input.required<number>();
+  readonly strokeWidth = input(3);
+  readonly color = input(COLOR_LIGHT);
+  readonly transitionDelayMs = input(0);
 
-  internalValue = 0;
-  styleAttribute = "";
-  hidden = true;
+  readonly internalValue = signal(0);
+  readonly styleAttribute = signal("");
+  readonly hidden = signal(true);
+
+  readonly normalizedRadius = computed(() => this.radius() - (this.strokeWidth() * 2));
+  readonly circumference = computed(() => this.normalizedRadius() * 2 * Math.PI);
+  readonly strokeDashArray = computed(() => {
+    const circumferenceValue = this.circumference();
+    return `${circumferenceValue} ${circumferenceValue}`;
+  });
+  readonly strokeDashOffset = computed(() => {
+    const circumferenceValue = this.circumference();
+    const offset = circumferenceValue - (this.internalValue() / 100) * circumferenceValue;
+    return `${offset}`;
+  });
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.internalValue = this.percentage;
-      this.styleAttribute = `--from:0; --to:${this.percentage}; --time:.5s;`;
-      this.hidden = false;
-    }, this.transitionDelayMs);
-  }
-
-  getNormalizedRadius(): number {
-    return this.radius - (this.strokeWidth * 2);
-  }
-
-  getStrokeDashArray(): string {
-    const circumference = this.getCircumference();
-    return `${circumference} ${circumference}`
-  }
-
-  getStrokeDashOffset(): string {
-    const circumference = this.getCircumference();
-    const offset = circumference - (this.internalValue / 100) * circumference;
-    return `${offset}`;
-  }
-
-  private getCircumference(): number {
-    return this.getNormalizedRadius() * 2 * Math.PI;
-  }
+      const percentageValue = this.percentage();
+      this.internalValue.set(percentageValue);
+      this.styleAttribute.set(`--from:0; --to:${percentageValue}; --time:.5s;`);
+      this.hidden.set(false);
+    }, this.transitionDelayMs());
+  };
   
 }

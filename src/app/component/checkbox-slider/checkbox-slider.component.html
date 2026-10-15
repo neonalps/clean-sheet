@@ -1,9 +1,11 @@
+@let checkedValue = checked();
+@let overrideTextValue = overrideText();
 <div class="flex align-items-center">
     <div>
         <label class="switch">
-            <input type="checkbox" [checked]="checked" (click)="onChange()" #check>
+            <input type="checkbox" [checked]="checkedValue" (click)="onChange()" #check>
             <span class="slider round"></span>
         </label>
     </div>
-    <div *ngIf="showText || overrideText" class="ml-3 pointer" (click)="onTextClicked()">{{ overrideText ?? ((checked ? 'toggle.yes' : 'toggle.no') | $t) }}</div>
+    <div *ngIf="showText() || overrideTextValue" class="ml-3 pointer" (click)="onTextClicked()">{{ overrideTextValue ?? ((checkedValue ? 'toggle.yes' : 'toggle.no') | $t) }}</div>
 </div>

@@ -5,7 +5,6 @@ import { PATH_PARAM_CLUB_ID, PATH_PARAM_COMPETITION_ID, PATH_PARAM_GAME_ID, PATH
 import { PersonComponent } from './pages/person/person.component';
 import { ClubComponent } from './pages/club/club.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { ChatComponent } from './pages/chat/chat.component';
 import { LoginComponent } from './pages/login/login.component';
 import { OAuthHandlerComponent } from './component/oauth-handler/oauth-handler.component';
 import { LogoutComponent } from './component/logout/logout.component';
@@ -111,11 +110,6 @@ export const routes: Routes = [
     { 
         path: `my-games/favourites`, 
         component: GamesFavouritesComponent,
-        canActivate: [loggedInGuard],
-    },
-    { 
-        path: `chat`, 
-        component: ChatComponent,
         canActivate: [loggedInGuard],
     },
     { 
