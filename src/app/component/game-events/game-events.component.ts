@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, input, Input } from '@angular/core';
 import { UiCardGameEvent, UiGameEvent, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiVarDecisionGameEvent } from '@src/app/model/game';
 import { GameEventGoalComponent } from "@src/app/component/game-event-goal/game-event-goal.component";
 import { GameEventCardComponent } from "@src/app/component/game-event-card/game-event-card.component";
@@ -13,14 +13,13 @@ import { GameEventPsoComponent } from "@src/app/component/game-event-pso/game-ev
 @Component({
   selector: 'app-game-events',
   imports: [CommonModule, GameEventGoalComponent, GameEventCardComponent, GameEventPenaltyMissedComponent, GameEventVarDecisionComponent, GameEventSubstitutionComponent, GameEventPeriodComponent, GameEventPsoComponent],
-  templateUrl: './game-events.component.html',
-  styleUrl: './game-events.component.css'
+  templateUrl: './game-events.component.html'
 })
 export class GameEventsComponent {
 
-  constructor(private readonly translationService: TranslationService) {}
+  private readonly translationService = inject(TranslationService);
 
-  @Input() events!: UiGameEvent[];
+  readonly events = input.required<UiGameEvent[]>();
 
   getCardGameEvent(event: UiGameEvent): UiCardGameEvent {
     return event as UiCardGameEvent;

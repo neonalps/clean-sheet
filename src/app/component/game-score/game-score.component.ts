@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { BasicGame, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -9,51 +9,49 @@ import { isDefined } from '@src/app/util/common';
 @Component({
   selector: 'app-game-score',
   imports: [CommonModule],
-  templateUrl: './game-score.component.html',
-  styleUrl: './game-score.component.css'
+  templateUrl: './game-score.component.html'
 })
 export class GameScoreComponent {
-
-  @Input() game!: BasicGame;
-  @Input() hideExtendedPlayText = false;
 
   private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);
 
-  getResultTendencyClass(): string {
-      return `result-tendency-${this.game.resultTendency}`;
-    }
-  
-    hasExtendedPlay(): boolean {
-      return isDefined(this.game.afterExtraTime) || isDefined(this.game.penaltyShootOut);
-    }
-  
-    getResult(score: ScoreTuple | null): string {
-      if (score === null) {
-        return '-';
-      }
+  readonly game = input.required<BasicGame>();
+  readonly hideExtendedPlayText = input(false);
 
-      return this.scoreFormatter.format(score);
+  readonly resultTendencyClass = computed(() => `result-tendency-${this.game().resultTendency}`);
+
+  readonly hasExtendedPlay = computed<boolean>(() => {
+    const game = this.game();
+    return isDefined(game.afterExtraTime) || isDefined(game.penaltyShootOut);
+  });
+
+  readonly scoreBeforePso = computed(() => {
+    const game = this.game();
+
+    if (game.status === GameStatus.Scheduled) {
+      return "-";
     }
-  
-    getGameScoreBeforePso() {
-      if (this.game.status === GameStatus.Scheduled) {
-        return "-";
-      }
-  
-      return this.getResult(getGameResult(this.game, false));
+
+    return this.getResult(getGameResult(game, false));
+  });
+
+  readonly scoreAfterPso = computed(() => this.getResult(getGameResult(this.game(), true)));
+
+  readonly extendedPlayText = computed(() => {
+    if (isDefined(this.game().penaltyShootOut)) {
+      return this.translationService.translate(`gameResult.pso`, { 'score': this.scoreAfterPso() });
     }
+
+    return this.translationService.translate('gameResult.aet');
+  });
   
-    getGameScoreAfterPso() {
-      return this.getResult(getGameResult(this.game, true));
+  private getResult(score: ScoreTuple | null): string {
+    if (score === null) {
+      return '-';
     }
-  
-    getExtendedPlayText(): string {
-      if (isDefined(this.game.penaltyShootOut)) {
-        return this.translationService.translate(`gameResult.pso`, { 'score': this.getGameScoreAfterPso() });
-      }
-  
-      return this.translationService.translate('gameResult.aet');
-    }
+
+    return this.scoreFormatter.format(score);
+  }
 
 }

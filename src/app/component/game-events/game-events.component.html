@@ -1,36 +1,36 @@
 <div>
-    <ng-container *ngFor="let event of events">
-        <ng-container [ngSwitch]="event.type">
-            <ng-container *ngSwitchCase="'goal'">
+    @for (event of events(); track event.id) {
+        @switch (event.type) {
+            @case ('goal') {
                 <app-game-event-goal [event]="getGoalGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'yellowCard'">
+            }
+            @case ('yellowCard') {
                 <app-game-event-card [event]="getCardGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'yellowRedCard'">
+            }
+            @case ('yellowRedCard') {
                 <app-game-event-card [event]="getCardGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'redCard'">
+            }
+            @case ('redCard') {
                 <app-game-event-card [event]="getCardGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'substitution'">
+            }
+            @case ('substitution') {
                 <app-game-event-substitution [event]="getSubstitutionGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'penaltyMissed'">
+            }
+            @case ('penaltyMissed') {
                 <app-game-event-penalty-missed [event]="getPenaltyMissedGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'pso'">
+            }
+            @case ('pso') {
                 <app-game-event-pso [event]="getPenaltyShootOutGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'varDecision'">
+            }
+            @case ('varDecision') {
                 <app-game-event-var-decision [event]="getVarDecisionGameEvent(event)" />
-            </ng-container>
-            <ng-container *ngSwitchCase="'injuryTime'">
+            }
+            @case ('injuryTime') {
                 <app-game-event-period [event]="event" [periodText]="getInjuryTimePeriodText(event)" [isTransparent]="true" [bgColor]="'bg-color-dark-grey-lighter'" [textSize]="'text-xs'" [additionalClasses]="'rounded px-2 py-1'"  />
-            </ng-container>
-            <ng-container *ngSwitchCase="'period'">
+            }
+            @case ('period') {
                 <app-game-event-period [event]="event" />
-            </ng-container>
-        </ng-container>
-    </ng-container>
+            }
+        }
+    }
 </div>

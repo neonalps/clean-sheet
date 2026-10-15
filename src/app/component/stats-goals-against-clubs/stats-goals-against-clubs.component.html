@@ -1,11 +1,11 @@
 <div>
-    @for (item of goalsAgainstClubs; track item.club.id) {
+    @for (item of goalsAgainstClubsStats(); track item.club.id) {
         <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey p-1 rounded-md transition-colors" (click)="itemClicked(item)">
             <div class="basis-1/2">
                 <app-small-club [club]="item.club" />
             </div>
             <div class="basis-1/2">
-                <app-progress-bar [displayValue]="item.goalsScored.toString()" [percentageValue]="getItemPercentage(item.goalsScored)" />
+                <app-progress-bar [displayValue]="item.goalsScored.toString()" [percentageValue]="item.percentage" />
             </div>
         </div>
     }

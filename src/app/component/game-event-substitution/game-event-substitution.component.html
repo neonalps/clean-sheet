@@ -1,4 +1,5 @@
-<app-game-event [event]="event">
+@let eventValue = event();
+<app-game-event [event]="eventValue">
     <div info>
         <div class="flex flex-col align-items-center justify-content-center">
             <div class="arrow-right-container">
@@ -10,10 +11,10 @@
         </div>
     </div>
     <div person>
-        <div class="game-event-scored-by text-sm">{{ getPlayerOn() }}</div>
+        <div class="game-event-scored-by text-sm">{{ playerOn() }}</div>
         <div class="text-sm text-light-grey">
-            {{ getPlayerOff() }}
-            <span *ngIf="event.injured" class="inline-block ml-1 text-danger-lighter-30" [attr.title]="'injured' | $t">+</span>
+            {{ playerOff() }}
+            <span *ngIf="eventValue.injured" class="inline-block ml-1 text-danger-lighter-30" [attr.title]="'injured' | $t">+</span>
         </div>
     </div>
 </app-game-event>

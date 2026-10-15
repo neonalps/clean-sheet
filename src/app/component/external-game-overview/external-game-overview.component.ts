@@ -1,100 +1,80 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Fixture, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { isDefined } from '@src/app/util/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { SmallClub } from '@src/app/model/club';
 import { SmallClubComponent } from '@src/app/component/small-club/small-club.component';
 import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-external-game-overview',
   imports: [CommonModule, SmallClubComponent],
-  templateUrl: './external-game-overview.component.html',
-  styleUrl: './external-game-overview.component.css'
+  templateUrl: './external-game-overview.component.html'
 })
 export class ExternalGameOverviewComponent {
-
-  @Input() fixture!: Fixture;
-  @Input() showYear = false;
 
   private readonly scoreFormatter = inject(ScoreFormatter);
   private readonly translationService = inject(TranslationService);
 
-  getHomeTeam(): SmallClub {
-    return this.fixture.home;
-  }
+  readonly fixture = input.required<Fixture>();
+  readonly showYear = input(false);
 
-  getAwayTeam(): SmallClub {
-    return this.fixture.away;
-  }
+  readonly resultTendencyClass = signal(`result-tendency-d`);
 
-  getResultTendencyClass(): string {
-    return `result-tendency-d`;
-  }
+  readonly homeTeam = computed(() => this.fixture().home);
 
-  getDateText() {
-    return new DatePipe('en-US').transform(this.fixture.kickoff, this.getDateFormat());
-  }
+  readonly awayTeam = computed(() => this.fixture().away);
 
-  private getDateFormat(): string {
-    return `EEE, MMM d ${this.showYear ? 'YYYY' : ''} - HH:mm`
-  }
+  readonly dateFormat = computed(() => `EEE, MMM d ${this.showYear() ? 'YYYY' : ''} - HH:mm`);
 
-  hasExtendedPlay(): boolean {
-    return isDefined(this.fixture.afterExtraTime) || isDefined(this.fixture.afterPenaltyShootOut);
-  }
+  readonly dateText = computed(() => new DatePipe('en-US').transform(this.fixture().kickoff, this.dateFormat()));
 
-  getResult(score: ScoreTuple | null): string {
-    return this.scoreFormatter.format(score);
-  }
+  readonly extendedPlay = computed<boolean>(() => {
+    const fixture = this.fixture();
+    return isDefined(fixture.afterExtraTime) || isDefined(fixture.afterPenaltyShootOut);
+  });
 
-  getGameScoreBeforePso() {
-    if (this.fixture.status === GameStatus.Scheduled) {
+  readonly gameStatus = computed(() => this.fixture().status);
+
+  readonly gameStatusText = computed(() => this.fixture().status === GameStatus.Ongoing ? 'live' : '-');
+
+  readonly gameStatusClasses = computed(() => this.fixture().status === GameStatus.Ongoing ? ['bg-color-info', 'rounded', 'px-2', 'py-1'] : []);
+
+  readonly scoreBeforePso = computed(() => {
+    if (this.fixture().status === GameStatus.Scheduled) {
       return "-";
     }
 
-    return this.getResult(this.getGameScore(false));
-  }
+    return this.getResult(this.gameScoreExcludingPso());
+  });
 
-  getGameScoreAfterPso() {
-    return this.getResult(this.getGameScore(true));
-  }
+  readonly scoreAfterPso = computed(() => this.getResult(this.gameScoreIncludingPso()));
 
-  getExtendedPlayText(): string {
-    if (isDefined(this.fixture.afterPenaltyShootOut)) {
-      return this.translationService.translate(`gameResult.pso`, { 'score': this.getGameScoreAfterPso() });
+  readonly extendedPlayText = computed(() => {
+    if (isDefined(this.fixture().afterPenaltyShootOut)) {
+      return this.translationService.translate(`gameResult.pso`, { 'score': this.scoreAfterPso() });
     }
 
     return this.translationService.translate('gameResult.aet');
-  }
+  });
 
-  getGameStatus(): GameStatus {
-    return this.fixture.status;
-  }
+  readonly gameScoreIncludingPso = computed(() => this.fixture().afterExtraTime ?? this.gameScoreExcludingPso());
 
-  getGameStatusText() {
-    return this.fixture.status === GameStatus.Ongoing ? 'live' : '-';
-  }
-
-  getGameStatusClasses() {
-    return this.fixture.status === GameStatus.Ongoing ? ['bg-color-info', 'rounded', 'px-2', 'py-1'] : [];
-  }
-
-  private getGameScore(includePso = false): ScoreTuple | null {
-    if (includePso && this.fixture.afterPenaltyShootOut) {
-      return this.fixture.afterPenaltyShootOut;
+  readonly gameScoreExcludingPso = computed(() => {
+    const fixture = this.fixture();
+    if (fixture.afterExtraTime) {
+      return fixture.afterExtraTime;
     }
 
-    if (this.fixture.afterExtraTime) {
-      return this.fixture.afterExtraTime;
-    }
-
-    if (this.fixture.fullTime) {
-      return this.fixture.fullTime;
+    if (fixture.fullTime) {
+      return fixture.fullTime;
     }
 
     return null;
+  });
+
+  private getResult(score: ScoreTuple | null): string {
+    return this.scoreFormatter.format(score);
   }
 
 

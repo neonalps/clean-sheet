@@ -32,7 +32,7 @@ export class LineupSelectorPersonItemComponent implements OnInit {
   @Output() onPersonShirtClicked = new EventEmitter<PersonId>();
   @Output() onRemove = new EventEmitter<PersonId>();
 
-  readonly contextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
+  readonly contextMenuOptions = signal<ContextMenuSection[]>([]);
   readonly personName = signal<string>('');
   readonly isDragging = signal(false);
 
@@ -49,7 +49,7 @@ export class LineupSelectorPersonItemComponent implements OnInit {
 
     menuOptions.push({ items: [ { id: 'remove', text: this.translationService.translate('action.remove'), iconDescriptor: { 'type': 'standard', 'content': 'delete' } } ] });
 
-    this.contextMenuOptions.next(menuOptions);
+    this.contextMenuOptions.set(menuOptions);
   }
 
   onContextMenuItemSelected(action: string) {

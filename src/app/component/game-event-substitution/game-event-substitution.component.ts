@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { UiSubstitutionGameEvent } from '@src/app/model/game';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { ArrowLeftComponent } from "@src/app/icon/arrow-left/arrow-left.component";
@@ -15,14 +15,10 @@ import { getPersonName } from '@src/app/util/domain';
 })
 export class GameEventSubstitutionComponent {
 
-  @Input() event!: UiSubstitutionGameEvent;
+  readonly event = input.required<UiSubstitutionGameEvent>();
 
-  getPlayerOff(): string {
-    return getPersonName(this.event.playerOff);
-  }
+  readonly playerOff = computed(() => getPersonName(this.event().playerOff));
 
-  getPlayerOn(): string {
-    return getPersonName(this.event.playerOn);
-  }
+  readonly playerOn = computed(() => getPersonName(this.event().playerOn));
 
 }

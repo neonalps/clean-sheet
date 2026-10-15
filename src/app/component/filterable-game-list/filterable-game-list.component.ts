@@ -20,8 +20,7 @@ import { COLOR_LIGHT } from '@src/styles/constants';
 @Component({
   selector: 'app-filterable-game-list',
   imports: [CommonModule, I18nPipe, GameOverviewComponent, ChipGroupComponent, GameRecordComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent],
-  templateUrl: './filterable-game-list.component.html',
-  styleUrl: './filterable-game-list.component.css'
+  templateUrl: './filterable-game-list.component.html'
 })
 export class FilterableGameListComponent implements OnInit {
 

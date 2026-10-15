@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { SmallCompetition } from '@src/app/model/competition';
 import { PlayerBaseStats } from '@src/app/model/stats';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
@@ -14,17 +14,16 @@ export type CompetitionStats = {
 @Component({
   selector: 'app-stats-player-competition',
   imports: [CommonModule, UiIconComponent],
-  templateUrl: './stats-player-competition.component.html',
-  styleUrl: './stats-player-competition.component.css'
+  templateUrl: './stats-player-competition.component.html'
 })
 export class StatsPlayerCompetitionComponent {
 
-  @Input() competitionStats!: ReadonlyArray<CompetitionStats>;
+  readonly competitionStats = input.required<CompetitionStats[]>();
 
-  @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
+  readonly filterOptionsSelected = output<GamePlayedFilterOptions>();
 
   itemClicked(competitionId: CompetitionId, filterItemType: keyof GamePlayedFilterOptions) {
-    this.filterOptionsSelected.next({
+    this.filterOptionsSelected.emit({
       competitionId: `${competitionId}`,
       [filterItemType]:  filterItemType === 'minutesPlayed' ? '+0' : '+1',
     });

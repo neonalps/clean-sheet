@@ -1,30 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-divider',
   imports: [CommonModule],
-  templateUrl: './divider.component.html',
-  styleUrl: './divider.component.css'
+  templateUrl: './divider.component.html'
 })
 export class DividerComponent {
 
-  @Input() text!: string;
-  @Input() bgColor: string | undefined;
-  @Input() textSize: string | undefined;
-  @Input() isTransparent = false;
-  @Input() additionalClasses: string | undefined;
+  readonly text = input.required<string>();
+  readonly bgColor = input<string>();
+  readonly textSize = input<string>();
+  readonly isTransparent = input(false);
+  readonly additionalClasses = input<string>();
 
-  getBgColor(): string {
-    return this.bgColor ?? "bg-color-dark-grey-darker";
-  }
+  readonly effectiveBgColor = computed(() => this.bgColor() ?? "bg-color-dark-grey-darker");
+  
+  readonly effectiveTextSize = computed(() => this.textSize() ?? "text-sm");
 
-  getTextSize(): string {
-    return this.textSize ?? "text-sm";
-  }
-
-  getAdditionalClasses(): string {
-    return this.additionalClasses ?? "";
-  }
+  readonly effectiveAdditionalClasses = computed(() => this.additionalClasses() ?? "");
 
 }

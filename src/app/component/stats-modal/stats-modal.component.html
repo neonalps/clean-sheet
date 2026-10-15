@@ -20,7 +20,7 @@
             </div>
         </div>
         <div id="stats-modal-scroll-container">
-            @for (seasonGamesPlayed of groupedGamesPlayed$ | async; track $index) {
+            @for (seasonGamesPlayed of groupedGamesPlayed(); track $index) {
                 <div class="mb-6 last:mb-0">
                     <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
                     @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {

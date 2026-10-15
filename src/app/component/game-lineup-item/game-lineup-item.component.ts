@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { PlayerIconComponent } from '@src/app/component/player-icon/player-icon.component';
-import { GamePerson } from '../game-person-item/game-person-item.component';
+import { GamePerson } from '@src/app/component/game-person-item/game-person-item.component';
 
 @Component({
   selector: 'app-game-lineup-item',
@@ -10,11 +10,11 @@ import { GamePerson } from '../game-person-item/game-person-item.component';
 })
 export class GameLineupItemComponent {
 
-  @Input() player!: GamePerson;
-  @Input() showPersonPlaceholder = false;
+  readonly player = input.required<GamePerson>();
+  readonly showPersonPlaceholder = input(false);
 
-  getPlayerDisplayName(): string {
-    const lastName = this.player.lastName;
+  readonly playerDisplayName = computed(() => {
+    const lastName = this.player().lastName;
     const lastNameParts = lastName.split(" ");
 
     if (lastNameParts.length > 1 && lastName.length > 10) {
@@ -23,6 +23,6 @@ export class GameLineupItemComponent {
     }
 
     return lastName;
-  }
+  });
 
 }

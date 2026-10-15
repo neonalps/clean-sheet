@@ -1,5 +1,5 @@
-<ng-container *ngIf="loading; else loadedContent">
-    @for (skeletonRow of skeletonRows; track $index) {
+<ng-container *ngIf="loading(); else loadedContent">
+    @for (skeletonRow of skeletonRows(); track $index) {
         <div class="flex mb-2">
             <div class="skeleton-circle-small mr-3"></div>
             <div class="skeleton-box-small mr-3"></div>
@@ -8,7 +8,7 @@
     }
 </ng-container>
 <ng-template #loadedContent>
-    @for (tablePosition of table; track $index) {
+    @for (tablePosition of effectiveTable(); track $index) {
         <div class="flex align-items-center justify-content-center mb-2">
             <div class="basis-1/8 pr-5 align-self-end">
                 <div class="text-right">{{ tablePosition.position }}</div>

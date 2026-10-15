@@ -1,38 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Account } from '@src/app/model/account';
 import { AccountService } from '@src/app/module/account/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { isDefined } from '@src/app/util/common';
-import { BehaviorSubject, delay, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { LabelComponent } from "@src/app/component/label/label.component";
 import { AuthService } from '@src/app/module/auth/service';
 import { getRandomNumberBetween } from '@src/app/util/random';
 import { AccountRole } from '@src/app/model/auth';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { ContextMenuComponent, ContextMenuSection } from "@src/app/component/context-menu/context-menu.component";
-import { toObservable } from '@angular/core/rxjs-interop';
 
 export type UserInfo = Account & { myself?: boolean };
 
 @Component({
   selector: 'app-user-list',
   imports: [CommonModule, I18nPipe, LabelComponent, ContextMenuComponent],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit, OnDestroy {
 
   private static readonly CONTEXT_MENU_KEY_DELETE_USER = "deleteUser";
 
-  skeletonRows = [...Array(getRandomNumberBetween(3, 12)).keys()];
+  readonly skeletonRows = [...Array(getRandomNumberBetween(3, 12)).keys()];
 
   readonly contextMenuOptions = signal<ContextMenuSection[]>([]);
-  readonly contextMenuOptions$ = toObservable(this.contextMenuOptions);
-  readonly users$ = new BehaviorSubject<UserInfo[]>([]);
+  readonly users = signal<UserInfo[]>([]);
   readonly isLoading = signal(true);
-
-  private readonly accounts: Account[] = [];
 
   private readonly accountService = inject(AccountService);
   private readonly authService = inject(AuthService);
@@ -40,16 +35,16 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  private loggedInUserId: string | null = null;
+  private readonly loggedInUserId = signal<string | null>(null);
 
   ngOnInit(): void {
     this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
       if (identity === null) {
-        this.loggedInUserId = null;
+        this.loggedInUserId.set(null);
         return;
       }
 
-      this.loggedInUserId = identity.publicId;
+      this.loggedInUserId.set(identity.publicId);
     });
 
     this.contextMenuOptions.set([
@@ -90,6 +85,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   onContextMenuItemSelected(selectedItem: string, userId: number) {
+    // TODO implement
     console.log(`should perform '${selectedItem}' for user with ID ${userId}`);
   }
 
@@ -102,12 +98,11 @@ export class UserListComponent implements OnInit, OnDestroy {
         const incomingItems: UserInfo[] = accounts.items.map(item => {
           return {
             ...item,
-            myself: item.publicId === this.loggedInUserId,
+            myself: item.publicId === this.loggedInUserId(),
           }
         });
 
-        this.accounts.push(...incomingItems);
-        this.users$.next(this.accounts);
+        this.users.set(incomingItems);
         this.isLoading.set(false);
       });
   }

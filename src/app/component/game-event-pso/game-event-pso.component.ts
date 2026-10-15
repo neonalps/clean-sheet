@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { UiPenaltyShootOutGameEvent } from '@src/app/model/game';
 import { GameEventComponent } from "@src/app/component/game-event/game-event.component";
 import { getPersonName } from '@src/app/util/domain';
@@ -8,31 +8,25 @@ import { TranslationService } from '@src/app/module/i18n/translation.service';
 @Component({
   selector: 'app-game-event-pso',
   imports: [CommonModule, GameEventComponent],
-  templateUrl: './game-event-pso.component.html',
-  styleUrl: './game-event-pso.component.css'
+  templateUrl: './game-event-pso.component.html'
 })
 export class GameEventPsoComponent {
 
-  @Input() event!: UiPenaltyShootOutGameEvent;
+  private readonly translationService = inject(TranslationService);
 
-  constructor(private readonly translationService: TranslationService) {}
+  readonly event = input.required<UiPenaltyShootOutGameEvent>();
 
-  getMissText(): string | null {
-    if (this.event.result === 'goal') {
+  readonly missText = computed<string | null>(() => {
+    const event = this.event();
+    if (event.result === 'goal') {
       return null;
-    } else if (this.event.result === 'saved') {
-      return this.translationService.translate(`penaltyOutcome.savedBy`, { goalkeeper: this.getGoalkeeperName() });
+    } else if (event.result === 'saved') {
+      return this.translationService.translate(`penaltyOutcome.savedBy`, { goalkeeper: getPersonName(event.goalkeeper) });
     }
 
-    return this.translationService.translate(`penaltyOutcome.${this.event.result}`);
-  }
+    return this.translationService.translate(`penaltyOutcome.${event.result}`);
+  });
 
-  getTakenByName(): string {
-    return getPersonName(this.event.takenBy);
-  }
-
-  private getGoalkeeperName(): string {
-    return getPersonName(this.event.goalkeeper);
-  }
+  readonly takenByName = computed(() => getPersonName(this.event().takenBy));
 
 }

@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { TablePosition } from '@src/app/model/game';
-import { UiIconComponent } from "../ui-icon/icon.component";
+import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
 @Component({
   selector: 'app-round-table',
   imports: [CommonModule, UiIconComponent],
-  templateUrl: './round-table.component.html',
-  styleUrl: './round-table.component.css'
+  templateUrl: './round-table.component.html'
 })
 export class RoundTableComponent {
 
-  @Input() loading = true;
-  @Input() skeletonRowCount = 10;
-  @Input() table?: TablePosition[];
+  readonly loading = input(true);
+  readonly skeletonRowCount = input(10);
+  readonly table = input<TablePosition[]>();
 
-  skeletonRows = [...Array(this.skeletonRowCount).keys()];
+  readonly effectiveTable = computed(() => this.table() ?? []);
+  readonly skeletonRows = computed(() => [...Array(this.skeletonRowCount()).keys()])
 
 }

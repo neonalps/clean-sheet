@@ -17,6 +17,6 @@
         <div *ngIf="hasCaptain && item.isCaptain" class="captain ml-2 rounded bold text-sm">C</div>
     </div>
     <div class="mr-1 relative top-1">
-        <app-context-menu [menuOptions]="contextMenuOptions" (onMenuItemSelected)="onContextMenuItemSelected($event)" />
+        <app-context-menu [menuSections]="contextMenuOptions()" (onMenuItemSelected)="onContextMenuItemSelected($event)" />
     </div>
 </div>  

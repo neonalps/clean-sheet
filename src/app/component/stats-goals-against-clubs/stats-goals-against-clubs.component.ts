@@ -1,40 +1,42 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { GoalsAgainstClubStatsItemDto } from '@src/app/model/stats';
 import { SmallClubComponent } from "@src/app/component/small-club/small-club.component";
 import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { ProgressBarComponent } from "@src/app/component/progress-bar/progress-bar.component";
 
+type GoalsAgainstClubItem = GoalsAgainstClubStatsItemDto & { percentage: number };
+
 @Component({
   selector: 'app-stats-goals-against-clubs',
   imports: [CommonModule, SmallClubComponent, ProgressBarComponent],
-  templateUrl: './stats-goals-against-clubs.component.html',
-  styleUrl: './stats-goals-against-clubs.component.css'
+  templateUrl: './stats-goals-against-clubs.component.html'
 })
 export class StatsGoalsAgainstClubsComponent {
 
-  @Input() goalsAgainstClubs: Array<GoalsAgainstClubStatsItemDto> = [];
-  @Input() stepSize = 5;
+  readonly goalsAgainstClubs = input<GoalsAgainstClubStatsItemDto[]>([]);
+  readonly stepSize = input(5);
 
-  @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
+  readonly filterOptionsSelected = output<GamePlayedFilterOptions>();
 
-  getItemPercentage(goalsScored: number): number {
-    return Math.round(goalsScored / this.determineMaxGoals() * 100);
-  }
+  readonly goalsAgainstClubsStats = computed<GoalsAgainstClubItem[]>(() => {
+    const stats = this.goalsAgainstClubs();
+    const size = this.stepSize();
 
-  itemClicked(item: GoalsAgainstClubStatsItemDto) {
-    this.filterOptionsSelected.next({
-      opponentId: `${item.club.id}`,
-      goalsScored: '+1',
-    });
-  }
-
-  private determineMaxGoals(): number {
-    const maxPlayerGoals = this.goalsAgainstClubs.reduce((acc, current) => {
+    const maxPlayerGoals = stats.reduce((acc, current) => {
       return current.goalsScored > acc ? current.goalsScored : acc;
     }, 0);
 
-    return (Math.floor(maxPlayerGoals / this.stepSize) + 1) * this.stepSize;
+    const upperDisplayLimit = (Math.floor(maxPlayerGoals / size) + 1) * size;
+
+    return stats.map(item => ({ ...item, percentage: Math.round(item.goalsScored / upperDisplayLimit * 100) }));
+  });
+
+  itemClicked(item: GoalsAgainstClubStatsItemDto) {
+    this.filterOptionsSelected.emit({
+      opponentId: `${item.club.id}`,
+      goalsScored: '+1',
+    });
   }
 
 }

@@ -1,3 +1,4 @@
-<div class="w-full center border-b-1 border-b-solid" [ngClass]="{ 'border-b-transparent': isTransparent, 'border-b-light': !isTransparent }">
-    <span class="relative top-8 px-4" [ngClass]="[getBgColor(), getTextSize(), getAdditionalClasses()]">{{ text }}</span>
+@let isTransparentValue = isTransparent();
+<div class="w-full center border-b-1 border-b-solid" [ngClass]="{ 'border-b-transparent': isTransparentValue, 'border-b-light': !isTransparentValue }">
+    <span class="relative top-8 px-4" [ngClass]="[effectiveBgColor(), effectiveTextSize(), effectiveAdditionalClasses()]">{{ text() }}</span>
 </div>

@@ -6,7 +6,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { BehaviorSubject, combineLatest, Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -14,7 +14,7 @@ import { COLOR_LIGHT } from '@src/styles/constants';
 import { getUiPlayerStats } from '@src/app/module/stats/util';
 import { StatsGoalsAgainstClubsComponent } from "@src/app/component/stats-goals-against-clubs/stats-goals-against-clubs.component";
 import { StatsPlayerStatsComponent } from "@src/app/component/stats-player-stats/stats-player-stats.component";
-import { PlayerBaseStats, UiPlayerStats } from '@src/app/model/stats';
+import { GoalsAgainstClubStatsItemDto, PlayerBaseStats, ShirtDistributionItem, UiPlayerStats } from '@src/app/model/stats';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { StatsPlayerHeaderComponent } from '@src/app/component/stats-player-header/stats-player-header.component';
@@ -59,30 +59,6 @@ export class PersonComponent implements OnDestroy {
   private static readonly CONTEXT_MENU_KEY_PERSON_EDIT = "editPerson";
   private static readonly CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE = "checkDuplicate";
 
-  person!: GetPersonByIdResponse;
-
-  performance$ = new BehaviorSubject<UiPlayerStats | null>(null);
-
-  readonly isLoading = signal(true);
-  readonly colorLight = COLOR_LIGHT;
-  playerTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
-  opponentTotalStatsRows: ReadonlyArray<UiStatsItem[]> = [];
-  playerCompetitionStats: ReadonlyArray<CompetitionStats> = [];
-  readonly managerPeriods = signal<ManagerPeriodForPerson[]>([]);
-  readonly refereeGames = signal<BasicGame[]>([]);
-  readonly refereeListVisible = computed(() => this.refereeGames().length > 0);
-
-  readonly contextMenuVisible = signal(false);
-  readonly shouldDisplayPlayerStatistics = signal(false);
-  readonly goalsAgainstClubsVisible = signal(false);
-  readonly opponentStatsVisible = signal(false);
-  
-  readonly managerPeriodListVisible = signal(false);
-  readonly contractUntil = signal<DateString | null>(null);
-  readonly onLoan = signal<boolean>(false);
-
-  readonly personContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
-
   private readonly mainClub: SmallClub = environment.mainClub;
 
   private readonly authService = inject(AuthService);
@@ -96,10 +72,71 @@ export class PersonComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  readonly person = signal<GetPersonByIdResponse | null>(null);
+
+  readonly performance = signal<UiPlayerStats | null>(null);
+
+  readonly isLoading = signal(true);
+  readonly colorLight = COLOR_LIGHT;
+  readonly playerTotalStatsRows = signal<Array<UiStatsItem[]>>([]);
+  readonly opponentTotalStatsRows = signal<Array<UiStatsItem[]>>([]);
+  readonly playerCompetitionStats = signal<CompetitionStats[]>([]);
+  readonly managerPeriods = signal<ManagerPeriodForPerson[]>([]);
+  readonly refereeGames = signal<BasicGame[]>([]);
+  readonly refereeListVisible = computed(() => this.refereeGames().length > 0);
+
+  readonly contextMenuVisible = signal(false);
+  
+  readonly contractUntil = signal<DateString | null>(null);
+  readonly onLoan = signal<boolean>(false);
+  readonly personContextMenuOptions = signal<ContextMenuSection[]>([]);
+  readonly statsAgainstMainText = signal(this.translationService.translate(`stats.againstMain`, { main: this.mainClub.shortName }));
+  readonly statsForMainText = signal(this.translationService.translate(`stats.forMain`, { main: this.mainClub.shortName }));
+
+  readonly mainStatsVisible = computed(() => this.playerCompetitionStats().length > 0);
+  readonly opponentStatsVisible = computed(() => this.opponentTotalStatsRows().length > 0);
+  readonly managerPeriodListVisible = computed(() => this.managerPeriods().length > 0);
+
+  readonly externalLinks = computed(() => this.person()?.externalLinks ?? []);
+  
+  readonly firstName = computed(() => this.person()?.person.firstName);
+
+  readonly lastName = computed(() => this.person()?.person.lastName);
+
+  readonly iconUrl = computed(() => this.person()?.person.avatar);
+
+  readonly birthday = computed(() => this.person()?.person.birthday);
+
+  readonly deathday = computed(() => this.person()?.person.deathday);
+
+  readonly personAge = computed(() => {
+    const birthday = this.birthday();
+    if (!birthday) {
+      return null;
+    }
+
+    const deathday = this.deathday();
+    if (isNotDefined(deathday)) {
+      return getAge(new Date(birthday));
+    } else {
+      return getAge(new Date(birthday), new Date(deathday));
+    }
+  });
+
+  readonly nationalities = computed<CountryFlag[]>(() => {
+    const nationalities = this.person()?.person.nationalities;
+    return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
+  });
+
+  readonly goalsAgainstClubsVisible = computed(() => this.goalsAgainstClubs().length > 0);
+  readonly goalsAgainstClubs = computed<GoalsAgainstClubStatsItemDto[]>(() => this.person()?.stats?.goalsAgainstClubs ?? []);
+
+  readonly wornJerseys = computed<ShirtDistributionItem[]>(() => this.person()?.stats?.shirtDistribution ?? []);
+
   constructor() {
     this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
       if (identity !== null && identity.role === AccountRole.Manager) {
-        this.personContextMenuOptions.next([
+        this.personContextMenuOptions.set([
           {
             items: [
               { 
@@ -137,8 +174,7 @@ export class PersonComponent implements OnDestroy {
   }
 
   onPersonResolved(person: GetPersonByIdResponse, orderedCompetitions: Array<BasicCompetition>): void {
-    this.person = person;
-    this.isLoading.set(false);
+    this.person.set(person);
 
     if (person.contract) {
       const effectiveContractUntil = person.contract.contractUntil || person.contract.onLoanUntil;
@@ -148,76 +184,20 @@ export class PersonComponent implements OnDestroy {
 
     if (person.stats) {
       const playerStats = getUiPlayerStats(person.stats.performance);
-      this.playerTotalStatsRows = this.getPlayerTotalStats(playerStats.overall);
-      this.playerCompetitionStats = this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition, orderedCompetitions);
-      this.opponentTotalStatsRows = isDefined(person.stats.opponent) ? this.getPlayerTotalStats(person.stats.opponent) : [];
-
-      this.shouldDisplayPlayerStatistics.set(this.playerCompetitionStats.length > 0);
-      this.goalsAgainstClubsVisible.set(person.stats.goalsAgainstClubs !== undefined && person.stats.goalsAgainstClubs.length > 0);
-      this.opponentStatsVisible.set(this.opponentTotalStatsRows.length > 0);
+      this.playerTotalStatsRows.set(this.getPlayerTotalStats(playerStats.overall));
+      this.playerCompetitionStats.set(this.getPlayerCompetitionStats(playerStats.competitions, playerStats.byCompetition, orderedCompetitions));
+      this.opponentTotalStatsRows.set(isDefined(person.stats.opponent) ? this.getPlayerTotalStats(person.stats.opponent) : []);
 
       const managerPeriodsFromStats = person.stats.managerPeriods ?? [];
-      this.managerPeriodListVisible.set(managerPeriodsFromStats.length > 0);
       this.managerPeriods.set(managerPeriodsFromStats);
 
       this.refereeGames.set(person.stats.refereeGames ?? []);
-      this.performance$.next(playerStats);
+      this.performance.set(playerStats);
     } else {
       this.refereeGames.set([]);
-      this.managerPeriodListVisible.set(false);
-    }
-  }
-
-  getExternalLinks() {
-    return this.person.externalLinks ? [...this.person.externalLinks] : [];
-  }
-
-  getFirstName() {
-    return this.person.person.firstName;
-  }
-
-  getLastName() {
-    return this.person.person.lastName;
-  }
-
-  getIconUrl() {
-    return this.person.person.avatar;
-  }
-
-  getBirthday() {
-    return this.person.person.birthday;
-  }
-
-  getDeathday() {
-    return this.person.person.deathday;
-  }
-
-  getPersonAge() {
-    const birthday = this.getBirthday();
-    if (!birthday) {
-      return null;
     }
 
-    const deathday = this.getDeathday();
-
-    if (isNotDefined(deathday)) {
-      return getAge(new Date(birthday));
-    } else {
-      return getAge(new Date(birthday), new Date(deathday));
-    }
-  }
-
-  getNationalities(): CountryFlag[] {
-    const nationalities = this.person.person.nationalities;
-    return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
-  }
-
-  getStatsAgainstMainText(): string {
-    return this.translationService.translate(`stats.againstMain`, { main: this.mainClub.shortName });
-  }
-
-  getStatsForMainText(): string {
-    return this.translationService.translate(`stats.forMain`, { main: this.mainClub.shortName });
+    this.isLoading.set(false);
   }
 
   onFilterOptionsSelected(filterOptions: GamePlayedFilterOptions) {
@@ -279,6 +259,7 @@ export class PersonComponent implements OnDestroy {
   }
 
   onPersonContextMenuItemSelected(itemId: string) {
+    // TODO implement
     console.log('selected', itemId);
   }
 
@@ -296,12 +277,13 @@ export class PersonComponent implements OnDestroy {
   }
 
   private showStatsModal(filterOptions?: GamePlayedFilterOptions) {
+    const person = ensureNotNullish(this.person()).person;
     this.modalService.showStatsModal({
       person: {
-        personId: this.person.person.id,
-        firstName: this.person.person.firstName,
-        lastName: this.person.person.lastName,
-        avatar: this.person.person.avatar,
+        personId: person.id,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        avatar: person.avatar,
       },
       filterOptions: filterOptions,
     }).pipe(takeUntil(this.destroy$)).subscribe();
@@ -323,7 +305,7 @@ export class PersonComponent implements OnDestroy {
     });
   }
 
-  private getPlayerTotalStats(stats: PlayerBaseStats): ReadonlyArray<UiStatsItem[]> {
+  private getPlayerTotalStats(stats: PlayerBaseStats): Array<UiStatsItem[]> {
     const items: Array<UiStatsItem[]> = [];
 
     // if the person has clean sheets we assume it's a goalkeeper, so we only display goals scored and assists if they actually have some
@@ -388,7 +370,7 @@ export class PersonComponent implements OnDestroy {
     return items;
   }
 
-  private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>, orderedCompetitions: Array<BasicCompetition>): ReadonlyArray<CompetitionStats> {
+  private getPlayerCompetitionStats(competitions: SmallCompetition[], competitionStats: Map<CompetitionId, PlayerBaseStats>, orderedCompetitions: Array<BasicCompetition>): Array<CompetitionStats> {
     const result: CompetitionStats[] = [];
 
     const orderedCompetitionIds = getOrderedCompetitionIds(Array.from(competitionStats.keys()), orderedCompetitions);

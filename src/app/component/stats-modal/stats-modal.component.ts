@@ -4,7 +4,7 @@ import { ModalComponent } from "@src/app/component/modal/modal.component";
 import { GamesPlayedService, GetPlayerGamesPlayedResponse } from '@src/app/module/games-played/service';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { groupBy } from '@src/app/util/array';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { BasicGame, GameStatus, ScoreTuple, UiPerson } from '@src/app/model/game';
 import { getGameResult } from '@src/app/module/game/util';
@@ -31,20 +31,18 @@ type SeasonGamesPlayed = {
 @Component({
   selector: 'app-stats-modal',
   imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, CheckboxSliderComponent],
-  templateUrl: './stats-modal.component.html',
-  styleUrl: './stats-modal.component.css'
+  templateUrl: './stats-modal.component.html'
 })
 export class StatsModalComponent implements OnInit, OnDestroy {
 
-  groupedGamesPlayed: SeasonGamesPlayed[] = [];
-
-  readonly groupedGamesPlayed$ = new BehaviorSubject<SeasonGamesPlayed[]>([]);
   readonly isLoading = signal(true);
   readonly isMoreAvailable = signal(false);
   readonly modalIcon = signal<UiIconDescriptor | null>(null);
   readonly modalTitle = signal('');
   readonly showSubstituteGames = signal(false);
   readonly includeSubstituteGames = signal(false);
+
+  readonly groupedGamesPlayed = signal<SeasonGamesPlayed[]>([]);
 
   private readonly modalPayload = signal<StatsModalPayload | null>(null);
   private readonly nextPageKey = signal<string | null>(null);
@@ -84,7 +82,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
     }
 
     const personId = currentPayload.person.personId;
-    this.groupedGamesPlayed = [];
+    this.groupedGamesPlayed.set([]);
     this.loadGamesPlayed(personId, requestPayload);
   }
 
@@ -95,18 +93,18 @@ export class StatsModalComponent implements OnInit, OnDestroy {
         const groupedResponse = groupBy(value.items, item => item.game.season.name);
         
         for (const seasonName of groupedResponse.keys()) {
-          const existing = this.groupedGamesPlayed.find(item => item.seasonName === seasonName);
+          const existing = this.groupedGamesPlayed().find(item => item.seasonName === seasonName);
           if (existing) {
             existing.gamesPlayed.push(...(groupedResponse.get(seasonName) || []));
           } else {
-            this.groupedGamesPlayed.push({
-              seasonName: seasonName,
-              gamesPlayed: groupedResponse.get(seasonName) || [],
+            this.groupedGamesPlayed.update(current => {
+                return [...current, {
+                seasonName: seasonName,
+                gamesPlayed: groupedResponse.get(seasonName) || [],
+              }]
             });
           }
         }
-
-        this.groupedGamesPlayed$.next(this.groupedGamesPlayed);
 
         this.isLoading.set(false);
         this.nextPageKey.set(value.nextPageKey ?? null);

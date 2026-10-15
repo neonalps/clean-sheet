@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { ArrowLeftComponent } from '@src/app/icon/arrow-left/arrow-left.component';
 import { PlaceholderPersonComponent } from '@src/app/icon/placeholder-person/placeholder-person.component';
 import { FormatGameMinutePipe } from '@src/app/pipe/format-minute.pipe';
@@ -12,14 +12,14 @@ import { FormatGameMinutePipe } from '@src/app/pipe/format-minute.pipe';
 })
 export class PlayerIconComponent {
 
-  @Input() iconUrl?: string;
-  @Input() iconBgColorClass = "bg-color-light-grey";
-  @Input() containerClass?: string;
-  @Input() yellowCard?: string;
-  @Input() yellowRedCard?: string;
-  @Input() redCard?: string;
-  @Input() off?: string;
-  @Input() captain: boolean = false;
-  @Input() showPlaceholder = false;
+  readonly iconUrl = input<string>();
+  readonly iconBgColorClass = input("bg-color-light-grey");
+  readonly containerClass = input<string>();
+  readonly yellowCard = input<string>();
+  readonly yellowRedCard = input<string>();
+  readonly redCard = input<string>();
+  readonly off = input<string>();
+  readonly captain = input<boolean>();
+  readonly showPlaceholder = input<boolean>();
 
 }

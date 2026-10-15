@@ -1,15 +1,17 @@
+@let isLoading = loading();
+@let details = matchdayDetails();
 <div>
     <div>
         <div class="text-lg mb-2">{{ 'matchdayDetails.otherGames' | $t }}</div>
         <div>
-            <app-round-games [loading]="loading" [fixtures]="matchdayDetails?.fixtures" />
+            <app-round-games [loading]="isLoading" [fixtures]="details?.fixtures" />
         </div>
     </div>
 
-    <div class="mt-6" *ngIf="!hideTable">
-        <div class="text-lg mb-2">{{ getTableAfterRoundText() }}</div>
+    <div class="mt-6" *ngIf="!hideTable()">
+        <div class="text-lg mb-2">{{ tableAfterRoundText() }}</div>
         <div>
-            <app-round-table [loading]="loading" [table]="matchdayDetails?.table" />
+            <app-round-table [loading]="isLoading" [table]="details?.table" />
         </div>
     </div>
 </div>

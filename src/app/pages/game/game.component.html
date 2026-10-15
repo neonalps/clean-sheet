@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="basis-1/15 pr-1" *ngIf="isContextMenuVisible()">
-                <app-context-menu [menuOptions]="gameContextMenuOptions" (onMenuItemSelected)="onGameContextMenuItemSelected($event)" />
+                <app-context-menu [menuSections]="gameContextMenuOptions()" (onMenuItemSelected)="onGameContextMenuItemSelected($event)" />
             </div>
         </div>
         <div class="flex justify-content-center py-1">

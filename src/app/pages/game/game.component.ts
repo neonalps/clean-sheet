@@ -99,7 +99,7 @@ export class GameComponent implements OnDestroy {
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub = signal<BasicGame[]>([]);
   readonly isContextMenuVisible = signal(false);
-  readonly gameContextMenuOptions = new BehaviorSubject<ContextMenuSection[]>([]);
+  readonly gameContextMenuOptions = signal<ContextMenuSection[]>([]);
 
   private readonly previousLeg = signal<DetailedGame | null>(null);
 
@@ -160,7 +160,7 @@ export class GameComponent implements OnDestroy {
     this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
       if (identity === null || identity.role !== AccountRole.Manager) {
         this.isContextMenuVisible.set(false);
-        this.gameContextMenuOptions.next([]);
+        this.gameContextMenuOptions.set([]);
       }
     });
 
@@ -259,7 +259,7 @@ export class GameComponent implements OnDestroy {
       )
     }
 
-    this.gameContextMenuOptions.next([
+    this.gameContextMenuOptions.set([
       { items: topSectionItems },
       { items: [
         { 'id': GameComponent.KEY_GAME_DELETE, 'text': this.translationService.translate('menu.deleteGame'), iconDescriptor: { 'type': 'standard', 'content': 'delete' }, isDanger: true },

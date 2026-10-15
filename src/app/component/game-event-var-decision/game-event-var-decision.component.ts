@@ -1,37 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { UiVarDecisionGameEvent } from '@src/app/model/game';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { isDefined, isNotDefined } from '@src/app/util/common';
+import { isNotDefined } from '@src/app/util/common';
+import { getPersonName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-game-event-var-decision',
   imports: [CommonModule, GameEventComponent, I18nPipe],
-  templateUrl: './game-event-var-decision.component.html',
-  styleUrl: './game-event-var-decision.component.css'
+  templateUrl: './game-event-var-decision.component.html'
 })
 export class GameEventVarDecisionComponent {
 
-  @Input() event!: UiVarDecisionGameEvent;
+  private readonly translationService = inject(TranslationService);
 
-  constructor(private readonly translationService: TranslationService) {}
+  readonly event = input.required<UiVarDecisionGameEvent>();
 
-  getDecision(): string {
-    return this.translationService.translate(`varDecision.${this.event.decision}`);
-  }
+  readonly decision = computed(() => this.translationService.translate(`varDecision.${this.event().decision}`));
+  readonly decisionReason = computed(() => {
+    const reason = this.event().reason;
 
-  getDecisionReason(): string | null {
-    if (isNotDefined(this.event.reason)) {
+    if (isNotDefined(reason)) {
       return null;
     }
 
-    return this.translationService.translate(`varDecisionReason.${this.event.reason}`);
-  }
+    return this.translationService.translate(`varDecisionReason.${reason}`);
+  });
 
-  getPersonName(): string {
-    return [this.event.affectedPlayer.firstName, this.event.affectedPlayer.lastName].filter(item => isDefined(item)).join(' ');
-  }
+  readonly personName = computed(() => getPersonName(this.event().affectedPlayer));
 
 }

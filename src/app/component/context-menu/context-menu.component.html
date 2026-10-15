@@ -1,12 +1,13 @@
+@let isOpenValue = isOpen();
 <div appClickOutside (clickOutside)="close()">
-    <div class="flex justify-content-center mr-1 pointer hover:text-light transition-colors" [ngClass]="{ 'text-light': isOpen(), 'text-light-grey-darker': !isOpen() }" (click)="toggle()">
+    <div class="flex justify-content-center mr-1 pointer hover:text-light transition-colors" [ngClass]="{ 'text-light': isOpenValue, 'text-light-grey-darker': !isOpenValue }" (click)="toggle()">
         <div class="width-1-25rem">
             <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'menu-vertical' }" />
         </div>
     </div>
     <div class="relative">
         <div class="bg-color-dark-grey-darker absolute z-200 min-w-180 right-0 py-2 transition-fade context-menu-shadow rounded-md mt-2" [ngClass]="{ 'hidden-fade': !isOpen() }">
-            @for (section of sections(); track $index) {
+            @for (section of menuSections(); track $index) {
                 <div class="mb-2 last:mb-0">
                     <div *ngIf="$index > 0" class="section-divider mb-2"></div>
                     @for (item of section.items; track item.id) {

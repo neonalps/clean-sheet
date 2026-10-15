@@ -9,7 +9,7 @@
     </ng-container>
     <ng-template #loadedContent>
         <div>
-            @for (user of users$ | async; track user.id) {
+            @for (user of users(); track user.id) {
                 <div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color px-3 py-2 rounded-lg mt-3 pointer flex align-items-center">
                     <div class="basis-1/10">
                         <div class="width-sm flex align-items-center justify-content-center">
@@ -26,7 +26,7 @@
                         <app-label [content]="getRoleName(user.role)" />
                     </div>
                     <div class="basis-1/10 flex align-items-center justify-content-end relative top-1">
-                        <app-context-menu [menuOptions]="contextMenuOptions$" (onMenuItemSelected)="onContextMenuItemSelected($event, user.id)" />
+                        <app-context-menu [menuSections]="contextMenuOptions()" (onMenuItemSelected)="onContextMenuItemSelected($event, user.id)" />
                     </div>
                 </div>
             }

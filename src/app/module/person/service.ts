@@ -30,7 +30,7 @@ export type GetPersonByIdResponse = {
     shirtDistribution?: Array<ShirtDistributionItem>;
     managerPeriods?: Array<ManagerPeriodForPerson>;
   },
-  externalLinks?: ReadonlyArray<ExternalProviderLinkDto>;
+  externalLinks?: Array<ExternalProviderLinkDto>;
 }
 
 @Injectable({

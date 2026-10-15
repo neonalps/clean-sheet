@@ -11,8 +11,7 @@ export type GameRecord = {
 @Component({
   selector: 'app-game-record',
   imports: [CommonModule],
-  templateUrl: './game-record.component.html',
-  styleUrl: './game-record.component.css'
+  templateUrl: './game-record.component.html'
 })
 export class GameRecordComponent {
 

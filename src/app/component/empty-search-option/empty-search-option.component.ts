@@ -1,16 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 
 @Component({
   selector: 'app-empty-search-option',
   imports: [UiIconComponent],
-  templateUrl: './empty-search-option.component.html',
-  styleUrl: './empty-search-option.component.css'
+  templateUrl: './empty-search-option.component.html'
 })
 export class EmptySearchOptionComponent {
 
-  @Input() iconDescriptor!: UiIconDescriptor;
-  @Input() emptyText!: string;
+  readonly iconDescriptor = input.required<UiIconDescriptor>();
+  readonly emptyText = input.required<string>();
 
 }

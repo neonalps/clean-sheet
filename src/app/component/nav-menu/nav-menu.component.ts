@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 
@@ -26,11 +26,12 @@ type MenuItem = {
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
 
-  readonly menuSections$ = new BehaviorSubject<MenuSection[]>([]);
-
-  @Output() onNavigationSelected = new EventEmitter<string>();
-
   private readonly authService = inject(AuthService);
+
+  readonly onNavigationSelected = output<string>();
+
+  readonly menuSections = signal<MenuSection[]>([]);
+
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -38,12 +39,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(identity => {
         if (identity === null) {
-          this.menuSections$.next([]);
+          this.menuSections.set([]);
           return;
         }
 
         const visibleSections = this.resolveMenuSectionsForRole(identity.role);
-        this.menuSections$.next(visibleSections);
+        this.menuSections.set(visibleSections);
       });
   }
 
@@ -53,7 +54,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   }
 
   navItemClicked(target: string) {
-    this.onNavigationSelected.next(target);
+    this.onNavigationSelected.emit(target);
   }
 
   private resolveMenuSectionsForRole(role: AccountRole): MenuSection[] {

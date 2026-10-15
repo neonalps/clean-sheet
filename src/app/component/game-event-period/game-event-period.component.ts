@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { DividerComponent } from "../divider/divider.component";
+import { Component, computed, inject, input } from '@angular/core';
+import { DividerComponent } from "@src/app/component/divider/divider.component";
 import { UiGameEvent } from '@src/app/model/game';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
-import { isDefined, isNotDefined } from '@src/app/util/common';
+import { isNotDefined } from '@src/app/util/common';
 
 @Component({
   selector: 'app-game-event-period',
@@ -19,23 +19,16 @@ export class GameEventPeriodComponent {
     ['PSO', 'penaltyShootOut'],
   ]);
 
-  @Input() event!: UiGameEvent;
-  @Input() periodText: string | undefined;
-  @Input() isTransparent: boolean = false;
-  @Input() textSize: string | undefined;
-  @Input() bgColor: string | undefined;
-  @Input() additionalClasses: string | undefined;
+  private readonly translationService = inject(TranslationService);
 
-  constructor(private readonly translationService: TranslationService) {}
+  readonly event = input.required<UiGameEvent>();
+  readonly periodText = input<string>();
+  readonly isTransparent = input(false);
+  readonly textSize = input<string>();
+  readonly bgColor = input<string>();
+  readonly additionalClasses = input<string>();
 
-  getPeriodText(): string {
-    if (isDefined(this.periodText)) {
-      return this.periodText;
-    }
-
-    const translationKey = this.getTranslationKey(this.event.baseMinute);
-    return this.translationService.translate(translationKey);
-  }
+  readonly effectivePeriodText = computed(() => this.periodText() ?? this.translationService.translate(this.getTranslationKey(this.event().baseMinute)));
 
   private getTranslationKey(period: string): string {
     const key = GameEventPeriodComponent.PERIOD_MAP.get(period);

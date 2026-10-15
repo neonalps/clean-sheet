@@ -84,7 +84,7 @@ import { JerseyIconComponent } from '@src/app/icon/jersey/jersey-icon.component'
 })
 export class UiIconComponent {
 
-  descriptor = input.required<UiIconDescriptor>();
-  iconClassName = input<string>();
+  readonly descriptor = input.required<UiIconDescriptor>();
+  readonly iconClassName = input<string>();
 
 }

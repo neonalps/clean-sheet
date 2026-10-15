@@ -1,6 +1,6 @@
-<div class="flex align-items-center" [ngClass]="containerClasses">
+<div class="flex align-items-center" [ngClass]="containerClasses()">
     <div class="flex-grow-1 flex align-items-center">
-        <span class="bold text-light text-lg">{{ headerText }}</span>
+        <span class="bold text-light text-lg">{{ headerText() }}</span>
     </div>
     <div class="basis-1/8 flex justify-content-end pr-1" [title]="'performance.gamesPlayed' | $t">
         <div class="width-sm">

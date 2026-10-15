@@ -1,18 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-arrow-left',
   imports: [],
-  templateUrl: './arrow-left.component.html',
-  styleUrl: './arrow-left.component.css'
+  templateUrl: './arrow-left.component.html'
 })
 export class ArrowLeftComponent {
 
-  @Input() color?: string;
-  
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
+  readonly color = input<string>();
+
+  readonly effectiveColor = computed(() => this.color() ?? KEYWORD_CURRENT_COLOR);
 
 }

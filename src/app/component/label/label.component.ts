@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-label',
   imports: [CommonModule],
-  templateUrl: './label.component.html',
-  styleUrl: './label.component.css'
+  templateUrl: './label.component.html'
 })
 export class LabelComponent {
 
-  @Input() content!: string;
-  @Input() additionalClasses: string[] | string = '';
+  readonly content = input.required<string>();
+  readonly additionalClasses = input<string[] | string>('');
 
 }

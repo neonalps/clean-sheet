@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { UiPlayerStats } from '@src/app/model/stats';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { processTranslationPlaceholders } from '@src/app/util/common';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { combinePlayerBaseStats, getEmptyPlayerBaseStats } from '@src/app/module/stats/util';
-import { filter, Subject, takeUntil } from 'rxjs';
 import { CompetitionStats } from '@src/app/component/stats-player-competition/stats-player-competition.component';
 import { StatsPlayerHeaderComponent } from "@src/app/component/stats-player-header/stats-player-header.component";
 import { SeasonService } from '@src/app/module/season/service';
@@ -16,37 +15,26 @@ import { StatsBySeasonAndCompetition, PlayerSeasonStatsComponent } from '@src/ap
 @Component({
   selector: 'app-stats-player-stats',
   imports: [CommonModule, I18nPipe, StatsPlayerHeaderComponent, PlayerSeasonStatsComponent],
-  templateUrl: './stats-player-stats.component.html',
-  styleUrl: './stats-player-stats.component.css'
+  templateUrl: './stats-player-stats.component.html'
 })
-export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
+export class StatsPlayerStatsComponent {
 
-  @Input() headerText!: string;
-  @Input() performance$!: Subject<UiPlayerStats | null>;
-  
-  @Output() filterOptionsSelected = new EventEmitter<GamePlayedFilterOptions>();
-
-  readonly statsBySeasonAndCompetition = signal<StatsBySeasonAndCompetition[] | null>(null);
-
-  private readonly destroy$ = new Subject<void>();
   private readonly seasonService = inject(SeasonService);
   private readonly translationService = inject(TranslationService);
 
-  ngOnInit(): void {
-    this.performance$
-      .pipe(
-        filter(value => value !== null),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(performance => {
-        this.statsBySeasonAndCompetition.set(this.getBySeasonAndCompetitionStats(performance));
-      });
-  }
+  readonly headerText = input.required<string>();
+  readonly performance = input<UiPlayerStats | null>(null);
+  
+  readonly filterOptionsSelected = output<GamePlayedFilterOptions>();
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  readonly statsBySeasonAndCompetition = computed<StatsBySeasonAndCompetition[] | null>(() => {
+    const currentPerformance = this.performance();
+    if (!currentPerformance) {
+      return null;
+    }
+
+    return this.getBySeasonAndCompetitionStats(currentPerformance);
+  });
 
   getBySeasonAndCompetitionStats(performance: UiPlayerStats): StatsBySeasonAndCompetition[] {
     const bySeasonAndCompetitionStats: StatsBySeasonAndCompetition[] = [];
@@ -88,14 +76,14 @@ export class StatsPlayerStatsComponent implements OnInit, OnDestroy {
   }
 
   seasonTotalClicked(seasonId: SeasonId, filterItemType: keyof GamePlayedFilterOptions) {
-    this.filterOptionsSelected.next({
+    this.filterOptionsSelected.emit({
       seasonId: `${seasonId}`,
       [filterItemType]:  filterItemType === 'minutesPlayed' ? '+0' : '+1',
     });
   }
 
   seasonCompetitionClicked(seasonId: SeasonId, filterOptions: GamePlayedFilterOptions) {
-    this.filterOptionsSelected.next({
+    this.filterOptionsSelected.emit({
       ...filterOptions,
       seasonId: `${seasonId}`,
     });

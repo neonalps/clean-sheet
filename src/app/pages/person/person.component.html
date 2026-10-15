@@ -12,28 +12,29 @@
     </div>
 </ng-container>
 <ng-template #loadedContent>
-    @let nationalities = getNationalities();
-    @let birthday = getBirthday();
-    @let deathday = getDeathday();
-    @let avatar = getIconUrl();
+    @let nationalitiesValue = nationalities();
+    @let birthdayValue = birthday();
+    @let deathdayValue = deathday();
+    @let avatarValue = iconUrl();
     @let contractUntilValue = contractUntil();
+    @let personAgeValue = personAge();
     <div class="pb-8">
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
             <div class="flex">
                 <div class="flex-grow flex align-items-center">
-                    <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatar">
-                        <app-player-icon [iconUrl]="avatar" [containerClass]="'max-w-4'" [iconBgColorClass]="'bg-color-transparent'" />
+                    <div class="basis-1/4 flex align-items-center justify-content-center" *ngIf="avatarValue">
+                        <app-player-icon [iconUrl]="avatarValue" [containerClass]="'max-w-4'" [iconBgColorClass]="'bg-color-transparent'" />
                     </div>
-                    <div [ngClass]="{ 'pl-4': !avatar }">
+                    <div [ngClass]="{ 'pl-4': !avatarValue }">
                         <div>
                             <span class="mr-2 text-xl">
-                                <span>{{ getFirstName() }}</span>
-                                <span class="bold"> {{ getLastName() }}</span>
+                                <span>{{ firstName() }}</span>
+                                <span class="bold"> {{ lastName() }}</span>
                             </span>
-                            <ng-container *ngIf="nationalities.length > 0">
-                                <ng-container *ngFor="let country of nationalities">
+                            <ng-container *ngIf="nationalitiesValue.length > 0">
+                                @for (country of nationalitiesValue; track $index) {
                                     <span class="mr-1 last:mr-0" [title]="country.title">{{ country.flag }}</span>
-                                </ng-container>
+                                }
                             </ng-container>
                         </div>
                         <div class="mt-2 flex align-items-center" *ngIf="birthday">
@@ -43,17 +44,17 @@
                                 </div>
                             </div>
                             <div>
-                                <span class="text-sm text-light-grey-darker">{{ birthday | date:'MMM d yyyy' }} <span *ngIf="!deathday">({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span></span>
+                                <span class="text-sm text-light-grey-darker">{{ birthdayValue | date:'MMM d yyyy' }} <span *ngIf="!deathdayValue">({{ personAgeValue }} {{ 'date.yearsOld' | $t }})</span></span>
                             </div>
                         </div>
-                        <div class="mt-2 flex align-items-center" *ngIf="deathday">
+                        <div class="mt-2 flex align-items-center" *ngIf="deathdayValue">
                             <div class="birthday-icon-container mr-2">
                                 <div class="relative top-1 text-light-grey">
                                     <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'coffin' }" />
                                 </div>
                             </div>
                             <div>
-                                <span class="text-sm text-light-grey-darker">{{ deathday | date:'MMM d yyyy' }} ({{ getPersonAge() }} {{ 'date.yearsOld' | $t }})</span>
+                                <span class="text-sm text-light-grey-darker">{{ deathdayValue | date:'MMM d yyyy' }} ({{ personAgeValue }} {{ 'date.yearsOld' | $t }})</span>
                             </div>
                         </div>
                         <div class="mt-2 flex align-items-center" *ngIf="contractUntilValue">
@@ -67,11 +68,11 @@
                                 <div *ngIf="onLoan()" class="ml-3 text-xs uppercase rounded-lg border-1 border-solid border-info-darker-20 px-2 py-1">{{ 'contract.onLoan' | $t }}</div>
                             </div>
                         </div>
-                        <app-external-links [externalLinks]="getExternalLinks()" />
+                        <app-external-links [externalLinks]="externalLinks()" />
                     </div>
                 </div>
                 <div *ngIf="contextMenuVisible()">
-                    <app-context-menu [menuOptions]="personContextMenuOptions" (onMenuItemSelected)="onPersonContextMenuItemSelected($event)" />
+                    <app-context-menu [menuSections]="personContextMenuOptions()" (onMenuItemSelected)="onPersonContextMenuItemSelected($event)" />
                 </div>
             </div>
         </div>
@@ -89,12 +90,12 @@
             </div>
         </ng-container>
 
-        <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="shouldDisplayPlayerStatistics()">
+        <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="mainStatsVisible()">
             <div class="pl-3 flex align-items-center mb-1">
-                <div class="bold text-light text-lg">{{ getStatsForMainText() }}</div>
+                <div class="bold text-light text-lg">{{ statsForMainText() }}</div>
             </div>
-            <div *ngIf="playerTotalStatsRows" class="pb-4">
-                @for (totalStatsRow of playerTotalStatsRows; track $index) {
+            <div *ngIf="playerTotalStatsRows()" class="pb-4">
+                @for (totalStatsRow of playerTotalStatsRows(); track $index) {
                     <div class="flex justify-content-evenly mt-8">
                         @for (statsItem of totalStatsRow; track $index) {
                             <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(statsItem.itemType, true)">
@@ -118,10 +119,10 @@
 
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="opponentStatsVisible()">
             <div class="pl-3 flex align-items-center mb-1">
-                <div class="bold text-light text-lg">{{ getStatsAgainstMainText() }}</div>
+                <div class="bold text-light text-lg">{{ statsAgainstMainText() }}</div>
             </div>
-            <div *ngIf="opponentTotalStatsRows" class="pb-4">
-                @for (opponentStatsRow of opponentTotalStatsRows; track $index) {
+            <div *ngIf="opponentTotalStatsRows()" class="pb-4">
+                @for (opponentStatsRow of opponentTotalStatsRows(); track $index) {
                     <div class="flex justify-content-evenly mt-8">
                         @for (opponentStatsItem of opponentStatsRow; track $index) {
                             <div class="basis-1/3 flex flex-col align-items-center pointer hover:bg-color-dark-grey transition-colors p-2 mx-1 rounded-lg" (click)="onStatsItemClicked(opponentStatsItem.itemType, false)">
@@ -143,17 +144,17 @@
             </div>
         </div>
 
-        <ng-container *ngIf="playerCompetitionStats.length > 0">
+        <ng-container *ngIf="playerCompetitionStats().length > 0">
             <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
                 <div>
                     <app-stats-player-header [containerClasses]="'mb-6'" [headerText]="'performance.competitionStats' | $t" />
-                    <app-stats-player-competition [competitionStats]="playerCompetitionStats" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+                    <app-stats-player-competition [competitionStats]="playerCompetitionStats()" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
                 </div>
             </div>
 
             <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3">
                 <div>
-                    <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance$]="performance$" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+                    <app-stats-player-stats [headerText]="'performance.seasonStats'" [performance]="performance()" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
                 </div>
             </div>
 
@@ -162,18 +163,19 @@
                     <div class="bold text-light text-base">{{ 'player.goalsAgainstClubs' | $t }}</div>
                 </div>
                 <div>
-                    <app-stats-goals-against-clubs [goalsAgainstClubs]="person.stats?.goalsAgainstClubs ?? []" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+                    <app-stats-goals-against-clubs [goalsAgainstClubs]="goalsAgainstClubs()" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
                 </div>
             </div>
         </ng-container>
 
-        <ng-container *ngIf="person.stats?.shirtDistribution && (person.stats?.shirtDistribution ?? []).length > 0">
+        @let wornJerseysValue = wornJerseys();
+        <ng-container *ngIf="wornJerseysValue.length > 0">
             <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3" >
                 <div class="flex align-items-center mb-3">
                     <div class="bold text-light text-md">{{ 'jersey.worn' | $t }}</div>
                 </div>
                 <div>
-                    <app-shirt-distribution [wornJerseys]="person.stats?.shirtDistribution ?? []" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
+                    <app-shirt-distribution [wornJerseys]="wornJerseysValue" (filterOptionsSelected)="onFilterOptionsSelected($event)" />
                 </div>
             </div>
         </ng-container>

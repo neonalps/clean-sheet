@@ -1,5 +1,5 @@
-@for (competitionItem of competitionStats; track $index) {
-    <div class="competition-item flex align-items-center">
+@for (competitionItem of competitionStats(); track $index) {
+    <div class="flex align-items-center mb-3 last:mb-0">
         <div class="basis-1/2 flex-grow-1 flex align-items-center">
             <div class="width-sm mr-3 relative top-1" *ngIf="competitionItem.competition.iconSmall">
                 <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionItem.competition.iconSmall }" />
