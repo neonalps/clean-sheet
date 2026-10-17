@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, Component, ContentChildren, ElementRef, EventEmitter, Input, OnDestroy, Output, QueryList, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, contentChildren, effect, ElementRef, input, output, viewChild } from '@angular/core';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
-import { Observable, Subject, takeUntil } from 'rxjs';
 import { TabGroupItemHeaderComponent, TabItemInfo } from "@src/app/component/tab-group-item-header/tab-group-item-header.component";
 
 @Component({
@@ -10,42 +9,40 @@ import { TabGroupItemHeaderComponent, TabItemInfo } from "@src/app/component/tab
   templateUrl: './tab-group.component.html',
   styleUrl: './tab-group.component.css'
 })
-export class TabGroupComponent implements AfterContentInit, OnDestroy {
+export class TabGroupComponent implements AfterContentInit {
 
-  @Input() activeTab!: Observable<string | null>;
-  @Input() horizontalScroll = false;
-  @Input() stretchWholeWidth = true;
-  @Output() onTabSelected = new EventEmitter<string>();  
+  readonly activeTab = input.required<string | null>();
+  readonly horizontalScroll = input(false);
+  readonly stretchWholeWidth = input(true);
+  readonly onTabSelected = output<string>();
 
-  @ViewChild('groupContainer', { static: false }) groupContainer!: ElementRef;
-  @ContentChildren(TabItemComponent) tabs!: QueryList<TabItemComponent>;
+  readonly groupContainerElement = viewChild.required<ElementRef<HTMLElement>>('groupContainer');
 
-  private readonly destroy$ = new Subject<void>();
+  readonly tabs = contentChildren(TabItemComponent);
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  constructor() {
+    effect(() => {
+      const activeTabValue = this.activeTab();
+      if (activeTabValue !== null) {
+        this.selectTab(activeTabValue, false);
+      }
+    });
   }
 
   ngAfterContentInit(): void {
-    this.activeTab.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (value !== null) {
-        this.selectTab(value, false);
-      }
-    });
-
-    const activeTabs = this.tabs.filter(tab => tab.active);
-    if (activeTabs.length === 0 && this.tabs.first) {
-      this.selectTab(this.tabs.first.tabId, false);
+    const tabsValue = this.tabs();
+    const activeTabs = tabsValue.filter(tab => tab.active());
+    if (activeTabs.length === 0 && tabsValue.length > 0) {
+      this.selectTab(tabsValue[0].tabId(), false);
     }
   }
 
   onTabItemSelected(tabItem: TabItemInfo) {
     this.selectTab(tabItem.id);
 
-    const containerWidth = this.groupContainer.nativeElement.getBoundingClientRect().width;
+    const containerWidth = this.groupContainerElement().nativeElement.getBoundingClientRect().width;
 
-    const containerScrollLeft = this.groupContainer.nativeElement.scrollLeft;
+    const containerScrollLeft = this.groupContainerElement().nativeElement.scrollLeft;
     const itemLeft = tabItem.position.left;
 
     const effectiveLeft = containerScrollLeft + itemLeft - 24;
@@ -55,15 +52,15 @@ export class TabGroupComponent implements AfterContentInit, OnDestroy {
 
     if (elementTooFarLeft || elementTooFarRight) {
       // scroll in a way the elemnt will be centered (or all the way to the left/right if they are at one of the ends)
-      this.groupContainer.nativeElement.scrollTo({ left: effectiveLeft - ((containerWidth - tabItem.position.width) / 2), behavior: 'smooth' })
+      this.groupContainerElement().nativeElement.scrollTo({ left: effectiveLeft - ((containerWidth - tabItem.position.width) / 2), behavior: 'smooth' })
     }
   }
 
   selectTab(tabId: string, publish: boolean = true) {
-    this.tabs.forEach((tab) => tab.active = tab.tabId === tabId);
+    this.tabs().forEach((tab) => tab.active.set(tab.tabId() === tabId));
 
     if (publish === true) {
-      this.onTabSelected.next(tabId);
+      this.onTabSelected.emit(tabId);
     }
   }
 

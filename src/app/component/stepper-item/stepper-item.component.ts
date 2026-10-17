@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, signal } from '@angular/core';
+import { Component, input, Input, signal } from '@angular/core';
 
 @Component({
   selector: 'app-stepper-item',
@@ -8,12 +8,12 @@ import { Component, Input, signal } from '@angular/core';
 })
 export class StepperItemComponent {
 
-  @Input() stepId!: string;
-  @Input() displayName!: string;
+  readonly stepId = input.required<string>();
+  readonly displayName = input('');
 
-  active = signal(false);
-  completed = signal(false);
-  disabled = signal(false);
-  hidden = signal(false);
+  readonly active = signal(false);
+  readonly completed = signal(false);
+  readonly disabled = signal(false);
+  readonly hidden = signal(false);
 
 }

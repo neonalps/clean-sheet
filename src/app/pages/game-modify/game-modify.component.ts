@@ -4,7 +4,7 @@ import { GameStatus, ManagingRole, RefereeRole, TacticalFormation } from '@src/a
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { ClubId, CompetitionId, DateString, GameId, PersonId, VenueFlavorId, VenueId } from '@src/app/util/domain-types';
 import { navigateToSeasonGames, PATH_PARAM_GAME_ID } from '@src/app/util/router';
-import { BehaviorSubject, filter, map, Observable, of, Subject, take, takeUntil } from 'rxjs';
+import { filter, map, Observable, of, Subject, take, takeUntil } from 'rxjs';
 import { StepConfig, StepperComponent } from "@src/app/component/stepper/stepper.component";
 import { StepperItemComponent } from "@src/app/component/stepper-item/stepper-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -124,8 +124,7 @@ type CurrentModifyGameState = {
 @Component({
   selector: 'app-game-modify',
   imports: [CommonModule, StepperComponent, StepperItemComponent, I18nPipe, GameEventEditorComponent, ModifyBaseGameComponent, ModifyGameLineupsComponent],
-  templateUrl: './game-modify.component.html',
-  styleUrl: './game-modify.component.css'
+  templateUrl: './game-modify.component.html'
 })
 export class ModifyGameComponent implements OnInit, OnDestroy {
 
@@ -158,7 +157,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
 
   readonly onlyBaseInformationEditable = signal(false);
 
-  readonly modifyGameSteps$ = new BehaviorSubject<StepConfig[]>([]);
+  readonly modifyGameSteps = signal<StepConfig[]>([]);
 
   private readonly currentCacheValue = signal<CurrentModifyGameState | null>(null);
 
@@ -198,7 +197,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
         const canOnlyEditBaseGameInformation = isDefined(state.base.id) && state.base.status === GameStatus.Finished;
         this.onlyBaseInformationEditable.set(canOnlyEditBaseGameInformation);
 
-        this.modifyGameSteps$.next(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
+        this.modifyGameSteps.set(canOnlyEditBaseGameInformation ? ModifyGameComponent.UPDATE_GAME_STEPS : ModifyGameComponent.CREATE_GAME_STEPS);
 
         this.currentStep.set(state.step);
         this.baseGameInformation.set(state.base);
@@ -302,7 +301,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
       case 'general':
         throw new Error(`Cannot go back`);
       case 'lineups':
-        this.modifyGameSteps$.next([
+        this.modifyGameSteps.set([
           { stepId: 'general', active: true, completed: true, disabled: false, hidden: false },
           { stepId: 'lineups', active: false, completed: false, disabled: false, hidden: false },
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
@@ -313,7 +312,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
         });
         break;
       case 'events':
-        this.modifyGameSteps$.next([
+        this.modifyGameSteps.set([
           { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
           { stepId: 'lineups', active: true, completed: true, disabled: false, hidden: false },
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
@@ -332,7 +331,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     const step = this.currentStep();
     switch (step) {
       case 'general':
-        this.modifyGameSteps$.next([
+        this.modifyGameSteps.set([
           { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
           { stepId: 'lineups', active: true, completed: false, disabled: false, hidden: false },
           { stepId: 'events', active: false, completed: false, disabled: true, hidden: false },
@@ -343,7 +342,7 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
         });
         break;
       case 'lineups':
-        this.modifyGameSteps$.next([
+        this.modifyGameSteps.set([
           { stepId: 'general', active: false, completed: true, disabled: false, hidden: false },
           { stepId: 'lineups', active: false, completed: true, disabled: false, hidden: false },
           { stepId: 'events', active: true, completed: false, disabled: true, hidden: false },

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
 import { SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
@@ -30,21 +30,21 @@ export class SelectComponent implements OnInit, OnDestroy {
   @ViewChild('main', { static: false }) mainElement!: ElementRef;
   @ViewChild('search', { static: false }) searchElement!: ElementRef;
 
-  @Input() optionsSource!: Observable<SelectOption[]>;
-  @Input() emptyText!: string;
-  @Input() isLoading = false;
-  @Input() showSearch: boolean = false;
-  @Input() selectedOption?: Observable<SelectOption | null>;
-  @Input() hideChevron = false;
-  @Input() showOutline = true;
-  @Input() showSelectedTick = true;
-  @Input() minWidth: string | null = null;
-  @Input() centerOptions: boolean = false;
-  @Input() loadingStyle: LoadingStyle = 'spinner';
-  @Input() skeletonRowCount: number = 3;
+  readonly optionsSource = input.required<Observable<SelectOption[]>>();
+  readonly emptyText = input<string>('');
+  readonly isLoading = input(false);
+  readonly showSearch = input(false);
+  readonly selectedOption = input<Observable<SelectOption | null>>();
+  readonly hideChevron = input(false);
+  readonly showOutline = input(true);
+  readonly showSelectedTick = input(true);
+  readonly minWidth = input<string | null>(null);
+  readonly centerOptions = input(false);
+  readonly loadingStyle = input<LoadingStyle>('spinner');
+  readonly skeletonRowCount = input(3);
 
-  @Output() onSearch = new EventEmitter<string>();
-  @Output() onSelected = new EventEmitter<SelectOption>();
+  readonly onSearch = output<string>();
+  readonly onSelected = output<SelectOption>();
 
   readonly options = signal<SelectOption[] | null>(null);
 
@@ -53,22 +53,22 @@ export class SelectComponent implements OnInit, OnDestroy {
 
   readonly emptyOptionsVisible = signal(false);
 
-  readonly skeletonRows = [...Array(this.skeletonRowCount).keys()];
+  readonly skeletonRows = computed(() => [...Array(this.skeletonRowCount()).keys()]);
 
   private readonly destroy$ = new Subject<void>();
 
   private readonly currentSearchValue = signal('');
 
   ngOnInit(): void {
-    this.displayText.set(this.emptyText);
+    this.displayText.set(this.emptyText());
 
-    this.optionsSource.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    this.optionsSource().pipe(takeUntil(this.destroy$)).subscribe(value => {
       this.options.set(value);
 
       this.emptyOptionsVisible.set(this.currentSearchValue().trim().length > 0 && value.length === 0);
     });
 
-    this.selectedOption?.pipe(
+    this.selectedOption()?.pipe(
       filter(value => value !== null), 
       takeUntil(this.destroy$)
     ).subscribe(value => {
@@ -84,7 +84,7 @@ export class SelectComponent implements OnInit, OnDestroy {
   onSearchChange(event: Event): void {
     const searchValue = getHtmlInputElementFromEvent(event).value;
     this.currentSearchValue.set(searchValue);
-    this.onSearch.next(searchValue);
+    this.onSearch.emit(searchValue);
   }
 
   onSelect(selectedOption: SelectOption): void {
@@ -97,15 +97,16 @@ export class SelectComponent implements OnInit, OnDestroy {
     this.currentValue.set(selectedOption);
     this.displayIcon.set(selectedOption.icon ?? null);
     this.displayText.set(selectedOption.name);
-    this.onSelected.next(selectedOption);
+    this.onSelected.emit(selectedOption);
     this.hideDropdown();
   }
 
   getDynamicStyles() {
     const dynamicStyles: Record<string, string | number> = {};
 
-    if (isDefined(this.minWidth)) {
-      dynamicStyles['min-width'] = this.minWidth;
+    const minWidth = this.minWidth();
+    if (isDefined(minWidth)) {
+      dynamicStyles['min-width'] = minWidth;
     }
 
     return dynamicStyles;
@@ -114,9 +115,10 @@ export class SelectComponent implements OnInit, OnDestroy {
   getDynamicOptionStyles() {
     const dynamicStyles: Record<string, string | number> = {};
 
+    const minWidth = this.minWidth();
     // use the parent's min width as the options width
-    if (isDefined(this.minWidth)) {
-      dynamicStyles['width'] = this.minWidth;
+    if (isDefined(minWidth)) {
+      dynamicStyles['width'] = minWidth;
     }
 
     return dynamicStyles;
@@ -131,7 +133,7 @@ export class SelectComponent implements OnInit, OnDestroy {
   toggleDropdown() {
     const isOpen = this.isOpen();
 
-    if (!isOpen && this.showSearch) {
+    if (!isOpen && this.showSearch()) {
       this.focusSearch();
     }
 

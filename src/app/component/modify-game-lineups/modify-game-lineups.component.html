@@ -1,4 +1,4 @@
-<app-tab-group [activeTab]="activeTab$" [horizontalScroll]="true">
+<app-tab-group [activeTab]="activeTab()" [horizontalScroll]="true">
     <app-tab-item [tabId]="'main'" [tabTitle]="mainTabTitle()" [tabIcon]="mainTabIcon() ?? { 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
         <div>
             <app-lineup-selector [titleText]="'lineup.starting' | $t" [maximumPeople]="11" [hasCaptain]="true" [hasShirt]="true" [unavailableShirts]="unavailableMainShirts()" (onLineupItemsUpdated)="onMainStartingUpdated($event)" />

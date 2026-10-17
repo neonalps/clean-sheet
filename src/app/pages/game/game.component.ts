@@ -95,7 +95,7 @@ export class GameComponent implements OnDestroy {
 
   readonly isLoading = signal(true);
 
-  readonly activeTab$ = new BehaviorSubject<string | null>(null);
+  readonly activeTab = signal<string | null>(null);
   readonly lastGamesAgainstClub$ = new Subject<BasicGame[]>;
   readonly performanceTrendAgainstClub = signal<BasicGame[]>([]);
   readonly isContextMenuVisible = signal(false);
@@ -744,7 +744,7 @@ export class GameComponent implements OnDestroy {
     const currentNav = this.router.getCurrentNavigation();
 
     const selectedTab = currentNav?.extractedUrl?.fragment ?? 'events';
-    this.activeTab$.next(selectedTab);
+    this.activeTab.set(selectedTab);
 
     const game = currentNav?.extras?.state?.['game'];
     if (isDefined(game)) {

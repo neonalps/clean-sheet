@@ -1,44 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { GameEventType, UiGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent } from '@src/app/model/game';
+import { Component, computed, input } from '@angular/core';
+import { GameEventType, UiGameEvent, UiPenaltyShootOutGameEvent } from '@src/app/model/game';
 import { COLOR_DANGER_LIGHTER_30, COLOR_SUCCESS } from '@src/styles/constants';
 import { FootballComponent } from "@src/app/icon/football/football.component";
 
 @Component({
   selector: 'app-game-event',
   imports: [CommonModule, FootballComponent],
-  templateUrl: './game-event.component.html',
-  styleUrl: './game-event.component.css'
+  templateUrl: './game-event.component.html'
 })
 export class GameEventComponent {
 
-  @Input() event!: UiGameEvent;
+  readonly event = input.required<UiGameEvent>();
 
-  isPsoEvent(): boolean {
-    return this.event.type === GameEventType.PenaltyShootOut;
-  }
+  readonly isPsoEvent = computed(() => this.event().type === GameEventType.PenaltyShootOut);
+  
+  readonly isPsoGoal = computed(() => {
+    const event = this.event();
+    return event.type === GameEventType.PenaltyShootOut && (event as UiPenaltyShootOutGameEvent).result === 'goal';
+  })
 
-  getOutcomeColor(): string {
-    return this.isPsoGoal() ? COLOR_SUCCESS : COLOR_DANGER_LIGHTER_30;
-  }
+  readonly outcomeColor = computed(() => this.isPsoGoal() ? COLOR_SUCCESS : COLOR_DANGER_LIGHTER_30);
 
-  showGameMinute(): boolean {
-    return !this.event.baseMinute.startsWith("FT") && !this.event.baseMinute.startsWith("AET") && !this.event.baseMinute.startsWith("APSO") && !this.event.baseMinute.startsWith("PSO");
-  }
+  readonly showGameMinute = computed(() => {
+    const event = this.event();
+    return !event.baseMinute.startsWith("FT") && !event.baseMinute.startsWith("AET") && !event.baseMinute.startsWith("APSO") && !event.baseMinute.startsWith("PSO");
+  });
 
-  showGap(): boolean {
+  readonly showGap = computed(() => {
     if (!this.isPsoEvent()) {
       return false;
     }
 
-    const psoEvent = this.event as UiPenaltyShootOutGameEvent;
+    const psoEvent = this.event() as UiPenaltyShootOutGameEvent;
 
     const attemptIndex = psoEvent.attemptIndex || 0;
     return !psoEvent.lastAttempt && attemptIndex >= 10 && attemptIndex % 2 === 0;
-  }
-
-  private isPsoGoal(): boolean {
-    return (this.event as UiPenaltyShootOutGameEvent).result === 'goal';
-  }
+  });
 
 }

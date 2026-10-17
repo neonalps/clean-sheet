@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, input, Input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
-import { BehaviorSubject, debounceTime, filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { Component, ElementRef, inject, input, OnDestroy, OnInit, output, signal, viewChild } from '@angular/core';
+import { debounceTime, filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
@@ -24,33 +24,29 @@ import { ToastService } from '@src/app/module/toast/service';
 @Component({
   selector: 'app-lineup-selector',
   imports: [CommonModule, LineupSelectorPersonItemComponent, LoadingComponent, I18nPipe, UiIconComponent, CdkDropList, EmptyStateComponent, FieldWithBallComponent],
-  templateUrl: './lineup-selector.component.html',
-  styleUrl: './lineup-selector.component.css'
+  templateUrl: './lineup-selector.component.html'
 })
 export class LineupSelectorComponent implements OnInit, OnDestroy {
 
-  @Input() titleText!: string;
+  readonly personSearchElement = viewChild.required<ElementRef<HTMLElement>>('searchPerson');
+
+  readonly titleText = input.required<string>();
   
-  @Input() forMain: boolean | undefined;
-  @Input() hasCaptain = true;
-  @Input() hasShirt = true;
-  @Input() maximumPeople: number | undefined;
+  readonly forMain = input(true);
+  readonly hasCaptain = input(true);
+  readonly hasShirt = input(true);
+  readonly maximumPeople = input<number>();
 
   readonly unavailableShirts = input<number[]>();
 
   readonly onLineupItemsUpdated = output<LineupItem[]>();
-
-  @ViewChild('searchPerson', { static: false }) searchElement!: ElementRef;
-  @ViewChild('startingSection', { static: false }) startingSection!: ElementRef;
 
   readonly currentSearchValue = signal<string | null>(null);
   readonly isAdding = signal(false);
   readonly isSearchingForPerson = signal(false);
   readonly addPersonOptions = signal<SelectOption[] | null>(null);
 
-  readonly lineupItems$ = new BehaviorSubject<LineupItem[]>([]);
-
-  private readonly lineupItems: LineupItem[] = [];
+  readonly lineupItems = signal<LineupItem[]>([]);
 
   private readonly destroy$ = new Subject<void>();
   private readonly personSearch$ = new Subject<string>();
@@ -62,8 +58,6 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   private readonly translationService = inject(TranslationService);
 
   ngOnInit(): void {
-    this.lineupItems$.next(this.lineupItems);
-
     this.personSearch$.pipe(
       debounceTime(250),
       switchMap(value => {
@@ -105,13 +99,16 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   focusSearch(): void {
-    setTimeout(() => this.searchElement.nativeElement.focus());
+    setTimeout(() => this.personSearchElement().nativeElement.focus());
   }
 
   onLineupPersonRemoved(personId: PersonId) {
-    const idxToRemove = this.lineupItems.findIndex(item => item.person.personId === personId);
+    const lineupItemsCopy = [...this.lineupItems()];
+
+    const idxToRemove = lineupItemsCopy.findIndex(item => item.person.personId === personId);
     if (idxToRemove >= 0) {
-      this.lineupItems.splice(idxToRemove, 1);
+      lineupItemsCopy.splice(idxToRemove, 1);
+      this.lineupItems.set([...lineupItemsCopy]);
       this.publishLineupItems();
     }
   }
@@ -119,20 +116,25 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   onPersonSelected(option: SelectOption) {
     const selectedPersonId = Number(option.id);
 
-    this.lineupItems.push({
-      shirt: 0,
-      person: {
-        personId: selectedPersonId,
-        firstName: option.name,
-        lastName: '',
-        avatar: option.icon?.content,
-      },
-      forMain: this.forMain ?? undefined,
+    this.lineupItems.update(current => {
+      return [
+        ...current,
+        {
+          shirt: 0,
+          person: {
+            personId: selectedPersonId,
+            firstName: option.name,
+            lastName: '',
+            avatar: option.icon?.content,
+          },
+          forMain: this.forMain() ?? undefined,
+        }
+      ]
     });
 
     this.resetAdd();
 
-    if (this.hasShirt) {
+    if (this.hasShirt()) {
       this.personShirtClicked(selectedPersonId);
     } else {
       this.publishLineupItems();
@@ -140,16 +142,20 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-     moveItemInArray(this.lineupItems, event.previousIndex, event.currentIndex);
+    const lineupItemsCopy = [...this.lineupItems()];
+
+     moveItemInArray(lineupItemsCopy, event.previousIndex, event.currentIndex);
+
+     this.lineupItems.set([...lineupItemsCopy]);
      this.publishLineupItems();
   }
 
   personShirtClicked(personId: PersonId) {
-    if (!this.hasShirt) {
+    if (!this.hasShirt()) {
       return;
     }
 
-    const lineupItem = this.lineupItems.find(item => item.person.personId === personId);
+    const lineupItem = this.lineupItems().find(item => item.person.personId === personId);
     if (!lineupItem) {
       return;
     }
@@ -169,33 +175,41 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const lineupItem = this.lineupItems.find(item => item.person.personId === payload.personId);
+    const lineupItemsCopy = [...this.lineupItems()];
+
+    const lineupItem = lineupItemsCopy.find(item => item.person.personId === payload.personId);
     if (!lineupItem || lineupItem.shirt === payload.shirt) {
       return;
     }
 
     lineupItem.shirt = payload.shirt;
 
+    this.lineupItems.set([...lineupItemsCopy]);
+
     this.publishLineupItems();
   }
 
   onPersonSetCaptain(personId: PersonId) {
-    if (!this.hasCaptain) {
+    if (!this.hasCaptain()) {
       return;
     }
 
-    const lineupItem = this.lineupItems.find(item => item.person.personId === personId);
+    const lineupItemsCopy = [...this.lineupItems()];
+
+    const lineupItem = lineupItemsCopy.find(item => item.person.personId === personId);
     if (!lineupItem || lineupItem.isCaptain === true) {
       return;
     }
 
-    this.lineupItems
+    lineupItemsCopy
       .filter(item => item.isCaptain === true)
       .forEach(item => {
         item.isCaptain = false
       });
 
     lineupItem.isCaptain = true;
+
+    this.lineupItems.set([...lineupItemsCopy]);
 
     this.publishLineupItems();
   }
@@ -242,8 +256,7 @@ export class LineupSelectorComponent implements OnInit, OnDestroy {
   }
 
   private publishLineupItems() {
-    this.lineupItems$.next(this.lineupItems);
-    this.onLineupItemsUpdated.emit(this.lineupItems);
+    this.onLineupItemsUpdated.emit(this.lineupItems());
   }
 
 }

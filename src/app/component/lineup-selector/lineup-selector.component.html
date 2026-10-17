@@ -1,19 +1,20 @@
 @let options = addPersonOptions();
-@let lineupItems = lineupItems$ | async;
-@let maximumPeopleReached = maximumPeople !== undefined && lineupItems !== null && lineupItems.length >= maximumPeople;
+@let lineupItemsValue = lineupItems();
+@let maximumPeopleValue = maximumPeople();
+@let maximumPeopleReached = maximumPeopleValue !== undefined && lineupItemsValue.length >= maximumPeopleValue;
 <div>
     <section>
         <div class="flex align-items-center">
-            <div class="flex-grow bold text-base my-2">{{ titleText }}</div>
+            <div class="flex-grow bold text-base my-2">{{ titleText() }}</div>
             <div class="flex align-items-center justify-content-center" [ngClass]="{ 'pointer': !isAdding(), 'invisible': isAdding() || maximumPeopleReached }" (click)="triggerAddPerson()">
                 <div class="text-sm hover:text-light-grey transition-colors">{{ 'lineup.addPerson' | $t }}</div>
             </div>
         </div>
         <div #startingLineup>
             <section #startingSection cdkDropList (cdkDropListDropped)="drop($event)">
-                <ng-container *ngIf="isAdding() || (lineupItems && (lineupItems.length > 0)); else emptyLineup">
-                    @for (lineupItem of lineupItems; track lineupItem.person.personId) {
-                        <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" [hasCaptain]="hasCaptain" [hasShirt]="hasShirt" />
+                <ng-container *ngIf="isAdding() || (lineupItemsValue.length > 0); else emptyLineup">
+                    @for (lineupItem of lineupItemsValue; track lineupItem.person.personId) {
+                        <app-lineup-selector-person-item [item]="lineupItem" (onRemove)="onLineupPersonRemoved($event)" (onPersonShirtClicked)="personShirtClicked($event)" (onSetCaptain)="onPersonSetCaptain($event)" [hasCaptain]="hasCaptain()" [hasShirt]="hasShirt()" />
                     }
                     <div *ngIf="maximumPeopleReached" class="mt-6 text-sm">
                         {{ 'lineup.maximumPeopleReached' | $t }}

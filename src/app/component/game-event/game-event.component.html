@@ -1,14 +1,15 @@
+@let eventValue = event();
 <div class="flex" [ngClass]="{ 'mb-5': showGap(), 'min-h-54': !isPsoEvent(), 'min-h-46': isPsoEvent() }">
     <div class="basis-1/10 game-event-minute text-sm flex flex-col align-items-center justify-content-center">
         <ng-container *ngIf="!isPsoEvent(); else pso">
             <ng-container *ngIf="showGameMinute()">
-                <div>{{ event.baseMinute }}</div>
-                <div *ngIf="event.additionalMinute" class="text-light-grey">{{ event.additionalMinute }}</div>
+                <div>{{ eventValue.baseMinute }}</div>
+                <div *ngIf="eventValue.additionalMinute" class="text-light-grey">{{ eventValue.additionalMinute }}</div>
             </ng-container>
         </ng-container>
         <ng-template #pso>
-            <div class="width-xs football-container">
-                <app-football [color]="getOutcomeColor()" />
+            <div class="width-xs relative top-3">
+                <app-football [color]="outcomeColor()" />
             </div>
         </ng-template>
     </div>

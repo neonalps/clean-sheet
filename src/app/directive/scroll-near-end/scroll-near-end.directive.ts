@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, input, Input, output, Output } from '@angular/core';
+import { Directive, ElementRef, HostListener, input, output } from '@angular/core';
 
 @Directive({
   selector: '[appScrollNearEnd]',

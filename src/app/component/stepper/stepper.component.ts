@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, Component, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewChild } from '@angular/core';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { AfterContentInit, Component, contentChildren, effect, ElementRef, input, viewChild } from '@angular/core';
 import { StepperItemComponent } from '@src/app/component/stepper-item/stepper-item.component';
 
 export type StepConfig = {
@@ -17,28 +16,20 @@ export type StepConfig = {
   imports: [CommonModule],
   templateUrl: './stepper.component.html'
 })
-export class StepperComponent implements AfterContentInit, OnDestroy {
+export class StepperComponent implements AfterContentInit {
 
-  @Input() stepConfig$!: Observable<StepConfig[]>;
+  readonly stepConfig = input.required<StepConfig[]>();
 
-  @ViewChild('stepperContainer', { static: false }) stepperContainer!: ElementRef;
-  @ContentChildren(StepperItemComponent) steps!: QueryList<StepperItemComponent>;
+  readonly stepperContainerElement = viewChild.required<ElementRef<HTMLElement>>('stepperContainer');
 
-  private readonly destroy$ = new Subject<void>();
+  readonly steps = contentChildren(StepperItemComponent);
 
-  ngAfterContentInit(): void {
-    // select the first step by default unless a step is already active
-    const activeSteps = this.steps.filter(step => step.active() === true);
-    if (activeSteps.length === 0 && this.steps.first) {
-      this.selectStep(this.steps.first.stepId, false);
-    }
+  constructor() {
+    effect(() => {
+      const currentStepConfig = this.stepConfig();
 
-    this.stepConfig$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(config => {
-        console.log('received config update', config);
-        this.steps.forEach(step => {
-          const configUpdate = config.find(item => item.stepId === step.stepId);
+      this.steps().forEach(step => {
+          const configUpdate = currentStepConfig.find(item => item.stepId === step.stepId());
           if (!configUpdate) {
             return;
           }
@@ -55,25 +46,25 @@ export class StepperComponent implements AfterContentInit, OnDestroy {
             step.disabled.set(configUpdate.disabled); 
           }
 
-          if (configUpdate.displayName !== undefined) {
-            step.displayName = configUpdate.displayName;
-          }
-
           if (configUpdate.hidden !== undefined) {
             step.hidden.set(configUpdate.hidden);
           }
         });
-      });
+    });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngAfterContentInit(): void {
+    // select the first step by default unless a step is already active
+    const stepsValue = this.steps();
+    const activeSteps = stepsValue.filter(step => step.active() === true);
+    if (activeSteps.length === 0 && stepsValue.length > 0) {
+      this.selectStep(stepsValue[0].stepId());
+    }
   }
 
-  selectStep(stepId: string, publish: boolean = true) {
-    for (const step of this.steps) {
-      step.active.set(step.stepId === stepId);
+  selectStep(stepId: string) {
+    for (const step of this.steps()) {
+      step.active.set(step.stepId() === stepId);
     }
   }
 

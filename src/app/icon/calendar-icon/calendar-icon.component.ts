@@ -1,18 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-calendar-icon',
   imports: [],
-  templateUrl: './calendar-icon.component.html',
-  styleUrl: './calendar-icon.component.css'
+  templateUrl: './calendar-icon.component.html'
 })
 export class CalendarIconComponent {
 
-  @Input() color?: string;
-  
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
+  readonly color = input<string>();
+
+  readonly effectiveColor = computed(() => this.color() ?? KEYWORD_CURRENT_COLOR);
 
 }

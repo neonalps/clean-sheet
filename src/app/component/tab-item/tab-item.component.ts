@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { UiIconDescriptor } from '@src/app/model/icon';
 
 @Component({
@@ -10,11 +10,11 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 })
 export class TabItemComponent {
 
-  @Input() tabId!: string;
-  @Input() tabTitle = '';
-  @Input() tabIcon?: UiIconDescriptor;
-  @Input() tabIconClasses = ['width-sm', 'relative', 'top-2'];
+  readonly tabId = input.required<string>();
+  readonly tabTitle = input('');
+  readonly tabIcon = input<UiIconDescriptor>();
+  readonly tabIconClasses = input(['width-sm', 'relative', 'top-2']);
 
-  active = false;
+  readonly active = signal(false);
 
 }

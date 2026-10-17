@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
+import { Directive, ElementRef, HostListener, output } from '@angular/core';
 
 @Directive({
   selector: '[appScrollPercentage]',
@@ -6,13 +6,11 @@ import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angu
 })
 export class ScrollPercentageDirective {
 
-  @Output() reachedThreshold = new EventEmitter<void>();
+  readonly reachedThreshold = output<void>();
 
   private readonly threshold = 0.8; // 80%
 
-  constructor(private el: ElementRef) {
-    console.log('directive init');
-  }
+  constructor(private el: ElementRef) {}
 
   @HostListener('window:scroll', ['$event.target'])
   onScroll(): void {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 import { UiIconDescriptor } from '@src/app/model/icon';
 
@@ -25,22 +25,22 @@ export type TabItemInfo = {
 })
 export class TabGroupItemHeaderComponent {
 
-  @Input() active!: boolean;
-  @Input() tabId!: string;
-  @Input() tabIcon?: UiIconDescriptor;
-  @Input() tabIconClasses: string[] = [];
-  @Input() tabTitle!: string;
-  @Input() wordBreak: boolean = true;
+  readonly headerElement = viewChild.required<ElementRef<HTMLElement>>('header');
 
-  @ViewChild('header', { static: false }) header!: ElementRef;
+  readonly active = input.required<boolean>();
+  readonly tabId = input.required<string>();
+  readonly tabIcon = input<UiIconDescriptor>();
+  readonly tabIconClasses = input<string[]> ([]);
+  readonly tabTitle = input.required<string>();
+  readonly wordBreak = input(true);
 
-  @Output() onTabItemSelected = new EventEmitter<TabItemInfo>();
+  readonly onTabItemSelected = output<TabItemInfo>();
 
   onHeaderClicked(): void {
-    const elementPosition = this.header.nativeElement.getBoundingClientRect();
+    const elementPosition = this.headerElement().nativeElement.getBoundingClientRect();
     
-    this.onTabItemSelected.next({
-      id: this.tabId,
+    this.onTabItemSelected.emit({
+      id: this.tabId(),
       position: {
         x: elementPosition.x,
         y: elementPosition.y,

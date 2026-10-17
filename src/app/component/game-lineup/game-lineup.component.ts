@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { UiGameManager, UiGamePlayer, UiTeamLineup } from '@src/app/model/game';
+import { Component, computed, inject, input } from '@angular/core';
+import { UiGamePlayer, UiTeamLineup } from '@src/app/model/game';
 import { GameLineupItemComponent } from "@src/app/component/game-lineup-item/game-lineup-item.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { CommonModule } from '@angular/common';
@@ -29,17 +29,21 @@ export type UiLineupRow = {
 })
 export class GameLineupComponent {
 
-  @Input() lineup!: UiTeamLineup;
+  private readonly router = inject(Router);
 
-  constructor(private readonly router: Router) {}
+  readonly lineup = input.required<UiTeamLineup>();
 
-  getLineup(): UiLineupRow[] {
-    const tacticalFormation = this.lineup.tacticalFormation;
+  readonly starters = computed(() => this.lineup().players.slice(0, 11));
+  readonly substitutes = computed(() => this.lineup().players.slice(11));
+  readonly managers = computed(() => this.lineup().managers);
+
+  readonly lineupRows = computed(() => {
+    const tacticalFormation = this.lineup().tacticalFormation;
     if (isNotDefined(tacticalFormation)) {
       return [];
     }
 
-    const starters = this.getStarters();
+    const starters = this.starters();
     const usePositionGrid = starters.every(item => isDefined(item.positionGrid));
 
     switch (tacticalFormation) {
@@ -60,19 +64,7 @@ export class GameLineupComponent {
       default:
         assertUnreachable(tacticalFormation);
     }
-  }
-
-  getStarters(): UiGamePlayer[] {
-    return this.lineup.players.slice(0, 11);
-  }
-
-  getSubstitutes(): UiGamePlayer[] {
-    return this.lineup.players.slice(11);
-  }
-
-  getManagers(): UiGameManager[] {
-    return this.lineup.managers;
-  }
+  });
 
   personSelected(personId: PersonId, firstName: string | undefined, lastName: string | undefined): void {
     navigateToPerson(this.router, personId, getDisplayName(firstName, lastName));

@@ -30,7 +30,7 @@ export const KEY_ACCOUNT_PROFILE_SETTINGS = "profileSettings";
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  activeTab$ = new BehaviorSubject<string | null>(null);
+  readonly activeTab = signal<string | null>(null);
 
   readonly isLoading = signal(true);
   readonly isSubmitting = signal(false);

@@ -1,6 +1,6 @@
 <div class="px-2">
     <div class="page-title mb-5 ml-1">{{ (isEditMode() ? 'pageTitle.editGame' : 'pageTitle.createGame') | $t }}</div>
-    <app-stepper [stepConfig$]="modifyGameSteps$">
+    <app-stepper [stepConfig]="modifyGameSteps()">
         <app-stepper-item [stepId]="'general'" [displayName]="'game.modify.general' | $t">
             <div class="mt-4">
                 <app-modify-base-game [input]="baseGameInformation$" (onUpdate)="onBaseGameInformationUpdate($event)" />

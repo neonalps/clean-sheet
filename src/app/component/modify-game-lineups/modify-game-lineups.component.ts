@@ -25,8 +25,7 @@ export type ModifyGameLineup = {
 @Component({
   selector: 'app-modify-game-lineups',
   imports: [CommonModule, I18nPipe, TabGroupComponent, TabItemComponent, LineupSelectorComponent],
-  templateUrl: './modify-game-lineups.component.html',
-  styleUrl: './modify-game-lineups.component.css'
+  templateUrl: './modify-game-lineups.component.html'
 })
 export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
 
@@ -34,7 +33,7 @@ export class ModifyGameLineupsComponent implements OnInit, OnDestroy {
   
   readonly onGameLineupUpdated = output<ModifyGameLineup>();
 
-  readonly activeTab$ = new BehaviorSubject<TabId>('main');
+  readonly activeTab = signal<TabId>('main');
 
   readonly mainTabTitle = signal('');
   readonly mainTabIcon = signal<UiIconDescriptor | null>(null);
