@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
+import { Component, computed, input } from '@angular/core';
+import { KEYWORD_CURRENT_COLOR, KEYWORD_TRANSPARENT } from '@src/styles/constants';
 
 @Component({
   selector: 'app-filter-icon',
@@ -8,15 +8,10 @@ import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 })
 export class FilterIconComponent {
 
-  @Input() color?: string;
-  @Input() fillColor?: string;
+  readonly color = input<string>();
+  readonly fillColor = input<string>();
 
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
-
-  getFillColor(): string | undefined {
-    return this.fillColor;
-  }
+  readonly effectiveColor = computed(() => this.color() ?? KEYWORD_CURRENT_COLOR);
+  readonly effectiveFillColor = computed(() => this.fillColor() ?? KEYWORD_TRANSPARENT);
 
 }

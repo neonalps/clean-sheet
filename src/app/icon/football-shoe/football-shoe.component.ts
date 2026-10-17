@@ -1,18 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 
 @Component({
   selector: 'app-football-shoe',
   imports: [],
-  templateUrl: './football-shoe.component.html',
-  styleUrl: './football-shoe.component.css'
+  templateUrl: './football-shoe.component.html'
 })
 export class FootballShoeComponent {
 
-  @Input() color?: string;
+  readonly color = input<string>();
 
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
+  readonly effectiveColor = computed(() => this.color() ?? KEYWORD_CURRENT_COLOR);
 
 }

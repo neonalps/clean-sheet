@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { KEYWORD_CURRENT_COLOR, KEYWORD_TRANSPARENT } from '@src/styles/constants';
 
 @Component({
@@ -8,15 +8,10 @@ import { KEYWORD_CURRENT_COLOR, KEYWORD_TRANSPARENT } from '@src/styles/constant
 })
 export class StarIconComponent {
 
-  @Input() color?: string;
-  @Input() fillColor?: string;
+  readonly color = input<string>();
+  readonly fillColor = input<string>();
 
-  getColor(): string {
-    return this.color || KEYWORD_CURRENT_COLOR;
-  }
-
-  getFillColor(): string {
-    return this.fillColor || KEYWORD_TRANSPARENT;
-  }
+  readonly effectiveColor = computed(() => this.color() ?? KEYWORD_CURRENT_COLOR);
+  readonly effectiveFillColor = computed(() => this.fillColor() ?? KEYWORD_TRANSPARENT);
 
 }
