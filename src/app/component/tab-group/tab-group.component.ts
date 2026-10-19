@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterContentInit, Component, contentChildren, effect, ElementRef, input, output, viewChild } from '@angular/core';
+import { AfterContentInit, Component, contentChildren, ElementRef, input, output, viewChild } from '@angular/core';
 import { TabItemComponent } from '@src/app/component/tab-item/tab-item.component';
 import { TabGroupItemHeaderComponent, TabItemInfo } from "@src/app/component/tab-group-item-header/tab-group-item-header.component";
 
@@ -19,15 +19,6 @@ export class TabGroupComponent implements AfterContentInit {
   readonly groupContainerElement = viewChild.required<ElementRef<HTMLElement>>('groupContainer');
 
   readonly tabs = contentChildren(TabItemComponent);
-
-  constructor() {
-    effect(() => {
-      const activeTabValue = this.activeTab();
-      if (activeTabValue !== null) {
-        this.selectTab(activeTabValue, false);
-      }
-    });
-  }
 
   ngAfterContentInit(): void {
     const tabsValue = this.tabs();

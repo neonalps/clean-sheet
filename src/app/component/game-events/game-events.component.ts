@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { UiCardGameEvent, UiGameEvent, UiGoalGameEvent, UiInjuryTimeGameEvent, UiPenaltyMissedGameEvent, UiPenaltyShootOutGameEvent, UiSubstitutionGameEvent, UiVarDecisionGameEvent } from '@src/app/model/game';
 import { GameEventGoalComponent } from "@src/app/component/game-event-goal/game-event-goal.component";
 import { GameEventCardComponent } from "@src/app/component/game-event-card/game-event-card.component";

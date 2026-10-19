@@ -1,5 +1,5 @@
 <div>
-    @for (event of events(); track event.id) {
+    @for (event of events(); track $index) {
         @switch (event.type) {
             @case ('goal') {
                 <app-game-event-goal [event]="getGoalGameEvent(event)" />
