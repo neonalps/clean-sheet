@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
-import { BasicGame, Tendency } from '@src/app/model/game';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { BasicGame, RecordSummary, Tendency } from '@src/app/model/game';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
 import { ChipGroupComponent, ChipGroupInput } from "@src/app/component/chip-group/chip-group.component";
-import { GameRecord, GameRecordComponent } from "@src/app/component/game-record/game-record.component";
 import { navigateToGameWithoutDetails } from '@src/app/util/router';
 import { Router } from '@angular/router';
 import { CompetitionId } from '@src/app/util/domain-types';
@@ -16,10 +15,12 @@ import { CollapsibleComponent } from "@src/app/component/collapsible/collapsible
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { FilterIconComponent } from "@src/app/icon/filter/filter.component";
 import { COLOR_LIGHT } from '@src/styles/constants';
+import { GameRecordSummaryComponent } from '@src/app/component/game-record-summary/game-record-summary.component';
+import { calculateGameRecordSummary } from '@src/app/module/stats/util';
 
 @Component({
   selector: 'app-filterable-game-list',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent, ChipGroupComponent, GameRecordComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent],
+  imports: [CommonModule, I18nPipe, GameOverviewComponent, ChipGroupComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent, GameRecordSummaryComponent],
   templateUrl: './filterable-game-list.component.html'
 })
 export class FilterableGameListComponent implements OnInit {
@@ -33,12 +34,13 @@ export class FilterableGameListComponent implements OnInit {
   readonly homeAwayFiltersVisible = signal(false);
   readonly tendencyFiltersVisible = signal(false);
 
-  readonly gameRecord = signal<GameRecord>({ w: 0, d: 0, l: 0 });
   readonly competitionChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly homeAwayChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly tendencyChips = signal<ChipGroupInput>({ chips: [], mode: 'single' });
   readonly visibleGames = signal<BasicGame[]>([]);
-  readonly filtersExapnded = signal(false);
+  readonly filtersExpanded = signal(false);
+
+  readonly gameRecordSummary = computed<RecordSummary>(() => calculateGameRecordSummary(this.games()));
 
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);
@@ -207,7 +209,7 @@ export class FilterableGameListComponent implements OnInit {
   }
 
   triggerToggle() {
-    this.filtersExapnded.update(current => !current);
+    this.filtersExpanded.update(current => !current);
   }
 
   private updateUi() {
@@ -243,15 +245,6 @@ export class FilterableGameListComponent implements OnInit {
       });
 
     this.hasActiveFilters.set(visibleGames.length !== storedGames.length);
-
-    // determine and publish new game record
-    this.gameRecord.set(visibleGames.reduce((acc: GameRecord, current: BasicGame): GameRecord => {
-        return {
-          w: acc.w + (current.resultTendency === 'w' ? 1 : 0),
-          d: acc.d + (current.resultTendency === 'd' ? 1 : 0),
-          l: acc.l + (current.resultTendency === 'l' ? 1 : 0),
-        };
-      }, { w: 0, d: 0, l: 0 }));
 
     // publish visible games
     const updatedVisibleGamesSize = this.currentActivePage() * this.gamesPageSize;

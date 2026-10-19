@@ -283,6 +283,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Injured,
       },
       {
+        id: GameAbsenceReason.LowerLegFracture,
+        name: this.translationService.translate(`injury.lowerLegFracture`),
+        type: GameAbsenceType.Injured,
+      },
+      {
         id: GameAbsenceReason.Muscle,
         name: this.translationService.translate(`injury.muscle`),
         type: GameAbsenceType.Injured,
@@ -300,6 +305,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
       {
         id: GameAbsenceReason.Thigh,
         name: this.translationService.translate(`injury.thigh`),
+        type: GameAbsenceType.Injured,
+      },
+      {
+        id: GameAbsenceReason.UpperLegFracture,
+        name: this.translationService.translate(`injury.upperLegFracture`),
         type: GameAbsenceType.Injured,
       },
     ].sort((a, b) => {

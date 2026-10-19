@@ -1,0 +1,53 @@
+@let recordSummaryValue = recordSummary();
+<div class="my-5 flex align-items-center justify-content-evenly">
+    <div class="mx-3" (click)="itemClicked(null)">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg border-solid border-1 border-light rounded-lg mb-4 bold py-1 min-w-42">{{ recordSummaryValue.gameCount }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ gamesText() }}</div>
+        </div>
+    </div>
+    <div class="mx-3" (click)="itemClicked('w')">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg mb-4 result-tendency-w rounded-lg py-1 min-w-42">{{ recordSummaryValue.win }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ winsText() }}</div>
+        </div>
+    </div>
+    <div class="mx-3" (click)="itemClicked('d')">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg mb-4 result-tendency-d rounded-lg py-1 min-w-42">{{ recordSummaryValue.draw }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ drawsText() }}</div>
+        </div>
+    </div>
+    <div class="mx-3" (click)="itemClicked('l')">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg mb-4 result-tendency-l rounded-lg py-1 min-w-42">{{ recordSummaryValue.loss }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ lossesText() }}</div>
+        </div>
+    </div>
+</div>
+<div class="flex align-items-center justify-content-evenly mt-8 mb-4" *ngIf="showExtendedSummary()">
+    <div class="mx-3">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg mb-4 min-w-42">{{ winPercentage() }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ 'record.winPercentage' | $t }}</div>
+        </div>
+    </div>
+    <div class="mx-3">
+        <div class="mx-3 center">
+            <div class="flex align-items-center justify-content-center">
+                <div class="text-lg mb-4 min-w-42">{{ averagePoints() }}</div>
+            </div>
+            <div class="text-xs text-light-grey">{{ 'record.averagePoints' | $t }}</div>
+        </div>
+    </div>
+</div>

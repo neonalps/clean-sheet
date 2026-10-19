@@ -1,4 +1,5 @@
 import { SmallCompetition } from "@src/app/model/competition";
+import { RecordSummary, Tendency } from "@src/app/model/game";
 import { Season } from "@src/app/model/season";
 import { PlayerBaseStats, PlayerSeasonStatsItemDto, PlayerStatsItemDto, UiPlayerStats } from "@src/app/model/stats";
 import { CompetitionId, SeasonId } from "@src/app/util/domain-types";
@@ -121,4 +122,23 @@ export function getUiPlayerStats(seasonStats: Array<PlayerSeasonStatsItemDto>): 
         byCompetition,
         bySeasonAndCompetition,
     }
+}
+
+export function calculateGameRecordSummary(tendencies: { resultTendency: Tendency }[]): RecordSummary {
+    const gameRecord = tendencies.reduce((acc, current) => {
+        return {
+            win: acc.win + (current.resultTendency === 'w' ? 1 : 0),
+            draw: acc.draw + (current.resultTendency === 'd' ? 1 : 0),
+            loss: acc.loss + (current.resultTendency === 'l' ? 1 : 0),
+        };
+    }, { win: 0, draw: 0, loss: 0 });
+
+    const gameCount = gameRecord.win + gameRecord.draw + gameRecord.loss;
+    return {
+        gameCount,
+        win: gameRecord.win,
+        draw: gameRecord.draw,
+        loss: gameRecord.loss,
+        avgPointsFixed: `${((gameRecord.win * 3 + gameRecord.draw) / gameCount).toFixed(3)}`,
+    };
 }

@@ -12,10 +12,11 @@ import { GamePlayedFilterOptions } from '@src/app/model/game-played';
 import { Tendency } from '@src/app/model/game';
 import { Nullish } from '@src/app/util/types';
 import { Person } from '@src/app/model/person';
+import { GameRecordSummaryComponent } from '@src/app/component/game-record-summary/game-record-summary.component';
 
 @Component({
   selector: 'app-manager-period',
-  imports: [CommonModule, I18nPipe, PersonCardComponent, SeasonTitleSmallComponent],
+  imports: [CommonModule, I18nPipe, PersonCardComponent, SeasonTitleSmallComponent, GameRecordSummaryComponent],
   templateUrl: './manager-period.component.html',
 })
 export class ManagerPeriodComponent implements OnInit {
@@ -24,16 +25,9 @@ export class ManagerPeriodComponent implements OnInit {
 
   readonly managerPerson = signal<Person | null>(null);
 
-  readonly avgPoints = signal('');
   readonly durationDaysText = signal('');
-  readonly winPercentage = signal('');
   readonly durationText = signal('');
   readonly personName = signal('');
-  
-  readonly gamesI18nPlural = signal('');
-  readonly winsI18nPlural = signal('');
-  readonly drawsI18nPlural = signal('');
-  readonly lossesI18nPlural = signal('');
 
   readonly period = input.required<ManagerPeriod | ManagerPeriodForPerson>();
 
@@ -47,14 +41,6 @@ export class ManagerPeriodComponent implements OnInit {
       this.managerPerson.set(periodValue.person);
       this.personName.set(getPersonName(periodValue.person));
     }
-
-    this.avgPoints.set(`Ø ${periodValue.summary.avgPointsFixed.replace('.', ',')}`);
-    this.winPercentage.set(`${ Math.round(periodValue.summary.win / periodValue.summary.gameCount * 100) }%`);
-
-    this.gamesI18nPlural.set(this.translationService.translate('gameRecord.game', { plural: periodValue.summary.gameCount }));
-    this.winsI18nPlural.set(this.translationService.translate('gameRecord.win', { plural: periodValue.summary.win }));
-    this.drawsI18nPlural.set(this.translationService.translate('gameRecord.draw', { plural: periodValue.summary.draw }));
-    this.lossesI18nPlural.set(this.translationService.translate('gameRecord.loss', { plural: periodValue.summary.loss }));
 
     const startDate = ensureNotNullish(this.datePipe.transform(new Date(periodValue.start)));
     const endDate = periodValue.end ? this.datePipe.transform(new Date(periodValue.end)) : undefined;
