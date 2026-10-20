@@ -16,8 +16,7 @@ export type ChipGroupInput = {
 @Component({
   selector: 'app-chip-group',
   imports: [ChipComponent, CommonModule],
-  templateUrl: './chip-group.component.html',
-  styleUrl: './chip-group.component.css'
+  templateUrl: './chip-group.component.html'
 })
 export class ChipGroupComponent {
 

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
@@ -17,7 +16,7 @@ import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-competition',
-  imports: [CommonModule, UiIconComponent, I18nPipe, CompetitionTitleComponent],
+  imports: [UiIconComponent, I18nPipe, CompetitionTitleComponent],
   templateUrl: './competition.component.html'
 })
 export class CompetitionComponent implements OnDestroy {

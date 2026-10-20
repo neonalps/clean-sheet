@@ -1,15 +1,20 @@
 @let gameValue = game();
+@let showClubIconValue = showClubIcon();
 @let showGameDateValue = showGameDate();
 <div class="flex flex-col align-items-center justify-content-center">
-    <div *ngIf="!showGameDateValue">
-        <app-club-icon [iconUrl]="gameValue.opponent.iconSmall!" [iconClassName]="'width-1-75rem'"  />
-    </div>
-    <div *ngIf="showGameDateValue">
-        <div class="text-xs text-light-grey-darker center">
-            <div>{{ gameValue.kickoff | date:'MMM d' }}</div>
-            <div>{{ gameValue.kickoff | date:'YYYY' }}</div>
+    @if (showClubIconValue) {
+        <div>
+            <app-club-icon [iconUrl]="gameValue.opponent.iconSmall!" [iconClassName]="'width-1-75rem'"  />
         </div>
-    </div>
+    }
+    @if (showGameDateValue) {
+        <div>
+            <div class="text-xs text-light-grey-darker center">
+                <div>{{ gameValue.kickoff | date:'MMM d' }}</div>
+                <div>{{ gameValue.kickoff | date:'YYYY' }}</div>
+            </div>
+        </div>
+    }
     <div class="mt-3">
         <app-game-score [game]="gameValue" [hideExtendedPlayText]="hideExtendedPlayText()" />
     </div>

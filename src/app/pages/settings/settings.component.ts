@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { SelectOption } from '@src/app/component/select/option';
 import { SelectComponent } from '@src/app/component/select/select.component';
 import { TabGroupComponent } from '@src/app/component/tab-group/tab-group.component';
@@ -25,8 +25,7 @@ export const KEY_ACCOUNT_PROFILE_SETTINGS = "profileSettings";
 @Component({
   selector: 'app-settings',
   imports: [CommonModule, I18nPipe, TabGroupComponent, TabItemComponent, SelectComponent, ButtonComponent, LoadingComponent],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
@@ -46,6 +45,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
   readonly pushDateFormat$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushGameMinuteFormat$ = new BehaviorSubject<SelectOption | null>(null);
   readonly pushScoreFormat$ = new BehaviorSubject<SelectOption | null>(null);
+
+  readonly canSave = computed<boolean>(() => {
+    if (this.isSubmitting()) {
+      return false;
+    }
+
+    const storedProfile = this.storedAccountProfile();
+    const currentProfile = this.currentAccountProfile();
+
+    if (storedProfile === null || currentProfile === null) {
+      return false;
+    }
+
+    return currentProfile.firstName !== storedProfile.firstName ||
+      currentProfile.lastName !== storedProfile.lastName ||
+      currentProfile.language !== storedProfile.language ||
+      currentProfile.dateFormat !== storedProfile.dateFormat ||
+      currentProfile.scoreFormat !== storedProfile.scoreFormat ||
+      currentProfile.gameMinuteFormat !== storedProfile.gameMinuteFormat;
+  });
 
   private readonly dateFormatOptions: SelectOption[] = [
     { id: 'br', name: 'Sat, 24 May 2025 - 17:00' },
@@ -152,26 +171,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   onScoreFormatSelected(option: SelectOption) {
     this.selectedScoreFormat$.next(option.id.toString());
-  }
-
-  canSave() {
-    if (this.isSubmitting()) {
-      return false;
-    }
-
-    const storedProfile = this.storedAccountProfile();
-    const currentProfile = this.currentAccountProfile();
-
-    if (storedProfile === null || currentProfile === null) {
-      return false;
-    }
-
-    return currentProfile.firstName !== storedProfile.firstName ||
-      currentProfile.lastName !== storedProfile.lastName ||
-      currentProfile.language !== storedProfile.language ||
-      currentProfile.dateFormat !== storedProfile.dateFormat ||
-      currentProfile.scoreFormat !== storedProfile.scoreFormat ||
-      currentProfile.gameMinuteFormat !== storedProfile.gameMinuteFormat;
   }
 
   onSave() {

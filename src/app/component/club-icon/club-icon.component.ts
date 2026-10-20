@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-club-icon',
   imports: [CommonModule],
-  templateUrl: './club-icon.component.html',
-  styleUrl: './club-icon.component.css'
+  templateUrl: './club-icon.component.html'
 })
 export class ClubIconComponent {
 
-  iconUrl = input.required<string>();
-  iconClassName = input<string>();
+  readonly iconUrl = input.required<string>();
+  readonly iconClassName = input<string>();
 
 }

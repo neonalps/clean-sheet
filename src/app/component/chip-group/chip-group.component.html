@@ -1,7 +1,7 @@
 @let chipGroupValue = chipGroup();
 <div class="flex flex-wrap gap-y-4" [ngClass]="chipGroupValue.dynamicClassNamesContainer">
     @for (chip of chipGroupValue.chips; track $index) {
-        <div class="chip-item">
+        <div class="mr-2 last:mr-0">
             <app-chip [chip]="chip" [colorMode]="chip.colorMode" [dynamicClassNames]="chipGroupValue.dynamicClassNamesChip" [dynamicBoundingClassNames]="chipGroupValue.chipBoundingClassNames" (click)="onClick(chip)" />
         </div>
     }

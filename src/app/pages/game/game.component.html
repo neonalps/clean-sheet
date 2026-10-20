@@ -182,7 +182,7 @@
     <div class="game-section p-3 rounded-lg mt-3 mx-3" *ngIf="shouldShowLastGames()">
         <div class="heading-small">{{ 'game.lastMeetings' | $t }}</div>
         <div>
-            <app-game-performance-trend [games]="performanceTrendAgainstClub()" [isLoading]="false" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
+            <app-game-performance-trend [games]="performanceTrendAgainstClub()" [isLoading]="false" [showClubIcon]="false" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
         </div>
     </div>
 

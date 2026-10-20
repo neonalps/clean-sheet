@@ -16,6 +16,7 @@ export class GamePerformanceTrendComponent {
 
   readonly games = input.required<BasicGame[]>();
   readonly noGamesText = input.required<string>();
+  readonly showClubIcon = input(true);
   readonly showGameDate = input(false);
   readonly applyInnerPadding = input(false);
   readonly isLoading = input(true);

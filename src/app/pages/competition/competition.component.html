@@ -1,6 +1,6 @@
 @let competitionValue = competition();
 @let titlesValue = titles();
-<ng-container *ngIf="isLoading(); else loadedContent">
+@if (isLoading()) {
     <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
         <div class="flex align-items-center">
             <div class="basis-1/6 mr-1 flex align-items-center justify-content-center p-2">
@@ -11,35 +11,41 @@
             </div>
         </div>
     </div>
-</ng-container>
-<ng-template #loadedContent>
-    <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3" *ngIf="competitionValue">
-        <div class="flex align-items-center">
-            <div class="basis-1/5 flex align-items-center justify-content-center mr-3" *ngIf="competitionValue.iconSmall">
-                <div class="width-3rem">
-                    <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionValue.iconSmall }" />
+}
+@else {
+    @if (competitionValue) {
+        <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
+            <div class="flex align-items-center">
+                @if (competitionValue.iconSmall) {
+                    <div class="basis-1/5 flex align-items-center justify-content-center mr-3">
+                        <div class="width-3rem">
+                            <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': competitionValue.iconSmall }" />
+                        </div>
+                    </div>
+                }
+                <div class="flex-grow">
+                    <div>
+                        <span class="mr-2 text-xl">
+                            <span class="bold"> {{ competitionValue.name }}</span>
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="flex-grow">
-                <div>
-                    <span class="mr-2 text-xl">
-                        <span class="bold"> {{ competitionValue.name }}</span>
-                    </span>
-                </div>
+        </div>
+    }
+    @if (titlesValue.length > 0) {
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8">
+            <div class="page-title mb-6 flex align-items-center justify-content-between">
+                <div>{{ 'competition.titles' | $t }}</div>
+                <div class="mr-3">{{ titlesValue.length }}<span class="inline-block ml-2">🏆</span></div>
+            </div>
+            <div>
+                @for (title of titlesValue; track title.id) {
+                    <div class="pt-2 mb-4 last:mb-0" (click)="triggerNavigateToGame(title.victoryGame)">
+                        <app-competition-title [competitionTitle]="title" />
+                    </div>
+                }
             </div>
         </div>
-    </div>
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg mt-3 mx-3 mb-8" *ngIf="titlesValue.length > 0">
-        <div class="page-title mb-6 flex align-items-center justify-content-between">
-            <div>{{ 'competition.titles' | $t }}</div>
-            <div class="mr-3">{{ titlesValue.length }}<span class="inline-block ml-2">🏆</span></div>
-        </div>
-        <div>
-            @for (title of titlesValue; track title.id) {
-                <div class="pt-2 mb-4 last:mb-0" (click)="triggerNavigateToGame(title.victoryGame)">
-                    <app-competition-title [competitionTitle]="title" />
-                </div>
-            }
-        </div>
-    </div>
-</ng-template>
+    }
+}

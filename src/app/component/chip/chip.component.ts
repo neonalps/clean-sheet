@@ -22,8 +22,7 @@ export type ChipColorMode = {
 @Component({
   selector: 'app-chip',
   imports: [CommonModule, UiIconComponent],
-  templateUrl: './chip.component.html',
-  styleUrl: './chip.component.css'
+  templateUrl: './chip.component.html'
 })
 export class ChipComponent {
 
