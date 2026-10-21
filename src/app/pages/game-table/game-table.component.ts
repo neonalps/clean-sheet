@@ -84,6 +84,7 @@ export class GameTableComponent implements OnInit, OnDestroy {
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
+      console.log('received filters', value.gameListFilterItems);
       this.setAndApplyGameFilters([...value.gameListFilterItems]);
     });
   }

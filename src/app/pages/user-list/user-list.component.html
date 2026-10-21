@@ -1,13 +1,13 @@
 <div class="page">
     <div class="page-title mb-6">{{ 'menu.users' | $t }}</div>
-    <ng-container *ngIf="isLoading(); else loadedContent">
+    @if (isLoading()) {
         <div>
             @for (skeletonRow of skeletonRows; track $index) {
                 <div class="skeleton-box-medium mb-3 last:mb-0" style="width: 100%;"></div>
             }
         </div>
-    </ng-container>
-    <ng-template #loadedContent>
+    }
+    @else {
         <div>
             @for (user of users(); track user.id) {
                 <div class="bg-color-dark-grey-darker hover:bg-color-dark-grey-mid transition-bg-color px-3 py-2 rounded-lg mt-3 pointer flex align-items-center">
@@ -18,9 +18,11 @@
                     </div>
                     <div class="flex-grow flex align-items-center">
                         <div>{{ getUserName(user) }}</div>
-                        <div *ngIf="user.myself === true" class="ml-2">
-                            <app-label [content]="'label.me' | $t" />
-                        </div>
+                        @if (user.myself) {
+                            <div class="ml-2">
+                                <app-label [content]="'label.me' | $t" />
+                            </div>
+                        }
                     </div>
                     <div class="basis-1/8">
                         <app-label [content]="getRoleName(user.role)" />
@@ -31,5 +33,5 @@
                 </div>
             }
         </div>
-    </ng-template>
+    }
 </div>

@@ -35,11 +35,7 @@
                         <span class="mr-2 text-xl">
                             <span class="bold"> {{ clubResponseValue.club.name }}</span>
                         </span>
-                        @if (nationalities.length > 0) {
-                            @for (country of nationalitiesValue; track $index) {
-                                <span [title]="country.title">{{ country.flag }}</span>
-                            }
-                        }
+                        <app-nationalities [nationalities]="nationalitiesValue" />
                     </div>
                     <app-external-links [externalLinks]="externalLinks()" />
                 </div>

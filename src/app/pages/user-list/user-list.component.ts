@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Account } from '@src/app/model/account';
 import { AccountService } from '@src/app/module/account/service';
@@ -16,7 +15,7 @@ export type UserInfo = Account & { myself?: boolean };
 
 @Component({
   selector: 'app-user-list',
-  imports: [CommonModule, I18nPipe, LabelComponent, ContextMenuComponent],
+  imports: [I18nPipe, LabelComponent, ContextMenuComponent],
   templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit, OnDestroy {

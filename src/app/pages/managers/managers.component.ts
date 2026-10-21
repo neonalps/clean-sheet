@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ManagerPeriod } from '@src/app/model/manager';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -11,7 +10,7 @@ import { ModalService } from '@src/app/module/modal/service';
 
 @Component({
   selector: 'app-managers',
-  imports: [CommonModule, I18nPipe, ManagerPeriodComponent],
+  imports: [I18nPipe, ManagerPeriodComponent],
   templateUrl: './managers.component.html',
 })
 export class ManagersComponent implements OnInit, OnDestroy {

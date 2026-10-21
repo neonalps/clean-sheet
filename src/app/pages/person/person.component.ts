@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
 import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
@@ -37,6 +36,8 @@ import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
 import { ManagerPeriodForPerson } from '@src/app/model/manager';
 import { ManagerPeriodComponent } from "@src/app/component/manager-period/manager-period.component";
+import { NationalitiesComponent } from '@src/app/component/nationalities/nationalities.component';
+import { Nullish } from '@src/app/util/types';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -50,7 +51,7 @@ export type UiStatsItem = {
 
 @Component({
   selector: 'app-person',
-  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent, ContextMenuComponent, ManagerPeriodComponent],
+  imports: [CommonModule, I18nPipe, PlayerIconComponent, StatsGoalsAgainstClubsComponent, StatsPlayerStatsComponent, UiIconComponent, StatsPlayerHeaderComponent, StatsPlayerCompetitionComponent, ExternalLinksComponent, FilterableGameListComponent, ShirtDistributionComponent, ContextMenuComponent, ManagerPeriodComponent, NationalitiesComponent],
   templateUrl: './person.component.html',
   styleUrl: './person.component.css'
 })
@@ -63,7 +64,6 @@ export class PersonComponent implements OnDestroy {
 
   private readonly authService = inject(AuthService);
   private readonly competitionService = inject(CompetitionService);
-  private readonly countryFlagService = inject(CountryFlagService);
   private readonly modalService = inject(ModalService);
   private readonly personResolver = inject(PersonResolver);
   private readonly route = inject(ActivatedRoute);
@@ -123,10 +123,7 @@ export class PersonComponent implements OnDestroy {
     }
   });
 
-  readonly nationalities = computed<CountryFlag[]>(() => {
-    const nationalities = this.person()?.person.nationalities;
-    return isDefined(nationalities) ? this.countryFlagService.resolveNationalities(nationalities) : [];
-  });
+  readonly nationalities = computed<Nullish<string[]>>(() => this.person()?.person.nationalities);
 
   readonly goalsAgainstClubsVisible = computed(() => this.goalsAgainstClubs().length > 0);
   readonly goalsAgainstClubs = computed<GoalsAgainstClubStatsItemDto[]>(() => this.person()?.stats?.goalsAgainstClubs ?? []);

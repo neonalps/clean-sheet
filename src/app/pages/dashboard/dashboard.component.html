@@ -1,3 +1,4 @@
+@let dashboardValue = dashboard();
 @let isLoadingValue = isLoading();
 <section class="dashboard-container mt-3 px-3 py-2">
     <div class="flex align-items-center mt-1 mb-8">
@@ -8,27 +9,37 @@
         </div>
         <div class="flex-grow flex align-items-center">
             @let name = loginName();
-            <div class="text-2xl">{{ 'dashboard.welcome' | $t }}<span *ngIf="name !== null">, <span class="bold">{{ name }}</span></span>!</div>
-        </div>
-    </div>
-    <div class="mb-8" *ngIf="dashboard?.upcomingGame">
-        <div class="heading-small">
-            {{ 'dashboard.nextGame' | $t }}
-        </div>
-        <div class="dashboard-item-content">
-            <app-game-overview [game]="dashboard!.upcomingGame!" (click)="triggerNavigateToGame(dashboard!.upcomingGame!)" />
+            <div class="text-2xl">
+                {{ 'dashboard.welcome' | $t }}
+                @if (name) {
+                    , <span class="bold">{{ name }}</span>!
+                }
+            </div>
         </div>
     </div>
 
-    <div class="mb-8" *ngIf="dashboard?.lastGame">
-        <div class="heading-small">
-            {{ 'dashboard.lastGame' | $t }}
+    @if (dashboardValue?.upcomingGame; as upcomingGame) {
+        <div class="mb-8">
+            <div class="heading-small">
+                {{ 'dashboard.nextGame' | $t }}
+            </div>
+            <div class="dashboard-item-content">
+                <app-game-overview [game]="upcomingGame" (click)="triggerNavigateToGame(upcomingGame)" />
+            </div>
         </div>
-        <div class="dashboard-item-content">
-            <app-game-overview [game]="dashboard!.lastGame!" (click)="triggerNavigateToGame(dashboard!.lastGame!)" />
-        </div>
-    </div>
+    }
 
+    @if (dashboardValue?.lastGame; as lastGame) {
+        <div class="mb-8">
+            <div class="heading-small">
+                {{ 'dashboard.lastGame' | $t }}
+            </div>
+            <div class="dashboard-item-content">
+                <app-game-overview [game]="lastGame" (click)="triggerNavigateToGame(lastGame)" />
+            </div>
+        </div>
+    }
+    
     <div class="mb-8">
         <div class="heading-small">
             {{ 'dashboard.performanceTrend' | $t }}
@@ -42,12 +53,14 @@
         </div>
     </div>
 
-    <div class="mb-8" *ngIf="shouldDisplayTopScorers()">
-        <div class="heading-small">
-            {{ 'dashboard.topScorers' | $t }}
+    @if (shouldDisplayTopScorers()) {
+        <div class="mb-8">
+            <div class="heading-small">
+                {{ 'dashboard.topScorers' | $t }}
+            </div>
+            <div class="bg-color-dark-grey-darker rounded-lg p-2 mt-3">
+                <app-player-ranking [isLoading]="topScorersLoading()" [ranking]="topScorersRanking()" [competitionChips]="competitionChips()" (onPlayerSelected)="onPlayerClicked($event)" (onCompetitionFilterChanged)="onCompetitionFilterChanged($event)" />
+            </div>
         </div>
-        <div class="bg-color-dark-grey-darker rounded-lg p-2 mt-3">
-            <app-player-ranking [isLoading]="topScorersLoading()" [ranking]="topScorersRanking()" [competitionChips]="competitionChips()" (onPlayerSelected)="onPlayerClicked($event)" (onCompetitionFilterChanged)="onCompetitionFilterChanged($event)" />
-        </div>
-    </div>
+    }
 </section>

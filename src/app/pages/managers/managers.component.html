@@ -4,15 +4,15 @@
         <div class="page-title mb-5 ml-1">{{ 'menu.managers' | $t }}</div>
     </div>
     <div>
-        <ng-container *ngIf="managerPeriodsValue.length > 0; else emptyList">
+        @if (managerPeriodsValue.length > 0) {
             @for (item of managerPeriodsValue; track item.id) {
                 <div class="mb-3">
                     <app-manager-period [period]="item" (filterOptionsSelected)="openStatsModal(item.person, $event)" />
                 </div>
             }
-        </ng-container>
-        <ng-template #emptyList>
+        }
+        @else {
             none recorded yet
-        </ng-template>
+        }
     </div>
 </section>

@@ -12,8 +12,7 @@ export type ConfirmAddPersonModalPayload = {
 @Component({
   selector: 'app-modal-confirm-add-person',
   imports: [ModalComponent, I18nPipe, ButtonComponent],
-  templateUrl: './modal-confirm-add-person.component.html',
-  styleUrl: './modal-confirm-add-person.component.css'
+  templateUrl: './modal-confirm-add-person.component.html'
 })
 export class ModalConfirmAddPersonComponent implements OnInit, OnDestroy {
 

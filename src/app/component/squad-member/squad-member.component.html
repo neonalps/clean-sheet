@@ -1,5 +1,5 @@
 @let memberValue = member();
-@let playerNationalities = nationalities();
+@let nationalitiesValue = nationalities();
 <div [ngClass]="containerClass()">
     <div class="basis-1/10 flex justify-content-center align-items-center">
         {{ memberValue.shirt }}
@@ -14,13 +14,11 @@
             <div>
                 {{ memberValue.player.firstName }} <span class="bold">{{ memberValue.player.lastName }}</span>
             </div>
-            <ng-container *ngIf="playerNationalities && playerNationalities.length > 0">
-                <div class="ml-1">
-                    @for (country of playerNationalities; track $index) {
-                        <span [title]="country.title">{{ country.flag }}</span>
-                    }
+            @if (nationalitiesValue && nationalitiesValue.length > 0) {
+                <div class="ml-2">
+                    <app-nationalities [nationalities]="nationalitiesValue" />
                 </div>
-            </ng-container>
+            }
         </div>
         <div class="mt-2 text-sm text-light-grey" *ngIf="memberValue.from || memberValue.to">
             <div class="flex" *ngIf="memberValue.from">

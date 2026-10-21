@@ -1,18 +1,20 @@
 @let venueValue = venue();
-<div *ngIf="isLoading(); else loadedContent">
+@if (isLoading()) {
     <div class="flex align-items-center justify-content-center">
         <div class="loading-container-medium">
             <app-loading />
         </div>
     </div>
-</div>
-<ng-template #loadedContent>
-    <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3" *ngIf="venueValue">
-        <div class="page-title mb-6">
-            <div>{{ venueValue.name }}</div>
+}
+@else {
+    @if (venueValue) {
+        <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3">
+            <div class="page-title mb-6">
+                <div>{{ venueValue.name }}</div>
+            </div>
+            <div>
+                <app-venue-details [venue]="venueValue" [hideNameSection]="true" [showCityCountryFlag]="true" (onClubClick)="onClubClicked($event)" />
+            </div>
         </div>
-        <div>
-            <app-venue-details [venue]="venueValue" [hideNameSection]="true" [showCityCountryFlag]="true" (onClubClick)="onClubClicked($event)" />
-        </div>
-    </div>
-</ng-template>
+    }
+}

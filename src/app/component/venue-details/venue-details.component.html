@@ -12,11 +12,11 @@
         <div class="section-title">{{ 'venue.city' | $t }}</div>
         <div>
             <span>{{ venueValue.city }}</span>
-            <span *ngIf="showCityCountryFlag()" class="ml-2">
-                @for (flag of countryFlags(); track flag.flag) {
-                    <span class="mr-1 last:mr-0">{{ flag.flag }}</span>
-                }
-            </span>
+            @if (showCityCountryFlag()) {
+                <span class="ml-2">
+                    <app-nationalities [nationalities]="nationalities()" />
+                </span>
+            }
         </div>
     </div>
     <div class="mt-5">

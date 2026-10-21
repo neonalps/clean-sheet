@@ -4,7 +4,6 @@ import { GameOverviewComponent } from "@src/app/component/game-overview/game-ove
 import { DashboardResponse, RankedPersonItem } from '@src/app/model/dashboard';
 import { DashboardResolver } from '@src/app/module/dashboard/resolver';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
 import { BasicGame, DetailedGame } from '@src/app/model/game';
 import { navigateToGameWithoutDetails, navigateToPerson } from '@src/app/util/router';
 import { Router } from '@angular/router';
@@ -24,12 +23,12 @@ import { ensureNotNullish } from '@src/app/util/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent, MainFlagComponent, PlayerRankingComponent],
+  imports: [I18nPipe, GameOverviewComponent, GamePerformanceTrendComponent, FootballShoeComponent, MainFlagComponent, PlayerRankingComponent],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  dashboard?: DashboardResponse;
+  readonly dashboard = signal<DashboardResponse | null>(null);
   readonly isLoading = signal(true);
 
   readonly lastGames = signal<DetailedGame[]>([]);
@@ -105,23 +104,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private onDashboardResolved(response: DashboardResponse, orderedCompetitions: BasicCompetition[]) {
-    this.dashboard = response;
+    this.dashboard.set(response);
     this.isLoading.set(false);
 
-    if (this.dashboard.performanceTrend?.games) {
-      this.lastGames.set(this.dashboard.performanceTrend.games);
+    if (response.performanceTrend?.games) {
+      this.lastGames.set(response.performanceTrend.games);
     }
 
-    if (this.dashboard.topScorers) {
-      this.updateTopScorers(this.dashboard.topScorers.ranking);
+    if (response.topScorers) {
+      this.updateTopScorers(response.topScorers.ranking);
     }
 
-    if (this.dashboard.topScorers?.competitions && this.dashboard.topScorers.competitions.length > 0) {
-      const orderedCompetitionIds = getOrderedCompetitionIds(this.dashboard.topScorers.competitions.map(item => item.id), orderedCompetitions);
+    if (response.topScorers?.competitions && response.topScorers.competitions.length > 0) {
+      const orderedCompetitionIds = getOrderedCompetitionIds(response.topScorers.competitions.map(item => item.id), orderedCompetitions);
 
       const competitionChips: Chip[] = [];
       for (const competitionId of orderedCompetitionIds) {
-        const topScorerCompetition = ensureNotNullish(this.dashboard.topScorers.competitions.find(item => item.id === competitionId));
+        const topScorerCompetition = ensureNotNullish(response.topScorers.competitions.find(item => item.id === competitionId));
         competitionChips.push({
           value: topScorerCompetition.id,
           selected: false,

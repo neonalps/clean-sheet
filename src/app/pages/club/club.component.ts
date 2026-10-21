@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClubResolver } from '@src/app/module/club/resolver';
@@ -7,7 +6,6 @@ import { ClubId } from '@src/app/util/domain-types';
 import { navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
 import { Subject, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
-import { CountryFlagService } from '@src/app/module/country-flag/service';
 import { GetClubByIdResponse } from '@src/app/module/club/service';
 import { ExternalLinksComponent } from '@src/app/component/external-links/external-links.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -16,10 +14,12 @@ import { SmallClub } from '@src/app/model/club';
 import { environment } from '@src/environments/environment';
 import { FilterableGameListComponent } from '@src/app/component/filterable-game-list/filterable-game-list.component';
 import { VenueDetailsComponent } from "@src/app/component/venue-details/venue-details.component";
+import { NationalitiesComponent } from '@src/app/component/nationalities/nationalities.component';
+import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-club',
-  imports: [UiIconComponent, ExternalLinksComponent, I18nPipe, FilterableGameListComponent, VenueDetailsComponent],
+  imports: [UiIconComponent, ExternalLinksComponent, I18nPipe, FilterableGameListComponent, VenueDetailsComponent, NationalitiesComponent],
   templateUrl: './club.component.html'
 })
 export class ClubComponent implements OnDestroy {
@@ -36,14 +36,13 @@ export class ClubComponent implements OnDestroy {
     const links = this.clubResponse()?.externalLinks;
     return links ? [...links].filter(item => item.provider === 'sofascore') : [];
   });
-  readonly nationalities = computed(() => {
-    const club = this.clubResponse()?.club;
-    return club ? this.countryFlagService.resolveNationalities([club.countryCode]) : [];
+  readonly nationalities = computed<Nullish<string[]>>(() => {
+    const clubValue = this.clubResponse()?.club;
+    return isDefined(clubValue) ? [clubValue.countryCode] : [];
   });
   readonly shouldDisplayGames = computed(() => this.clubResponse()?.club.id !== this.mainClub().id);
 
   private readonly clubResolver = inject(ClubResolver);
-  private readonly countryFlagService = inject(CountryFlagService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 

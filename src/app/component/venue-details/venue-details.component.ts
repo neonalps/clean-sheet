@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { BasicVenue } from '@src/app/model/venue';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { FormatNumberPipe } from '@src/app/pipe/format-number.pipe';
@@ -7,14 +7,15 @@ import { isDefined, isNotDefined } from '@src/app/util/common';
 import { ButtonComponent } from "@src/app/component/button/button.component";
 import { SmallClubComponent } from "@src/app/component/small-club/small-club.component";
 import { BasicClub } from '@src/app/model/club';
-import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
+import { NationalitiesComponent } from '../nationalities/nationalities.component';
+import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-venue-details',
-  imports: [CommonModule, I18nPipe, FormatNumberPipe, ButtonComponent, SmallClubComponent],
+  imports: [CommonModule, I18nPipe, FormatNumberPipe, ButtonComponent, SmallClubComponent, NationalitiesComponent],
   templateUrl: './venue-details.component.html',
 })
-export class VenueDetailsComponent implements OnInit {
+export class VenueDetailsComponent {
 
   readonly venue = input.required<BasicVenue>();
   readonly canInteractWithHomeVenueClubs = input(true);
@@ -23,15 +24,7 @@ export class VenueDetailsComponent implements OnInit {
 
   readonly onClubClick = output<BasicClub>();
 
-  readonly countryFlags = signal<CountryFlag[]>([]);
-
-  private readonly countryFlagService = inject(CountryFlagService);
-
-  ngOnInit(): void {
-    if (this.showCityCountryFlag()) {
-      this.countryFlags.set(this.countryFlagService.resolveNationalities([this.venue().countryCode]));
-    }
-  }
+  readonly nationalities = computed<Nullish<string[]>>(() => [this.venue().countryCode]);
 
   readonly locationAvailable = computed(() => {
     const venueValue = this.venue();

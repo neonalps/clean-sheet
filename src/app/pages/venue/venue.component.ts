@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { VenueDetailsComponent } from '@src/app/component/venue-details/venue-details.component';
@@ -15,9 +14,8 @@ import { BasicClub } from '@src/app/model/club';
 
 @Component({
   selector: 'app-venue',
-  imports: [CommonModule, VenueDetailsComponent, LoadingComponent],
-  templateUrl: './venue.component.html',
-  styleUrl: './venue.component.css'
+  imports: [VenueDetailsComponent, LoadingComponent],
+  templateUrl: './venue.component.html'
 })
 export class VenueComponent implements OnDestroy {
 

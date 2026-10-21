@@ -18,14 +18,13 @@ import { getDisplayName } from '@src/app/util/domain';
 @Component({
   selector: 'app-season-squad',
   imports: [CommonModule, I18nPipe, SquadMemberComponent, SeasonSelectComponent],
-  templateUrl: './season-squad.component.html',
-  styleUrl: './season-squad.component.css'
+  templateUrl: './season-squad.component.html'
 })
 export class SeasonSquadComponent implements OnInit, OnDestroy {
 
   seasons$: Observable<Season[]> | null = null;
-  selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
-  squadLoaded$ = new Subject<void>();
+  readonly selectedSeason$ = new BehaviorSubject<SelectOption | null>(null);
+  readonly squadLoaded$ = new Subject<void>();
 
   readonly isLoading = signal(true);
   readonly selectedSeason = signal<Season | null>(null);

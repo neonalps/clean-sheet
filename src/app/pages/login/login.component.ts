@@ -7,8 +7,7 @@ import { environment } from '@src/environments/environment';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, I18nPipe, ButtonComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
 

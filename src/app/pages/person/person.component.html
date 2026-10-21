@@ -31,11 +31,7 @@
                                 <span>{{ firstName() }}</span>
                                 <span class="bold"> {{ lastName() }}</span>
                             </span>
-                            <ng-container *ngIf="nationalitiesValue.length > 0">
-                                @for (country of nationalitiesValue; track $index) {
-                                    <span class="mr-1 last:mr-0" [title]="country.title">{{ country.flag }}</span>
-                                }
-                            </ng-container>
+                            <app-nationalities [nationalities]="nationalitiesValue" />
                         </div>
                         <div class="mt-2 flex align-items-center" *ngIf="birthdayValue">
                             <div class="birthday-icon-container mr-2">

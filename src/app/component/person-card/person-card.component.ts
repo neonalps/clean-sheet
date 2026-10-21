@@ -1,16 +1,16 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { CommonModule } from '@angular/common';
 import { Person } from '@src/app/model/person';
-import { CountryFlag, CountryFlagService } from '@src/app/module/country-flag/service';
-import { isDefined } from '@src/app/util/common';
+import { NationalitiesComponent } from '@src/app/component/nationalities/nationalities.component';
+import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-person-card',
-  imports: [CommonModule, UiIconComponent],
+  imports: [CommonModule, UiIconComponent, NationalitiesComponent],
   templateUrl: './person-card.component.html',
 })
-export class PersonCardComponent implements OnInit {
+export class PersonCardComponent {
 
   readonly person = input.required<Person>();
   readonly onClick = output<Person>();
@@ -22,16 +22,7 @@ export class PersonCardComponent implements OnInit {
   readonly textSize = input('text-base');
   readonly clickable = input(false);
   
-  readonly countryFlags = signal<CountryFlag[]>([]);
-
-  private readonly countryFlagService = inject(CountryFlagService);
-
-  ngOnInit(): void {
-    const nationalities = this.person().nationalities;
-    if (this.showNationalities() && isDefined(nationalities)) {
-      this.countryFlags.set(this.countryFlagService.resolveNationalities(nationalities));
-    }
-  }
+  readonly nationalities = computed<Nullish<string[]>>(() => this.person().nationalities);
 
   handleClick(): void {
     if (this.clickable() !== true) {
