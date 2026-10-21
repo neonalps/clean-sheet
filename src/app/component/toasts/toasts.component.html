@@ -1,5 +1,5 @@
 <div class="fixed bottom-0 w-full pb-5 px-3 flex flex-col align-items-center justify-content-center">
-    @for (toast of toasts$ | async; track $index) {
+    @for (toast of toasts(); track toast.id) {
         <app-toast [toast]="toast" />
     }
 </div>

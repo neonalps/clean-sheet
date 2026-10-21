@@ -1,23 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Toast, ToastService } from '@src/app/module/toast/service';
-import { Observable } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ToastComponent } from '@src/app/component/toast/toast.component';
 
 @Component({
   selector: 'app-toasts',
   imports: [CommonModule, ToastComponent],
-  templateUrl: './toasts.component.html',
-  styleUrl: './toasts.component.css'
+  templateUrl: './toasts.component.html'
 })
-export class ToastsComponent implements OnInit {
+export class ToastsComponent implements OnInit, OnDestroy {
 
-  toasts$!: Observable<Toast[]>;
+  readonly toasts = signal<Toast[]>([]);
 
   private readonly toastService = inject(ToastService);
 
+  private readonly destroy$ = new Subject<void>();
+
   ngOnInit(): void {
-    this.toasts$ = this.toastService.getToastsObservable();
+    this.toastService.getToastsObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: toastsValue => this.toasts.set([...toastsValue]),
+      })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 }

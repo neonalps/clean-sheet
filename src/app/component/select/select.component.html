@@ -17,7 +17,7 @@
         </div>
         <div class="flex align-items-center" *ngIf="!hideChevron()">
             <div class="icon chevron-container" [ngClass]="{ 'rotate-180': isOpen(), 'open': isOpen() }">
-                <app-chevron-down [color]="colorLight" />
+                <app-chevron-down />
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
         <ng-container *ngIf="showSearch()">
             <div class="search-container p-2">
                 <div class="icon absolute left-16 top-16">
-                    <app-search [color]="colorLight" />
+                    <app-search />
                 </div>
                 <input #search type="text" class="select-search w-full pl-10 pr-2 py-1 text-lg text-light" (input)="onSearchChange($event)" />
             </div>

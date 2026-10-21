@@ -1,11 +1,10 @@
-import { Component, computed, ElementRef, HostListener, input, OnDestroy, OnInit, output, signal, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, input, OnDestroy, OnInit, output, signal, viewChild } from '@angular/core';
 import { SelectOption } from './option';
 import { CommonModule } from '@angular/common';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
 import { getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
 import { ClickOutsideDirective } from '@src/app/directive/click-outside/click-outside.directive';
 import { ChevronDownComponent } from '@src/app/icon/chevron-down/chevron-down.component';
-import { COLOR_LIGHT } from '@src/styles/constants';
 import { LoadingComponent } from "@src/app/component/loading/loading.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
@@ -21,14 +20,11 @@ export type LoadingStyle = 'skeleton' | 'spinner';
 })
 export class SelectComponent implements OnInit, OnDestroy {
 
-  readonly colorLight = COLOR_LIGHT;
   readonly isOpen = signal(false);
   readonly optionsWidth = signal('0');
 
-  private readonly currentValue = signal<SelectOption | null>(null);
-
-  @ViewChild('main', { static: false }) mainElement!: ElementRef;
-  @ViewChild('search', { static: false }) searchElement!: ElementRef;
+  readonly mainElement = viewChild.required<ElementRef<HTMLElement>>('main');
+  readonly searchElement = viewChild.required<ElementRef<HTMLElement>>('search');
 
   readonly optionsSource = input.required<Observable<SelectOption[]>>();
   readonly emptyText = input<string>('');
@@ -57,6 +53,7 @@ export class SelectComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
+  private readonly currentValue = signal<SelectOption | null>(null);
   private readonly currentSearchValue = signal('');
 
   ngOnInit(): void {
@@ -138,7 +135,7 @@ export class SelectComponent implements OnInit, OnDestroy {
     }
 
     if (!isOpen) {
-      const mainElementWidth = this.mainElement.nativeElement.getBoundingClientRect().width;
+      const mainElementWidth = this.mainElement().nativeElement.getBoundingClientRect().width;
       this.optionsWidth.set(`${mainElementWidth}px`);
     }
 
@@ -155,7 +152,7 @@ export class SelectComponent implements OnInit, OnDestroy {
   }
 
   focusSearch(): void {
-    setTimeout(() => this.searchElement.nativeElement.focus(), 40);
+    setTimeout(() => this.searchElement().nativeElement.focus(), 40);
   }
 
 }

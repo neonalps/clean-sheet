@@ -18,8 +18,7 @@ export type CheckboxChipValueChanged = {
 @Component({
   selector: 'app-checkbox-chip',
   imports: [CommonModule, UiIconComponent],
-  templateUrl: './checkbox-chip.component.html',
-  styleUrl: './checkbox-chip.component.css'
+  templateUrl: './checkbox-chip.component.html'
 })
 export class CheckboxChipComponent {
 

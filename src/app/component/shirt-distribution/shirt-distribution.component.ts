@@ -6,8 +6,7 @@ import { ShirtDistributionItem } from '@src/app/model/stats';
 @Component({
   selector: 'app-shirt-distribution',
   imports: [ProgressBarComponent],
-  templateUrl: './shirt-distribution.component.html',
-  styleUrl: './shirt-distribution.component.css'
+  templateUrl: './shirt-distribution.component.html'
 })
 export class ShirtDistributionComponent {
 

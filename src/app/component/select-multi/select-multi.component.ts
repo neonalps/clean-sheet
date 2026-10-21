@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, HostListener, input, OnDestroy, output, signal, ViewChild } from "@angular/core";
+import { Component, computed, ElementRef, HostListener, input, OnDestroy, output, signal, viewChild } from "@angular/core";
 import { Subject } from "rxjs";
 import { OptionId, SelectOption } from "@src/app/component/select/option";
 import { ClickOutsideDirective } from "@src/app/directive/click-outside/click-outside.directive";
@@ -13,7 +13,7 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 })
 export class MultiSelectComponent implements OnDestroy {
 
-    @ViewChild('main', { static: false }) mainElement!: ElementRef;
+    readonly mainElement = viewChild.required<ElementRef<HTMLElement>>('main');
 
     readonly options = input.required<SelectOption[]>();
     readonly selected = input<OptionId[]>([]);
@@ -57,7 +57,7 @@ export class MultiSelectComponent implements OnDestroy {
     toggleDropdown() {
         this.isOpen.update(currentlyOpen => {
             if (!currentlyOpen) {
-                const mainElementWidth = this.mainElement.nativeElement.getBoundingClientRect().width;
+                const mainElementWidth = this.mainElement().nativeElement.getBoundingClientRect().width;
                 this.optionsWidth.set(`${mainElementWidth}px`);
             }
 

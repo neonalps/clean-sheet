@@ -2,7 +2,7 @@
 @let victoryGameValue = victoryGame();
 <div>
     <div class="bold">{{ competitionTitleValue.season.name }}</div>
-    <div *ngIf="victoryGameValue">
+    @if (victoryGameValue) {
         <app-game-overview [game]="victoryGameValue" [showCompetitionName]="false" [showYear]="true" />
-    </div>
+    }
 </div>
