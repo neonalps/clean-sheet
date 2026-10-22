@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { GoalsAgainstClubStatsItemDto } from '@src/app/model/stats';
 import { SmallClubComponent } from "@src/app/component/small-club/small-club.component";
@@ -9,7 +8,7 @@ type GoalsAgainstClubItem = GoalsAgainstClubStatsItemDto & { percentage: number 
 
 @Component({
   selector: 'app-stats-goals-against-clubs',
-  imports: [CommonModule, SmallClubComponent, ProgressBarComponent],
+  imports: [SmallClubComponent, ProgressBarComponent],
   templateUrl: './stats-goals-against-clubs.component.html'
 })
 export class StatsGoalsAgainstClubsComponent {

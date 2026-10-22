@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ShirtSelectorComponent } from '@src/app/component/shirt-selector/shirt-selector.component';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -13,7 +12,7 @@ import { ShirtWornByComponent } from '@src/app/component/shirt-worn-by/shirt-wor
 
 @Component({
   selector: 'app-jersey-details',
-  imports: [CommonModule, ShirtSelectorComponent, I18nPipe, EmptyStateComponent, UiIconComponent, ShirtWornByComponent],
+  imports: [ShirtSelectorComponent, I18nPipe, EmptyStateComponent, UiIconComponent, ShirtWornByComponent],
   templateUrl: './jersey-details.component.html'
 })
 export class JerseyDetailsComponent {

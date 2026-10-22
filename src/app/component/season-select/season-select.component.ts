@@ -3,14 +3,13 @@ import { SelectComponent } from '@src/app/component/select/select.component';
 import { Season } from '@src/app/model/season';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { OptionId, SelectOption } from '@src/app/component/select/option';
-import { CommonModule } from '@angular/common';
 import { ChevronRightComponent } from '@src/app/icon/chevron-right/chevron-right.component';
 import { ChevronLeftComponent } from '@src/app/icon/chevron-left/chevron-left.component';
 import { SeasonId } from '@src/app/util/domain-types';
 
 @Component({
   selector: 'app-season-select',
-  imports: [CommonModule, ChevronRightComponent, SelectComponent, ChevronLeftComponent],
+  imports: [ChevronRightComponent, SelectComponent, ChevronLeftComponent],
   templateUrl: './season-select.component.html',
   styleUrl: './season-select.component.css'
 })

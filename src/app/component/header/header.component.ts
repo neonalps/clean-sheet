@@ -1,9 +1,8 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { MenuService } from '@src/app/module/menu/service';
-import { COLOR_LIGHT } from '@src/styles/constants';
 import { BehaviorSubject, combineLatest, debounceTime, Subject, switchMap, takeUntil } from 'rxjs';
 import { NavMenuComponent } from "@src/app/component/nav-menu/nav-menu.component";
 import { assertUnreachable, getHtmlInputElementFromEvent, isDefined } from '@src/app/util/common';
@@ -34,9 +33,8 @@ import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 })
 export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('search', { static: false }) searchElement!: ElementRef;
+  readonly searchElement = viewChild.required<ElementRef<HTMLInputElement>>('search');
 
-  colorLight = COLOR_LIGHT;
   readonly isMenuOpen = signal(false);
   readonly isAccountMenuOpen = signal(false);
   readonly isSearchCloseVisible = signal(false);
@@ -107,7 +105,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.searchElement.nativeElement.onblur = () => {
+    this.searchElement().nativeElement.onblur = () => {
       if (!this.isSearchResultOpen()) {
         this.closeSearch();
       }
@@ -120,7 +118,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isSearchCloseVisible.set(false);
 
     setTimeout(() => {
-      this.searchElement.nativeElement.blur();
+      this.searchElement().nativeElement.blur();
       this.resetSearch();
       this.resetSearchFilters();
     }, 0);
@@ -217,7 +215,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSearchIconClicked() {
     this.isSearchFocused.set(true);
-    this.searchElement.nativeElement.focus();
+    this.searchElement().nativeElement.focus();
   }
 
   overlayClick() {
@@ -348,7 +346,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private resetSearch() {
-    this.searchElement.nativeElement.value = '';
+    this.searchElement().nativeElement.value = '';
   }
 
 }

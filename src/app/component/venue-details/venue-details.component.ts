@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { BasicVenue } from '@src/app/model/venue';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -12,7 +11,7 @@ import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-venue-details',
-  imports: [CommonModule, I18nPipe, FormatNumberPipe, ButtonComponent, SmallClubComponent, NationalitiesComponent],
+  imports: [I18nPipe, FormatNumberPipe, ButtonComponent, SmallClubComponent, NationalitiesComponent],
   templateUrl: './venue-details.component.html',
 })
 export class VenueDetailsComponent {

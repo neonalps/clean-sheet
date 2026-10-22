@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { UiCardGameEvent } from '@src/app/model/game';
 import { isDefined } from '@src/app/util/common';
@@ -8,9 +7,8 @@ import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
 @Component({
   selector: 'app-game-event-card',
-  imports: [CommonModule, GameEventComponent, UiIconComponent],
-  templateUrl: './game-event-card.component.html',
-  styleUrl: './game-event-card.component.css'
+  imports: [GameEventComponent, UiIconComponent],
+  templateUrl: './game-event-card.component.html'
 })
 export class GameEventCardComponent {
 
@@ -19,6 +17,8 @@ export class GameEventCardComponent {
   readonly event = input.required<UiCardGameEvent>();
 
   readonly notOnPitchText = signal(this.translationService.translate('gameEvent.notOnPitch'));
+  readonly varText = signal(this.translationService.translate('abbreviation.var'));
+
   readonly personName = computed(() => {
     const currentEvent = this.event();
 

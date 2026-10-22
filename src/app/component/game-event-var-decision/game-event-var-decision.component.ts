@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { UiVarDecisionGameEvent } from '@src/app/model/game';
@@ -9,7 +8,7 @@ import { getPersonName } from '@src/app/util/domain';
 
 @Component({
   selector: 'app-game-event-var-decision',
-  imports: [CommonModule, GameEventComponent, I18nPipe],
+  imports: [GameEventComponent, I18nPipe],
   templateUrl: './game-event-var-decision.component.html'
 })
 export class GameEventVarDecisionComponent {

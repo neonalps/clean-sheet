@@ -57,6 +57,8 @@ export class GameLineupComponent {
         return this.getLineup433(starters, usePositionGrid);
       case '3232':
         return this.getLineup3232(starters, usePositionGrid);
+      case '3412':
+        return this.getLineup3412(starters, usePositionGrid);
       case '3421':
         return this.getLineup3421(starters, usePositionGrid);
       case '3142':
@@ -249,6 +251,53 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
         additionalClasses: 'mt-9',
+      }
+    ];
+
+  }
+
+  getLineup3412(players: UiGamePlayer[], usePositionGrid: boolean): UiLineupRow[] {
+    return [
+      // strikers
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "52" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "51" : undefined) },
+        ],
+        additionalClasses: 'mt-4',
+      },
+      // attacking midfielders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "41" : undefined) },
+        ],
+        additionalClasses: 'mt-12',
+      },
+      // wingbacks + central midfielders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 4, usePositionGrid ? "31" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "32" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "33" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 7, usePositionGrid ? "34" : undefined) },
+        ],
+        additionalClasses: 'mt-12',
+      },
+      // defenders
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "21" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "22" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 3, usePositionGrid ? "23" : undefined) },
+        ],
+        additionalClasses: 'mt-12',
+      },
+      // gk
+      {
+        items: [
+          { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
+        ],
+        additionalClasses: 'mt-10',
       }
     ];
 

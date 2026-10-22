@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { GameEventComponent } from '@src/app/component/game-event/game-event.component';
 import { UiPenaltyMissedGameEvent } from '@src/app/model/game';
@@ -9,7 +8,7 @@ import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 
 @Component({
   selector: 'app-game-event-penalty-missed',
-  imports: [CommonModule, GameEventComponent, I18nPipe, UiIconComponent],
+  imports: [GameEventComponent, I18nPipe, UiIconComponent],
   templateUrl: './game-event-penalty-missed.component.html'
 })
 export class GameEventPenaltyMissedComponent {

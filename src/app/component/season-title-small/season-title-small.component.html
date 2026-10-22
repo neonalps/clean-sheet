@@ -2,14 +2,16 @@
 @let competitionIconValue = competitionIconDescriptor();
 <div class="px-2 py-1">
     <div class="flex align-items-center justify-content-center">
-        <div class="width-1-75rem" *ngIf="competitionIconValue; else noCompetitionIcon">
-            <app-ui-icon [descriptor]="competitionIconValue" />
-        </div>
-        <ng-template #noCompetitionIcon>
+        @if (competitionIconValue) {
+            <div class="width-1-75rem">
+                <app-ui-icon [descriptor]="competitionIconValue" />
+            </div>
+        }
+        @else {
             <div class="width-md text-lg flex align-items-center justify-content-center">
                 🏆
             </div>
-        </ng-template>
+        }
     </div>
     <div class="text-sm text-light-grey mt-3 center bold">
         {{ seasonTitle.season.shortName }}

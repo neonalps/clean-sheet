@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { Fixture, GameStatus, ScoreTuple } from '@src/app/model/game';
 import { isDefined } from '@src/app/util/common';
@@ -8,7 +8,7 @@ import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-external-game-overview',
-  imports: [CommonModule, SmallClubComponent],
+  imports: [NgClass, SmallClubComponent],
   templateUrl: './external-game-overview.component.html'
 })
 export class ExternalGameOverviewComponent {

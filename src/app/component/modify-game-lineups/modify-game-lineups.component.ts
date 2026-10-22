@@ -1,6 +1,6 @@
 import { Component, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { TabGroupComponent } from "@src/app/component/tab-group/tab-group.component";
-import { BehaviorSubject, combineLatest, Observable, Subject, takeUntil } from 'rxjs';
+import { combineLatest, Observable, Subject, takeUntil } from 'rxjs';
 import { TabItemComponent } from "@src/app/component/tab-item/tab-item.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { environment } from '@src/environments/environment';

@@ -2,30 +2,42 @@
 <app-game-event [event]="eventValue">
     <div info>
         <div class="w-full flex align-items-center justify-content-center">
-            <div *ngIf="eventValue.cardType === 'yellow'" class="card-yellow"></div>
-            <div *ngIf="eventValue.cardType === 'red'" class="card-red"></div>
-            <div *ngIf="eventValue.cardType === 'yellowRed'">
-                <div class="inline-block card-yellow-red-yellow card-yellow"></div>
-                <div class="inline-block card-yellow-red-red card-red"></div>
-            </div>
+            @switch (eventValue.cardType) {
+                @case ('yellow') {
+                    <div class="card-yellow"></div>
+                }
+                @case ('yellowRed') {
+                    <div>
+                        <div class="inline-block card-yellow-red-yellow card-yellow"></div>
+                        <div class="inline-block card-yellow-red-red card-red"></div>
+                    </div>
+                }
+                @case ('red') {
+                    <div class="card-red"></div>
+                }
+            }
         </div>
     </div>
     <div person>
         <div class="flex align-items-center">
             <div class="flex-grow">
                 <div class="game-event-scored-by text-sm">{{ personName() }}</div>
-                <div *ngIf="eventValue.reason" class="text-xs text-light-grey">
-                    {{ reasonText() }}
+                @if (eventValue.reason) {
+                    <div class="text-xs text-light-grey">
+                        {{ reasonText() }}
+                    </div>
+                }
+            </div>
+            @if (varEvent()) {
+                <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">{{ varText() }} </div>
+            }
+            @if (eventValue.notOnPitch) {
+                <div class="pr-2" [attr.title]="notOnPitchText()">
+                    <div class="width-xs">
+                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'bench' }" />
+                    </div>
                 </div>
-            </div>
-            <div *ngIf="varEvent()" class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">
-                VAR
-            </div>
-            <div *ngIf="eventValue.notOnPitch" class="pr-2" [attr.title]="notOnPitchText()">
-                <div class="width-xs">
-                    <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'bench' }" />
-                </div>
-            </div>
+            }
         </div>
     </div>
 </app-game-event>   

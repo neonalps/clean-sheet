@@ -1,4 +1,4 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FootballComponent } from '@src/app/icon/football/football.component';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { BirthdayCakeComponent } from "@src/app/icon/birthday-cake/birthday-cake.component";
@@ -37,10 +37,12 @@ import { BenchIconComponent } from "@src/app/icon/bench/bench.component";
 import { BicycleKickIconComponent } from '@src/app/icon/bicycle-kick/bicycle-kick.component';
 import { PenaltyMisedIconComponent } from '@src/app/icon/penalty-missed/penalty-missed.component';
 import { JerseyIconComponent } from '@src/app/icon/jersey/jersey-icon.component';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 @Component({
   selector: 'app-ui-icon',
   imports: [
+    I18nPipe,
     LoadingComponent,
     FootballComponent,
     BicycleKickIconComponent,
@@ -79,8 +81,7 @@ import { JerseyIconComponent } from '@src/app/icon/jersey/jersey-icon.component'
     PenaltyMisedIconComponent,
     JerseyIconComponent
 ],
-  templateUrl: './icon.component.html',
-  styleUrl: './icon.component.css'
+  templateUrl: './icon.component.html'
 })
 export class UiIconComponent {
 

@@ -22,7 +22,9 @@
             <app-calendar-icon [color]="descriptorValue.color" />
         }
         @case ('captain') {
-            <div class="captain text-sm bold rounded-md">C</div>
+            <div class="captain text-sm bold rounded-md">
+                {{ 'abbreviation.captain' | $t }}
+            </div>
         }
         @case ('check') {
             <app-check [color]="descriptorValue.color" />

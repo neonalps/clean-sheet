@@ -5,41 +5,53 @@
 @let captainValue = captain();
 @let iconUrlValue = iconUrl();
 <div class="image-container relative" [ngClass]="containerClass()">
-    <div *ngIf="yellowCardValue" class="absolute top-neg-4 left-neg-10">
-        <div class="flex p-1 rounded-full bg-color-dark-grey-lighter-2">
-            <div class="card-yellow-small"></div>
+    @if (yellowCardValue) {
+        <div class="absolute top-neg-4 left-neg-10">
+            <div class="flex p-1 rounded-full bg-color-dark-grey-lighter-2">
+                <div class="card-yellow-small"></div>
+            </div>
         </div>
-    </div>
-    <div *ngIf="yellowRedCardValue" class="absolute top-neg-4 left-32">
-        <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
-            <div class="card-yellow-small"></div>
-            <div class="card-red-small relative left-neg-4"></div>
-            <div class="text-xs text-light">{{ yellowRedCardValue | formatGameMinute }}</div>
+    }
+    @if (yellowRedCardValue) {
+        <div class="absolute top-neg-4 left-32">
+            <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
+                <div class="card-yellow-small"></div>
+                <div class="card-red-small relative left-neg-4"></div>
+                <div class="text-xs text-light">{{ yellowRedCardValue | formatGameMinute }}</div>
+            </div>
         </div>
-    </div>
-    <div *ngIf="redCardValue" class="absolute top-neg-4 left-32">
-        <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
-            <div class="card-red-small"></div>
-            <div class="text-xs text-light ml-1">{{ redCardValue | formatGameMinute }}</div>
+    }
+    @if (redCardValue) {
+        <div class="absolute top-neg-4 left-32">
+            <div class="flex pl-2 py-1 pr-1 rounded-full bg-color-dark-grey-lighter-2">
+                <div class="card-red-small"></div>
+                <div class="text-xs text-light ml-1">{{ redCardValue | formatGameMinute }}</div>
+            </div>
         </div>
-    </div>
-    <div *ngIf="offValue" class="absolute left-30 top-28">
-        <div class="flex px-1 rounded-full bg-color-dark-grey-lighter-2">
-            <div class="arrow-inline-small relative top-1"><app-arrow-left [color]="'red'" /></div>
-            <div class="text-xs text-light relative top-2">{{ offValue | formatGameMinute }}</div>
+    }
+    @if (offValue) {
+        <div class="absolute left-30 top-28">
+            <div class="flex px-1 rounded-full bg-color-dark-grey-lighter-2">
+                <div class="arrow-inline-small relative top-1"><app-arrow-left [color]="'red'" /></div>
+                <div class="text-xs text-light relative top-2">{{ offValue | formatGameMinute }}</div>
+            </div>
         </div>
-    </div>
-    <div *ngIf="captainValue" class="absolute left-neg-10 top-24">
-        <div class="captain-small text-xs rounded-md">C</div>
-    </div>
+    }
+    @if (captainValue) {
+        <div class="absolute left-neg-10 top-24">
+            <div class="captain-small text-xs rounded-md">
+                {{ 'abbreviation.captain' | $t }}
+            </div>
+        </div>
+    }
     <div class="person-icon-container overflow-hidden" [ngClass]="[iconBgColorClass()]">
-        <ng-container *ngIf="iconUrlValue || !showPlaceholder(); else personPlaceholder">
+        @if (iconUrlValue || !showPlaceholder()) {
             <img [src]="iconUrlValue"/>
-        </ng-container>
-        <ng-template #personPlaceholder>
+        }
+        @else {
             <div class="width-2-25rem">
                 <app-placeholder-person />
             </div>
-        </ng-template>
+        }
     </div>
 </div>

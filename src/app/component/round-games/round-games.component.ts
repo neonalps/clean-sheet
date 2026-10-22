@@ -1,11 +1,10 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { Fixture } from '@src/app/model/game';
 import { ExternalGameOverviewComponent } from '@src/app/component/external-game-overview/external-game-overview.component';
 
 @Component({
   selector: 'app-round-games',
-  imports: [CommonModule, ExternalGameOverviewComponent],
+  imports: [ExternalGameOverviewComponent],
   templateUrl: './round-games.component.html'
 })
 export class RoundGamesComponent {

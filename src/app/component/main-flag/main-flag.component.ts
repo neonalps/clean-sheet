@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-main-flag',
   imports: [],
-  templateUrl: './main-flag.component.html',
-  styleUrl: './main-flag.component.css'
+  templateUrl: './main-flag.component.html'
 })
 export class MainFlagComponent {
 

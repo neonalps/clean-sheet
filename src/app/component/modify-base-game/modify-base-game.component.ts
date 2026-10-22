@@ -46,8 +46,7 @@ export type BaseGameInformation = {
 @Component({
   selector: 'app-modify-base-game',
   imports: [CommonModule, I18nPipe, SelectComponent, DatetimePickerComponent, CheckboxSliderComponent, EmptySearchOptionComponent],
-  templateUrl: './modify-base-game.component.html',
-  styleUrl: './modify-base-game.component.css'
+  templateUrl: './modify-base-game.component.html'
 })
 export class ModifyBaseGameComponent implements OnInit, OnDestroy {
 

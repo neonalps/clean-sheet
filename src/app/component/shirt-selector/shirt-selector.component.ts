@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { PersonId } from '@src/app/util/domain-types';
@@ -27,7 +27,7 @@ type GridColumn = {
 
 @Component({
   selector: 'app-shirt-selector',
-  imports: [CommonModule, I18nPipe, UiIconComponent],
+  imports: [NgClass, I18nPipe, UiIconComponent],
   templateUrl: './shirt-selector.component.html',
 })
 export class ShirtSelectorComponent {

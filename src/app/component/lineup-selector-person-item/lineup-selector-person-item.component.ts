@@ -7,6 +7,7 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
 import { ContextMenuComponent, ContextMenuSection } from '@src/app/component/context-menu/context-menu.component';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getPersonName } from '@src/app/util/domain';
+import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 
 export type LineupItem = {
   person: UiPerson;
@@ -17,7 +18,7 @@ export type LineupItem = {
 
 @Component({
   selector: 'app-lineup-selector-person-item',
-  imports: [CommonModule, CdkDrag, UiIconComponent, ContextMenuComponent],
+  imports: [CommonModule, CdkDrag, UiIconComponent, ContextMenuComponent, I18nPipe],
   templateUrl: './lineup-selector-person-item.component.html',
   styleUrl: './lineup-selector-person-item.component.css'
 })

@@ -4,30 +4,48 @@
         <app-player-icon [iconUrl]="personValue.avatar" [iconBgColorClass]="'bg-color-light-grey-darker'" [containerClass]="'max-w-2'" />
     </div>
     <div class="flex text-base pointer transition-text hover:text-light-darker-10">
-        <div class="pl-3 pl-2 text-light-grey-darker" *ngIf="personValue.shirt">{{ personValue.shirt }}</div>
+        @if (personValue.shirt) {
+            <div class="pl-3 pl-2 text-light-grey-darker">{{ personValue.shirt }}</div>
+        }
         <div class="pl-3">{{ personName() }} </div>
         <div class="inline-flex justify-content-center">
-            <div *ngIf="personValue.captain === true" class="captain-inline"><div class="captain text-sm rounded-md bold">C</div></div>
-            <div *ngIf="personValue.on" class="inline-flex justify-content-center">
-                <div class="arrow-inline ml-1"><app-arrow-right [color]="'green'" class="relative top-2" /></div>
-                <div class="ml-1">{{ personValue.on | formatGameMinute }}</div>
-            </div>
-            <div *ngIf="personValue.yellowCard" class="card-inline">
-                <div class="card-yellow"></div>
-            </div>
-            <div *ngIf="personValue.yellowRedCard" class="card-inline">
-                <div class="card-yellow-red-yellow card-yellow"></div>
-                <div class="card-yellow-red-red card-red"></div>
-                <div class="ml-2">{{ personValue.yellowRedCard | formatGameMinute }}</div>
-            </div>
-            <div *ngIf="personValue.redCard" class="card-inline">
-                <div class="card-red"></div>
-                <div class="ml-2">{{ personValue.redCard | formatGameMinute }}</div>
-            </div>
-            <div *ngIf="personValue.off" class="inline-flex justify-content-center">
-                <div class="arrow-inline ml-1"><app-arrow-left [color]="'red'" class="relative top-2" /></div>
-                <div class="ml-1">{{ personValue.off | formatGameMinute }}</div>
-            </div>
+            @if (personValue.captain) {
+                <div class="captain-inline">
+                    <div class="captain text-sm rounded-md bold">
+                        {{ 'abbreviation.captain' | $t }}
+                    </div>
+                </div>
+            }
+            @if (personValue.on) {
+                <div class="inline-flex justify-content-center">
+                    <div class="arrow-inline ml-1"><app-arrow-right [color]="'green'" class="relative top-2" /></div>
+                    <div class="ml-1">{{ personValue.on | formatGameMinute }}</div>
+                </div>
+            }
+            @if (personValue.yellowCard) {
+                <div class="card-inline">
+                    <div class="card-yellow"></div>
+                </div>
+            }
+            @if (personValue.yellowRedCard) {
+                <div class="card-inline">
+                    <div class="card-yellow-red-yellow card-yellow"></div>
+                    <div class="card-yellow-red-red card-red"></div>
+                    <div class="ml-2">{{ personValue.yellowRedCard | formatGameMinute }}</div>
+                </div>
+            }
+            @if (personValue.redCard) {
+                <div class="card-inline">
+                    <div class="card-red"></div>
+                    <div class="ml-2">{{ personValue.redCard | formatGameMinute }}</div>
+                </div>
+            }
+            @if (personValue.off) {
+                <div class="inline-flex justify-content-center">
+                    <div class="arrow-inline ml-1"><app-arrow-left [color]="'red'" class="relative top-2" /></div>
+                    <div class="ml-1">{{ personValue.off | formatGameMinute }}</div>
+                </div>
+            }
         </div>
     </div>
 </div>

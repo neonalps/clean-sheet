@@ -2,23 +2,27 @@
 <app-modal>
     <div header>
         <div class="flex align-items-center">
-            <div class="mr-2" *ngIf="icon">
-                <div class="width-md">
-                    <app-ui-icon [descriptor]="icon" />
+            @if (icon) {
+                <div class="mr-2">
+                    <div class="width-md">
+                        <app-ui-icon [descriptor]="icon" />
+                    </div>
                 </div>
-            </div>
+            }
             <div>{{ modalTitle() }}</div>
         </div>
     </div>
     <div content>
-        <div *ngIf="showSubstituteGames() === true" class="mb-6">
-            <div class="inline-flex p-2 bg-color-dark-grey-darker rounded-md align-items-center">
-                <div class="mr-3 text-sm">{{ 'stats.showSubstituteGames' | $t }}</div>
-                <div class="relative top-1">
-                    <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="false" (valueChange)="onIncludeSubstituteGamesChange($event)" />
+        @if (showSubstituteGames()) {
+            <div class="mb-6">
+                <div class="inline-flex p-2 bg-color-dark-grey-darker rounded-md align-items-center">
+                    <div class="mr-3 text-sm">{{ 'stats.showSubstituteGames' | $t }}</div>
+                    <div class="relative top-1">
+                        <app-checkbox-slider [checked]="includeSubstituteGames()" [showText]="false" (valueChange)="onIncludeSubstituteGamesChange($event)" />
+                    </div>
                 </div>
             </div>
-        </div>
+        }
         <div id="stats-modal-scroll-container">
             @for (seasonGamesPlayed of groupedGamesPlayed(); track $index) {
                 <div class="mb-6 last:mb-0">
@@ -34,9 +38,11 @@
                                 {{ gamePlayed.game.kickoff | date:'MMM d' }}
                             </div>
                             <div class="basis-2/5 flex text-sm">
-                                <div class="width-xs mr-2 relative top-1" *ngIf="gamePlayed.game.opponent.iconSmall">
-                                    <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
-                                </div>
+                                @if (gamePlayed.game.opponent.iconSmall) {
+                                    <div class="width-xs mr-2 relative top-1">
+                                        <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
+                                    </div>
+                                }
                                 <div>
                                     {{ gamePlayed.game.opponent.shortName }}
                                 </div>
@@ -45,7 +51,11 @@
                                 <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
                             </div>
                             <div class="basis-1/12 flex align-items-center justify-content-end">
-                                <div class="text-sm pr-3"><span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span></div>
+                                <div class="text-sm pr-3">
+                                    @if (gamePlayed.minutesPlayed !== undefined) {
+                                        <span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span>
+                                    }
+                                </div>
                             </div>
                             <div class="flex-grow flex align-items-center">
                                 <div class="flex">  
@@ -83,29 +93,37 @@
                                         </div>
                                     }
                                 </div>
-                                <div *ngIf="gamePlayed.yellowCard" [attr.title]="'game.yellowCard' | $t">
-                                    <div class="width-xs">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                                @if (gamePlayed.yellowCard) {
+                                    <div [attr.title]="'game.yellowCard' | $t">
+                                        <div class="width-xs">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                                        </div>
                                     </div>
-                                </div>
-                                <div *ngIf="gamePlayed.yellowRedCard" [attr.title]="'game.yellowRedCard' | $t">
-                                    <div class="width-xs">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
+                                }
+                                @if (gamePlayed.yellowRedCard) {
+                                    <div [attr.title]="'game.yellowRedCard' | $t">
+                                        <div class="width-xs">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
+                                        </div>
                                     </div>
-                                </div>
-                                <div *ngIf="gamePlayed.redCard" [attr.title]="'game.redCard' | $t">
-                                    <div class="width-xs">
-                                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
+                                }
+                                @if (gamePlayed.redCard) {
+                                    <div [attr.title]="'game.redCard' | $t">
+                                        <div class="width-xs">
+                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     }
                 </div>
             }
         </div>
-        <div class="mt-3 text-sm center pointer" *ngIf="isMoreAvailable()" (click)="triggerLoadMore()">
-            {{ 'load.more' | $t }}
-        </div>
+        @if (isMoreAvailable()) {
+            <div class="mt-3 text-sm center pointer" (click)="triggerLoadMore()">
+                {{ 'load.more' | $t }}
+            </div>
+        }
     </div>
 </app-modal>

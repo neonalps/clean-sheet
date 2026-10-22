@@ -4,11 +4,13 @@
     <div class="basis-1/10 flex justify-content-center align-items-center">
         {{ memberValue.shirt }}
     </div>
-    <div class="basis-1/8" *ngIf="memberValue.player.avatar">
-        <div class="width-md">
-            <app-ui-icon [descriptor]="{ 'type': 'person', 'content': memberValue.player.avatar }" />
+    @if (memberValue.player.avatar) {
+        <div class="basis-1/8">
+            <div class="width-md">
+                <app-ui-icon [descriptor]="{ 'type': 'person', 'content': memberValue.player.avatar }" />
+            </div>
         </div>
-    </div>
+    }
     <div class="flex-grow">
         <div class="flex align-items-center">
             <div>
@@ -20,18 +22,26 @@
                 </div>
             }
         </div>
-        <div class="mt-2 text-sm text-light-grey" *ngIf="memberValue.from || memberValue.to">
-            <div class="flex" *ngIf="memberValue.from">
-                <div class="text-light-grey-darker mr-2">{{ 'squad.member.from' | $t }}:</div>
-                <div>{{ memberValue.from | date:'MMM d yyyy' }}</div>
+        @if (memberValue.from || memberValue.to) {
+            <div class="mt-2 text-sm text-light-grey">
+                @if (memberValue.from) {
+                    <div class="flex">
+                        <div class="text-light-grey-darker mr-2">{{ 'squad.member.from' | $t }}:</div>
+                        <div>{{ memberValue.from | date:'MMM d yyyy' }}</div>
+                    </div>
+                }
+                @if (memberValue.to) {
+                    <div class="flex">
+                        <div class="text-light-grey-darker mr-2">{{ 'squad.member.to' | $t }}:</div>
+                        <div>{{ memberValue.to | date:'MMM d yyyy' }}</div>
+                    </div>
+                }
             </div>
-            <div class="flex" *ngIf="memberValue.to">
-                <div class="text-light-grey-darker mr-2">{{ 'squad.member.to' | $t }}:</div>
-                <div>{{ memberValue.to | date:'MMM d yyyy' }}</div>
-            </div>
+        }
+    </div>
+    @if (memberValue.loan) {
+        <div class="basis-1/10 flex align-items-center justify-content-center">
+            <div class="text-sm text-light-grey">{{ 'squad.member.loan' | $t }}</div>
         </div>
-    </div>
-    <div class="basis-1/10 flex align-items-center justify-content-center" *ngIf="memberValue.loan">
-        <div class="text-sm text-light-grey">{{ 'squad.member.loan' | $t }}</div>
-    </div>
+    }
 </div>

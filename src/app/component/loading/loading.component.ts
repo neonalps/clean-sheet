@@ -7,6 +7,4 @@ import { Component } from '@angular/core';
   templateUrl: './loading.component.html',
   styleUrl: './loading.component.css'
 })
-export class LoadingComponent {
-
-}
+export class LoadingComponent {}

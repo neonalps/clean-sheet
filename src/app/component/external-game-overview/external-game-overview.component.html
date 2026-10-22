@@ -7,13 +7,15 @@
             <app-small-club [club]="homeTeam()" [iconPosition]="'right'" />
         </div>
         <div class="basis-1/8 mx-2">
-            <ng-container *ngIf="gameStatus() === 'Finished'; else scheduled">
+            @if (gameStatus() === 'Finished') {
                 <div class="game-result-tendency px-2 py-1 rounded-md center bold" [ngClass]="resultTendencyClass()">{{ scoreBeforePso() }}</div>
-                <div class="text-xs mt-2 center" *ngIf="extendedPlay()">{{ extendedPlayText() }}</div>
-            </ng-container>
-            <ng-template #scheduled>
+                @if (extendedPlay()) {
+                    <div class="text-xs mt-2 center">{{ extendedPlayText() }}</div>
+                }
+            }
+            @else {
                 <div class="center text-sm" [ngClass]="gameStatusClasses()">{{ gameStatusText() }}</div>
-            </ng-template>
+            }
         </div>
         <div class="basis-3/7">
             <app-small-club [club]="awayTeam()" />

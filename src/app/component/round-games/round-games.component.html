@@ -1,4 +1,4 @@
-<ng-container *ngIf="loading(); else loadedContent">
+@if (loading()) {
     @for (skeletonRow of skeletonRows(); track $index) {
         <div class="flex align-items-center justify-content-between mb-2">
             <div class="skeleton-box-small" style="width: 35%;"></div>
@@ -6,9 +6,9 @@
             <div class="skeleton-box-small" style="width: 35%;"></div>
         </div>
     }
-</ng-container>
-<ng-template #loadedContent>
+}
+@else {
     @for (fixture of effectiveFixtures(); track $index) {
         <app-external-game-overview [fixture]="fixture" [showYear]="true" (click)="onFixtureClicked(fixture)" />
     }
-</ng-template>
+}

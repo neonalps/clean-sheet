@@ -5,8 +5,7 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 @Component({
   selector: 'app-filter-button',
   imports: [ButtonComponent],
-  templateUrl: './filter-button.component.html',
-  styleUrl: './filter-button.component.css'
+  templateUrl: './filter-button.component.html'
 })
 export class FilterButtonComponent {
 

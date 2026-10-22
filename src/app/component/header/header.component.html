@@ -10,7 +10,7 @@
         <div class="flex-grow mx-4 pointer" (click)="onSearchIconClicked()">
             <div class="relative">
                 <div class="width-sm absolute left-8 top-11">
-                    <app-search [color]="colorLight" />
+                    <app-search />
                 </div>
                 <div class="width-sm absolute left-search-close top-11 transition-fade" [ngClass]="{ 'hidden-fade': !isSearchCloseVisible() }" (click)="closeSearch()" appStopEventPropagation>
                     x

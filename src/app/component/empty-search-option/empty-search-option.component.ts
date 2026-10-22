@@ -1,4 +1,4 @@
-import { Component, input, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { UiIconComponent } from '@src/app/component/ui-icon/icon.component';
 

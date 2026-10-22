@@ -14,7 +14,9 @@
         <div class="game-event-scored-by text-sm">{{ playerOn() }}</div>
         <div class="text-sm text-light-grey">
             {{ playerOff() }}
-            <span *ngIf="eventValue.injured" class="inline-block ml-1 text-danger-lighter-30" [attr.title]="'injured' | $t">+</span>
+            @if (eventValue.injured) {
+                <span class="inline-block ml-1 text-danger-lighter-30" [attr.title]="'injured' | $t">+</span>
+            }
         </div>
     </div>
 </app-game-event>
