@@ -1,10 +1,11 @@
 import { Injectable, signal } from "@angular/core";
 import { ConfirmAddPersonModalPayload } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
+import { ModifyPersonPayload } from "@src/app/component/modal-modify-person/modal-modify-person.component";
 import { FilterGameListPayload } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-select-shirt.component";
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
 import { assertUnreachable } from "@src/app/util/common";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 interface ModalEvent {
     type: 'cancel' | 'confirm' | 'value';
@@ -15,6 +16,7 @@ export enum Modal {
     ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
     FilterGameList = 'filterGameList',
+    ModifyPerson = 'modifyPerson',
     Shirt = 'shirt',
     Stats = 'stats',
 }
@@ -24,12 +26,13 @@ export enum Modal {
 })
 export class ModalService {
     
-    readonly active$ = new BehaviorSubject<boolean>(false);
+    readonly active = signal(false);
     readonly modalType = signal<Modal | null>(null);
 
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<void>();
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
+    readonly modifyPersonPayload$ = new Subject<ModifyPersonPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
 
@@ -45,6 +48,10 @@ export class ModalService {
 
     showFilterGameListModal(payload: FilterGameListPayload): Observable<ModalEvent> {
         return this.showModal(Modal.FilterGameList, payload);
+    }
+
+    showModifyPersonModal(payload: ModifyPersonPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.ModifyPerson, payload);
     }
 
     showShirtModal(payload: ShirtModalPayload): Observable<ModalEvent> {
@@ -70,7 +77,7 @@ export class ModalService {
     private closeModal(event: ModalEvent) {
         this.modalEvent$?.next(event);
         this.modalEvent$?.complete();
-        this.active$.next(false);
+        this.active.set(false);
 
         // delay setting the modal type to null so the transition can be executed
         setTimeout(() => this.modalType.set(null), 400);
@@ -91,12 +98,12 @@ export class ModalService {
     }
 
     private showModal(type: Modal, payload: unknown): Observable<ModalEvent> {
-        if (this.active$.value === true) {
+        if (this.active() === true) {
             throw new Error(`A modal is already open.`)
         }
 
         this.modalType.set(type);
-        this.active$.next(true);
+        this.active.set(true);
 
         // we must delay the publishing because the modal component might not be initialized yet
         setTimeout(() => this.publishPayload(type, payload), 0);
@@ -115,6 +122,9 @@ export class ModalService {
                 break;
             case Modal.FilterGameList:
                 this.filterGameListPayload$.next(payload as FilterGameListPayload);
+                break;
+            case Modal.ModifyPerson:
+                this.modifyPersonPayload$.next(payload as ModifyPersonPayload);
                 break;
             case Modal.Shirt:
                 this.shirtModalPayload$.next(payload as ShirtModalPayload);

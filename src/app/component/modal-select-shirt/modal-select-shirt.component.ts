@@ -30,8 +30,7 @@ type GridColumn = {
 @Component({
   selector: 'app-modal-select-shirt',
   imports: [CommonModule, ModalComponent, I18nPipe, UiIconComponent],
-  templateUrl: './modal-select-shirt.component.html',
-  styleUrl: './modal-select-shirt.component.css'
+  templateUrl: './modal-select-shirt.component.html' 
 })
 export class ModalSelectShirtComponent implements OnInit, OnDestroy {
 

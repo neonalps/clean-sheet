@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { SearchComponent } from '@src/app/icon/search/search.component';
 import { MenuService } from '@src/app/module/menu/service';
@@ -27,7 +27,7 @@ import { ScoreFormatter } from '@src/app/module/game/score-formatter';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, I18nPipe, UiIconComponent, SearchComponent, NavMenuComponent, UiIconComponent, ClickOutsideDirective, StopEventPropagationDirective, ChipGroupComponent],
+  imports: [CommonModule, I18nPipe, UiIconComponent, UiIconComponent, ChipGroupComponent, NavMenuComponent, SearchComponent, ClickOutsideDirective, StopEventPropagationDirective],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
@@ -35,8 +35,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly searchElement = viewChild.required<ElementRef<HTMLInputElement>>('search');
 
-  readonly isMenuOpen = signal(false);
   readonly isAccountMenuOpen = signal(false);
+  readonly isMenuOpen = computed(() => this.menuService.active());
   readonly isSearchCloseVisible = signal(false);
   readonly isSearchFocused = signal(false);
   readonly isSearchResultOpen = signal(false);
@@ -70,33 +70,27 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(profile => this.profileSettings.set(profile));
 
-    this.menuService.open$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(open => {
-        this.isMenuOpen.set(open);
-      });
+    combineLatest([
+      this.searchTypeFilter$,
+      this.search$.pipe(
+        debounceTime(400),
+        switchMap(searchValue => {
+          this.isSearchResultOpen.set(true);
+          this.isSearchCloseVisible.set(true);
 
-      combineLatest([
-        this.searchTypeFilter$,
-        this.search$.pipe(
-          debounceTime(400),
-          switchMap(searchValue => {
-            this.isSearchResultOpen.set(true);
-            this.isSearchCloseVisible.set(true);
+          return this.externalSearchService.search(searchValue);
+        }),
+      ),
+    ]).pipe(takeUntil(this.destroy$))
+    .subscribe(([filter, searchResult]) => {
+      this.searchResultItems$.next(searchResult.items.filter(item => {
+        if (filter === null) {
+          return true;
+        }
 
-            return this.externalSearchService.search(searchValue);
-          }),
-        ),
-      ]).pipe(takeUntil(this.destroy$))
-      .subscribe(([filter, searchResult]) => {
-        this.searchResultItems$.next(searchResult.items.filter(item => {
-          if (filter === null) {
-            return true;
-          }
-
-          return item.type === filter;
-        }));
-      });
+        return item.type === filter;
+      }));
+    });
   }
 
   ngOnDestroy(): void {

@@ -256,8 +256,13 @@ export class PersonComponent implements OnDestroy {
   }
 
   onPersonContextMenuItemSelected(itemId: string) {
-    // TODO implement
-    console.log('selected', itemId);
+    if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT) {
+      const currentPerson = ensureNotNullish(this.person());
+
+      this.modalService.showModifyPersonModal({
+        person: currentPerson.person,
+      });
+    }
   }
 
   private loadPersonDetails() {

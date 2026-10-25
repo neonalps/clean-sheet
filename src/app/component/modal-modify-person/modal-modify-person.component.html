@@ -1,0 +1,7 @@
+@let personValue = person();
+<app-modal>
+    <div header>{{ 'person.edit' | $t }}</div>
+    <div content>
+        edit {{ personValue?.firstName }} {{ personValue?.lastName }} here
+    </div>
+</app-modal>

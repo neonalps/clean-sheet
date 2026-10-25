@@ -1,3 +1,4 @@
+@let isMenuOpenValue = isMenuOpen();
 <header *ngIf="isLoggedIn()">
     <div class="flex align-items-center mx-3 pt-3 mb-4">
         <div class="basis-1/10">
@@ -43,10 +44,10 @@
             </div>
         </div>
     </div>
-    <div class="menu-drawer h-full bg-color-dark-grey px-2 py-3 z-10" [ngClass]="{ 'menu-drawer-open': isMenuOpen() }">
+    <div class="menu-drawer h-full bg-color-dark-grey px-2 py-3 z-10" [ngClass]="{ 'menu-drawer-open': isMenuOpenValue }">
         <app-nav-menu (onNavigationSelected)="onNavigation()" />
     </div>
-    <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpen() }" (click)="overlayClick()"></div>
+    <div class="menu-drawer-overlay transition-fade" [ngClass]="{ 'hidden-fade': !isMenuOpenValue }" (click)="overlayClick()"></div>
     <div class="search-results z-2 bg-color-dark-grey w-full h-full p-3" [ngClass]="{ 'search-results-open': isSearchResultOpen() }">
         <div class="text-lg bold">{{ 'search.results' | $t }}</div>
         @let resultItems = searchResultItems$ | async;

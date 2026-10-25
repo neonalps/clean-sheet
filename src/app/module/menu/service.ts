@@ -1,19 +1,20 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { computed, Injectable, signal } from "@angular/core";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
-    readonly open$ = new BehaviorSubject<boolean>(false);
+    readonly active = computed(() => this.open());
+
+    private readonly open = signal(false);
 
     toggle() {
-      this.open$.next(!this.open$.getValue());
+      this.open.update(current => !current);
     }
 
     close() {
-      this.open$.next(false);
+      this.open.set(false);
     }
 
 }

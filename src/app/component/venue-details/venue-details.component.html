@@ -1,5 +1,6 @@
 @let venueValue = venue();
 @let flavorsToDisplayValue = flavorsToDisplay();
+@let canInteractWithHomeVenueClubsValue = canInteractWithHomeVenueClubs();
 <div>
     <div class="float-right">
         <app-button [buttonType]="'secondary'" [icon]="{ 'type': 'standard', 'content': 'location' }" [text]="'location.showOnMap' | $t" [textClasses]="'text-sm normal'" (onClicked)="showOnMap()" />
@@ -30,7 +31,7 @@
             <div class="section-title">{{ 'venue.homeVenueFor' | $t }}</div>
             <div class="mt-3">
                 @for (club of venueValue.homeVenueFor; track club.id) {
-                    <div class="mb-2 last:mb-0" [class.pointer]="canInteractWithHomeVenueClubs()" (click)="canInteractWithHomeVenueClubs() && onClubClick.emit(club)">
+                    <div class="mb-2 last:mb-0" [class.pointer]="canInteractWithHomeVenueClubsValue" (click)="canInteractWithHomeVenueClubsValue && onClubClick.emit(club)">
                         <app-small-club [club]="club" />
                     </div>
                 }
