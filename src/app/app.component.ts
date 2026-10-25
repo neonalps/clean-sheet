@@ -21,7 +21,7 @@ import { CompetitionService } from './module/competition/service';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  title = 'clean-sheet';
+  readonly title = 'clean-sheet';
 
   private readonly appLoadService = inject(AppLoadService);
   private readonly authService = inject(AuthService);
@@ -34,12 +34,10 @@ export class AppComponent implements OnInit {
   constructor() {
     effect(() => {
       this.disallowScroll(this.modalService.active());
-      console.log('modal effect')
     });
 
     effect(() => {
       this.disallowScroll(this.menuService.active());
-      console.log('menu effect')
     });
   }
 

@@ -358,6 +358,8 @@
     "person.create.question": "Create person?",
     "person.create.detail": "Do you want to create the person {name}?",
     "person.edit": "Edit person",
+    "person.firstName": "First name",
+    "person.lastName": "Last name",
     "person.managerPeriods": "Manager periods",
     "person.search.empty": "No person could be found",
     "player.goalsAgainstClubs": "Goals against clubs",

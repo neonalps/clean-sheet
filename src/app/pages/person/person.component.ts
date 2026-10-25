@@ -5,7 +5,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -38,6 +38,7 @@ import { ManagerPeriodForPerson } from '@src/app/model/manager';
 import { ManagerPeriodComponent } from "@src/app/component/manager-period/manager-period.component";
 import { NationalitiesComponent } from '@src/app/component/nationalities/nationalities.component';
 import { Nullish } from '@src/app/util/types';
+import { ModifyPersonConfirmPayload } from '@src/app/component/modal-modify-person/modal-modify-person.component';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -261,7 +262,25 @@ export class PersonComponent implements OnDestroy {
 
       this.modalService.showModifyPersonModal({
         person: currentPerson.person,
-      });
+      }).pipe(
+        filter(event => event.type === 'confirm'),
+        map(event => ensureNotNullish(event.value) as ModifyPersonConfirmPayload),
+        takeUntil(this.destroy$),
+      ).subscribe({
+        next: payload => {
+          this.person.update(current => {
+            const currentPersonResponse = ensureNotNullish(current);
+            return {
+              ...currentPersonResponse,
+              person: {
+                ...currentPersonResponse.person,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+              },
+            };
+          });
+        },
+      })
     }
   }
 
