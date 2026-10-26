@@ -51,7 +51,6 @@ export class ModalModifyPersonComponent implements OnInit, OnDestroy {
     this.modalService.modifyPersonPayload$
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
-        console.log(payload);
         this.currentPayload.set(payload);
 
         const currentFirstName = payload.person.firstName ?? '';

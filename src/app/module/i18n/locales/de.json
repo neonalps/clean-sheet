@@ -384,6 +384,8 @@
     "person.lastName": "Nachname",
     "person.nationalities": "Nationalitäten",
     "person.search.empty": "Es konnte keine Person gefunden werden",
+    "personUpdate.success": "Die Person wurde erfolgreich aktualisiert",
+    "personUpdate.failure": "Die Person konnte nicht aktualisiert werden",
     "player.goalsAgainstClubs": "Tore gegen Klubs",
     "player.stats": "Spieler-Statistiken",
     "playerAppearanceStats.error": "Die Einsatz-Statistiken konnten nicht geladen werden",

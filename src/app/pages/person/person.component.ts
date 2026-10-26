@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { PersonResolver } from '@src/app/module/person/resolver';
-import { GetPersonByIdResponse } from '@src/app/module/person/service';
+import { GetPersonByIdResponse, PersonService } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
 import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
@@ -39,6 +39,7 @@ import { ManagerPeriodComponent } from "@src/app/component/manager-period/manage
 import { NationalitiesComponent } from '@src/app/component/nationalities/nationalities.component';
 import { Nullish } from '@src/app/util/types';
 import { ModifyPersonConfirmPayload } from '@src/app/component/modal-modify-person/modal-modify-person.component';
+import { ToastService } from '@src/app/module/toast/service';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -67,8 +68,10 @@ export class PersonComponent implements OnDestroy {
   private readonly competitionService = inject(CompetitionService);
   private readonly modalService = inject(ModalService);
   private readonly personResolver = inject(PersonResolver);
+  private readonly personService = inject(PersonService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
   private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
@@ -269,6 +272,7 @@ export class PersonComponent implements OnDestroy {
       ).subscribe({
         next: payload => {
           this.person.update(current => {
+            // optimistic UI update
             const currentPersonResponse = ensureNotNullish(current);
             return {
               ...currentPersonResponse,
@@ -282,6 +286,29 @@ export class PersonComponent implements OnDestroy {
               },
             };
           });
+
+          // API update
+          this.personService.updateById(currentPerson.person.id, {
+            lastName: payload.lastName,
+            firstName: payload.firstName,
+            nationalities: payload.nationalities,
+            birthday: payload.birthday ?? undefined,
+            deathday: payload.deathday ?? undefined,
+          }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: updatedPerson => {
+              this.toastService.addToast({
+                type: 'success',
+                text: this.translationService.translate('personUpdate.success'),
+              });
+            },
+            error: err => {
+              console.error(err);
+              this.toastService.addToast({
+                type: 'error',
+                text: this.translationService.translate('personUpdate.failure'),
+              });
+            }
+          })
         },
       })
     }

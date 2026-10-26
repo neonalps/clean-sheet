@@ -6,7 +6,7 @@ import { ManagerPeriodForPerson } from "@src/app/model/manager";
 import { DetailedPerson, Person } from "@src/app/model/person";
 import { ContractForPerson } from "@src/app/model/person-contract";
 import { GoalsAgainstClubStatsItemDto, PlayerBaseStats, PlayerSeasonStatsItemDto, ShirtDistributionItem } from "@src/app/model/stats";
-import { DateString } from "@src/app/util/domain-types";
+import { DateString, PersonId } from "@src/app/util/domain-types";
 import { environment } from "@src/environments/environment";
 import { Observable } from "rxjs";
 
@@ -14,6 +14,14 @@ export type CreatePersonRequest = {
   lastName: string;
   firstName?: string;
   avatar?: string;
+  birthday?: DateString;
+  deathday?: DateString;
+  nationalities?: string[];
+};
+
+export type UpdatePerson = {
+  lastName: string;
+  firstName?: string;
   birthday?: DateString;
   deathday?: DateString;
   nationalities?: string[];
@@ -40,12 +48,16 @@ export class PersonService {
 
     private readonly http = inject(HttpClient);
 
-    getById(personId: number, includeContract = false, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
+    getById(personId: PersonId, includeContract = false, includeStatistics: boolean = false): Observable<GetPersonByIdResponse> {
       return this.http.get<GetPersonByIdResponse>(`${environment.apiBaseUrl}/v1/people/${personId}?includeContract=${includeContract}&includeStatistics=${includeStatistics}`);
     }
 
     create(createPerson: CreatePersonRequest): Observable<Person> {
       return this.http.post<Person>(`${environment.apiBaseUrl}/v1/people`, createPerson);
+    }
+
+    updateById(personId: PersonId, update: UpdatePerson): Observable<Person> {
+      return this.http.put<Person>(`${environment.apiBaseUrl}/v1/people/${personId}`, update);
     }
 
 }

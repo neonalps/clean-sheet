@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GetPersonByIdResponse, PersonService } from './service';
 
@@ -7,7 +7,7 @@ import { GetPersonByIdResponse, PersonService } from './service';
 })
 export class PersonResolver {
 
-  constructor(private readonly personService: PersonService) {}
+  private readonly personService = inject(PersonService);
 
   getById(personId: number, includeContract = false, includeStatistics = false): Observable<GetPersonByIdResponse> {
     // here could be some caching if necessary

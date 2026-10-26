@@ -2,7 +2,7 @@
     @for (item of wornJerseys(); track item.shirt) {
         <div class="flex align-items-center mb-2 last:mb-0 pointer hover:bg-color-dark-grey p-1 rounded-md transition-colors" (click)="filterOptionsSelected.emit({ 'shirt': item.shirt.toString() })">
             <div class="basis-1/6 flex justify-content-center align-items-center">
-                {{ item.shirt }}
+                <span class="min-w-28 border-1 border-solid border-light rounded px-1 center">{{ item.shirt }}</span>
             </div>
             <div class="basis-5/6">
                 <app-progress-bar [displayValue]="item.count.toString()" [percentageValue]="getShirtDistributionPercentage(item.count)" />

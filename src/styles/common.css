@@ -1100,6 +1100,10 @@
     line-height: 1rem;
 }
 
+.min-w-28 {
+    min-width: 28px;
+}
+
 .min-w-32 {
     min-width: 32px;
 }
