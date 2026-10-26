@@ -1,4 +1,4 @@
-import { PersonId } from "@src/app/util/domain-types";
+import { DateString, PersonId } from "@src/app/util/domain-types";
 import { ExternalProvider } from "./external-provider";
 
 export interface Person {
@@ -6,8 +6,8 @@ export interface Person {
     lastName: string;
     firstName?: string;
     avatar?: string;
-    birthday?: Date;
-    deathday?: Date;
+    birthday?: DateString;
+    deathday?: DateString;
     nationalities?: string[];
 }
 
@@ -23,8 +23,8 @@ export interface DetailedPerson {
     lastName: string;
     firstName: string;
     avatar: string;
-    birthday?: Date;
-    deathday?: Date;
+    birthday?: DateString;
+    deathday?: DateString;
     nationalities?: string[];
 }
 

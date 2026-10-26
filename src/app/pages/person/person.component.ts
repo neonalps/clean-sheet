@@ -276,6 +276,9 @@ export class PersonComponent implements OnDestroy {
                 ...currentPersonResponse.person,
                 firstName: payload.firstName,
                 lastName: payload.lastName,
+                nationalities: payload.nationalities,
+                birthday: payload.birthday ?? undefined,
+                deathday: payload.deathday ?? undefined,
               },
             };
           });

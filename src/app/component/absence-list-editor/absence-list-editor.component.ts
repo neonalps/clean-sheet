@@ -100,8 +100,6 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: potentialAbsences => {
-          console.log('received potentials', potentialAbsences);
-
           const potentialInjured = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.Injured);
           const potentialAtRisk = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.AtRisk);
           const potentialSuspended = potentialAbsences.potential.filter(item => item.type === GameAbsenceType.Suspended);
@@ -172,15 +170,11 @@ export class AbsenceListEditorComponent implements OnInit, OnDestroy {
 
       this.setItemsForType(previousItemType, itemsForPreviousType);
       this.setItemsForType(currentItemType, itemsForCurrentType);
-
-      console.log('previous items are', itemsForPreviousType);
-      console.log('current items are', itemsForCurrentType);
     } else if (event.previousIndex !== event.currentIndex) {
       // element was moved within section
       const itemsForType = this.getItemsForType(currentItemType);
       moveItemInArray(itemsForType, event.previousIndex, event.currentIndex);
       this.setItemsForType(currentItemType, itemsForType);
-      console.log('items are', itemsForType);
     } else {
       // nothing was changed
       return;

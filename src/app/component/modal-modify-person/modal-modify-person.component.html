@@ -13,6 +13,18 @@
                 <input #lastName type="text" class="input-text w-full px-2 py-1 text-lg text-light" (input)="onLastNameChange()" />
             </div>
         </div>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'person.nationalities' | $t }}</div>
+            <div class="form-row-content">
+                <app-select-nationalities [selectedNationalities]="nationalitiesValue()" (onValueChange)="onNationalitiesChanged($event)" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'person.birthday' | $t }}</div>
+            <div class="form-row-content">
+                <app-date-picker [date]="birthdayValue()" (onValueChange)="onBirthdayChanged($event)" />
+            </div>
+        </div>
     </div>
     <div footer>
         <div class="flex justify-content-center">
