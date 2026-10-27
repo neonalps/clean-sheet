@@ -2,7 +2,8 @@
 @let matchdayDetailsValue = matchdayDetails();
 @let matchdayDetailsLoadingValue = matchdayDetailsLoading();
 @let shouldHideGeneralDetailsValue = shouldHideGeneralDetails();
-<ng-container *ngIf="isLoading(); else loadedContent">
+
+@if (isLoading()) {
     <div>
         <div class="game-section py-3 rounded-lg mt-3 mx-3">
             <div class="flex align-items-center justify-content-between">
@@ -38,8 +39,8 @@
             </div>
         </div>
     </div>
-</ng-container>
-<ng-template #loadedContent>
+}
+@else {
     @let homeTeam = getHomeTeam();
     @let awayTeam = getAwayTeam();
     @let legInformation = getLegInformation();
@@ -76,21 +77,23 @@
                     <app-large-club [club]="homeTeam" (click)="onClubSelected(homeTeam)"/>
                 </div>
                 <div class="scoring-board mt-3 text-light-grey-darker text-sm text-right pr-1">
-                    <ng-container *ngFor="let scoringBoardItem of getHomeScoringBoard()">
+                    @for (scoringBoardItem of getHomeScoringBoard(); track $index) {
                         <div class="score-board-item hover:text-light-grey pointer" (click)="onGamePlayerSelected(scoringBoardItem.player)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
-                    </ng-container>
+                    }
                 </div>
             </div>
             <div class="basis-1/8 pt-1">
                 <div class="text-sm mb-5">
-                    <div class="mt-4 center" *ngIf="showGameStatus()">{{ getGameStatus() }}</div>
+                    @if (showGameStatus()) {
+                        <div class="mt-4 center">{{ getGameStatus() }}</div>
+                    }
                 </div>
-                <ng-container *ngIf="detailsVisible; else upcoming">
+                @if (detailsVisible) {
                     <div class="game-result-tendency px-2 py-1 mx-2 rounded-md center bold text-lg" [ngClass]="getGameResultTendencyClass()">{{ getGameScoreBeforePso() }}</div>
-                </ng-container>
-                <ng-template #upcoming>
+                }
+                @else {
                     <div class="pt-3 text-sm center">{{ getUpcomingText() }}</div>
-                </ng-template>
+                }
                 <div class="text-sm mt-3 center" *ngIf="hasExtendedPlay()">{{ getExtendedPlayText() }}</div>
             </div>
             <div class="basis-3/7">
@@ -98,9 +101,9 @@
                     <app-large-club [club]="awayTeam" (click)="onClubSelected(awayTeam)" />
                 </div>
                 <div class="scoring-board mt-3 text-light-grey-darker text-sm pl-1">
-                    <ng-container *ngFor="let scoringBoardItem of getAwayScoringBoard()">
+                    @for (scoringBoardItem of getAwayScoringBoard(); track $index) {
                         <div class="score-board-item hover:text-light-grey pointer" (click)="onGamePlayerSelected(scoringBoardItem.player)">{{ scoringBoardItem.player.lastName }} {{ scoringBoardItem.goalText }}</div>
-                    </ng-container>
+                    }
                 </div>
             </div>
         </div>
@@ -123,31 +126,33 @@
         </div>
     </div>
 
-    <div class="game-section p-2 rounded-lg mt-3 mx-3" *ngIf="detailsVisible" #scrolling>
-        <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab()" [horizontalScroll]="true">
-            <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
-                <app-game-events [events]="uiGame!.events" />
-            </app-tab-item>
-            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClubValue.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClubValue.iconSmall! }" [tabIconClasses]="['width-sm', 'relative', 'top-neg-1']">
-                <app-game-lineup [lineup]="getMainLineup()" />
-            </app-tab-item>
-            <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }" [tabIconClasses]="['width-sm', 'relative', 'top-neg-1']">
-                <app-game-lineup [lineup]="getOpponentLineup()" />
-            </app-tab-item>
-            <app-tab-item *ngIf="isMatchdayTabVisible()" [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
-                <app-round-information [loading]="matchdayDetailsLoadingValue" [matchdayDetails]="matchdayDetailsValue ?? undefined" [hideTable]="!isMatchdayTableVisible()" />
-            </app-tab-item>
-        </app-tab-group>
-    </div>
+    @if (detailsVisible) {
+        <div class="game-section p-2 rounded-lg mt-3 mx-3" #scrolling>
+            <app-tab-group (onTabSelected)="onTabSelected($event)" [activeTab]="activeTab()" [horizontalScroll]="true">
+                <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
+                    <app-game-events [events]="uiGame!.events" />
+                </app-tab-item>
+                <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClubValue.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClubValue.iconSmall! }" [tabIconClasses]="['width-sm', 'relative', 'top-neg-1']">
+                    <app-game-lineup [lineup]="getMainLineup()" />
+                </app-tab-item>
+                <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }" [tabIconClasses]="['width-sm', 'relative', 'top-neg-1']">
+                    <app-game-lineup [lineup]="getOpponentLineup()" />
+                </app-tab-item>
+                <app-tab-item *ngIf="isMatchdayTabVisible()" [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
+                    <app-round-information [loading]="matchdayDetailsLoadingValue" [matchdayDetails]="matchdayDetailsValue ?? undefined" [hideTable]="!isMatchdayTableVisible()" />
+                </app-tab-item>
+            </app-tab-group>
+        </div>
 
-    <div class="game-section p-3 rounded-lg mt-3 mx-3" *ngIf="detailsVisible">
-        <div class="pl-1 pt-1 mb-3">
-            <app-checkbox-star [checked]="starChecked()" (click)="onStarToggle()" [displayText]="(starChecked() ? 'game.didStar' : 'game.didNotStar') | $t" />
+        <div class="game-section p-3 rounded-lg mt-3 mx-3">
+            <div class="pl-1 pt-1 mb-3">
+                <app-checkbox-star [checked]="starChecked()" (click)="onStarToggle()" [displayText]="(starChecked() ? 'game.didStar' : 'game.didNotStar') | $t" />
+            </div>
+            <div class="pl-1 pt-1">
+                <app-checkbox-eye [checked]="attendChecked()" (click)="onAttendToggle()" [displayText]="(attendChecked() ? 'game.didAttend' : 'game.didNotAttend') | $t" />
+            </div>
         </div>
-        <div class="pl-1 pt-1">
-            <app-checkbox-eye [checked]="attendChecked()" (click)="onAttendToggle()" [displayText]="(attendChecked() ? 'game.didAttend' : 'game.didNotAttend') | $t" />
-        </div>
-    </div>
+    }
 
     <div class="game-section p-3 rounded-lg m-3 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetailsValue }">
         <div class="heading-small">{{ 'game.generalInformation' | $t }}</div>
@@ -169,22 +174,26 @@
             </div>
         </div>
         @let refereeValue = referee();
-        <div class="mt-5" *ngIf="refereeValue !== null">
-            <div class="section-title">{{ 'game.referee' | $t }}</div>
-            <div>
-                <div class="text-base pointer transition-text hover:text-light-darker-10" (click)="onRefereeSelected(refereeValue)">
-                    <app-person-card [person]="refereeValue" [lastNameBold]="false" [textSize]="'text-base'" [showNationalities]="true" [iconContainerWidth]="'width-2-25rem'" />
+        @if (refereeValue !== null) {
+            <div class="mt-5">
+                <div class="section-title">{{ 'game.referee' | $t }}</div>
+                <div>
+                    <div class="text-base pointer transition-text hover:text-light-darker-10" (click)="onRefereeSelected(refereeValue)">
+                        <app-person-card [person]="refereeValue" [lastNameBold]="false" [textSize]="'text-base'" [showNationalities]="true" [iconContainerWidth]="'width-2-25rem'" />
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div>   
+        }
     </div>
 
-    <div class="game-section p-3 rounded-lg mt-3 mx-3" *ngIf="shouldShowLastGames()">
-        <div class="heading-small">{{ 'game.lastMeetings' | $t }}</div>
-        <div>
-            <app-game-performance-trend [games]="performanceTrendAgainstClub()" [isLoading]="false" [showClubIcon]="false" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
+    @if (shouldShowLastGames()) {
+        <div class="game-section p-3 rounded-lg mt-3 mx-3">
+            <div class="heading-small">{{ 'game.lastMeetings' | $t }}</div>
+            <div>
+                <app-game-performance-trend [games]="performanceTrendAgainstClub()" [isLoading]="false" [showClubIcon]="false" [showGameDate]="true" [noGamesText]="'performanceTrend.noClubGames' | $t" />
+            </div>
         </div>
-    </div>
+    }
 
     @let editGameAbsencesModeValue = editGameAbsencesMode();
     <div class="game-section p-3 rounded-lg mt-3 mx-3 mb-4 transition-fade" [ngClass]="{ 'hidden-fade': shouldHideGeneralDetailsValue }">
@@ -207,4 +216,4 @@
             </ng-template>
         </div>
     </div>
-</ng-template>
+}
