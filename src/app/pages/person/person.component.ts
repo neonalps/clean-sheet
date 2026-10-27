@@ -61,6 +61,8 @@ export class PersonComponent implements OnDestroy {
 
   private static readonly CONTEXT_MENU_KEY_PERSON_EDIT = "editPerson";
   private static readonly CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE = "checkDuplicate";
+  private static readonly CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR = "uploadAvatar";
+  private static readonly CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR = "removeAvatar";
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
@@ -145,6 +147,16 @@ export class PersonComponent implements OnDestroy {
                 text: this.translationService.translate('menu.editPerson'), 
                 iconDescriptor: { 'type': 'standard', 'content': 'pen' }
               },
+              { 
+                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR, 
+                text: this.translationService.translate('menu.uploadPicture'), 
+                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+              },
+              { 
+                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR, 
+                text: this.translationService.translate('menu.removePicture'), 
+                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+              },
             ],
           }, {
             items: [
@@ -157,6 +169,9 @@ export class PersonComponent implements OnDestroy {
           }
         ]);
         this.contextMenuVisible.set(true);
+      } else {
+        this.personContextMenuOptions.set([]);
+        this.contextMenuVisible.set(false);
       }
     });
 
@@ -295,7 +310,7 @@ export class PersonComponent implements OnDestroy {
             birthday: payload.birthday ?? undefined,
             deathday: payload.deathday ?? undefined,
           }).pipe(takeUntil(this.destroy$)).subscribe({
-            next: updatedPerson => {
+            next: () => {
               this.toastService.addToast({
                 type: 'success',
                 text: this.translationService.translate('personUpdate.success'),
@@ -311,6 +326,12 @@ export class PersonComponent implements OnDestroy {
           })
         },
       })
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE) {
+      this.toastService.addToast({ type: 'warn', text: this.translationService.translate('feature.notImplemented') });
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR) {
+
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR) {
+      
     }
   }
 
