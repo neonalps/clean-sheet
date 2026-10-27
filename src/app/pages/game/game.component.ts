@@ -348,7 +348,7 @@ export class GameComponent implements OnDestroy {
   }
 
   onCompetitionSelected(competition: SmallCompetition) {
-    navigateToCompetition(this.router, competition);
+    navigateToCompetition(this.router, competition.parent ?? competition);
   }
 
   onAbsenceEditorUpdate(updatedItems: GameAbsenceEditorItem[]) {

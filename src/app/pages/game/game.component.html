@@ -128,10 +128,10 @@
             <app-tab-item [tabId]="'events'" [tabTitle]="'game.events' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'football' }" [tabIconClasses]="['width-1-25rem', 'relative', 'top-2']">
                 <app-game-events [events]="uiGame!.events" />
             </app-tab-item>
-            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClubValue.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClubValue.iconSmall! }">
+            <app-tab-item [tabId]="'lineupMain'" [tabTitle]="mainClubValue.shortName" [tabIcon]="{ 'type': 'club', 'content': mainClubValue.iconSmall! }" [tabIconClasses]="['relative', 'top-neg-1']">
                 <app-game-lineup [lineup]="getMainLineup()" />
             </app-tab-item>
-            <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }">
+            <app-tab-item [tabId]="'lineupOpponent'" [tabTitle]="game!.opponent.shortName" [tabIcon]="{ 'type': 'club', 'content': game!.opponent.iconSmall! }" [tabIconClasses]="['relative', 'top-neg-1']">
                 <app-game-lineup [lineup]="getOpponentLineup()" />
             </app-tab-item>
             <app-tab-item *ngIf="isMatchdayTabVisible()" [tabId]="'matchday'" [tabTitle]="'game.matchday' | $t" [tabIcon]="{ 'type': 'standard', 'content': 'table' }">
