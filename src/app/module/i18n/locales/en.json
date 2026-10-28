@@ -16,6 +16,8 @@
     "action.edit": "Edit",
     "action.remove": "Remove",
     "action.save": "Save",
+    "action.delete.consequence": "This action cannot be undone.",
+    "action.deleteGame.question": "Delete game?",
     "action.deleteUser": "Delete user",
     "action.loadPotentialAbsences": "Load potential absences",
     "applicationStats.accountCount.singular": "Account",

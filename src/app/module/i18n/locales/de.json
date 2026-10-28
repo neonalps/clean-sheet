@@ -16,6 +16,8 @@
     "action.edit": "Bearbeiten",
     "action.remove": "Entfernen",
     "action.save": "Speichern",
+    "action.delete.consequence": "Dieser Vorgang kann nicht rückgängig gemacht werden.",
+    "action.deleteGame.question": "Spiel löschen?",
     "action.deleteUser": "Benutzer löschen",
     "action.loadPotentialAbsences": "Lade fehlende Spieler",
     "applicationStats.accountCount.singular": "Benutzer",

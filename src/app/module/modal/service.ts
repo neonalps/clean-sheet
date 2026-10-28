@@ -6,6 +6,7 @@ import { ShirtModalPayload } from "@src/app/component/modal-select-shirt/modal-s
 import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.component";
 import { assertUnreachable } from "@src/app/util/common";
 import { Observable, Subject } from "rxjs";
+import { DeleteModalPayload } from "@src/app/component/delete-modal/delete-modal.component";
 
 interface ModalEvent {
     type: 'cancel' | 'confirm' | 'value';
@@ -30,7 +31,7 @@ export class ModalService {
     readonly modalType = signal<Modal | null>(null);
 
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
-    readonly deleteModalPayload$ = new Subject<void>();
+    readonly deleteModalPayload$ = new Subject<DeleteModalPayload>();
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
     readonly modifyPersonPayload$ = new Subject<ModifyPersonPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
@@ -42,7 +43,7 @@ export class ModalService {
         return this.showModal(Modal.ConfirmAddPerson, payload);
     }
 
-    showDeleteModal(payload: void): Observable<ModalEvent> {
+    showDeleteModal(payload: DeleteModalPayload): Observable<ModalEvent> {
         return this.showModal(Modal.Delete, payload);
     }
 
@@ -118,7 +119,7 @@ export class ModalService {
                 this.confirmAddPersonModalPayload$.next(payload as ConfirmAddPersonModalPayload);
                 break;
             case Modal.Delete:
-                this.deleteModalPayload$.next();
+                this.deleteModalPayload$.next(payload as DeleteModalPayload);
                 break;
             case Modal.FilterGameList:
                 this.filterGameListPayload$.next(payload as FilterGameListPayload);

@@ -331,7 +331,29 @@ export class PersonComponent implements OnDestroy {
     } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR) {
 
     } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR) {
-      
+      this.person.update(current => {
+        // optimistic UI update
+        const currentPersonResponse = ensureNotNullish(current);
+        return {
+          ...currentPersonResponse,
+          person: {
+            ...currentPersonResponse.person,
+            avatar: undefined
+          },
+        };
+      });
+
+      this.personService.removeAvatar(ensureNotNullish(this.person()).person.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.toastService.addToast({ type: 'success', text: this.translationService.translate('personUpdate.success') });
+          },
+          error: err => {
+            console.error(err);
+            this.toastService.addToast({ type: 'error', text: this.translationService.translate('personUpdate.failure') });
+          },
+        });
     }
   }
 

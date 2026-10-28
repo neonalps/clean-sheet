@@ -22,7 +22,7 @@ export interface DetailedPerson {
     id: PersonId;
     lastName: string;
     firstName: string;
-    avatar: string;
+    avatar?: string;
     birthday?: DateString;
     deathday?: DateString;
     nationalities?: string[];

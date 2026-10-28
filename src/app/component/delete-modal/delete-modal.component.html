@@ -5,8 +5,8 @@
                 <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'delete' }" />
             </div>
         </div>
-        <div class="text-lg bold center mb-5">Spiel wirklich löschen?</div>
-        <div class="text-base center px-4 text-light-grey">Dieser Vorgang kann nicht rückgängig gemacht werden.</div>
+        <div class="text-lg bold center mb-5">{{ titleText() }}</div>
+        <div class="text-base center px-4 text-light-grey">{{ contentText() }}</div>
     </div>
     <div footer>
         <div class="flex justify-content-center">

@@ -365,8 +365,10 @@ export class GameComponent implements OnDestroy {
     if (itemId === GameComponent.KEY_GAME_EDIT) {
       navigateToModifyGame(this.router, this.game.id)
     } else if (itemId === GameComponent.KEY_GAME_DELETE) {
-      this.modalService.showDeleteModal()
-        .pipe(
+      this.modalService.showDeleteModal({
+        titleTextKey: 'action.deleteGame.question',
+        contentTextKey: 'action.delete.consequence',
+      }).pipe(
           filter(event => event.type === 'confirm'),
           switchMap(() => this.gameService.delete(gameId)),
           takeUntil(this.destroy$)

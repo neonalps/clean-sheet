@@ -60,4 +60,8 @@ export class PersonService {
       return this.http.put<Person>(`${environment.apiBaseUrl}/v1/people/${personId}`, update);
     }
 
+    removeAvatar(personId: PersonId): Observable<void> {
+      return this.http.delete<void>(`${environment.apiBaseUrl}/v1/people/${personId}/avatar`);
+    }
+
 }
