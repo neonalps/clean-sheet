@@ -20,6 +20,7 @@
     "action.deleteGame.question": "Spiel löschen?",
     "action.deleteUser": "Benutzer löschen",
     "action.loadPotentialAbsences": "Lade fehlende Spieler",
+    "action.removePersonAvatar.question": "Bild der Person entfernen?",
     "applicationStats.accountCount.singular": "Benutzer",
     "applicationStats.accountCount.plural": "Benutzer",
     "applicationStats.gameCount.singular": "Spiel",

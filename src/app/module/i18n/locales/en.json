@@ -20,6 +20,7 @@
     "action.deleteGame.question": "Delete game?",
     "action.deleteUser": "Delete user",
     "action.loadPotentialAbsences": "Load potential absences",
+    "action.removePersonAvatar.question": "Remove picture of person?",
     "applicationStats.accountCount.singular": "Account",
     "applicationStats.accountCount.plural": "Accounts",
     "applicationStats.gameCount.singular": "Game",

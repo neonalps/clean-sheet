@@ -5,7 +5,7 @@ import { PersonResolver } from '@src/app/module/person/resolver';
 import { GetPersonByIdResponse, PersonService } from '@src/app/module/person/service';
 import { ensureNotNullish, getAbsolutePercentageString, isDefined, isNotDefined, processTranslationPlaceholders } from '@src/app/util/common';
 import { parseUrlSlug, PATH_PARAM_PERSON_ID } from '@src/app/util/router';
-import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
+import { combineLatest, filter, map, Subject, switchMap, takeUntil } from 'rxjs';
 import { PlayerIconComponent } from "@src/app/component/player-icon/player-icon.component";
 import { getAge } from '@src/app/util/date';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
@@ -40,6 +40,8 @@ import { NationalitiesComponent } from '@src/app/component/nationalities/nationa
 import { Nullish } from '@src/app/util/types';
 import { ModifyPersonConfirmPayload } from '@src/app/component/modal-modify-person/modal-modify-person.component';
 import { ToastService } from '@src/app/module/toast/service';
+import { FilePickerService } from '@src/app/module/file-picker/service';
+import { Person } from '@src/app/model/person';
 
 export type StatsItemType = 'gamesPlayed' | 'goalsScored' | 'assists' | 'yellowCards' | 'yellowRedCards' | 'redCards' | 'cleanSheets' | 'regulationPenaltiesTaken' | 'regulationPenaltiesFaced' | 'psoPenaltiesTaken' | 'psoPenaltiesFaced';
 
@@ -68,6 +70,7 @@ export class PersonComponent implements OnDestroy {
 
   private readonly authService = inject(AuthService);
   private readonly competitionService = inject(CompetitionService);
+  private readonly filePicker = inject(FilePickerService);
   private readonly modalService = inject(ModalService);
   private readonly personResolver = inject(PersonResolver);
   private readonly personService = inject(PersonService);
@@ -275,86 +278,123 @@ export class PersonComponent implements OnDestroy {
   }
 
   onPersonContextMenuItemSelected(itemId: string) {
-    if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT) {
-      const currentPerson = ensureNotNullish(this.person());
+    const currentPerson = ensureNotNullish(this.person());
 
-      this.modalService.showModifyPersonModal({
-        person: currentPerson.person,
-      }).pipe(
-        filter(event => event.type === 'confirm'),
-        map(event => ensureNotNullish(event.value) as ModifyPersonConfirmPayload),
-        takeUntil(this.destroy$),
-      ).subscribe({
-        next: payload => {
+    if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT) {;
+      this.handleModifyPerson(currentPerson.person);
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE) {
+      this.toastService.addToast({ type: 'warn', text: this.translationService.translate('feature.notImplemented') });
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR) {
+      this.handleUploadPersonAvatar(currentPerson.person.id);
+    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR) {
+      this.handleRemovePersonAvatar(currentPerson.person.id);
+    }
+  }
+
+  private handleModifyPerson(person: Person) {
+    this.modalService.showModifyPersonModal({
+      person: person,
+    }).pipe(
+      filter(event => event.type === 'confirm'),
+      map(event => ensureNotNullish(event.value) as ModifyPersonConfirmPayload),
+      takeUntil(this.destroy$),
+    ).subscribe({
+      next: payload => {
+        this.person.update(current => {
+          // optimistic UI update
+          const currentPersonResponse = ensureNotNullish(current);
+          return {
+            ...currentPersonResponse,
+            person: {
+              ...currentPersonResponse.person,
+              firstName: payload.firstName,
+              lastName: payload.lastName,
+              nationalities: payload.nationalities,
+              birthday: payload.birthday ?? undefined,
+              deathday: payload.deathday ?? undefined,
+            },
+          };
+        });
+
+        // API update
+        this.personService.updateById(person.id, {
+          lastName: payload.lastName,
+          firstName: payload.firstName,
+          nationalities: payload.nationalities,
+          birthday: payload.birthday ?? undefined,
+          deathday: payload.deathday ?? undefined,
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+          next: () => {
+            this.toastService.addToast({
+              type: 'success',
+              text: this.translationService.translate('personUpdate.success'),
+            });
+          },
+          error: err => {
+            console.error(err);
+            this.toastService.addToast({
+              type: 'error',
+              text: this.translationService.translate('personUpdate.failure'),
+            });
+          }
+        })
+      },
+    })
+  }
+
+  private handleUploadPersonAvatar(personId: PersonId) {
+    this.filePicker.pick({ accept: '.jpg,.png,.webp' }).pipe(
+      switchMap(([file]) => this.personService.uploadAvatarFile(personId, file)),
+      takeUntil(this.destroy$),
+    ).subscribe({
+      next: updatedPerson => {
           this.person.update(current => {
-            // optimistic UI update
             const currentPersonResponse = ensureNotNullish(current);
             return {
               ...currentPersonResponse,
               person: {
-                ...currentPersonResponse.person,
-                firstName: payload.firstName,
-                lastName: payload.lastName,
-                nationalities: payload.nationalities,
-                birthday: payload.birthday ?? undefined,
-                deathday: payload.deathday ?? undefined,
+                ...updatedPerson,
+                firstName: updatedPerson.firstName ?? '',
               },
             };
           });
 
-          // API update
-          this.personService.updateById(currentPerson.person.id, {
-            lastName: payload.lastName,
-            firstName: payload.firstName,
-            nationalities: payload.nationalities,
-            birthday: payload.birthday ?? undefined,
-            deathday: payload.deathday ?? undefined,
-          }).pipe(takeUntil(this.destroy$)).subscribe({
-            next: () => {
-              this.toastService.addToast({
-                type: 'success',
-                text: this.translationService.translate('personUpdate.success'),
-              });
+          this.toastService.addToast({ type: 'success', text: this.translationService.translate('personUpdate.success') });
+      },
+      error: err => {
+        console.error(err);
+      },
+    });
+  }
+
+  private handleRemovePersonAvatar(personId: PersonId) {
+    this.modalService.showDeleteModal({
+      titleTextKey: 'action.removePersonAvatar.question',
+      contentTextKey: 'action.delete.consequence',
+    }).pipe(
+      filter(event => event.type === 'confirm'),
+      switchMap(() => this.personService.removeAvatar(personId)),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        this.person.update(current => {
+          const currentPersonResponse = ensureNotNullish(current);
+          return {
+            ...currentPersonResponse,
+            person: {
+              ...currentPersonResponse.person,
+              avatar: undefined
             },
-            error: err => {
-              console.error(err);
-              this.toastService.addToast({
-                type: 'error',
-                text: this.translationService.translate('personUpdate.failure'),
-              });
-            }
-          })
-        },
-      })
-    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE) {
-      this.toastService.addToast({ type: 'warn', text: this.translationService.translate('feature.notImplemented') });
-    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR) {
-
-    } else if (itemId === PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR) {
-      this.person.update(current => {
-        // optimistic UI update
-        const currentPersonResponse = ensureNotNullish(current);
-        return {
-          ...currentPersonResponse,
-          person: {
-            ...currentPersonResponse.person,
-            avatar: undefined
-          },
-        };
-      });
-
-      this.personService.removeAvatar(ensureNotNullish(this.person()).person.id)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            this.toastService.addToast({ type: 'success', text: this.translationService.translate('personUpdate.success') });
-          },
-          error: err => {
-            console.error(err);
-            this.toastService.addToast({ type: 'error', text: this.translationService.translate('personUpdate.failure') });
-          },
+          };
         });
-    }
+
+        this.toastService.addToast({ type: 'success', text: this.translationService.translate('personUpdate.success') });
+      },
+      error: err => {
+        console.error(err);
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate('personUpdate.failure') });
+      }
+    });
   }
 
   private loadPersonDetails() {

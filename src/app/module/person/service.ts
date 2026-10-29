@@ -60,6 +60,13 @@ export class PersonService {
       return this.http.put<Person>(`${environment.apiBaseUrl}/v1/people/${personId}`, update);
     }
 
+    uploadAvatarFile(personId: PersonId, file: File): Observable<Person> {
+      const form = new FormData();
+      form.append('avatar', file);
+
+      return this.http.put<Person>(`${environment.apiBaseUrl}/v1/people/${personId}/avatar`, form);
+    }
+
     removeAvatar(personId: PersonId): Observable<void> {
       return this.http.delete<void>(`${environment.apiBaseUrl}/v1/people/${personId}/avatar`);
     }

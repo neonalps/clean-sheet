@@ -371,7 +371,7 @@ export class GameComponent implements OnDestroy {
       }).pipe(
           filter(event => event.type === 'confirm'),
           switchMap(() => this.gameService.delete(gameId)),
-          takeUntil(this.destroy$)
+          takeUntil(this.destroy$),
         ).subscribe({
           next: () => {
             this.toastService.addToast({ text: this.translationService.translate('gameDelete.success'), type: 'success' });
