@@ -261,8 +261,8 @@ export class GameLineupComponent {
       // strikers
       {
         items: [
-          { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "52" : undefined) },
-          { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "51" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 10, usePositionGrid ? "51" : undefined) },
+          { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "52" : undefined) },
         ],
         additionalClasses: 'mt-4',
       },
