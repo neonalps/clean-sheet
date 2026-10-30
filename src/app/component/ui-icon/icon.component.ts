@@ -38,6 +38,8 @@ import { BicycleKickIconComponent } from '@src/app/icon/bicycle-kick/bicycle-kic
 import { PenaltyMisedIconComponent } from '@src/app/icon/penalty-missed/penalty-missed.component';
 import { JerseyIconComponent } from '@src/app/icon/jersey/jersey-icon.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
+import { UploadIconComponent } from '@src/app/icon/upload/upload.component';
+import { MergeDuplicateIconComponent } from '@src/app/icon/merge-duplicate/merge-duplicate.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -79,7 +81,9 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
     ChevronDownComponent,
     BenchIconComponent,
     PenaltyMisedIconComponent,
-    JerseyIconComponent
+    JerseyIconComponent,
+    UploadIconComponent,
+    MergeDuplicateIconComponent
 ],
   templateUrl: './icon.component.html'
 })

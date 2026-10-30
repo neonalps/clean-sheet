@@ -153,12 +153,12 @@ export class PersonComponent implements OnDestroy {
               { 
                 id: PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR, 
                 text: this.translationService.translate('menu.uploadPicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+                iconDescriptor: { 'type': 'standard', 'content': 'upload' }
               },
               { 
                 id: PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR, 
                 text: this.translationService.translate('menu.removePicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+                iconDescriptor: { 'type': 'standard', 'content': 'delete' }
               },
             ],
           }, {
@@ -166,7 +166,7 @@ export class PersonComponent implements OnDestroy {
               { 
                 id: PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE, 
                 text: this.translationService.translate('menu.checkDuplicate'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+                iconDescriptor: { 'type': 'standard', 'content': 'merge-duplicate' },
               },
             ]
           }
