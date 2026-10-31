@@ -117,7 +117,7 @@ export class CountryFlagService {
     }
 
     getSelectOptions(exclude: string[] = []): SelectOption[] {
-        return [...CountryFlagService.flags.keys()]
+        const orderedOptions = [...CountryFlagService.flags.keys()]
             .filter(flagKey => !exclude.includes(flagKey))
             .map(flagKey => {
                 const entry = ensureNotNullish(CountryFlagService.flags.get(flagKey));
@@ -125,6 +125,15 @@ export class CountryFlagService {
             })
             .sort((a, b) => a[2].localeCompare(b[2], 'de', { sensitivity: 'base' }))
             .map(([iso2, flag, translatedName]) => ({ id: iso2, name: `${flag}  ${translatedName}` }));
+
+        // move preferred country to the top
+        const preferredCountryIndex = orderedOptions.findIndex(item => item.id === 'at');
+        if (preferredCountryIndex >= 0) {
+            const [preferredCountry] = orderedOptions.splice(preferredCountryIndex, 1);
+            orderedOptions.unshift(preferredCountry);
+        }
+
+        return orderedOptions;
     }
 
 }
