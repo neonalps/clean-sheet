@@ -41,6 +41,7 @@ export class CountryFlagService {
         ['ee', '🇪🇪'],
         ['es', '🇪🇸'],
         ['fi', '🇫🇮'],
+        ['fo', '🇫🇴'],
         ['fr', '🇫🇷'],
         ['gb-eng', '🏴󠁧󠁢󠁥󠁮󠁧󠁿'],
         ['gb-nir', '🏴󠁧󠁢󠁥󠁮󠁧󠁿'],
