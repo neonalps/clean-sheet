@@ -123,11 +123,7 @@ export class CountryFlagService {
                 const entry = ensureNotNullish(CountryFlagService.flags.get(flagKey));
                 return [flagKey, entry, this.translationService.translate(`country.${flagKey}`)];
             })
-            .sort((a, b) => {
-                const first = a[2].toLocaleUpperCase();
-                const second = b[2].toLocaleUpperCase();
-                return (first < second) ? -1 : (first > second) ? 1 : 0;
-            })
+            .sort((a, b) => a[2].localeCompare(b[2], 'de', { sensitivity: 'base' }))
             .map(([iso2, flag, translatedName]) => ({ id: iso2, name: `${flag}  ${translatedName}` }));
     }
 
