@@ -24,13 +24,6 @@
     display: inline-flex;
 }
 
-.input-text {
-    background-color: #777;
-    border-style: none;
-    border-bottom: 2px solid transparent;
-    transition: border .15s linear;
-}
-
 .disallow-scroll {
     margin: 0;
     height: 100%;

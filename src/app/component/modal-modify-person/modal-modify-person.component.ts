@@ -8,7 +8,7 @@ import { Person } from '@src/app/model/person';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { Nullish } from '@src/app/util/types';
 import { SelectNationalitiesComponent } from '@src/app/component/select-nationalities/select-nationalities.component';
-import { DatePickerComponent } from '../date-picker/date-picker.component';
+import { DatePickerComponent } from '@src/app/component/date-picker/date-picker.component';
 
 export type ModifyPersonPayload = {
   person: Person;

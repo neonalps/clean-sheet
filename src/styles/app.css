@@ -53,6 +53,21 @@ a {
   color: var(--light-grey);
 }
 
+.input-date {
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  padding: .5rem;
+  border: 1px solid var(--light-grey-darker);
+  transition: border .15s linear;
+
+  color: var(--light);
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.input-date:focus {
+    border: 1px solid var(--light);
+}
+
 .context-menu-shadow {
     box-shadow: 0px 0px 4px 0px rgba(177, 177, 177, 0.75);
 }

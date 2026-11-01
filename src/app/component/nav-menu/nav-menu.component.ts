@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { Component, effect, ElementRef, inject, OnDestroy, OnInit, output, signal, viewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { MainFlagComponent } from "@src/app/component/main-flag/main-flag.component";
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '@src/app/module/auth/service';
 import { AccountRole } from '@src/app/model/auth';
+import { MenuService } from '@src/app/module/menu/service';
 
 type MenuSection = {
   i18nKey: string;
@@ -27,12 +28,24 @@ type MenuItem = {
 export class NavMenuComponent implements OnInit, OnDestroy {
 
   private readonly authService = inject(AuthService);
+  private readonly menuService = inject(MenuService);
+
+  readonly containerElement = viewChild.required<ElementRef<HTMLElement>>('container');
 
   readonly onNavigationSelected = output<string>();
 
   readonly menuSections = signal<MenuSection[]>([]);
 
   private readonly destroy$ = new Subject<void>();
+
+  constructor() {
+    effect(() => {
+      const isActive = this.menuService.active();
+      if (!isActive) {
+        setTimeout(() => this.containerElement().nativeElement.scrollTo(0, 0), 100);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.authService.authIdentity$

@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { Component, computed, ElementRef, input, output, viewChild } from '@angular/core';
 import { isNotDefined } from '@src/app/util/common';
 import { DateString } from '@src/app/util/domain-types';
@@ -5,7 +6,7 @@ import { Nullish } from '@src/app/util/types';
 
 @Component({
   selector: 'app-date-picker',
-  imports: [],
+  imports: [NgClass],
   templateUrl: './date-picker.component.html'
 })
 export class DatePickerComponent {
@@ -13,6 +14,7 @@ export class DatePickerComponent {
   readonly datePickerElement = viewChild.required<ElementRef<HTMLInputElement>>('picker');
 
   readonly date = input.required<Nullish<DateString>>();
+  readonly additionalClasses = input<string>('');
 
   readonly pickerValue = computed(() => {
     const dateValue = this.date();
