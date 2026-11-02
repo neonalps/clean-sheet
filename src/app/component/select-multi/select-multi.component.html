@@ -12,7 +12,15 @@
         </div>
     </div>
     <div class="select-options text-sm context-menu-shadow max-h-47-vh overflow-y-auto overflow-x-none scrollbar-stable scrollbar-thin scrollbar-dark-grey" [ngClass]="{ 'visible': isOpenValue }" [style.width]="optionsWidth()">
-        @for (option of options(); track option.id) {
+        @if (showSearch()) {
+            <div class="p-2">
+                <div class="icon absolute left-16 top-16">
+                    <app-search />
+                </div>
+                <input #search type="text" class="select-search bg-color-dark-grey-lighter w-full pl-10 pr-2 py-1 text-lg text-light" (input)="onSearchChange($event)" />
+            </div>
+        }
+        @for (option of visibleOptions(); track option.id) {
             <app-select-option [option]="option" [selected]="isOptionCurrentlySelected(option.id)" (onToggle)="toggleOption($event)" />
         }
     </div>

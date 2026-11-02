@@ -20,6 +20,8 @@ import { getDisplayName, getOrderedCompetitionIds } from '@src/app/util/domain';
 import { CompetitionService } from '@src/app/module/competition/service';
 import { BasicCompetition } from '@src/app/model/competition';
 import { ensureNotNullish } from '@src/app/util/common';
+import { SeasonService } from '@src/app/module/season/service';
+import { SeasonGamesService } from '@src/app/module/season-games/service';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,6 +47,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly competitionService = inject(CompetitionService);
   private readonly dashboardResolver = inject(DashboardResolver);
   private readonly router = inject(Router);
+  private readonly seasonService = inject(SeasonService);
+  private readonly seasonGamesService = inject(SeasonGamesService);
   private readonly translationService = inject(TranslationService);
 
   private readonly destroy$ = new Subject<void>();
@@ -60,6 +64,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       this.loginName.set(profile.firstName);
     });
+
+    setTimeout(() => this.fetchCurrentSeasonGames(), 100);
   }
 
   ngOnDestroy(): void {
@@ -101,6 +107,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.error(`Could not resolve dashboard`, err);
       }
     });
+  }
+
+  private fetchCurrentSeasonGames() {
+    const currentSeason = this.seasonService.getCurrentSeason();
+    if (!currentSeason) {
+      return;
+    }
+
+    this.seasonGamesService.fetchSeasonGames(currentSeason.id);
   }
 
   private onDashboardResolved(response: DashboardResponse, orderedCompetitions: BasicCompetition[]) {

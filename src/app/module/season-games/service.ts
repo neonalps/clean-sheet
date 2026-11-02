@@ -1,7 +1,8 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { inject, Injectable, OnDestroy } from "@angular/core";
 import { DetailedGame } from "@src/app/model/game";
 import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
 import { assertDefined } from "@src/app/util/common";
+import { SeasonId } from "@src/app/util/domain-types";
 import { Observable, Subject } from "rxjs";
 
 export type SeasonGamesUpdate = {
@@ -14,10 +15,10 @@ export type SeasonGamesUpdate = {
 })
 export class SeasonGamesService implements OnDestroy {
 
-    private fetchHandles: Map<number, FetchHandle> = new Map();
-    private seasonGamesSubject = new Subject<SeasonGamesUpdate>();
+    private readonly fetchHandles: Map<SeasonId, FetchHandle> = new Map();
+    private readonly seasonGamesSubject = new Subject<SeasonGamesUpdate>();
 
-    constructor(private readonly fetchService: FetchService) {}
+    private readonly fetchService = inject(FetchService);
 
     ngOnDestroy(): void {
         this.seasonGamesSubject.complete();
@@ -26,7 +27,7 @@ export class SeasonGamesService implements OnDestroy {
         }
     }
 
-    async getSeasonGames(seasonId: number, forceFetch?: boolean): Promise<void> {
+    fetchSeasonGames(seasonId: SeasonId, forceFetch?: boolean): void {
         this.getOrCreateFetchHandle(seasonId).fetch(forceFetch);
     }
 
@@ -38,7 +39,7 @@ export class SeasonGamesService implements OnDestroy {
         return this.fetchService.getFromCache(this.getGetSeasonGamesRequestName(seasonId));
     }
 
-    private getOrCreateFetchHandle(seasonId: number): FetchHandle {
+    private getOrCreateFetchHandle(seasonId: SeasonId): FetchHandle {
         const existingHandle = this.fetchHandles.get(seasonId);
         if (existingHandle !== undefined) {
             return existingHandle;

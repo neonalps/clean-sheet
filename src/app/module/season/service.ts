@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { Season } from "@src/app/model/season";
 import { FetchHandle, FetchScope, FetchService, FetchStrategy } from "@src/app/module/fetch/service";
 import { isDefined } from "@src/app/util/common";
@@ -11,12 +11,12 @@ import { fromPromise } from "rxjs/internal/observable/innerFrom";
 export class SeasonService {
 
     private static readonly REQUEST_SEASONS = 'GetSeasons';
+    
+    private readonly fetchService = inject(FetchService);
 
     private seasonsFetchHandle: FetchHandle | undefined;
-    private seasons: Season[] = [];
-    private seasonsSubject = new BehaviorSubject<Season[]>([]);
-
-    constructor(private readonly fetchService: FetchService) {}
+    private readonly seasons = signal<Season[]>([]);
+    private readonly seasonsSubject = new BehaviorSubject<Season[]>([]);
 
     init(): void {
         this.seasonsFetchHandle = this.fetchService.subscribe<Season[]>({
@@ -35,11 +35,7 @@ export class SeasonService {
     }
 
     getCurrentSeason(): Season | null {
-        if (this.seasons.length === 0) {
-            return null;
-        }
-
-        return this.seasons[0];
+        return this.seasons()[0] ?? null;
     }
 
     getSeasons(): Season[] {
@@ -62,14 +58,12 @@ export class SeasonService {
             isCurrent: idx === 0,
         }));
 
-        this.seasons = transformedSeasons;
+        this.seasons.set(transformedSeasons);
         this.seasonsSubject.next(transformedSeasons);
     }
 
     private copyOfSeasons(): Season[] {
-        return this.seasons.map(item => ({
-            ...item,
-        }));
+        return [...this.seasons()];
     }
 
 }

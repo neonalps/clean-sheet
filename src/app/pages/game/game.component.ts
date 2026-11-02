@@ -377,7 +377,7 @@ export class GameComponent implements OnDestroy {
             this.toastService.addToast({ text: this.translationService.translate('gameDelete.success'), type: 'success' });
 
             // reload the games of the season to make sure the new game will be available
-            this.seasonGamesService.getSeasonGames(gameSeasonId, true);
+            this.seasonGamesService.fetchSeasonGames(gameSeasonId, true);
 
             navigateToSeasonGames(this.router, gameSeasonId);
           },
@@ -393,7 +393,7 @@ export class GameComponent implements OnDestroy {
           this.toastService.addToast({ text: this.translationService.translate('gameImport.success'), type: 'success' });
 
           // reload the games of the season to make sure the new game will be available
-          this.seasonGamesService.getSeasonGames(gameSeasonId, true);
+          this.seasonGamesService.fetchSeasonGames(gameSeasonId, true);
         } else {
           this.toastService.addToast({ text: `${this.translationService.translate('gameImport.failure')}: "${result.error}"`, type: 'error' }, 10_000);
         }

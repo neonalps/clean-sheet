@@ -182,7 +182,7 @@ export class SeasonGamesComponent implements OnInit, OnDestroy {
       name: season.name,
     });
     
-    await this.seasonGamesService.getSeasonGames(season.id);
+    await this.seasonGamesService.fetchSeasonGames(season.id);
   }
 
   onSeasonSelected(seasonId: OptionId) {

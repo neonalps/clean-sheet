@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DashboardResponse } from '@src/app/model/dashboard';
 import { CompetitionId } from '@src/app/util/domain-types';
 import { environment } from "@src/environments/environment";
@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class DashboardService {
-
-  constructor(private http: HttpClient) { }
+  
+  private readonly http = inject(HttpClient);
 
   getDashboard(widgets: string[] = [], competitionId?: CompetitionId): Observable<DashboardResponse> {
     const queryParams = new URLSearchParams();

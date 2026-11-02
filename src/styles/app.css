@@ -53,6 +53,17 @@ a {
   color: var(--light-grey);
 }
 
+.select-search {
+    background-color: #777;
+    border-style: none;
+    border-bottom: 2px solid transparent;
+    transition: border .15s linear;
+}
+
+.select-search:focus {
+    border-bottom: 2px solid var(--light);
+}
+
 .input-date {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
   padding: .5rem;
