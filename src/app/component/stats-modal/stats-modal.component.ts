@@ -17,10 +17,15 @@ import { ensureNotNullish, isDefined, isNotDefined } from '@src/app/util/common'
 import { CheckboxSliderComponent } from "@src/app/component/checkbox-slider/checkbox-slider.component";
 import { getPersonName } from '@src/app/util/domain';
 import { UiIconDescriptor } from '@src/app/model/icon';
+import { getRandomNumberBetween } from '@src/app/util/random';
+import { EmptyStateComponent } from '@src/app/component/empty-state/empty-state.component';
+import { FieldWithBallComponent } from '@src/app/icon/field-with-ball/field-with-ball.component';
+import { COLOR_DARK_GREY_LIGHTER } from '@src/styles/constants';
 
 export type StatsModalPayload = {
   person: UiPerson;
   filterOptions?: GamePlayedFilterOptions;
+  showLoadingSkeleton?: boolean;
 };
 
 type SeasonGamesPlayed = {
@@ -30,7 +35,7 @@ type SeasonGamesPlayed = {
 
 @Component({
   selector: 'app-stats-modal',
-  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, CheckboxSliderComponent],
+  imports: [CommonModule, I18nPipe, ModalComponent, UiIconComponent, CheckboxSliderComponent, EmptyStateComponent, FieldWithBallComponent],
   templateUrl: './stats-modal.component.html'
 })
 export class StatsModalComponent implements OnInit, OnDestroy {
@@ -39,8 +44,11 @@ export class StatsModalComponent implements OnInit, OnDestroy {
   readonly isMoreAvailable = signal(false);
   readonly modalIcon = signal<UiIconDescriptor | null>(null);
   readonly modalTitle = signal('');
+  readonly showLoadingSkeleton = signal(false);
   readonly showSubstituteGames = signal(false);
   readonly includeSubstituteGames = signal(false);
+  readonly skeletonRows = [...Array(getRandomNumberBetween(3, 8)).keys()];
+  readonly iconColor = signal('red');
 
   readonly groupedGamesPlayed = signal<SeasonGamesPlayed[]>([]);
 
@@ -60,6 +68,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
         this.modalTitle.set(getPersonName(payload.person));
         this.modalIcon.set(payload.person.avatar ? { type: 'person', content: payload.person.avatar } : null);
         this.loadGamesPlayed(payload.person.personId, payload.filterOptions);
+        this.showLoadingSkeleton.set(payload.showLoadingSkeleton ?? false);
         this.showSubstituteGames.set(payload.filterOptions?.minutesPlayed === '+0');
         this.modalPayload.set(payload);
       });
@@ -106,6 +115,7 @@ export class StatsModalComponent implements OnInit, OnDestroy {
           }
         }
 
+        this.showLoadingSkeleton.set(false);
         this.isLoading.set(false);
         this.nextPageKey.set(value.nextPageKey ?? null);
         this.isMoreAvailable.set(isDefined(value.nextPageKey));

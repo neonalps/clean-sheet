@@ -34,7 +34,6 @@ export class ModalModifyPersonComponent implements OnInit, OnDestroy {
 
   readonly person = computed(() => this.currentPayload()?.person);
 
-  readonly avatarValue = signal<string>('');
   readonly firstNameValue = signal<string>('');
   readonly lastNameValue = signal<string>('');
   readonly birthdayValue = signal<string | null>(null);

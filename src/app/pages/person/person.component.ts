@@ -63,8 +63,8 @@ export class PersonComponent implements OnDestroy {
 
   private static readonly CONTEXT_MENU_KEY_PERSON_EDIT = "editPerson";
   private static readonly CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE = "checkDuplicate";
-  private static readonly CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR = "uploadAvatar";
-  private static readonly CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR = "removeAvatar";
+  private static readonly CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR = "uploadPersonAvatar";
+  private static readonly CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR = "removePersonAvatar";
 
   private readonly mainClub: SmallClub = environment.mainClub;
 
@@ -363,6 +363,7 @@ export class PersonComponent implements OnDestroy {
       },
       error: err => {
         console.error(err);
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate('personUpdate.failure') });
       },
     });
   }
@@ -420,6 +421,7 @@ export class PersonComponent implements OnDestroy {
         avatar: person.avatar,
       },
       filterOptions: filterOptions,
+      showLoadingSkeleton: true,
     }).pipe(takeUntil(this.destroy$)).subscribe();
   }
 

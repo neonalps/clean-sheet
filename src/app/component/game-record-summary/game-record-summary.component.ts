@@ -22,9 +22,20 @@ export class GameRecordSummaryComponent {
   readonly drawsText = computed(() => this.translationService.translate(`gameRecord.draw`, { plural: this.recordSummary().draw }));
   readonly lossesText = computed(() => this.translationService.translate(`gameRecord.loss`, { plural: this.recordSummary().loss }));
 
-  readonly averagePoints = computed(() => `Ø ${this.recordSummary().avgPointsFixed.replace('.', ',')}`);
+  readonly averagePoints = computed(() => {
+    const summary = this.recordSummary();
+    if (summary.gameCount === 0) {
+      return "-";
+    }
+
+    return `Ø ${summary.avgPointsFixed.replace('.', ',')}`;
+  });
   readonly winPercentage = computed(() => {
     const summary = this.recordSummary();
+    if (summary.gameCount === 0) {
+      return '-';
+    }
+
     return `${ Math.round(summary.win / summary.gameCount * 100) }%`;
   });
 

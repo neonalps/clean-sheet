@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { BasicGame, RecordSummary, Tendency } from '@src/app/model/game';
 import { GameOverviewComponent } from "@src/app/component/game-overview/game-overview.component";
@@ -20,14 +19,12 @@ import { calculateGameRecordSummary } from '@src/app/module/stats/util';
 
 @Component({
   selector: 'app-filterable-game-list',
-  imports: [CommonModule, I18nPipe, GameOverviewComponent, ChipGroupComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent, GameRecordSummaryComponent],
+  imports: [I18nPipe, GameOverviewComponent, ChipGroupComponent, ScrollNearEndDirective, CollapsibleComponent, FilterIconComponent, GameRecordSummaryComponent],
   templateUrl: './filterable-game-list.component.html'
 })
 export class FilterableGameListComponent implements OnInit {
 
   readonly games = input<BasicGame[]>([]);
-
-  readonly colorLight = COLOR_LIGHT;
 
   readonly competitionFiltersVisible = signal(false);
   readonly hasActiveFilters = signal(false);
@@ -41,6 +38,7 @@ export class FilterableGameListComponent implements OnInit {
   readonly filtersExpanded = signal(false);
 
   readonly gameRecordSummary = computed<RecordSummary>(() => calculateGameRecordSummary(this.games()));
+  readonly effectiveFillColor = computed(() => this.hasActiveFilters() ? COLOR_LIGHT : undefined);
 
   private readonly router = inject(Router);
   private readonly translationService = inject(TranslationService);

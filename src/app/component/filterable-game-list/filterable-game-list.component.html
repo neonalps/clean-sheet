@@ -5,7 +5,7 @@
                 <div class="flex align-items-center pointer relative uppercase text-sm text-light-grey" [style.top]="'-3px'" (click)="triggerToggle()">
                     <div class="mr-2">
                         <div class="width-1-25rem relative top-1">
-                            <app-filter-icon [fillColor]="hasActiveFilters() ? colorLight : undefined" />
+                            <app-filter-icon [fillColor]="effectiveFillColor()" />
                         </div>
                     </div>
                     <div class="relative" [style.top]="'-2px'">
@@ -14,20 +14,26 @@
                 </div>
             </ng-container>
             <ng-container content>
-                <div class="mt-3 ml-2" *ngIf="competitionFiltersVisible()">
-                    <app-chip-group [chipGroup]="competitionChips()" (onSelected)="onCompetitionFilterChanged($event)" />
-                </div>
-                <div class="mt-3 ml-2" *ngIf="homeAwayFiltersVisible()">
-                    <app-chip-group [chipGroup]="homeAwayChips()" (onSelected)="onHomeAwayFilterChanged($event)" />
-                </div>
-                <div class="mt-3 ml-2" *ngIf="tendencyFiltersVisible()">
-                    <app-chip-group [chipGroup]="tendencyChips()" (onSelected)="onTendencyFilterChanged($event)" />
-                </div>
+                @if (competitionFiltersVisible()) {
+                    <div class="mt-3 ml-2">
+                        <app-chip-group [chipGroup]="competitionChips()" (onSelected)="onCompetitionFilterChanged($event)" />
+                    </div>
+                }
+                @if (homeAwayFiltersVisible()) {
+                    <div class="mt-3 ml-2">
+                        <app-chip-group [chipGroup]="homeAwayChips()" (onSelected)="onHomeAwayFilterChanged($event)" />
+                    </div>
+                }
+                @if (tendencyFiltersVisible()) {
+                    <div class="mt-3 ml-2">
+                        <app-chip-group [chipGroup]="tendencyChips()" (onSelected)="onTendencyFilterChanged($event)" />
+                    </div>
+                }
                 <div class="mb-2"></div>
             </ng-container>
         </app-collapsible>
     </div>
-    <div class="mb-6">
+    <div class="mb-12">
         <app-game-record-summary [recordSummary]="gameRecordSummary()" [showExtendedSummary]="true" />
     </div>
     <div appScrollNearEnd (nearEnd)="onNearEndScroll()">

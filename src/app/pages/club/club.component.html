@@ -16,29 +16,36 @@
 @else {
     @if (clubResponseValue) {
         <div class="bg-color-dark-grey-darker py-3 rounded-lg mt-3 mx-3">
-            <div class="flex align-items-center">
-                <div class="basis-1/10 flex align-items-center justify-content-center">
-                    <div>
-                        <div class="rounded-lg width-sm height-sm mb-2" [style.background-color]="clubResponseValue.club.primaryColour"></div>
-                        <div class="rounded-lg width-sm height-sm" [style.background-color]="clubResponseValue.club.secondaryColour"></div>
-                    </div>
-                </div>
-                @if (avatar) {
-                    <div class="basis-1/5 flex align-items-center justify-content-center mr-3">
-                        <div class="max-w-4">
-                            <app-ui-icon [descriptor]="{ 'type': 'club', 'content': avatar }" />
+            <div class="flex">
+                <div class="flex-grow flex align-items-center">
+                    <div class="basis-1/10 flex align-items-center justify-content-center">
+                        <div>
+                            <div class="rounded-lg width-sm height-sm mb-2" [style.background-color]="clubResponseValue.club.primaryColour"></div>
+                            <div class="rounded-lg width-sm height-sm" [style.background-color]="clubResponseValue.club.secondaryColour"></div>
                         </div>
                     </div>
-                }
-                <div class="flex-grow">
-                    <div>
-                        <span class="mr-2 text-xl">
-                            <span class="bold"> {{ clubResponseValue.club.name }}</span>
-                        </span>
-                        <app-nationalities [nationalities]="nationalitiesValue" />
+                    @if (avatar) {
+                        <div class="basis-1/5 flex align-items-center justify-content-center mr-3">
+                            <div class="max-w-4">
+                                <app-ui-icon [descriptor]="{ 'type': 'club', 'content': avatar }" />
+                            </div>
+                        </div>
+                    }
+                    <div class="flex-grow">
+                        <div>
+                            <span class="mr-2 text-xl">
+                                <span class="bold"> {{ clubResponseValue.club.name }}</span>
+                            </span>
+                            <app-nationalities [nationalities]="nationalitiesValue" />
+                        </div>
+                        <app-external-links [externalLinks]="externalLinks()" />
                     </div>
-                    <app-external-links [externalLinks]="externalLinks()" />
                 </div>
+                @if (contextMenuVisible()) {
+                    <div>
+                        <app-context-menu [menuSections]="clubContextMenuOptions()" (onMenuItemSelected)="onClubContextMenuItemSelected($event)" />
+                    </div>
+                }
             </div>
         </div>
     }

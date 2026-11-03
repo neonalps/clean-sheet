@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BasicClub } from '@src/app/model/club';
 import { ExternalProviderLinkDto } from '@src/app/model/external-provider';
 import { BasicGame } from '@src/app/model/game';
+import { ClubId } from '@src/app/util/domain-types';
 import { convertSearchParamsToQueryString } from '@src/app/util/router';
 import { OmitStrict } from '@src/app/util/types';
 import { environment } from "@src/environments/environment";
@@ -15,12 +16,19 @@ export interface GetClubByIdResponse {
   externalLinks?: ReadonlyArray<ExternalProviderLinkDto>;
 }
 
+export type UpdateClub = {
+  name: string;
+  shortName: string;
+  city: string;
+  countryCode: string;
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class ClubService {
 
-  constructor(private http: HttpClient) { }
+  private readonly http = inject(HttpClient);
 
   getById(clubId: number, includeLastGames?: boolean, includeAllGames?: boolean): Observable<GetClubByIdResponse> {
       const params = new URLSearchParams();
@@ -32,4 +40,20 @@ export class ClubService {
       }
       return this.http.get<GetClubByIdResponse>(`${environment.apiBaseUrl}/v1/clubs/${clubId}${convertSearchParamsToQueryString(params)}`);
   }
+
+  updateById(clubId: ClubId, update: UpdateClub): Observable<BasicClub> {
+    return this.http.put<BasicClub>(`${environment.apiBaseUrl}/v1/clubs/${clubId}`, update);
+  }
+
+  uploadAvatarFile(clubId: ClubId, file: File): Observable<BasicClub> {
+    const form = new FormData();
+    form.append('avatar', file);
+
+    return this.http.put<BasicClub>(`${environment.apiBaseUrl}/v1/clubs/${clubId}/avatar`, form);
+  }
+
+  removeAvatar(clubId: ClubId): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/v1/clubs/${clubId}/avatar`);
+  }
+
 }

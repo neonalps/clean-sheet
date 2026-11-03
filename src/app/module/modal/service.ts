@@ -7,6 +7,7 @@ import { StatsModalPayload } from "@src/app/component/stats-modal/stats-modal.co
 import { assertUnreachable } from "@src/app/util/common";
 import { Observable, Subject } from "rxjs";
 import { DeleteModalPayload } from "@src/app/component/delete-modal/delete-modal.component";
+import { ModifyClubPayload } from "@src/app/component/modal-modify-club/modal-modify-club.component";
 
 interface ModalEvent {
     type: 'cancel' | 'confirm' | 'value';
@@ -17,6 +18,7 @@ export enum Modal {
     ConfirmAddPerson = 'confirmAddPerson',
     Delete = 'delete',
     FilterGameList = 'filterGameList',
+    ModifyClub = 'modifyClub',
     ModifyPerson = 'modifyPerson',
     Shirt = 'shirt',
     Stats = 'stats',
@@ -33,6 +35,7 @@ export class ModalService {
     readonly confirmAddPersonModalPayload$ = new Subject<ConfirmAddPersonModalPayload>();
     readonly deleteModalPayload$ = new Subject<DeleteModalPayload>();
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
+    readonly modifyClubPayload$ = new Subject<ModifyClubPayload>();
     readonly modifyPersonPayload$ = new Subject<ModifyPersonPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
@@ -49,6 +52,10 @@ export class ModalService {
 
     showFilterGameListModal(payload: FilterGameListPayload): Observable<ModalEvent> {
         return this.showModal(Modal.FilterGameList, payload);
+    }
+
+    showModifyClubModal(payload: ModifyClubPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.ModifyClub, payload);
     }
 
     showModifyPersonModal(payload: ModifyPersonPayload): Observable<ModalEvent> {
@@ -123,6 +130,9 @@ export class ModalService {
                 break;
             case Modal.FilterGameList:
                 this.filterGameListPayload$.next(payload as FilterGameListPayload);
+                break;
+            case Modal.ModifyClub:
+                this.modifyClubPayload$.next(payload as ModifyClubPayload);
                 break;
             case Modal.ModifyPerson:
                 this.modifyPersonPayload$.next(payload as ModifyPersonPayload);

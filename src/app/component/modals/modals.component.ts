@@ -6,7 +6,8 @@ import { DeleteModalComponent } from '@src/app/component/delete-modal/delete-mod
 import { ModalSelectShirtComponent } from '@src/app/component/modal-select-shirt/modal-select-shirt.component';
 import { ModalConfirmAddPersonComponent } from "@src/app/component/modal-confirm-add-person/modal-confirm-add-person.component";
 import { ModalGameListFilterComponent } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
-import { ModalModifyPersonComponent } from '../modal-modify-person/modal-modify-person.component';
+import { ModalModifyPersonComponent } from '@src/app/component/modal-modify-person/modal-modify-person.component';
+import { ModalModifyClubComponent } from '@src/app/component/modal-modify-club/modal-modify-club.component';
 
 @Component({
   selector: 'app-modals',
@@ -17,7 +18,8 @@ import { ModalModifyPersonComponent } from '../modal-modify-person/modal-modify-
     StatsModalComponent,
     ModalConfirmAddPersonComponent,
     ModalGameListFilterComponent,
-    ModalModifyPersonComponent
+    ModalModifyPersonComponent,
+    ModalModifyClubComponent
 ],
   templateUrl: './modals.component.html'
 })

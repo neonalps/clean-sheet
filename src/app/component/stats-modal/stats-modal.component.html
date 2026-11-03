@@ -1,4 +1,5 @@
 @let icon = modalIcon();
+@let groupedGamesPlayedValue = groupedGamesPlayed();
 <app-modal>
     <div header>
         <div class="flex align-items-center">
@@ -23,101 +24,118 @@
                 </div>
             </div>
         }
+        @if (showLoadingSkeleton()) {
+            <div>
+                @for (skeletonRow of skeletonRows; track $index) {
+                    <div class="skeleton-box-small mb-3 last:mb-0" style="width: 100%;"></div>
+                }
+            </div>
+        }
         <div id="stats-modal-scroll-container">
-            @for (seasonGamesPlayed of groupedGamesPlayed(); track $index) {
-                <div class="mb-6 last:mb-0">
-                    <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
-                    @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {
-                        <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(gamePlayed.game)">
-                            <div class="basis-1/12 flex align-items-center">
-                                <div class="width-xs relative top-1">
-                                    <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': gamePlayed.game.competition.iconSmall! }" />
-                                </div>
-                            </div>
-                            <div class="basis-1/6 text-sm text-center">
-                                {{ gamePlayed.game.kickoff | date:'MMM d' }}
-                            </div>
-                            <div class="basis-2/5 flex text-sm">
-                                @if (gamePlayed.game.opponent.iconSmall) {
-                                    <div class="width-xs mr-2 relative top-1">
-                                        <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
+            @if (groupedGamesPlayedValue.length > 0) {
+                @for (seasonGamesPlayed of groupedGamesPlayedValue; track $index) {
+                    <div class="mb-6 last:mb-0">
+                        <div class="text-base bold mb-3">{{ seasonGamesPlayed.seasonName }}</div>
+                        @for (gamePlayed of seasonGamesPlayed.gamesPlayed; track $index) {
+                            <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(gamePlayed.game)">
+                                <div class="basis-1/12 flex align-items-center">
+                                    <div class="width-xs relative top-1">
+                                        <app-ui-icon [descriptor]="{ 'type': 'competition', 'content': gamePlayed.game.competition.iconSmall! }" />
                                     </div>
-                                }
-                                <div>
-                                    {{ gamePlayed.game.opponent.shortName }}
                                 </div>
-                            </div>
-                            <div class="basis-1/8 flex align-items-center">
-                                <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
-                            </div>
-                            <div class="basis-1/12 flex align-items-center justify-content-end">
-                                <div class="text-sm pr-3">
-                                    @if (gamePlayed.minutesPlayed !== undefined) {
-                                        <span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span>
-                                    }
+                                <div class="basis-1/6 text-sm text-center">
+                                    {{ gamePlayed.game.kickoff | date:'MMM d' }}
                                 </div>
-                            </div>
-                            <div class="flex-grow flex align-items-center">
-                                <div class="flex">  
-                                    @for (goal of getNumberArray(gamePlayed.goalsScored); track $index) {
-                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.goalsScored!)" [attr.title]="'game.goal' | $t">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                                <div class="basis-2/5 flex text-sm">
+                                    @if (gamePlayed.game.opponent.iconSmall) {
+                                        <div class="width-xs mr-2 relative top-1">
+                                            <app-ui-icon [descriptor]="{ 'type': 'club', 'content': gamePlayed.game.opponent.iconSmall }" />
                                         </div>
                                     }
-                                </div>
-                                <div class="flex">  
-                                    @for (goal of getNumberArray(gamePlayed.ownGoals); track $index) {
-                                        <div class="width-xs relative top-1 text-danger" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.ownGoals!)" [attr.title]="'game.ownGoal' | $t">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
-                                        </div>
-                                    }
-                                </div>
-                                <div class="flex">  
-                                    @for (goal of getNumberArray(gamePlayed.assists); track $index) {
-                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.assists!)" [attr.title]="'game.assist' | $t">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
-                                        </div>
-                                    }
-                                </div>
-                                <div class="flex">  
-                                    @for (goal of getNumberArray(getPenaltiesMissed(gamePlayed)); track $index) {
-                                        <div class="width-xs" [ngClass]="getMultipleIconPositionModifiers($index, getPenaltiesMissed(gamePlayed))" [attr.title]="'game.penaltySaved' | $t">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'penalty-missed' }" />
-                                        </div>
-                                    }
-                                </div>
-                                <div class="flex">  
-                                    @for (goal of getNumberArray(getPenaltiesSaved(gamePlayed)); track $index) {
-                                        <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, getPenaltiesSaved(gamePlayed))" [attr.title]="'game.penaltySaved' | $t">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'glove' }" />
-                                        </div>
-                                    }
-                                </div>
-                                @if (gamePlayed.yellowCard) {
-                                    <div [attr.title]="'game.yellowCard' | $t">
-                                        <div class="width-xs">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
-                                        </div>
+                                    <div>
+                                        {{ gamePlayed.game.opponent.shortName }}
                                     </div>
-                                }
-                                @if (gamePlayed.yellowRedCard) {
-                                    <div [attr.title]="'game.yellowRedCard' | $t">
-                                        <div class="width-xs">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
-                                        </div>
+                                </div>
+                                <div class="basis-1/8 flex align-items-center">
+                                    <div class="text-sm px-1 py-1/2 rounded-md center bold" [ngClass]="getResultTendencyClass(gamePlayed.game)">{{ getGameScoreBeforePso(gamePlayed.game) }}</div>
+                                </div>
+                                <div class="basis-1/12 flex align-items-center justify-content-end">
+                                    <div class="text-sm pr-3">
+                                        @if (gamePlayed.minutesPlayed !== undefined) {
+                                            <span *ngIf="gamePlayed.minutesPlayed !== undefined">{{ gamePlayed.minutesPlayed }}'</span>
+                                        }
                                     </div>
-                                }
-                                @if (gamePlayed.redCard) {
-                                    <div [attr.title]="'game.redCard' | $t">
-                                        <div class="width-xs">
-                                            <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
-                                        </div>
+                                </div>
+                                <div class="flex-grow flex align-items-center">
+                                    <div class="flex">  
+                                        @for (goal of getNumberArray(gamePlayed.goalsScored); track $index) {
+                                            <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.goalsScored!)" [attr.title]="'game.goal' | $t">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                                            </div>
+                                        }
                                     </div>
-                                }
+                                    <div class="flex">  
+                                        @for (goal of getNumberArray(gamePlayed.ownGoals); track $index) {
+                                            <div class="width-xs relative top-1 text-danger" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.ownGoals!)" [attr.title]="'game.ownGoal' | $t">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football' }" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex">  
+                                        @for (goal of getNumberArray(gamePlayed.assists); track $index) {
+                                            <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, gamePlayed.assists!)" [attr.title]="'game.assist' | $t">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'football-shoe' }" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex">  
+                                        @for (goal of getNumberArray(getPenaltiesMissed(gamePlayed)); track $index) {
+                                            <div class="width-xs" [ngClass]="getMultipleIconPositionModifiers($index, getPenaltiesMissed(gamePlayed))" [attr.title]="'game.penaltySaved' | $t">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'penalty-missed' }" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex">  
+                                        @for (goal of getNumberArray(getPenaltiesSaved(gamePlayed)); track $index) {
+                                            <div class="width-xs relative top-1" [ngClass]="getMultipleIconPositionModifiers($index, getPenaltiesSaved(gamePlayed))" [attr.title]="'game.penaltySaved' | $t">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'glove' }" />
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (gamePlayed.yellowCard) {
+                                        <div [attr.title]="'game.yellowCard' | $t">
+                                            <div class="width-xs">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-card' }" />
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (gamePlayed.yellowRedCard) {
+                                        <div [attr.title]="'game.yellowRedCard' | $t">
+                                            <div class="width-xs">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'yellow-red-card' }" />
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (gamePlayed.redCard) {
+                                        <div [attr.title]="'game.redCard' | $t">
+                                            <div class="width-xs">
+                                                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'red-card' }" />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
+                }
+            }
+            @else {
+                <app-empty-state>
+                    <div class="w-1/6 text-light-grey-darker" icon>
+                        <app-field-with-ball />
+                    </div>
+                    <div class="center px-6 mt-8 mb-4 text-md" text>{{ 'stats.empty' | $t }}</div>
+                </app-empty-state>
             }
         </div>
         @if (isMoreAvailable()) {
