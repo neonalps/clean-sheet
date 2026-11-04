@@ -14,6 +14,7 @@ export class SelectNationalitiesComponent {
 
   readonly selectedNationalities = input.required<string[]>();
   readonly excludedCountries = input<string[]>([]);
+  readonly singleMode = input(false);
 
   readonly onValueChange = output<string[]>();
 

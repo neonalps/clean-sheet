@@ -15,6 +15,7 @@ export type ContextMenuItem = {
   iconDescriptor?: UiIconDescriptor;
   text: string;
   isDanger?: boolean;
+  isDisabled?: boolean;
 }
 
 @Component({

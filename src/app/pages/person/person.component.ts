@@ -93,14 +93,55 @@ export class PersonComponent implements OnDestroy {
   readonly managerPeriods = signal<ManagerPeriodForPerson[]>([]);
   readonly refereeGames = signal<BasicGame[]>([]);
   readonly refereeListVisible = computed(() => this.refereeGames().length > 0);
-
-  readonly contextMenuVisible = signal(false);
   
   readonly contractUntil = signal<DateString | null>(null);
   readonly onLoan = signal<boolean>(false);
-  readonly personContextMenuOptions = signal<ContextMenuSection[]>([]);
   readonly statsAgainstMainText = signal(this.translationService.translate(`stats.againstMain`, { main: this.mainClub.shortName }));
   readonly statsForMainText = signal(this.translationService.translate(`stats.forMain`, { main: this.mainClub.shortName }));
+
+  readonly contextMenuAvailable = signal(false);
+
+  readonly personContextMenuOptions = computed<ContextMenuSection[]>(() => {
+    if (!this.contextMenuAvailable()) {
+      return [];
+    }
+
+    const person = this.person();
+    if (!person?.person) {
+      return [];
+    }
+
+    return [
+        {
+          items: [
+            { 
+              id: PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT, 
+              text: this.translationService.translate('menu.editPerson'), 
+              iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+            },
+            { 
+              id: PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR, 
+              text: this.translationService.translate('menu.uploadPicture'), 
+              iconDescriptor: { 'type': 'standard', 'content': 'upload' }
+            },
+            { 
+              id: PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR, 
+              text: this.translationService.translate('menu.removePicture'), 
+              iconDescriptor: { 'type': 'standard', 'content': 'delete' },
+              isDisabled: !person.person.avatar,
+            },
+          ],
+        }, {
+          items: [
+            { 
+              id: PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE, 
+              text: this.translationService.translate('menu.checkDuplicate'), 
+              iconDescriptor: { 'type': 'standard', 'content': 'merge-duplicate' },
+            },
+          ]
+        }
+      ]
+  });
 
   readonly mainStatsVisible = computed(() => this.playerCompetitionStats().length > 0);
   readonly opponentStatsVisible = computed(() => this.opponentTotalStatsRows().length > 0);
@@ -140,43 +181,9 @@ export class PersonComponent implements OnDestroy {
   readonly wornJerseys = computed<ShirtDistributionItem[]>(() => this.person()?.stats?.shirtDistribution ?? []);
 
   constructor() {
-    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
-      if (identity !== null && identity.role === AccountRole.Manager) {
-        this.personContextMenuOptions.set([
-          {
-            items: [
-              { 
-                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_EDIT, 
-                text: this.translationService.translate('menu.editPerson'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
-              },
-              { 
-                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_UPLOAD_AVATAR, 
-                text: this.translationService.translate('menu.uploadPicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'upload' }
-              },
-              { 
-                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_REMOVE_AVATAR, 
-                text: this.translationService.translate('menu.removePicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'delete' }
-              },
-            ],
-          }, {
-            items: [
-              { 
-                id: PersonComponent.CONTEXT_MENU_KEY_PERSON_CHECK_DUPLICATE, 
-                text: this.translationService.translate('menu.checkDuplicate'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'merge-duplicate' },
-              },
-            ]
-          }
-        ]);
-        this.contextMenuVisible.set(true);
-      } else {
-        this.personContextMenuOptions.set([]);
-        this.contextMenuVisible.set(false);
-      }
-    });
+    this.authService.authIdentity$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(identity => this.contextMenuAvailable.set(identity !== null && identity.role === AccountRole.Manager));
 
     this.router.events.pipe(
       takeUntil(this.destroy$),

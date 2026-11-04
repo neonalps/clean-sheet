@@ -1,4 +1,7 @@
 <div>
+    <div class="mb-8">
+        <app-game-record-summary [recordSummary]="gameRecordSummary()" [showExtendedSummary]="true" />
+    </div>
     <div class="mb-4">
         <app-collapsible [isOpen]="filtersExpanded()" (onClicked)="triggerToggle()">
             <ng-container header>
@@ -32,9 +35,6 @@
                 <div class="mb-2"></div>
             </ng-container>
         </app-collapsible>
-    </div>
-    <div class="mb-12">
-        <app-game-record-summary [recordSummary]="gameRecordSummary()" [showExtendedSummary]="true" />
     </div>
     <div appScrollNearEnd (nearEnd)="onNearEndScroll()">
         @for (game of visibleGames(); track game.id) {

@@ -1,7 +1,15 @@
 @let isEditingValue = isEditing();
+@let displayablePrimaryColourValue = displayablePrimaryColour();
+@let displayableSecondaryColourValue = displayableSecondaryColour();
 <app-modal>
     <div header>{{ (isEditingValue ? 'club.edit' : 'club.create') | $t }}</div>
     <div content>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
+            <div class="form-row-content">
+                <app-multi-select [asyncSearch]="true" [searchDebounceTime]="250" [singleMode]="true" [showSearch]="true" [isSearching]="isSearchingForVenue()" [options]="venueOptions()" (onSearchValueChange)="venueSearch$.next($event)" (onSelectedChange)="onHomeVenueChange($event)" />
+            </div>
+        </div>
         <div class="form-row">
             <div class="form-row-title">{{ 'club.name' | $t }}</div>
             <div class="form-row-content">
@@ -15,15 +23,47 @@
             </div>
         </div>
         <div class="form-row">
+            <div class="form-row-title">{{ 'club.country' | $t }}</div>
+            <div class="form-row-content">
+                <app-select-nationalities [singleMode]="true" [selectedNationalities]="emulatedNationalitiesValue()" (onValueChange)="onNationalitiesChanged($event)" />
+            </div>
+        </div>
+        <div class="form-row">
             <div class="form-row-title">{{ 'club.city' | $t }}</div>
             <div class="form-row-content">
                 <input #city type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onCityChange()" />
             </div>
         </div>
         <div class="form-row">
-            <div class="form-row-title">{{ 'club.country' | $t }}</div>
+            <div class="form-row-title">{{ 'club.district' | $t }}</div>
             <div class="form-row-content">
-                <app-select-nationalities [selectedNationalities]="emulatedNationalitiesValue()" (onValueChange)="onNationalitiesChanged($event)" />
+                <input #district type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onDistrictChange()" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'club.primaryColour' | $t }}</div>
+            <div class="form-row-content flex align-items-center">
+                <div class="basis-1/3">
+                    <input #primaryColour type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onPrimaryColourChange()" />
+                </div>
+                <div class="ml-4">
+                    @if (displayablePrimaryColourValue) {
+                        <div class="rounded width-xs height-xs mb-2" [style.background-color]="displayablePrimaryColourValue"></div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'club.secondaryColour' | $t }}</div>
+            <div class="form-row-content flex align-items-center">
+                <div class="basis-1/3">
+                    <input #secondaryColour type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onSecondaryColourChange()" />
+                </div>
+                <div class="ml-4">
+                    @if (displayableSecondaryColourValue) {
+                        <div class="rounded width-xs height-xs mb-2" [style.background-color]="displayableSecondaryColourValue"></div>
+                    }
+                </div>
             </div>
         </div>
     </div>

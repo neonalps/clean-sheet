@@ -42,7 +42,41 @@ export class ClubComponent implements OnDestroy {
   readonly isLoading = signal(true);
   readonly mainClub = signal<SmallClub>(environment.mainClub);
   readonly gamesAgainstClub = signal<BasicGame[]>([]);
-  readonly clubContextMenuOptions = signal<ContextMenuSection[]>([]);
+  readonly contextMenuAvailable = signal(false);
+  
+  readonly clubContextMenuOptions = computed<ContextMenuSection[]>(() => {
+    if (!this.contextMenuAvailable()) {
+      return [];
+    }
+
+    const club = this.clubResponse();
+    if (!club?.club) {
+      return [];
+    }
+
+    return [
+      {
+        items: [
+          { 
+            id: ClubComponent.CONTEXT_MENU_KEY_CLUB_EDIT, 
+            text: this.translationService.translate('menu.editClub'), 
+            iconDescriptor: { 'type': 'standard', 'content': 'pen' }
+          },
+          { 
+            id: ClubComponent.CONTEXT_MENU_KEY_CLUB_UPLOAD_AVATAR, 
+            text: this.translationService.translate('menu.uploadPicture'), 
+            iconDescriptor: { 'type': 'standard', 'content': 'upload' }
+          },
+          { 
+            id: ClubComponent.CONTEXT_MENU_KEY_CLUB_REMOVE_AVATAR, 
+            text: this.translationService.translate('menu.removePicture'), 
+            iconDescriptor: { 'type': 'standard', 'content': 'delete' },
+            isDisabled: !club.club.iconSmall,
+          },
+        ],
+      }
+    ]
+  });
 
   readonly contextMenuVisible = computed(() => this.clubContextMenuOptions().length > 0);
   readonly iconUrl = computed(() => this.clubResponse()?.club.iconSmall );
@@ -69,33 +103,9 @@ export class ClubComponent implements OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   constructor() {
-    this.authService.authIdentity$.pipe(takeUntil(this.destroy$)).subscribe(identity => {
-      if (identity !== null && identity.role === AccountRole.Manager) {
-        this.clubContextMenuOptions.set([
-          {
-            items: [
-              { 
-                id: ClubComponent.CONTEXT_MENU_KEY_CLUB_EDIT, 
-                text: this.translationService.translate('menu.editClub'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'pen' }
-              },
-              { 
-                id: ClubComponent.CONTEXT_MENU_KEY_CLUB_UPLOAD_AVATAR, 
-                text: this.translationService.translate('menu.uploadPicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'upload' }
-              },
-              { 
-                id: ClubComponent.CONTEXT_MENU_KEY_CLUB_REMOVE_AVATAR, 
-                text: this.translationService.translate('menu.removePicture'), 
-                iconDescriptor: { 'type': 'standard', 'content': 'delete' }
-              },
-            ],
-          }
-        ]);
-      } else {
-        this.clubContextMenuOptions.set([]);
-      }
-    });
+    this.authService.authIdentity$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(identity => this.contextMenuAvailable.set(identity !== null && identity.role === AccountRole.Manager));
 
     this.router.events.pipe(
       takeUntil(this.destroy$),

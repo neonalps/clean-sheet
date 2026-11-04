@@ -21,3 +21,11 @@ export function groupBy<K, V>(list: V[], keyGetter: (input: V) => K): Map<K, V[]
     });
     return result;
 }
+
+export function requireSingleArrayElement<T>(array: T[], errorMessage?: string): T {
+    if (array === undefined || array === null || array.length !== 1) {
+        throw new Error(errorMessage || "Expected single array element");
+    }
+
+    return array[0];
+}

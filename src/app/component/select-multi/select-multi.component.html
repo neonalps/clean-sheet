@@ -20,8 +20,31 @@
                 <input #search type="text" class="select-search bg-color-dark-grey-lighter w-full pl-10 pr-2 py-1 text-lg text-light" (input)="onSearchChange($event)" />
             </div>
         }
-        @for (option of visibleOptions(); track option.id) {
-            <app-select-option [option]="option" [selected]="isOptionCurrentlySelected(option.id)" (onToggle)="toggleOption($event)" />
+        @if (isSearching()) {
+            @if (loadingStyle() === 'spinner') {
+                <div class="flex align-items-center justify-content-center py-3">
+                    <div class="loading-container-medium">
+                        <app-loading />
+                    </div>
+                </div>
+            }
+            @else {
+                @for (skeletonRow of skeletonRows(); track $index) {
+                    <div class="flex align-items-center">
+                        <div class="basis-1/8 mr-1 flex align-items-center justify-content-center p-2">
+                            <div class="skeleton-circle-small"></div>
+                        </div>
+                        <div class="flex-grow-1 flex align-items-center justify-content-start py-2">
+                            <div class="skeleton-box-small"></div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        @else {
+            @for (option of visibleOptions(); track option.id) {
+                <app-select-option [option]="option" [selected]="isOptionCurrentlySelected(option.id)" (onToggle)="toggleOption($event)" />
+            }
         }
     </div>
 </div>

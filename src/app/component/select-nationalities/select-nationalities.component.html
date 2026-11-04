@@ -1,3 +1,3 @@
 <div>
-    <app-multi-select [options]="availableCountryOptions()" [selected]="selectedNationalities()" [showSearch]="true" (onSelectedChange)="onCountrySelectChange($event)" />
+    <app-multi-select [options]="availableCountryOptions()" [selected]="selectedNationalities()" [showSearch]="true" [singleMode]="singleMode()" (onSelectedChange)="onCountrySelectChange($event)" />
 </div>

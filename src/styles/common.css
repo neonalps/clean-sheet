@@ -1806,6 +1806,10 @@
     min-width: 180px;
 }
 
+.height-xs {
+    height: 1rem;
+}
+
 .height-sm {
     height: 1.5rem;
 }

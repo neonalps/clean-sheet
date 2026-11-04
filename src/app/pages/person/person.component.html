@@ -76,7 +76,7 @@
                         <app-external-links [externalLinks]="externalLinks()" />
                     </div>
                 </div>
-                @if (contextMenuVisible()) {
+                @if (contextMenuAvailable()) {
                     <div>
                         <app-context-menu [menuSections]="personContextMenuOptions()" (onMenuItemSelected)="onPersonContextMenuItemSelected($event)" />
                     </div>
