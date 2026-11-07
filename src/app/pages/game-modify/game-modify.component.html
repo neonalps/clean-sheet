@@ -15,18 +15,25 @@
             <app-game-event-editor [baseGame]="baseGameInformation$" [gameLineup]="gameLineup$" (onGameEventsUpdated)="onGameEventsUpdate($event)" />
         </app-stepper-item>
     </app-stepper>
-    <div class="px-2 my-8 flex justify-content-between" [ngClass]="{ 'justify-content-between': currentStep() !== 'general', 'justify-content-end': currentStep() === 'general' }">
-        <div *ngIf="currentStep() !== 'general'">
-            <div class="mr-5 pointer" (click)="onBackClicked()">
-                {{ 'game.modify.back' | $t }}
+    <div class="px-2 my-8">
+        <div class="flex justify-content-between">
+            <div>
+                <div class="mr-5 pointer" (click)="onCancelClicked()">
+                    {{ 'game.modify.cancel' | $t }}
+                </div>
             </div>
-        </div>
-        <div class="flex">
-            <div class="mr-5 pointer" (click)="onSaveClicked()">
-                {{ 'game.modify.save' | $t }}
-            </div>
-            <div *ngIf="isNextAvailable()">
-                <div class="pointer" (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
+            <div class="flex" [ngClass]="{ 'justify-content-between': currentStep() !== 'general', 'justify-content-end': currentStep() === 'general' }">
+                <div class="mr-6" *ngIf="currentStep() !== 'general'">
+                    <div class="mr-5 pointer" (click)="onBackClicked()">
+                        {{ 'game.modify.back' | $t }}
+                    </div>
+                </div>
+                <div class="mr-5 pointer" (click)="onSaveClicked()">
+                    {{ 'game.modify.save' | $t }}
+                </div>
+                <div *ngIf="isNextAvailable()">
+                    <div class="pointer" (click)="onNextClicked()">{{ 'game.modify.next' | $t }}</div>
+                </div>
             </div>
         </div>
     </div>

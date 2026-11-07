@@ -28,6 +28,9 @@ export class FilterItemComponent implements OnInit, OnDestroy {
   private readonly currentFilterItemType = signal<string | null>(null);
   private readonly currentFilterItemValue = signal<unknown>(null);
 
+  // if we pass type + value we must not emit the first value, as it would send it back to the parent and overwrite the value
+  private readonly shouldSkipNextEmit = signal(false);
+
   private readonly destroy$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -40,6 +43,7 @@ export class FilterItemComponent implements OnInit, OnDestroy {
     const availableOptions = this.availableFilterTypeOptions();
 
     if (isDefined(filterItemInput.type)) {
+      this.shouldSkipNextEmit.set(true);
       const selectedValue = ensureNotNullish(availableOptions.find(option => option.id === filterItemInput.type));
       setTimeout(() => this.pushSelectedFilterType$.next(selectedValue), 0);
     }
@@ -56,6 +60,12 @@ export class FilterItemComponent implements OnInit, OnDestroy {
 
   onFilterTypeSelected(option: SelectOption) {
     this.currentFilterItemType.set(typeof option.id === 'string' ? option.id : option.id.toString());
+
+    if (this.shouldSkipNextEmit()) {
+      this.shouldSkipNextEmit.set(false);
+      return;
+    }
+    
     this.currentFilterItemValue.set({});
     this.emitValue();
   }

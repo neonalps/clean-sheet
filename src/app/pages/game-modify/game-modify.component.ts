@@ -278,6 +278,11 @@ export class ModifyGameComponent implements OnInit, OnDestroy {
     });
   }
 
+  onCancelClicked() {
+    this.clearCache();
+    history.back();
+  }
+
   onSaveClicked() {
     this.modifyGameService.submitGame().pipe(take(1)).subscribe({
       next: result => {

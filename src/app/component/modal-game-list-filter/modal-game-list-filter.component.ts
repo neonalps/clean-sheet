@@ -82,21 +82,23 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(payload => {
         this.currentFilterTypeOptions.set(payload.availableFilterTypeOptions);
-        this.currentFilterItems.set(payload.gameListFilterItems.length > 0 ? payload.gameListFilterItems : [this.createEmptyGameListFilterItem()]);
+
+        const items = structuredClone(payload.gameListFilterItems);
+        this.currentFilterItems.set(items.length > 0 ? items : [this.createEmptyGameListFilterItem()]);
 
         const competitionFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Competition);
         if (competitionFilterItem) {
-          this.selectedCompetitions.set(ensureNotNullish(competitionFilterItem.value) as OptionId[]);
+          this.selectedCompetitions.set([...(competitionFilterItem.value as OptionId[])]);
         }
         
         const seasonFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Season);
         if (seasonFilterItem) {
-          this.selectedSeasons.set(ensureNotNullish(seasonFilterItem.value) as OptionId[]);
+          this.selectedSeasons.set([...(seasonFilterItem.value as OptionId[])]);
         }
 
         const tendencyFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.Tendency);
         if (tendencyFilterItem) {
-          this.selectedTendencies.set(ensureNotNullish(tendencyFilterItem.value) as OptionId[]);
+          this.selectedTendencies.set([...(tendencyFilterItem.value as OptionId[])]);
         }
 
         this.quickFilterVisible.set(payload.showCurrentLeagueSeasonQuickFilter === true);
@@ -261,7 +263,7 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
 
   onConfirm() {
     this.modalService.onConfirm({
-      gameListFilterItems: this.currentFilterItems(),
+      gameListFilterItems: structuredClone(this.currentFilterItems()),
     } satisfies OmitStrict<FilterGameListPayload, 'availableFilterTypeOptions'>);
   }
 

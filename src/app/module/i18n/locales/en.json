@@ -347,6 +347,7 @@
     "game.modify.lineups": "Lineups",
     "game.modify.events": "Events",
     "game.modify.back": "back",
+    "game.modify.cancel": "cancel",
     "game.modify.next": "next",
     "game.modify.save": "save",
     "game.neutral": "Neutral",

@@ -7,7 +7,16 @@
         <div class="form-row">
             <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
             <div class="form-row-content">
-                <app-multi-select [asyncSearch]="true" [searchDebounceTime]="250" [singleMode]="true" [showSearch]="true" [isSearching]="isSearchingForVenue()" [options]="venueOptions()" (onSearchValueChange)="venueSearch$.next($event)" (onSelectedChange)="onHomeVenueChange($event)" />
+                <app-multi-select
+                    [asyncSearch]="true"
+                    [searchDebounceTime]="250"
+                    [singleMode]="true"
+                    [showSearch]="true"
+                    [isSearching]="isSearchingForVenue()"
+                    [selected]="selectedVenues()"
+                    [options]="venueOptions()"
+                    (onSearchValueChange)="venueSearch$.next($event)"
+                    (onSelectedChange)="onHomeVenueChange($event)" />
             </div>
         </div>
         <div class="form-row">

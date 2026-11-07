@@ -84,7 +84,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
   readonly venueOptions = signal<SelectOption[]>([]);
   readonly venueSearch$ = new Subject<string>();
   readonly isSearchingForVenue = signal(false);
-  readonly selectedVenue = signal<OptionId[]>([]);
+  readonly selectedVenues = signal<OptionId[]>([]);
 
   private readonly currentPayload = signal<ModifyClubPayload | null>(null);
   private readonly clubId = signal<ClubId | null>(null);
@@ -226,7 +226,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
   }
 
   onHomeVenueChange(selected: OptionId[]) {
-    this.selectedVenue.set(selected);
+    this.selectedVenues.set(selected);
     this.homeVenueIdValue.set(requireSingleArrayElement(selected) as VenueId);
   }
 

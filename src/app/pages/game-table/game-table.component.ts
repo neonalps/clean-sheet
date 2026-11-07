@@ -4,7 +4,7 @@ import { BasicGame, GameStatus, ScoreTuple, UserBasicGame } from "@src/app/model
 import { SortOrder } from "@src/app/model/pagination";
 import { GameService, GetGamesRequest } from "@src/app/module/game/service";
 import { Nullish } from "@src/app/util/types";
-import { filter, map, Subject, take, takeUntil } from "rxjs";
+import { filter, map, Subject, take, takeUntil, tap } from "rxjs";
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { getGameResult } from "@src/app/module/game/util";
 import { ScoreFormatter } from "@src/app/module/game/score-formatter";
