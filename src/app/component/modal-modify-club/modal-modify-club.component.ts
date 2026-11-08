@@ -3,18 +3,19 @@ import { Component, computed, ElementRef, inject, OnDestroy, OnInit, signal, vie
 import { ModalComponent } from '@src/app/component/modal/modal.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ModalService } from '@src/app/module/modal/service';
-import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { Nullish } from '@src/app/util/types';
 import { SelectNationalitiesComponent } from '@src/app/component/select-nationalities/select-nationalities.component';
 import { BasicClub } from '@src/app/model/club';
-import { ClubId, VenueId } from '@src/app/util/domain-types';
-import { MultiSelectComponent } from '@src/app/component/select-multi/select-multi.component';
-import { OptionId, SelectOption } from '@src/app/component/select/option';
+import { ClubId, VenueFlavorId, VenueId } from '@src/app/util/domain-types';
+import { SelectOption } from '@src/app/component/select/option';
 import { ExternalSearchService } from '@src/app/module/external-search/service';
 import { ExternalSearchEntity } from '@src/app/model/external-search';
 import { convertExternalSearchItemToSelectOption } from '@src/app/module/external-search/util';
-import { requireSingleArrayElement } from '@src/app/util/array';
+import { SelectComponent } from '@src/app/component/select/select.component';
+import { EmptySearchOptionComponent } from '@src/app/component/empty-search-option/empty-search-option.component';
+import { isNotDefined } from '@src/app/util/common';
 
 export type ModifyClubPayload = {
   club: Nullish<BasicClub>;
@@ -34,7 +35,7 @@ export type ModifyClubConfirmPayload = {
 
 @Component({
   selector: 'app-modal-modify-club',
-  imports: [CommonModule, ModalComponent, I18nPipe, ButtonComponent, SelectNationalitiesComponent, MultiSelectComponent],
+  imports: [CommonModule, ModalComponent, I18nPipe, ButtonComponent, SelectNationalitiesComponent, SelectComponent, EmptySearchOptionComponent],
   templateUrl: './modal-modify-club.component.html' 
 })
 export class ModalModifyClubComponent implements OnInit, OnDestroy {
@@ -79,12 +80,13 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
   readonly countryCodeValue = signal<string>('');
   readonly primaryColourValue = signal<string>('');
   readonly secondaryColourValue = signal<string>('');
-  readonly homeVenueIdValue = signal<VenueId | null>(null);
+  readonly homeVenueFlavourIdValue = signal<VenueFlavorId | null>(null);
 
-  readonly venueOptions = signal<SelectOption[]>([]);
-  readonly venueSearch$ = new Subject<string>();
   readonly isSearchingForVenue = signal(false);
-  readonly selectedVenues = signal<OptionId[]>([]);
+  readonly pushSelectedVenueFlavor$ = new Subject<SelectOption>();
+  private readonly venueSearch$ = new Subject<string>();
+  private readonly selectedVenueFlavorId$ = new Subject<VenueFlavorId>();
+  private readonly selectedVenueName$ = new Subject<string>();
 
   private readonly currentPayload = signal<ModifyClubPayload | null>(null);
   private readonly clubId = signal<ClubId | null>(null);
@@ -110,6 +112,11 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
       return null;
     }
 
+    const homeVenueId = this.homeVenueFlavourIdValue();
+    if (isNotDefined(homeVenueId)) {
+      return null;
+    }
+
     const primaryColour = this.primaryColourValue();
     const secondaryColour = this.secondaryColourValue();
     const district = this.districtValue();
@@ -123,6 +130,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
       district,
       primaryColour,
       secondaryColour,
+      homeVenueId,
     };
   });
 
@@ -163,33 +171,18 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
         const currentSecondaryColour = payload.club?.secondaryColour ?? '';
         this.secondaryColourValue.set(currentSecondaryColour);
         this.secondaryColourElement().nativeElement.value = currentSecondaryColour;
+
+        const currentHomeVenue = payload.club?.homeVenue;
+        if (currentHomeVenue) {
+          const firstFlavour = currentHomeVenue.flavors[0];
+          if (firstFlavour) {
+            this.homeVenueFlavourIdValue.set(firstFlavour.id);
+            this.selectedVenueFlavorId$.next(firstFlavour.id);
+            this.selectedVenueName$.next(firstFlavour.name);
+            this.pushSelectedVenueFlavor$.next({ id: firstFlavour.id, name: firstFlavour.name });
+          }
+        }
       });
-
-    this.venueSearch$.pipe(
-      switchMap(value => {
-        if (value.trim().length === 0) {
-          return of([]);
-        }
-
-        this.isSearchingForVenue.set(true);
-        return this.externalSearchService.search(value, [ExternalSearchEntity.Venue]);
-      }),
-      map(response => {
-        this.isSearchingForVenue.set(false);
-        if ('items' in response) {
-          return response.items.map(item => convertExternalSearchItemToSelectOption(item));
-        }
-
-        return response;
-      }),
-      takeUntil(this.destroy$),
-    ).subscribe({
-      next: searchResponse => this.venueOptions.set(searchResponse),
-      error: err => {
-        this.venueOptions.set([]);
-        console.error(err);
-      },
-    });
   }
 
   ngOnDestroy(): void {
@@ -225,11 +218,6 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
     this.secondaryColourValue.set(this.secondaryColourElement().nativeElement.value);
   }
 
-  onHomeVenueChange(selected: OptionId[]) {
-    this.selectedVenues.set(selected);
-    this.homeVenueIdValue.set(requireSingleArrayElement(selected) as VenueId);
-  }
-
   onCancel() {
     this.modalService.onCancel();
 
@@ -245,6 +233,37 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
     this.modalService.onConfirm(confirmPayload satisfies ModifyClubConfirmPayload);
 
     setTimeout(() => this.resetModal(), 200);
+  }
+
+  getVenueOptions(): Observable<SelectOption[]> {
+    return this.venueSearch$.pipe(
+      debounceTime(250),
+      switchMap(value => {
+        if (value.trim().length === 0) {
+          return of([]);
+        }
+
+        this.isSearchingForVenue.set(true);
+        return this.externalSearchService.search(value, [ExternalSearchEntity.Venue]);
+      }),
+      map(response => {
+        this.isSearchingForVenue.set(false);
+        if ('items' in response) {
+          return response.items.map(item => convertExternalSearchItemToSelectOption(item));
+        }
+
+        return response;
+      }),
+    );
+  }
+
+  onVenueSearchChanged(value: string) {
+    this.venueSearch$.next(value);
+  }
+
+  onVenueSelected(option: SelectOption) {
+    this.selectedVenueFlavorId$.next(Number(option.id));
+    this.selectedVenueName$.next(option.name);
   }
 
   private resetModal() {
@@ -270,6 +289,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
     this.secondaryColourValue.set('');
 
     this.countryCodeValue.set('');
+    this.homeVenueFlavourIdValue.set(null);
   }
 
 }

@@ -7,16 +7,11 @@
         <div class="form-row">
             <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
             <div class="form-row-content">
-                <app-multi-select
-                    [asyncSearch]="true"
-                    [searchDebounceTime]="250"
-                    [singleMode]="true"
-                    [showSearch]="true"
-                    [isSearching]="isSearchingForVenue()"
-                    [selected]="selectedVenues()"
-                    [options]="venueOptions()"
-                    (onSearchValueChange)="venueSearch$.next($event)"
-                    (onSelectedChange)="onHomeVenueChange($event)" />
+                <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenueFlavor$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
+                    <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
+                        <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football' }" />
+                    </div>
+                </app-select>
             </div>
         </div>
         <div class="form-row">
@@ -73,6 +68,16 @@
                         <div class="rounded width-xs height-xs mb-2" [style.background-color]="displayableSecondaryColourValue"></div>
                     }
                 </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
+            <div class="form-row-content">
+                <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenueFlavor$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
+                    <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
+                        <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football' }" />
+                    </div>
+                </app-select>
             </div>
         </div>
     </div>
