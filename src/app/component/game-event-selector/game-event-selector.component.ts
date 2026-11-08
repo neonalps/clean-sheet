@@ -183,6 +183,8 @@ export class GameEventSelectorComponent implements OnInit, OnDestroy {
       { id: 'noOffside', name: this.translationService.translate(`varDecisionReason.noOffside`) },
       { id: 'noFoul', name: this.translationService.translate(`varDecisionReason.noFoul`) },
       { id: 'noHandball', name: this.translationService.translate(`varDecisionReason.noHandball`) },
+      { id: 'ballCrossedGoalLine', name: this.translationService.translate(`varDecisionReason.ballCrossedGoalLine`) },
+      { id: 'ballDidNotCrossGoalLine', name: this.translationService.translate(`varDecisionReason.ballDidNotCrossGoalLine`) },
       { id: 'ballOutOfPlay', name: this.translationService.translate(`varDecisionReason.ballOutOfPlay`) },
       { id: 'insidePenaltyArea', name: this.translationService.translate(`varDecisionReason.insidePenaltyArea`) },
       { id: 'outsidePenaltyArea', name: this.translationService.translate(`varDecisionReason.outsidePenaltyArea`) },

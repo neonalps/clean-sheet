@@ -651,6 +651,8 @@
     "varDecision.reason": "Reason",
     "varDecision.yellowCardOverturned": "Yellow card overturned",
     "varDecisionReason.ballOutOfPlay": "Ball out of play",
+    "varDecisionReason.ballCrossedGoalLine": "Ball crossed goal line",
+    "varDecisionReason.ballDidNotCrossGoalLine": "Ball did not cross goal line",
     "varDecisionReason.denialOfGoalScoringOpportunity": "Denial of goal scoring opportunity",
     "varDecisionReason.encroachment": "Encroachment",
     "varDecisionReason.foul": "Foul",

@@ -5,16 +5,6 @@
     <div header>{{ (isEditingValue ? 'club.edit' : 'club.create') | $t }}</div>
     <div content>
         <div class="form-row">
-            <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
-            <div class="form-row-content">
-                <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenueFlavor$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
-                    <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
-                        <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football' }" />
-                    </div>
-                </app-select>
-            </div>
-        </div>
-        <div class="form-row">
             <div class="form-row-title">{{ 'club.name' | $t }}</div>
             <div class="form-row-content">
                 <input #fullName type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onFullNameChange()" />

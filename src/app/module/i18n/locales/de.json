@@ -650,6 +650,8 @@
     "varDecision.penaltyConfirmed": "Strafstoß bestätigt",
     "varDecision.reason": "Grund",
     "varDecision.yellowCardOverturned": "Gelbe Karte zurückgenommen",
+    "varDecisionReason.ballCrossedGoalLine": "Ball hinter der Linie",
+    "varDecisionReason.ballDidNotCrossGoalLine": "Ball nicht hinter der Linie",
     "varDecisionReason.ballOutOfPlay": "Ball aus dem Spiel",
     "varDecisionReason.denialOfGoalScoringOpportunity": "Verhinderung einer klaren Torchance",
     "varDecisionReason.encroachment": "Unberechtigtes Eindringen in den Strafraum",

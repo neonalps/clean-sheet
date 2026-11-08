@@ -149,7 +149,7 @@ export type PenaltyMissedReason = 'wide' | 'high' | 'post' | 'crossbar' | 'saved
 
 export type VarDecision = 'goal' | 'noGoal' | 'penalty' | 'penaltyCancelled' | 'yellowCardOverturned' | 'noPenaltyConfirmed';
 
-export type VarDecisionReason = 'offside' | 'foul' | 'handball' | 'ballOutOfPlay';
+export type VarDecisionReason = 'offside' | 'foul' | 'handball' | 'ballOutOfPlay' | 'insidePenaltyArea' | 'outsidePenaltyArea' | 'ballCrossedGoalLine' | 'ballDidNotCrossGoalLine';
 
 export interface GameManager {
     id: number;
