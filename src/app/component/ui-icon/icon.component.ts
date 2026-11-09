@@ -40,6 +40,7 @@ import { JerseyIconComponent } from '@src/app/icon/jersey/jersey-icon.component'
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { UploadIconComponent } from '@src/app/icon/upload/upload.component';
 import { MergeDuplicateIconComponent } from '@src/app/icon/merge-duplicate/merge-duplicate.component';
+import { ManagerIconComponent } from '@src/app/icon/manager/manager.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -83,7 +84,8 @@ import { MergeDuplicateIconComponent } from '@src/app/icon/merge-duplicate/merge
     PenaltyMisedIconComponent,
     JerseyIconComponent,
     UploadIconComponent,
-    MergeDuplicateIconComponent
+    MergeDuplicateIconComponent,
+    ManagerIconComponent
 ],
   templateUrl: './icon.component.html'
 })

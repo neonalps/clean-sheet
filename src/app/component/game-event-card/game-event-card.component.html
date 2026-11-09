@@ -29,12 +29,19 @@
                 }
             </div>
             @if (varEvent()) {
-                <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">{{ varText() }} </div>
+                <div class="game-event-score px-2 py-1 rounded-md center bg-color-dark-grey-lighter text-sm mr-1">{{ 'abbreviation.var' | $t }} </div>
             }
             @if (eventValue.notOnPitch) {
-                <div class="pr-2" [attr.title]="notOnPitchText()">
+                <div class="pr-2" [attr.title]="'gameEvent.notOnPitch' | $t">
                     <div class="width-xs">
                         <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'bench' }" />
+                    </div>
+                </div>
+            }
+            @if (eventValue.affectedManager) {
+                <div class="pr-2" [attr.title]="'gameEvent.manager' | $t">
+                    <div class="width-xs">
+                        <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'manager' }" />
                     </div>
                 </div>
             }

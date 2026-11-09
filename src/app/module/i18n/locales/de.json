@@ -390,6 +390,7 @@
     "gameEvent.assistBy": "Assist von",
     "gameEvent.goalType": "Tor-Art",
     "gameEvent.injured": "Verletzt",
+    "gameEvent.manager": "Trainer",
     "gameEvent.minute": "Minute",
     "gameEvent.notOnPitch": "Nicht auf dem Spielfeld",
     "gameEvent.outcome": "Ergebnis",

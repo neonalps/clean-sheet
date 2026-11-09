@@ -390,6 +390,7 @@
     "gameEvent.assistBy": "Assist by",
     "gameEvent.goalType": "Goal type",
     "gameEvent.injured": "Injured",
+    "gameEvent.manager": "Manager",
     "gameEvent.minute": "Minute",
     "gameEvent.notOnPitch": "Not on pitch",
     "gameEvent.outcome": "Outcome",

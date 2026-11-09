@@ -15,8 +15,7 @@ import { PersonId } from '@src/app/util/domain-types';
 @Component({
   selector: 'app-game-event-selector',
   imports: [CommonModule, CdkDrag, I18nPipe, SelectComponent, UiIconComponent],
-  templateUrl: './game-event-selector.component.html',
-  styleUrl: './game-event-selector.component.css'
+  templateUrl: './game-event-selector.component.html'
 })
 export class GameEventSelectorComponent implements OnInit, OnDestroy {
 
