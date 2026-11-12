@@ -412,6 +412,7 @@
     "gameEventType.varDecision": "VAR-Entscheidung",
     "gameImport.success": "Das Spiel wurde erfolgreich importiert",
     "gameImport.failure": "Das Spiel konnte nicht importiert werden",
+    "gameMinute.fullTime": "nach Spielende",
     "gameRecord.draw.singular": "Remis",
     "gameRecord.draw.plural": "Remis",
     "gameRecord.game.singular": "Spiel",

@@ -1,4 +1,5 @@
 @let personValue = person();
+@let redCardDisplayTextValue = redCardDisplayText();
 <div class="flex align-items-center">
     <div>
         <app-player-icon [iconUrl]="personValue.avatar" [iconBgColorClass]="'bg-color-light-grey-darker'" [containerClass]="'max-w-2'" />
@@ -34,10 +35,10 @@
                     <div class="ml-2">{{ personValue.yellowRedCard | formatGameMinute }}</div>
                 </div>
             }
-            @if (personValue.redCard) {
+            @if (redCardDisplayTextValue) {
                 <div class="card-inline">
                     <div class="card-red"></div>
-                    <div class="ml-2">{{ personValue.redCard | formatGameMinute }}</div>
+                    <div class="ml-2">{{ redCardDisplayTextValue }}</div>
                 </div>
             }
             @if (personValue.off) {

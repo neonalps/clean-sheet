@@ -1,5 +1,6 @@
 @let icon = modalIcon();
 @let groupedGamesPlayedValue = groupedGamesPlayed();
+@let isLoadingValue = isLoading();
 <app-modal>
     <div header>
         <div class="flex align-items-center">
@@ -129,7 +130,7 @@
                     </div>
                 }
             }
-            @else {
+            @else if (!isLoadingValue) {
                 <app-empty-state>
                     <div class="w-1/6 text-light-grey-darker" icon>
                         <app-field-with-ball />

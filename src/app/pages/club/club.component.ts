@@ -202,6 +202,7 @@ export class ClubComponent implements OnDestroy {
           shortName: payload.shortName,
           countryCode: payload.countryCode,
           city: payload.city,
+          homeVenueFlavorId: payload.homeVenueFlavorId,
         }).pipe(takeUntil(this.destroy$)).subscribe({
           next: () => {
             this.toastService.addToast({

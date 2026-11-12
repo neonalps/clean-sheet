@@ -30,7 +30,7 @@ export type ModifyClubConfirmPayload = {
   city: string;
   district?: string;
   countryCode: string;
-  // TODO add homeVenue as either ID or create payload
+  homeVenueFlavorId: VenueFlavorId;
 }
 
 @Component({
@@ -80,7 +80,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
   readonly countryCodeValue = signal<string>('');
   readonly primaryColourValue = signal<string>('');
   readonly secondaryColourValue = signal<string>('');
-  readonly homeVenueFlavourIdValue = signal<VenueFlavorId | null>(null);
+  readonly homeVenueFlavorIdValue = signal<VenueFlavorId | null>(null);
 
   readonly isSearchingForVenue = signal(false);
   readonly pushSelectedVenueFlavor$ = new Subject<SelectOption>();
@@ -112,8 +112,8 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    const homeVenueId = this.homeVenueFlavourIdValue();
-    if (isNotDefined(homeVenueId)) {
+    const homeVenueFlavorId = this.homeVenueFlavorIdValue();
+    if (isNotDefined(homeVenueFlavorId)) {
       return null;
     }
 
@@ -130,7 +130,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
       district,
       primaryColour,
       secondaryColour,
-      homeVenueId,
+      homeVenueFlavorId,
     };
   });
 
@@ -176,7 +176,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
         if (currentHomeVenue) {
           const firstFlavour = currentHomeVenue.flavors[0];
           if (firstFlavour) {
-            this.homeVenueFlavourIdValue.set(firstFlavour.id);
+            this.homeVenueFlavorIdValue.set(firstFlavour.id);
             this.selectedVenueFlavorId$.next(firstFlavour.id);
             this.selectedVenueName$.next(firstFlavour.name);
             this.pushSelectedVenueFlavor$.next({ id: firstFlavour.id, name: firstFlavour.name });
@@ -289,7 +289,7 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
     this.secondaryColourValue.set('');
 
     this.countryCodeValue.set('');
-    this.homeVenueFlavourIdValue.set(null);
+    this.homeVenueFlavorIdValue.set(null);
   }
 
 }

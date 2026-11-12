@@ -412,6 +412,7 @@
     "gameEventType.varDecision": "VAR decision",
     "gameImport.success": "The game was successfully imported",
     "gameImport.failure": "The game could not be imported",
+    "gameMinute.fullTime": "Fulltime",
     "gameRecord.draw.singular": "Draw",
     "gameRecord.draw.plural": "Draws",
     "gameRecord.game.singular": "Game",

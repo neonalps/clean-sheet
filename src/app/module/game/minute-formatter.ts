@@ -16,7 +16,6 @@ export class GameMinuteFormatter {
 
     constructor() {
         this.authService.profileSettings$.pipe(filter(value => isDefined(value))).subscribe(value => {
-            console.log('setting game minute format to', value.gameMinuteFormat);
             this.minuteFormat.set(value.gameMinuteFormat);
         });
     }
