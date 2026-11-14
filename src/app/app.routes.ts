@@ -24,6 +24,8 @@ import { ManagersComponent } from './pages/managers/managers.component';
 import { GamesFavouritesComponent } from './pages/games-favourites/games-favourites.component';
 import { GamesAttendedComponent } from './pages/games-attended/games-attended.component';
 import { GameTableComponent } from './pages/game-table/game-table.component';
+import { ClubCreateComponent } from './pages/club-create/club-create.component';
+import { VenueCreateComponent } from './pages/venue-create/venue-create.component';
 
 export const routes: Routes = [
     { 
@@ -123,6 +125,22 @@ export const routes: Routes = [
     { 
         path: `create-game`, 
         component: ModifyGameComponent,
+        canActivate: [roleGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
+    },
+    { 
+        path: `create-club`, 
+        component: ClubCreateComponent,
+        canActivate: [roleGuard],
+        data: {
+            role: AccountRole.Manager,
+        }
+    },
+    { 
+        path: `create-venue`, 
+        component: VenueCreateComponent,
         canActivate: [roleGuard],
         data: {
             role: AccountRole.Manager,

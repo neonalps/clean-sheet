@@ -5,13 +5,15 @@
     <div header>
         <div class="flex align-items-center justify-content-between">
             <div>{{ 'modal.filterGames' | $t }}</div>
-            <div class="text-xs normal" *ngIf="quickFilterVisibleValue && quickFilterChipGroupValue">
-                <app-chip-group [chipGroup]="quickFilterChipGroupValue" (onSelected)="onQuickFilterSelected()" />
-            </div>
+            @if (quickFilterVisibleValue && quickFilterChipGroupValue) {
+                <div class="text-xs normal">
+                    <app-chip-group [chipGroup]="quickFilterChipGroupValue" (onSelected)="onQuickFilterSelected()" />
+                </div>
+            }
         </div>
     </div>
     <div content>
-        <ng-container *ngIf="currentFilterItemsValue.length > 0; else emptyList">
+        @if (currentFilterItemsValue.length > 0) {
             <div>
                 @for (item of currentFilterItemsValue; track item.id) {
                     <div class="mb-2 last:mb-0 p-2 bg-color-dark-grey-darker rounded-md">
@@ -41,7 +43,14 @@
                                 @case ('accountAttended') {
                                     <div class="form-row">
                                         <div class="form-row-content">
-                                            <app-chip-group [chipGroup]="yesNoChipGroupInput()" />
+                                            <app-chip-group [chipGroup]="accountAttendedChipGroupInput()" (onSelected)="onAccountAttendedChanged($event)" />
+                                        </div>
+                                    </div>
+                                }
+                                @case ('accountStarred') {
+                                    <div class="form-row">
+                                        <div class="form-row-content">
+                                            <app-chip-group [chipGroup]="accountStarredChipGroupInput()" (onSelected)="onAccountStarredChanged($event)" />
                                         </div>
                                     </div>
                                 }
@@ -53,10 +62,10 @@
             <div class="flex align-items-center justify-content-center mt-4 pointer text-light-grey hover:text-light transition-colors" (click)="addItem()">
                 <div>+ {{ 'filterGameList.addNewFilter' | $t }}</div>
             </div>
-        </ng-container>
-        <ng-template #emptyList>
-            so empty
-        </ng-template>
+        }
+        @else {
+            <div>{{ 'filterItems.empty' | $t }}</div>
+        }
     </div>
     <div footer>
         <div class="flex justify-content-center">

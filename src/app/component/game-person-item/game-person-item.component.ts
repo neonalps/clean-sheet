@@ -36,7 +36,7 @@ export class GamePersonItemComponent {
 
   readonly personName = computed(() => getPersonName(this.person()));
 
-  readonly redCardDisplayText = computed(() => {
+  readonly redCardDisplayText = computed<string | null>(() => {
     const redCardMinute = this.person().redCard;
     if (isNotDefined(redCardMinute)) {
       return null;

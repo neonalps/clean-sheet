@@ -1,11 +1,10 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ModalComponent } from '@src/app/component/modal/modal.component';
 import { ButtonComponent } from '@src/app/component/button/button.component';
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { ModalService } from '@src/app/module/modal/service';
 import { combineLatest, map, Subject, takeUntil } from 'rxjs';
 import { FilterItemComponent } from "@src/app/component/filter/filter-item/filter-item.component";
-import { CommonModule } from '@angular/common';
 import { GameListFilterItem, GameListFilterType, GenericFilterItem } from '@src/app/module/filter/service';
 import { OptionId, SelectOption } from '@src/app/component/select/option';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
@@ -25,7 +24,7 @@ export type FilterGameListPayload = {
 
 @Component({
   selector: 'app-modal-game-list-filter',
-  imports: [CommonModule, ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent, ChipGroupComponent],
+  imports: [ModalComponent, ButtonComponent, I18nPipe, FilterItemComponent, MultiSelectComponent, ChipGroupComponent],
   templateUrl: './modal-game-list-filter.component.html'
 })
 export class ModalGameListFilterComponent implements OnInit, OnDestroy {
@@ -61,18 +60,41 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
   readonly selectedCompetitions = signal<OptionId[]>([]);
   readonly selectedSeasons = signal<OptionId[]>([]);
   readonly selectedTendencies = signal<OptionId[]>([]);
-  readonly yesNoChipGroupInput = signal<ChipGroupInput>({
-    mode: 'single',
-    chips: [{
-      value: 'yes',
-      displayText: this.translationService.translate('toggle.yes'),
-      selected: true,
-    }, {
-      value: 'no',
-      displayText: this.translationService.translate('toggle.no'),
-      selected: false,
-    }],
-    dynamicClassNamesChip: ['text-xs'],
+  readonly accountAttendedValue = signal(true);
+  readonly accountStarredValue = signal(true);
+  
+  readonly accountAttendedChipGroupInput = computed<ChipGroupInput>(() => {
+    const value = this.accountAttendedValue();
+    return {
+      mode: 'single',
+      chips: [{
+        value: true,
+        displayText: this.translationService.translate('toggle.yes'),
+        selected: value,
+      }, {
+        value: false,
+        displayText: this.translationService.translate('toggle.no'),
+        selected: !value,
+      }],
+      dynamicClassNamesChip: ['text-xs'],
+    }
+  });
+
+  readonly accountStarredChipGroupInput = computed<ChipGroupInput>(() => {
+    const value = this.accountStarredValue();
+    return {
+      mode: 'single',
+      chips: [{
+        value: true,
+        displayText: this.translationService.translate('toggle.yes'),
+        selected: value,
+      }, {
+        value: false,
+        displayText: this.translationService.translate('toggle.no'),
+        selected: !value,
+      }],
+      dynamicClassNamesChip: ['text-xs'],
+    }
   });
 
   private readonly destroy$ = new Subject<void>();
@@ -101,6 +123,16 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
           this.selectedTendencies.set([...(tendencyFilterItem.value as OptionId[])]);
         }
 
+        const accountAttendedFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.AccountAttended);
+        if (accountAttendedFilterItem) {
+          this.accountAttendedValue.set(ensureNotNullish(accountAttendedFilterItem.value) as boolean);
+        }
+
+        const accountStarredFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.AccountStarred);
+        if (accountStarredFilterItem) {
+          this.accountStarredValue.set(ensureNotNullish(accountStarredFilterItem.value) as boolean);
+        }
+
         this.quickFilterVisible.set(payload.showCurrentLeagueSeasonQuickFilter === true);
       });
 
@@ -112,7 +144,6 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
           icon: item.iconSmall ? { type: 'competition', content: item.iconSmall } : undefined,
         } satisfies SelectOption));
       }),
-      takeUntil(this.destroy$),
     );
 
     const seasons$ = this.seasonService.getOrderedSeasonsFromCache().pipe(
@@ -122,7 +153,6 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
           name: item.name,
         } satisfies SelectOption));
       }),
-      takeUntil(this.destroy$),
     );
 
     combineLatest([
@@ -224,6 +254,40 @@ export class ModalGameListFilterComponent implements OnInit, OnDestroy {
     this.onFilterItemChange({
       ...tendencyFilterItem,
       value: ensureNotNullish(this.selectedTendencies()),
+    });
+  }
+
+  onAccountAttendedChanged(value: string | number | boolean): void {
+    if (typeof value !== 'boolean') {
+      throw new Error(`Expected boolean, but receivied ${typeof value}`);
+    }
+    this.accountAttendedValue.set(value);
+
+    const accountAttendedFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.AccountAttended);
+    if (!accountAttendedFilterItem) {
+      return;
+    }
+
+    this.onFilterItemChange({
+      ...accountAttendedFilterItem,
+      value,
+    });
+  }
+
+  onAccountStarredChanged(value: string | number | boolean): void {
+    if (typeof value !== 'boolean') {
+      throw new Error(`Expected boolean, but receivied ${typeof value}`);
+    }
+    this.accountStarredValue.set(value);
+
+    const accountStarredFilterItem = this.currentFilterItems().find(item => item.type === GameListFilterType.AccountStarred);
+    if (!accountStarredFilterItem) {
+      return;
+    }
+
+    this.onFilterItemChange({
+      ...accountStarredFilterItem,
+      value,
     });
   }
 

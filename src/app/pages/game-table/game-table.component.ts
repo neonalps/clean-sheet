@@ -84,7 +84,6 @@ export class GameTableComponent implements OnInit, OnDestroy {
         map(event => ensureNotNullish(event.value) as FilterGameListPayload),
         takeUntil(this.destroy$),
     ).subscribe(value => {
-      console.log('received filters', value.gameListFilterItems);
       this.setAndApplyGameFilters([...value.gameListFilterItems]);
     });
   }
@@ -221,10 +220,10 @@ export class GameTableComponent implements OnInit, OnDestroy {
           requestPartial.tendency = (ensureNotNullish(filter.value) as string[]).join(',');
           break;
         case GameListFilterType.AccountAttended:
-          requestPartial.hasAccountAttended = true;
+          requestPartial.hasAccountAttended = ensureNotNullish(filter.value) as boolean;
           break;
         case GameListFilterType.AccountStarred:
-          requestPartial.hasAccountStarred = true;
+          requestPartial.hasAccountStarred = ensureNotNullish(filter.value) as boolean;
           break;
         // TODO add others and assertUnreachable
       }

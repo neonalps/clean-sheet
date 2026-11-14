@@ -151,6 +151,14 @@ export class NavMenuComponent implements OnInit, OnDestroy {
           {
             target: '/create-game',
             i18nKey: 'menu.createGame',
+          },
+          {
+            target: '/create-club',
+            i18nKey: 'menu.createClub',
+          },
+          {
+            target: '/create-venue',
+            i18nKey: 'menu.createVenue',
           }
         ]
       },
