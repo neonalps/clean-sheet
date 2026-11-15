@@ -1,82 +1,14 @@
-@let isEditingValue = isEditing();
-@let displayablePrimaryColourValue = displayablePrimaryColour();
-@let displayableSecondaryColourValue = displayableSecondaryColour();
 <app-modal>
-    <div header>{{ (isEditingValue ? 'club.edit' : 'club.create') | $t }}</div>
+    <div header>{{ 'club.edit' | $t }}</div>
     <div content>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.name' | $t }}</div>
-            <div class="form-row-content">
-                <input #fullName type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onFullNameChange()" />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.shortName' | $t }}</div>
-            <div class="form-row-content">
-                <input #shortName type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onShortNameChange()" />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.country' | $t }}</div>
-            <div class="form-row-content">
-                <app-select-nationalities [singleMode]="true" [selectedNationalities]="emulatedNationalitiesValue()" (onValueChange)="onNationalitiesChanged($event)" />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.city' | $t }}</div>
-            <div class="form-row-content">
-                <input #city type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onCityChange()" />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.district' | $t }}</div>
-            <div class="form-row-content">
-                <input #district type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onDistrictChange()" />
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.primaryColour' | $t }}</div>
-            <div class="form-row-content flex align-items-center">
-                <div class="basis-1/3">
-                    <input #primaryColour type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onPrimaryColourChange()" />
-                </div>
-                <div class="ml-4">
-                    @if (displayablePrimaryColourValue) {
-                        <div class="rounded width-xs height-xs mb-2" [style.background-color]="displayablePrimaryColourValue"></div>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.secondaryColour' | $t }}</div>
-            <div class="form-row-content flex align-items-center">
-                <div class="basis-1/3">
-                    <input #secondaryColour type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-dark-grey-lighter" (input)="onSecondaryColourChange()" />
-                </div>
-                <div class="ml-4">
-                    @if (displayableSecondaryColourValue) {
-                        <div class="rounded width-xs height-xs mb-2" [style.background-color]="displayableSecondaryColourValue"></div>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-row-title">{{ 'club.homeVenue' | $t }}</div>
-            <div class="form-row-content">
-                <app-select [optionsSource]="getVenueOptions()" [isLoading]="isSearchingForVenue()" [loadingStyle]="'skeleton'" [selectedOption]="pushSelectedVenueFlavor$" [showSearch]="true" (onSearch)="onVenueSearchChanged($event)" (onSelected)="onVenueSelected($event)">
-                    <div class="w-full p-2 flex flex-col align-items-center text-light-grey" noOptions>
-                        <app-empty-search-option [emptyText]="'search.noVenueFound' | $t" [iconDescriptor]="{ 'type': 'standard', 'content': 'playing-football' }" />
-                    </div>
-                </app-select>
-            </div>
-        </div>
+        <app-modify-base-club [input]="baseClubInformationInput()" (onUpdate)="onBaseClubInformationUpdate($event)" />
     </div>
     <div footer>
         <div class="flex justify-content-center">
             <div class="w-full">
                 <div class="flex align-items-center justify-content-between mt-12">
                     <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="onCancel()" />
-                    <app-button class="mx-4" [buttonType]="'success'" [text]="'action.save' | $t" (onClicked)="onConfirm()" />
+                    <app-button class="mx-4" [buttonType]="'success'" [enabled]="isSubmittable()" [text]="'action.save' | $t" (onClicked)="onConfirm()" />
                 </div>
             </div>
         </div>

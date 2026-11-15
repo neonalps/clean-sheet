@@ -1,4 +1,5 @@
 import { TranslationService } from "@src/app/module/i18n/translation.service";
+import { Nullish } from "./types";
 
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const charactersLength = characters.length;
@@ -93,6 +94,14 @@ export function processTranslationPlaceholders(input: string, translationService
         result = result.replaceAll(placeholder, translationService.translate(translationKey));
     }
     return result;
+}
+
+export function parseDisplayableColour(potentialColour: Nullish<string>): string | null {
+    if (isNotDefined(potentialColour) || !potentialColour.startsWith('#') || potentialColour.length !== 7) {
+      return null;
+    }
+
+    return potentialColour;
 }
 
 export function assertUnreachable(x: never, errorMessage?: string): never {

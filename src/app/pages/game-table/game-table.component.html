@@ -10,14 +10,14 @@
             <app-filter-button [filterActive]="isFilteringValue" />
         </div>
     </div>
-    <ng-container *ngIf="isFilteringValue">
+    @if (isFilteringValue) {
         <div class="bg-color-sky-700 mt-4 p-2 text-light-grey rounded-md flex text-sm justify-content-between align-items-center">
             <div>{{ currentlyShowingText() }}</div>
             <div>
                 <span class="pointer hover:text-light transition-colors" (click)="resetFilters()">{{ 'list.resetFilters' | $t }}</span>
             </div>
         </div>
-    </ng-container>
+    }
     <div class="mt-4">
         @for (game of gamesValue; track game.id) {
             <div class="flex align-items-center p-1 rounded-md pointer mb-2 last:mb-0 transition-colors hover:bg-color-dark-grey min-h-24" (click)="onGameClicked(game)">
@@ -33,9 +33,11 @@
                     <div class="pr-2">{{ game.kickoff | date:'dd.MM.yy' }}</div>
                 </div>
                 <div class="basis-5/14 flex text-sm align-items-center">
-                    <div class="width-xs mr-2 relative top-neg-1" *ngIf="game.opponent.iconSmall">
-                        <app-ui-icon [descriptor]="{ 'type': 'club', 'content': game.opponent.iconSmall }" />
-                    </div>
+                    @if (game.opponent.iconSmall) {
+                        <div class="width-xs mr-2 relative top-neg-1">
+                            <app-ui-icon [descriptor]="{ 'type': 'club', 'content': game.opponent.iconSmall }" />
+                        </div>
+                    }
                     <div>
                         {{ game.opponent.shortName }}
                     </div>
@@ -44,16 +46,20 @@
                     <div class="text-sm px-1 py-1/2 rounded-md center bold min-w-32" [ngClass]="getResultTendencyClass(game)">{{ getGameScoreBeforePso(game) }}</div>
                 </div>
                 <div class="flex align-items-center">
-                    <div *ngIf="game.attended" [ngClass]="{ 'mr-2': game.favourite }">
-                        <div class="width-xs relative top-2">
-                            <app-eye-icon />
+                    @if (game.attended) {
+                        <div [ngClass]="{ 'mr-2': game.favourite }">
+                            <div class="width-xs relative top-2">
+                                <app-eye-icon />
+                            </div>
                         </div>
-                    </div>
-                    <div *ngIf="game.favourite">
-                        <div class="width-xs relative top-1">
-                            <app-star-icon [fillColor]="'currentColor'" />
+                    }
+                    @if (game.favourite) {
+                        <div>
+                            <div class="width-xs relative top-1">
+                                <app-star-icon [fillColor]="'currentColor'" />
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         }
