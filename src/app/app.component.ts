@@ -13,6 +13,7 @@ import { TranslationService } from './module/i18n/translation.service';
 import { isDefined } from './util/common';
 import { AppLoadService } from './module/app-load/service';
 import { CompetitionService } from './module/competition/service';
+import { AccountGameInformationService } from './module/account/game-information';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ import { CompetitionService } from './module/competition/service';
 export class AppComponent implements OnInit {
   readonly title = 'clean-sheet';
 
+  private readonly accountGameInformationService = inject(AccountGameInformationService);
   private readonly appLoadService = inject(AppLoadService);
   private readonly authService = inject(AuthService);
   private readonly competitionService = inject(CompetitionService);
@@ -47,6 +49,7 @@ export class AppComponent implements OnInit {
     this.competitionService.init();
     this.translationService.init(this.authService.profileSettings$.pipe(filter(value => isDefined(value)), map(value => value.language)));
     this.appLoadService.processEntry();
+    this.accountGameInformationService.init();
   }
 
   private disallowScroll(disallow: boolean) {
