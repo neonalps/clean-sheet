@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClubResolver } from '@src/app/module/club/resolver';
 import { ensureNotNullish, isDefined } from '@src/app/util/common';
 import { ClubId } from '@src/app/util/domain-types';
-import { navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
+import { navigateToDashboard, navigateToGameWithoutDetails, parseUrlSlug, PATH_PARAM_CLUB_ID } from '@src/app/util/router';
 import { filter, map, Subject, switchMap, takeUntil } from 'rxjs';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 import { ClubService, GetClubByIdResponse } from '@src/app/module/club/service';
@@ -32,6 +32,7 @@ import { ModifyClubConfirmPayload } from '@src/app/component/modal-modify-club/m
 })
 export class ClubComponent implements OnDestroy {
 
+  private static readonly CONTEXT_MENU_KEY_CLUB_DELETE = "deleteClub";
   private static readonly CONTEXT_MENU_KEY_CLUB_EDIT = "editClub";
   private static readonly CONTEXT_MENU_KEY_CLUB_UPLOAD_AVATAR = "uploadClubAvatar";
   private static readonly CONTEXT_MENU_KEY_CLUB_REMOVE_AVATAR = "removeClubAvatar";
@@ -74,7 +75,19 @@ export class ClubComponent implements OnDestroy {
             isDisabled: !club.club.iconSmall,
           },
         ],
-      }
+      },
+      { 
+        items: [
+          {
+            id: ClubComponent.CONTEXT_MENU_KEY_CLUB_DELETE,
+            text: this.translationService.translate('menu.deleteClub'),
+            iconDescriptor: { 
+              type: 'standard', 
+              content: 'delete'
+            }, 
+            isDanger: true
+          },
+      ] },
     ]
   });
 
@@ -136,6 +149,8 @@ export class ClubComponent implements OnDestroy {
 
     if (itemId === ClubComponent.CONTEXT_MENU_KEY_CLUB_EDIT) {;
       this.handleModifyClub(currentClub);
+    } else if (itemId === ClubComponent.CONTEXT_MENU_KEY_CLUB_DELETE) {;
+      this.handleDeleteClub(currentClub.id);
     } else if (itemId === ClubComponent.CONTEXT_MENU_KEY_CLUB_UPLOAD_AVATAR) {
       this.handleUploadClubAvatar(currentClub.id);
     } else if (itemId === ClubComponent.CONTEXT_MENU_KEY_CLUB_REMOVE_AVATAR) {
@@ -243,6 +258,28 @@ export class ClubComponent implements OnDestroy {
           this.toastService.addToast({ type: 'error', text: this.translationService.translate('clubUpdate.failure') });
         },
       });
+    }
+
+    private handleDeleteClub(clubId: ClubId) {
+      this.modalService.showDeleteModal({
+        titleTextKey: 'action.deleteClub.question',
+        contentTextKey: 'action.delete.consequence',
+      }).pipe(
+          filter(event => event.type === 'confirm'),
+          switchMap(() => this.clubService.deleteById(clubId)),
+          takeUntil(this.destroy$),
+        ).subscribe({
+          next: () => {
+            this.toastService.addToast({ text: this.translationService.translate('clubDelete.success'), type: 'success' });
+
+            navigateToDashboard(this.router);
+          },
+          error: err => {
+            console.error(`failed to delete club with ID ${clubId}`, err);
+
+            this.toastService.addToast({ text: `${this.translationService.translate('clubDelete.failure')}`, type: 'error' });
+          }
+        });
     }
   
     private handleRemoveClubAvatar(clubId: ClubId) {

@@ -15,6 +15,10 @@ export const PATH_PARAM_VENUE_ID = "venueId";
 export const PATH_PARAM_RANKING_STATS_TYPE = "rankingStatsType";
 export const PATH_PARAM_OAUTH_PROVIDER = "provider";
 
+export function navigateToDashboard(router: Router): void {
+    router.navigate(["/dashboard"]);
+}
+
 export function navigateToSeasonGames(router: Router, seasonId: SeasonId): void {
     router.navigate(["/season", seasonId, "games"]);
 }

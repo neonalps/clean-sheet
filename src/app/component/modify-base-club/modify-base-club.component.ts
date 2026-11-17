@@ -1,9 +1,8 @@
-import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, OnInit, output, signal, viewChild } from '@angular/core';
 import { SelectComponent } from "@src/app/component/select/select.component";
 import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { debounceTime, map, Observable, of, Subject, switchMap } from 'rxjs';
 import { VenueFlavorId } from '@src/app/util/domain-types';
-import { CommonModule } from '@angular/common';
 import { EmptySearchOptionComponent } from "@src/app/component/empty-search-option/empty-search-option.component";
 import { UiIconDescriptor } from '@src/app/model/icon';
 import { SelectNationalitiesComponent } from '@src/app/component/select-nationalities/select-nationalities.component';
@@ -28,12 +27,13 @@ export type BaseClubInformation = {
 
 @Component({
   selector: 'app-modify-base-club',
-  imports: [CommonModule, I18nPipe, SelectComponent, EmptySearchOptionComponent, SelectNationalitiesComponent],
+  imports: [I18nPipe, SelectComponent, EmptySearchOptionComponent, SelectNationalitiesComponent],
   templateUrl: './modify-base-club.component.html'
 })
-export class ModifyBaseClubComponent {
+export class ModifyBaseClubComponent implements OnInit {
 
   readonly input = input.required<Partial<BaseClubInformation>>();
+
   readonly onUpdate = output<BaseClubInformation>();
 
   private readonly externalSearchService = inject(ExternalSearchService);
@@ -161,6 +161,10 @@ export class ModifyBaseClubComponent {
 
       this.onUpdate.emit(payload);
     })
+  }
+
+  ngOnInit(): void {
+    setTimeout(() => this.fullNameElement().nativeElement.focus());
   }
 
   getVenueOptions(): Observable<SelectOption[]> {

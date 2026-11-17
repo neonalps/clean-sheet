@@ -20,11 +20,14 @@ export type UpdateClub = {
   name: string;
   shortName: string;
   city: string;
+  district?: string;
   countryCode: string;
   primaryColour?: string;
   secondaryColour?: string;
   homeVenueFlavorId: VenueFlavorId;
 };
+
+export type CreateClub = UpdateClub;
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +49,14 @@ export class ClubService {
 
   updateById(clubId: ClubId, update: UpdateClub): Observable<BasicClub> {
     return this.http.put<BasicClub>(`${environment.apiBaseUrl}/v1/clubs/${clubId}`, update);
+  }
+
+  deleteById(clubId: ClubId): Observable<void> {
+    return this.http.delete<void>(`${environment.apiBaseUrl}/v1/clubs/${clubId}`);
+  }
+
+  create(create: CreateClub): Observable<BasicClub> {
+    return this.http.post<BasicClub>(`${environment.apiBaseUrl}/v1/clubs`, create);
   }
 
   uploadAvatarFile(clubId: ClubId, file: File): Observable<BasicClub> {

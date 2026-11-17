@@ -151,7 +151,6 @@ export class MultiSelectComponent implements OnInit, OnDestroy {
     }
 
     private publishUpdate(updatedSelected: OptionId[]) {
-        console.log('multi publishing update', updatedSelected);
         this.onSelectedChange.emit(updatedSelected);
     }
 

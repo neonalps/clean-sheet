@@ -1,9 +1,14 @@
 import { Component, computed, inject, OnDestroy, signal } from "@angular/core";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import { BaseClubInformation, ModifyBaseClubComponent } from "@src/app/component/modify-base-club/modify-base-club.component";
 import { I18nPipe } from "@src/app/module/i18n/i18n.pipe";
 import { ClubService } from "@src/app/module/club/service";
 import { ButtonComponent } from "@src/app/component/button/button.component";
+import { ensureNotNullish } from "@src/app/util/common";
+import { ToastService } from "@src/app/module/toast/service";
+import { TranslationService } from "@src/app/module/i18n/translation.service";
+import { navigateToClub } from "@src/app/util/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-club-create',
@@ -13,6 +18,9 @@ import { ButtonComponent } from "@src/app/component/button/button.component";
 export class ClubCreateComponent implements OnDestroy {
 
   private readonly clubService = inject(ClubService);
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
+  private readonly translationService = inject(TranslationService);
 
   private readonly currentBaseClubInformation = signal<BaseClubInformation | null>(null);
   private readonly isSubmitting = signal(false);
@@ -32,7 +40,8 @@ export class ClubCreateComponent implements OnDestroy {
   }
 
   onCancel(): void {
-    console.log('cancel now');
+    // TODO dialog if ongoing changes
+    window.history.back();
   }
 
   onConfirm(): void {
@@ -41,7 +50,29 @@ export class ClubCreateComponent implements OnDestroy {
     }
 
     this.isSubmitting.set(true);
-    console.log('submitting');
+    
+    const club = ensureNotNullish(this.currentBaseClubInformation());
+    this.clubService.create({
+      name: club.name,
+      shortName: club.shortName,
+      city: club.city,
+      district: club.district,
+      countryCode: club.countryCode,
+      primaryColour: club.primaryColour,
+      secondaryColour: club.secondaryColour,
+      homeVenueFlavorId: club.homeVenueFlavorId,
+    }).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: createdClub => {
+        this.toastService.addToast({ type: 'success', text: this.translationService.translate('clubCreate.success') });
+        navigateToClub(this.router, createdClub);
+      },
+      error: err => {
+        console.error(err);
+        this.toastService.addToast({ type: 'error', text: this.translationService.translate('clubCreate.failure') });
+      }
+    })
   }
 
 }
