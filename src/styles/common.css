@@ -1562,6 +1562,10 @@
     color: var(--info-darker-20);
 }
 
+.text-warn {
+    color: var(--warn);
+}
+
 .scrollbar-stable {
     scrollbar-gutter: stable;
 }

@@ -8,9 +8,9 @@ import { KEYWORD_CURRENT_COLOR } from '@src/styles/constants';
 })
 export class BenchIconComponent {
 
-  color = input<string>();
+  readonly color = input<string>();
 
-  effectiveColor = computed(() => {
+  readonly effectiveColor = computed(() => {
     return this.color() ?? KEYWORD_CURRENT_COLOR;
   });
 

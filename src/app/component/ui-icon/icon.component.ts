@@ -41,6 +41,7 @@ import { I18nPipe } from '@src/app/module/i18n/i18n.pipe';
 import { UploadIconComponent } from '@src/app/icon/upload/upload.component';
 import { MergeDuplicateIconComponent } from '@src/app/icon/merge-duplicate/merge-duplicate.component';
 import { ManagerIconComponent } from '@src/app/icon/manager/manager.component';
+import { CautionIconComponent } from '@src/app/icon/caution/caution.component';
 
 @Component({
   selector: 'app-ui-icon',
@@ -85,7 +86,8 @@ import { ManagerIconComponent } from '@src/app/icon/manager/manager.component';
     JerseyIconComponent,
     UploadIconComponent,
     MergeDuplicateIconComponent,
-    ManagerIconComponent
+    ManagerIconComponent,
+    CautionIconComponent
 ],
   templateUrl: './icon.component.html'
 })

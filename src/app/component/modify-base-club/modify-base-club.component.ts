@@ -35,6 +35,7 @@ export class ModifyBaseClubComponent implements OnInit {
   readonly input = input.required<Partial<BaseClubInformation>>();
 
   readonly onUpdate = output<BaseClubInformation>();
+  readonly onFormDirtyUpdate = output<boolean>();
 
   private readonly externalSearchService = inject(ExternalSearchService);
 
@@ -109,6 +110,17 @@ export class ModifyBaseClubComponent implements OnInit {
     };
   });
 
+  private readonly isFormDirty = computed<boolean>(() => {
+    return this.fullNameValue().trim() !== ''
+      || this.shortNameValue().trim() !== ''
+      || this.cityValue().trim() !== ''
+      || this.districtValue().trim() !== ''
+      || this.countryCodeValue().trim() !== ''
+      || this.primaryColourValue().trim() !== ''
+      || this.secondaryColourValue().trim() !== ''
+      || this.homeVenueFlavorIdValue() !== null;
+  });
+
   constructor() {
     effect(() => {
       const currentInput = this.input();
@@ -160,6 +172,10 @@ export class ModifyBaseClubComponent implements OnInit {
       }
 
       this.onUpdate.emit(payload);
+    });
+
+    effect(() => {
+      this.onFormDirtyUpdate.emit(this.isFormDirty());
     })
   }
 

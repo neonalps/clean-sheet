@@ -56,6 +56,12 @@
   color: var(--info);
 }
 
+.button-warn {
+  background-color: transparent;
+  border: 1px solid var(--warn);
+  color: var(--warn);
+}
+
 .button-disabled {
   pointer-events: none;
   background-color: var(--dark-grey-lighter-2);
@@ -83,5 +89,10 @@
     .button-info:hover {
       border-color: var(--info-darker-20);
       color: var(--info-darker-20);
+    }
+
+    .button-warn:hover {
+      border-color: var(--warn-darker-20);
+      color: var(--warn-darker-20);
     }
 }

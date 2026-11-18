@@ -8,6 +8,7 @@ import { assertUnreachable } from "@src/app/util/common";
 import { Observable, Subject } from "rxjs";
 import { DeleteModalPayload } from "@src/app/component/delete-modal/delete-modal.component";
 import { ModifyClubPayload } from "@src/app/component/modal-modify-club/modal-modify-club.component";
+import { UnsavedChangesModalPayload } from "@src/app/component/modal-unsaved-changes/modal-unsaved-changes.component";
 
 interface ModalEvent {
     type: 'cancel' | 'confirm' | 'value';
@@ -22,6 +23,7 @@ export enum Modal {
     ModifyPerson = 'modifyPerson',
     Shirt = 'shirt',
     Stats = 'stats',
+    UnsavedChanges = 'unsavedChanges',
 }
 
 @Injectable({
@@ -39,6 +41,7 @@ export class ModalService {
     readonly modifyPersonPayload$ = new Subject<ModifyPersonPayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
+    readonly unsavedChangesModalPayload$ = new Subject<UnsavedChangesModalPayload>();
 
     private modalEvent$?: Subject<ModalEvent>;
 
@@ -68,6 +71,10 @@ export class ModalService {
 
     showStatsModal(payload: StatsModalPayload): Observable<ModalEvent> {
         return this.showModal(Modal.Stats, payload);
+    }
+
+    showUnsavedChangesModal(payload: UnsavedChangesModalPayload): Observable<ModalEvent> {
+        return this.showModal(Modal.UnsavedChanges, payload);
     }
 
     outsideClicked() {
@@ -142,6 +149,9 @@ export class ModalService {
                 break;
             case Modal.Stats:
                 this.statsModalPayload$.next(payload as StatsModalPayload);
+                break;
+            case Modal.UnsavedChanges:
+                this.unsavedChangesModalPayload$.next(payload as UnsavedChangesModalPayload);
                 break;
             default:
                 assertUnreachable(type);

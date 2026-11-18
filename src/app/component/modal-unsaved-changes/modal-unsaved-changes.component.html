@@ -1,0 +1,21 @@
+<app-modal>
+    <div content>
+        <div class="flex align-items-center justify-content-center mb-5">
+            <div class="width-md text-warn">
+                <app-ui-icon [descriptor]="{ 'type': 'standard', 'content': 'caution' }" />
+            </div>
+        </div>
+        <div class="text-lg bold center mb-5 text-warn">{{ titleText() }}</div>
+        <div class="text-base center px-4 text-light-grey">{{ contentText() }}</div>
+    </div>
+    <div footer>
+        <div class="flex justify-content-center">
+            <div class="w-full">
+                <div class="flex align-items-center justify-content-between mt-12">
+                    <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="onCancel()" />
+                    <app-button class="mx-4" [buttonType]="'warn'" [text]="'action.confirm' | $t" (onClicked)="onConfirm()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</app-modal>

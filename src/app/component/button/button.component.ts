@@ -4,7 +4,7 @@ import { UiIconDescriptor } from '@src/app/model/icon';
 import { assertUnreachable } from '@src/app/util/common';
 import { UiIconComponent } from "@src/app/component/ui-icon/icon.component";
 
-export type ButtonType = 'success' | 'danger' | 'secondary' | 'action' | 'ghost' | 'info';
+export type ButtonType = 'success' | 'danger' | 'secondary' | 'action' | 'ghost' | 'info' | 'warn';
 
 @Component({
   selector: 'app-button',
@@ -48,6 +48,9 @@ export class ButtonComponent {
         break;
       case 'info':
         dynamic.push('button-info');
+        break;
+      case 'warn':
+        dynamic.push('button-warn');
         break;
       default:
         assertUnreachable(buttonType);

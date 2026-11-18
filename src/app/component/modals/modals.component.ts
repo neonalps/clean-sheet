@@ -8,6 +8,7 @@ import { ModalConfirmAddPersonComponent } from "@src/app/component/modal-confirm
 import { ModalGameListFilterComponent } from "@src/app/component/modal-game-list-filter/modal-game-list-filter.component";
 import { ModalModifyPersonComponent } from '@src/app/component/modal-modify-person/modal-modify-person.component';
 import { ModalModifyClubComponent } from '@src/app/component/modal-modify-club/modal-modify-club.component';
+import { UnsavedChangesModalComponent } from '@src/app/component/modal-unsaved-changes/modal-unsaved-changes.component';
 
 @Component({
   selector: 'app-modals',
@@ -19,7 +20,8 @@ import { ModalModifyClubComponent } from '@src/app/component/modal-modify-club/m
     ModalConfirmAddPersonComponent,
     ModalGameListFilterComponent,
     ModalModifyPersonComponent,
-    ModalModifyClubComponent
+    ModalModifyClubComponent,
+    UnsavedChangesModalComponent
 ],
   templateUrl: './modals.component.html'
 })

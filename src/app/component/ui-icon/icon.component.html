@@ -26,6 +26,9 @@
                 {{ 'abbreviation.captain' | $t }}
             </div>
         }
+        @case ('caution') {
+            <app-caution-icon [color]="descriptorValue.color" />
+        }
         @case ('check') {
             <app-check [color]="descriptorValue.color" />
         }
