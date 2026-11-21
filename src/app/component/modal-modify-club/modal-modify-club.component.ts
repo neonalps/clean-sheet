@@ -96,11 +96,6 @@ export class ModalModifyClubComponent implements OnInit, OnDestroy {
     setTimeout(() => this.resetModal(), 200);
   }
 
-  onBaseClubInformationUpdate(baseClub: BaseClubInformation): void {
-    console.log('received update', baseClub);
-    this.submittablePayload.set(baseClub);
-  }
-
   private resetModal() {
     this.currentPayload.set(null);
     this.clubId.set(null);

@@ -1,7 +1,7 @@
 <app-modal>
     <div header>{{ 'club.edit' | $t }}</div>
     <div content>
-        <app-modify-base-club [input]="baseClubInformationInput()" (onUpdate)="onBaseClubInformationUpdate($event)" />
+        <app-modify-base-club [input]="baseClubInformationInput()" (onUpdate)="submittablePayload.set($event)" />
     </div>
     <div footer>
         <div class="flex justify-content-center">

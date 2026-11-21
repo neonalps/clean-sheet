@@ -38,7 +38,7 @@ export class ClubCreateComponent implements OnDestroy {
       this.destroy$.complete();
   }
 
-  onBaseClubUpdate(baseClubUpdate: BaseClubInformation): void {
+  onBaseClubUpdate(baseClubUpdate: BaseClubInformation | null): void {
     this.currentBaseClubInformation.set(baseClubUpdate);
   }
 

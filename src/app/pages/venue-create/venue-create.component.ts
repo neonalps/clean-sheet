@@ -38,7 +38,7 @@ export class VenueCreateComponent implements OnDestroy {
       this.destroy$.complete();
   }
 
-  onBaseVenueUpdate(baseVenueUpdate: BaseVenueInformation): void {
+  onBaseVenueUpdate(baseVenueUpdate: BaseVenueInformation | null): void {
     this.currentBaseVenueInformation.set(baseVenueUpdate);
   }
 
