@@ -34,7 +34,7 @@ export class ModifyBaseClubComponent implements OnInit {
 
   readonly input = input.required<Partial<BaseClubInformation>>();
 
-  readonly onUpdate = output<BaseClubInformation>();
+  readonly onUpdate = output<BaseClubInformation | null>();
   readonly onFormDirtyUpdate = output<boolean>();
 
   private readonly externalSearchService = inject(ExternalSearchService);
@@ -166,12 +166,7 @@ export class ModifyBaseClubComponent implements OnInit {
     });
 
     effect(() => {
-      const payload = this.submittablePayload();
-      if (payload === null) {
-        return;
-      }
-
-      this.onUpdate.emit(payload);
+      this.onUpdate.emit(this.submittablePayload());
     });
 
     effect(() => {

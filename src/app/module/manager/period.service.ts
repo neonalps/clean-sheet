@@ -23,7 +23,7 @@ export class ManagerPeriodService implements OnDestroy {
                 method: 'GET',
                 url: `/v1/managers/periods`,
             },
-            bestBeforeSeconds: 60 * 60 * 24,        // 1 day
+            bestBeforeSeconds: 60 * 60,        // 1 hour
             strategy: FetchStrategy.CacheAndNetwork,
             scope: FetchScope.Global,
             onUpdate: (update: ManagerPeriod[]) => this.onManagerPeriodsUpdate(update), 

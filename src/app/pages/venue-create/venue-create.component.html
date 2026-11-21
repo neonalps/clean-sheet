@@ -1,1 +1,16 @@
-create venue here
+<div class="px-2">
+    <div class="page-title mb-5 ml-1">{{ 'pageTitle.createVenue' | $t }}</div>
+    <div class="px-2">
+        <app-modify-base-venue [input]="{}" (onUpdate)="onBaseVenueUpdate($event)" (onFormDirtyUpdate)="isFormDirty.set($event)" />
+    </div>
+    <div class="px-2 my-8">
+        <div class="flex justify-content-center">
+            <div class="w-full">
+                <div class="flex align-items-center justify-content-between mt-12">
+                    <app-button class="mx-4" [buttonType]="'secondary'" [text]="'action.cancel' | $t" (onClicked)="onCancel()" />
+                    <app-button class="mx-4" [buttonType]="'success'" [enabled]="canBeSaved()" [text]="'action.save' | $t" (onClicked)="onConfirm()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

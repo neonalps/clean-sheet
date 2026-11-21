@@ -82,6 +82,7 @@ export class ClubCreateComponent implements OnDestroy {
       error: err => {
         console.error(err);
         this.toastService.addToast({ type: 'error', text: this.translationService.translate('clubCreate.failure') });
+        this.isSubmitting.set(false);
       }
     })
   }

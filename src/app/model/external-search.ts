@@ -23,6 +23,7 @@ export enum ExternalSearchEntity {
     Person = "person",
     Season = "season",
     Venue = "venue",
+    VenueFlavor = "venueFlavor",
 }
 
 export type GameResult = {

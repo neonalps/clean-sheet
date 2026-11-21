@@ -1,0 +1,48 @@
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.name' | $t }}</div>
+    <div class="form-row-content">
+        <input #fullName type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-transparent" (input)="onFullNameChange()" />
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.shortName' | $t }}</div>
+    <div class="form-row-content">
+        <input #shortName type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-transparent" (input)="onShortNameChange()" />
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.city' | $t }}</div>
+    <div class="form-row-content">
+        <input #city type="text" class="input-text w-full px-2 py-1 text-lg text-light bg-color-transparent" (input)="onCityChange()" />
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.country' | $t }}</div>
+    <div class="form-row-content">
+        <app-select-nationalities [singleMode]="true" [selectedNationalities]="emulatedNationalitiesValue()" (onValueChange)="onNationalitiesChanged($event)" />
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.capacity' | $t }}</div>
+    <div class="form-row-content flex">
+        <div class="basis-1/5">
+            <input #capacity type="number" class="input-text input-number-without-spin w-full px-2 py-1 text-lg text-light text-right bg-color-transparent" (input)="onCapacityChange()" />
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.latitude' | $t }}</div>
+    <div class="form-row-content flex">
+        <div class="basis-1/3">
+            <input #latitude type="number" class="input-text input-number-without-spin w-full px-2 py-1 text-lg text-light text-right bg-color-transparent" (input)="onLatitudeChange()" />
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-row-title">{{ 'venue.longitude' | $t }}</div>
+    <div class="form-row-content flex">
+        <div class="basis-1/3">
+            <input #longitude type="number" class="input-text input-number-without-spin w-full px-2 py-1 text-lg text-light text-right bg-color-transparent" (input)="onLongitudeChange()" />
+        </div>
+    </div>
+</div>

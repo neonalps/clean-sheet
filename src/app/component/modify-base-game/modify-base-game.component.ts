@@ -324,7 +324,7 @@ export class ModifyBaseGameComponent implements OnInit, OnDestroy {
         }
 
         this.isSearchingForVenue.set(true);
-        return this.externalSearchService.search(value, [ExternalSearchEntity.Venue]);
+        return this.externalSearchService.search(value, [ExternalSearchEntity.VenueFlavor]);
       }),
       map(response => {
         this.isSearchingForVenue.set(false);

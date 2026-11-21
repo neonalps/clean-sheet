@@ -53,6 +53,14 @@ a {
   color: var(--light-grey);
 }
 
+.input-number-without-spin,
+.input-number-without-spin::-webkit-inner-spin-button,
+.input-number-without-spin::-webkit-outer-spin-button
+ {
+  -webkit-appearance: none; 
+  margin: 0;
+}
+
 .select-search {
     background-color: #777;
     border-style: none;

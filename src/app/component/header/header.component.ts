@@ -295,6 +295,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
       case ExternalSearchEntity.Venue:
         navigateToVenue(this.router, resultItem.entityId, resultItem.title.substring(0, resultItem.title.indexOf('(')));
         break;
+      case ExternalSearchEntity.VenueFlavor:
+        throw new Error(`Venue flavors are not allowed at this point`);
       default:
         assertUnreachable(resultItem.type);
     }
@@ -328,6 +330,8 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewInit {
         throw new Error(`Season not handled`);
       case ExternalSearchEntity.Venue:
         throw new Error(`Venue not handled`);
+      case ExternalSearchEntity.VenueFlavor:
+        throw new Error(`Venue flavor not handled`);
       default:
         assertUnreachable(entity);
     }
