@@ -234,7 +234,7 @@ export class ClubComponent implements OnDestroy {
           }
         })
       },
-    })
+    });
   }
 
   private handleUploadClubAvatar(clubId: ClubId) {

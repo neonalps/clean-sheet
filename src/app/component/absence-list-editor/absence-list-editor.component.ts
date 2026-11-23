@@ -12,6 +12,7 @@ import { GameId } from '@src/app/util/domain-types';
 import { ToastService } from '@src/app/module/toast/service';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { getDisplayName } from '@src/app/util/domain';
+import { ButtonComponent } from '../button/button.component';
 
 export type GameAbsenceDropLists = Array<GameAbsenceDropList>;
 
@@ -23,7 +24,7 @@ export type GameAbsenceDropList = {
 
 @Component({
   selector: 'app-absence-list-editor',
-  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropListGroup, CdkDropList, CdkDrag],
+  imports: [CommonModule, I18nPipe, AbsenceListEditorItemComponent, CdkDropListGroup, CdkDropList, CdkDrag, ButtonComponent],
   templateUrl: './absence-list-editor.component.html',
 })
 export class AbsenceListEditorComponent implements OnInit, OnDestroy {

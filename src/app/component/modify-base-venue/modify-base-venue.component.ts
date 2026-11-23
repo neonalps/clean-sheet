@@ -6,6 +6,7 @@ export type BaseVenueInformation = {
   name: string;
   shortName: string;
   city: string;
+  district: string;
   countryCode: string;
   capacity: number;
   latitude: number;
@@ -27,6 +28,7 @@ export class ModifyBaseVenueComponent implements OnInit {
   readonly fullNameElement = viewChild.required<ElementRef<HTMLInputElement>>('fullName');
   readonly shortNameElement = viewChild.required<ElementRef<HTMLInputElement>>('shortName');
   readonly cityElement = viewChild.required<ElementRef<HTMLInputElement>>('city');
+  readonly districtElement = viewChild.required<ElementRef<HTMLInputElement>>('district');
   readonly capacityElement = viewChild.required<ElementRef<HTMLInputElement>>('capacity');
   readonly latitudeElement = viewChild.required<ElementRef<HTMLInputElement>>('latitude');
   readonly longitudeElement = viewChild.required<ElementRef<HTMLInputElement>>('longitude');
@@ -39,6 +41,7 @@ export class ModifyBaseVenueComponent implements OnInit {
   readonly fullNameValue = signal<string>('');
   readonly shortNameValue = signal<string>('');
   readonly cityValue = signal<string>('');
+  readonly districtValue = signal<string>('');
   readonly countryCodeValue = signal<string>('');
   readonly capacityValue = signal<number>(0);
   readonly latitudeValue = signal<number>(0);
@@ -66,10 +69,11 @@ export class ModifyBaseVenueComponent implements OnInit {
     }
 
     const capacity = this.capacityValue();
-    if (capacity < 0) {
+    if (capacity <= 0) {
       return null;
     }
 
+    const district = this.districtValue();
     const latitude = this.latitudeValue();
     const longitude = this.longitudeValue();
 
@@ -78,6 +82,7 @@ export class ModifyBaseVenueComponent implements OnInit {
       shortName,
       countryCode,
       city,
+      district,
       capacity,
       latitude,
       longitude,
@@ -88,6 +93,7 @@ export class ModifyBaseVenueComponent implements OnInit {
     return this.fullNameValue().trim() !== ''
       || this.shortNameValue().trim() !== ''
       || this.cityValue().trim() !== ''
+      || this.districtValue().trim() !== ''
       || this.capacityValue() !== 0
       || this.countryCodeValue().trim() !== ''
       || this.latitudeValue() !== 0
@@ -109,6 +115,10 @@ export class ModifyBaseVenueComponent implements OnInit {
       const currentCity = currentInput.city ?? '';
       this.cityElement().nativeElement.value = currentCity;
       this.cityValue.set(currentCity);
+
+      const currentDistrict = currentInput.district ?? '';
+      this.districtElement().nativeElement.value = currentDistrict;
+      this.districtValue.set(currentDistrict);
 
       const currentCountryCode = currentInput.countryCode ?? '';
       this.countryCodeValue.set(currentCountryCode);
@@ -149,6 +159,10 @@ export class ModifyBaseVenueComponent implements OnInit {
 
   onCityChange(): void {
     this.cityValue.set(this.cityElement().nativeElement.value);
+  }
+
+  onDistrictChange(): void {
+    this.districtValue.set(this.districtElement().nativeElement.value);
   }
 
   onCapacityChange(): void {

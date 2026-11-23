@@ -9,11 +9,20 @@
 @else {
     @if (venueValue) {
         <div class="bg-color-dark-grey-darker p-3 rounded-lg m-3">
-            <div class="page-title mb-6">
-                <div>{{ venueValue.name }}</div>
-            </div>
-            <div>
-                <app-venue-details [venue]="venueValue" [hideNameSection]="true" [showCityCountryFlag]="true" (onClubClick)="onClubClicked($event)" />
+            <div class="flex">
+                <div class="flex-grow">
+                    <div class="page-title mb-6">
+                        <div>{{ venueValue.name }}</div>
+                    </div>
+                    <div>
+                        <app-venue-details [venue]="venueValue" [hideNameSection]="true" [showCityCountryFlag]="true" (onClubClick)="onClubClicked($event)" />
+                    </div>
+                </div>
+                @if (contextMenuVisible()) {
+                    <div>
+                        <app-context-menu [menuSections]="venueContextMenuOptions()" (onMenuItemSelected)="onVenueContextMenuItemSelected($event)" />
+                    </div>
+                }
             </div>
         </div>
     }

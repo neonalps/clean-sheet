@@ -9,6 +9,7 @@ export type UpdateVenue = {
   name: string;
   shortName: string;
   city: string;
+  district?: string;
   countryCode: string;
   capacity: number;
   latitude: number;
@@ -27,6 +28,10 @@ export class VenueService {
     getById(venueId: VenueId, includeHomeVenueFor?: boolean): Observable<BasicVenue> {
         const queryStringSuffix = includeHomeVenueFor ? `?includeHomeVenueFor=true` : '';
         return this.http.get<BasicVenue>(`${environment.apiBaseUrl}/v1/venues/${venueId}${queryStringSuffix}`);
+    }
+
+    updateById(venueId: VenueId, update: UpdateVenue): Observable<BasicVenue> {
+        return this.http.put<BasicVenue>(`${environment.apiBaseUrl}/v1/venues/${venueId}`, update);
     }
 
     create(create: CreateVenue): Observable<BasicVenue> {

@@ -1,8 +1,8 @@
 @let activeSquadValue = activeSquad();
 <div>
-    <div *ngIf="!potentialAbsencesLoaded() && loadPotentialAbsencesPossible()" class="pb-4 flex align-items-center text-sm pointer text-light-grey hover:text-light transition-colors" (click)="loadPotentialAbsences()">
-        <div>{{ 'gameAbsenceEditor.loadPossibleAbsences' | $t }}</div>
-    </div>
+    @if (!potentialAbsencesLoaded() && loadPotentialAbsencesPossible()) {
+        <app-button [buttonType]="'secondary'" [text]="'gameAbsenceEditor.loadPossibleAbsences' | $t" (onClicked)="loadPotentialAbsences()" />
+    }
     <div cdkDropListGroup>
         @for (list of dropLists(); track list.id) {
             <div class="drop-zone border-2 border-gold my-3 min-h-90" [ngClass]="{ 'pt-12': $index > 0 }" cdkDropList [id]="list.id" [cdkDropListData]="list.items" (cdkDropListDropped)="onItemDrop($event)">

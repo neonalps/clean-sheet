@@ -9,6 +9,7 @@ import { ModalGameListFilterComponent } from "@src/app/component/modal-game-list
 import { ModalModifyPersonComponent } from '@src/app/component/modal-modify-person/modal-modify-person.component';
 import { ModalModifyClubComponent } from '@src/app/component/modal-modify-club/modal-modify-club.component';
 import { UnsavedChangesModalComponent } from '@src/app/component/modal-unsaved-changes/modal-unsaved-changes.component';
+import { ModalModifyVenueComponent } from '@src/app/component/modal-modify-venue/modal-modify-venue.component';
 
 @Component({
   selector: 'app-modals',
@@ -21,7 +22,8 @@ import { UnsavedChangesModalComponent } from '@src/app/component/modal-unsaved-c
     ModalGameListFilterComponent,
     ModalModifyPersonComponent,
     ModalModifyClubComponent,
-    UnsavedChangesModalComponent
+    UnsavedChangesModalComponent,
+    ModalModifyVenueComponent
 ],
   templateUrl: './modals.component.html'
 })

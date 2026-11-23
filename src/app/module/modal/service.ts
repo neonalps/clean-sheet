@@ -9,6 +9,7 @@ import { Observable, Subject } from "rxjs";
 import { DeleteModalPayload } from "@src/app/component/delete-modal/delete-modal.component";
 import { ModifyClubPayload } from "@src/app/component/modal-modify-club/modal-modify-club.component";
 import { UnsavedChangesModalPayload } from "@src/app/component/modal-unsaved-changes/modal-unsaved-changes.component";
+import { ModifyVenuePayload } from "@src/app/component/modal-modify-venue/modal-modify-venue.component";
 
 interface ModalEvent {
     type: 'cancel' | 'confirm' | 'value';
@@ -21,6 +22,7 @@ export enum Modal {
     FilterGameList = 'filterGameList',
     ModifyClub = 'modifyClub',
     ModifyPerson = 'modifyPerson',
+    ModifyVenue = 'modifyVenue',
     Shirt = 'shirt',
     Stats = 'stats',
     UnsavedChanges = 'unsavedChanges',
@@ -39,6 +41,7 @@ export class ModalService {
     readonly filterGameListPayload$ = new Subject<FilterGameListPayload>();
     readonly modifyClubPayload$ = new Subject<ModifyClubPayload>();
     readonly modifyPersonPayload$ = new Subject<ModifyPersonPayload>();
+    readonly modifyVenuePayload$ = new Subject<ModifyVenuePayload>();
     readonly shirtModalPayload$ = new Subject<ShirtModalPayload>();
     readonly statsModalPayload$ = new Subject<StatsModalPayload>();
     readonly unsavedChangesModalPayload$ = new Subject<UnsavedChangesModalPayload>();
@@ -63,6 +66,10 @@ export class ModalService {
 
     showModifyPersonModal(payload: ModifyPersonPayload): Observable<ModalEvent> {
         return this.showModal(Modal.ModifyPerson, payload);
+    }
+
+    showModifyVenueModal(payload: ModifyVenuePayload): Observable<ModalEvent> {
+        return this.showModal(Modal.ModifyVenue, payload);
     }
 
     showShirtModal(payload: ShirtModalPayload): Observable<ModalEvent> {
@@ -113,7 +120,7 @@ export class ModalService {
     }
 
     private showModal(type: Modal, payload: unknown): Observable<ModalEvent> {
-        if (this.active() === true) {
+        if (this.active()) {
             throw new Error(`A modal is already open.`)
         }
 
@@ -143,6 +150,9 @@ export class ModalService {
                 break;
             case Modal.ModifyPerson:
                 this.modifyPersonPayload$.next(payload as ModifyPersonPayload);
+                break;
+            case Modal.ModifyVenue:
+                this.modifyVenuePayload$.next(payload as ModifyVenuePayload);
                 break;
             case Modal.Shirt:
                 this.shirtModalPayload$.next(payload as ShirtModalPayload);
