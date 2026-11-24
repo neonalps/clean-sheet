@@ -22,6 +22,14 @@
             }
         </div>
     </div>
+    @if (venueValue.district) {
+        <div class="mt-5">
+            <div class="section-title">{{ 'venue.district' | $t }}</div>
+            <div>
+                <span>{{ venueValue.district }}</span>
+            </div>
+        </div>
+    }
     <div class="mt-5">
         <div class="section-title">{{ 'venue.capacity' | $t }}</div>
         <div>{{ venueValue.capacity | formatNumber }}</div>

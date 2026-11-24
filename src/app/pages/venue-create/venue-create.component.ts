@@ -67,6 +67,7 @@ export class VenueCreateComponent implements OnDestroy {
       name: venue.name,
       shortName: venue.shortName,
       city: venue.city,
+      district: venue.district,
       countryCode: venue.countryCode,
       capacity: venue.capacity,
       latitude: venue.latitude,
