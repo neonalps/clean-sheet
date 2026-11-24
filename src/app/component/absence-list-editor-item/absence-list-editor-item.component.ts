@@ -204,6 +204,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.Suspended,
       },
       {
+        id: 'yellowCard:2',
+        name: this.translationService.translate(`suspension.yellowCard`, { plural: 2 }),
+        type: GameAbsenceType.Suspended,
+      },
+      {
         id: 'yellowCard:3',
         name: this.translationService.translate(`suspension.yellowCard`, { plural: 3 }),
         type: GameAbsenceType.Suspended,
@@ -234,6 +239,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
         type: GameAbsenceType.AtRisk,
       },
       {
+        id: 'yellowCard:3',
+        name: this.translationService.translate(`atRisk.yellowCard`, { plural: 3 }),
+        type: GameAbsenceType.AtRisk,
+      },
+      {
         id: 'yellowCard:4',
         name: this.translationService.translate(`atRisk.yellowCard`, { plural: 4 }),
         type: GameAbsenceType.AtRisk,
@@ -241,6 +251,16 @@ export class AbsenceListEditorItemComponent implements OnInit {
       {
         id: 'yellowCard:5',
         name: this.translationService.translate(`atRisk.yellowCard`, { plural: 5 }),
+        type: GameAbsenceType.AtRisk,
+      },
+      {
+        id: 'yellowCard:6',
+        name: this.translationService.translate(`atRisk.yellowCard`, { plural: 6 }),
+        type: GameAbsenceType.AtRisk,
+      },
+      {
+        id: 'yellowCard:7',
+        name: this.translationService.translate(`atRisk.yellowCard`, { plural: 7 }),
         type: GameAbsenceType.AtRisk,
       },
       {
