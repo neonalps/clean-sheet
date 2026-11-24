@@ -10,6 +10,7 @@ import { assertUnreachable, isDefined } from '@src/app/util/common';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '@src/app/module/i18n/translation.service';
 import { CdkDrag } from '@angular/cdk/drag-drop';
+import { resolvePluralKey } from '@src/app/module/i18n/util';
 
 export type EditorPerson = { 
   id: PersonId; 
@@ -83,9 +84,11 @@ export class AbsenceListEditorItemComponent implements OnInit {
 
       const absenceReason = this.absence().absenceReason;
       if (isDefined(absenceReason)) {
+        const absenceReasonPluralKey = resolvePluralKey(absenceReason);
+        
         this.pushReason$.next({
           id: absenceReason,
-          name: this.translationService.translate(`${this.getTranslationPrefixForGameAbsenceType(absenceType)}.${absenceReason}`),
+          name: this.translationService.translate(`${this.getTranslationPrefixForGameAbsenceType(absenceType)}.${absenceReasonPluralKey.key}`, absenceReasonPluralKey.pluralContext),
         })
       }
     });

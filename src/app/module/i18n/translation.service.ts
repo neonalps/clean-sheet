@@ -28,8 +28,6 @@ export class TranslationService {
 
   init(selectedLanguage: Observable<Language>) {
     selectedLanguage.subscribe(value => {
-      console.log('setting locale to', value);
-
       if (value === Language.AustrianGerman) {
         this.selectedLocale = Locale.German;
       } else if (value === Language.BritishEnglish) {
