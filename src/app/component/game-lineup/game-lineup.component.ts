@@ -228,7 +228,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 9, usePositionGrid ? "41" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "42" : undefined) },
         ],
-        additionalClasses: 'mt-15',
+        additionalClasses: 'mt-9',
       },
       // defensive midfielders
       {
@@ -237,7 +237,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "32" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "33" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       },
       // defenders
       {
@@ -247,14 +247,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       },
       // gk
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       }
     ];
 
@@ -275,7 +275,7 @@ export class GameLineupComponent {
         items: [
           { person: this.getByPositionGridOrIndex(players, 8, usePositionGrid ? "41" : undefined) },
         ],
-        additionalClasses: 'mt-15',
+        additionalClasses: 'mt-9',
       },
       // defensive midfielders
       {
@@ -284,7 +284,7 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 6, usePositionGrid ? "32" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 5, usePositionGrid ? "33" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       },
       // defenders
       {
@@ -294,14 +294,14 @@ export class GameLineupComponent {
           { person: this.getByPositionGridOrIndex(players, 2, usePositionGrid ? "23" : undefined) },
           { person: this.getByPositionGridOrIndex(players, 1, usePositionGrid ? "24" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       },
       // gk
       {
         items: [
           { person: this.getByPositionGridOrIndex(players, 0, usePositionGrid ? "11" : undefined) },
         ],
-        additionalClasses: 'mt-9',
+        additionalClasses: 'mt-12',
       }
     ];
 
